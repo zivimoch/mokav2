@@ -73,6 +73,8 @@
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script src="{{ asset('adminlte') }}/dist/js/pages/dashboard.js"></script>
 <script>
   $('.dropdown-trigger').on('click', function (e) {
       $(this).next().toggle();

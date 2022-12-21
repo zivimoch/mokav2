@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FormPenerimaPengaduan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,8 +16,12 @@ use Illuminate\Support\Facades\Route;
 */
 Route::redirect('/', '/login');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+Route::middleware('auth')->group(function () {
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('formpenerimapengaduan', [FormPenerimaPengaduan::class, 'index'])->name('formpenerimapengaduan.index');
+
+    Route::view('kasus/index','/kasus/index')->name('kasus');
+    Route::view('notifikasi','/notifikasi')->name('notifikasi');
+});
 
 require __DIR__.'/auth.php';
