@@ -1,6 +1,72 @@
 @extends('layouts.template')
 
 @section('content')
+
+<link rel="stylesheet" href="{{ asset('calendar-agenda') }}/simple-calendar.css">
+<script src="{{ asset('calendar-agenda') }}/jquery.simple-calendar.js"></script>
+<script>
+  $(function(){
+  var calendaragenda = $("#calendar-agenda").simpleCalendar({
+
+// displays events
+displayEvent: true,
+
+// event dates
+events: [
+  // generate new event after tomorrow for one hour
+  {
+    startDate: new Date(new Date().setHours(new Date().getHours() + 24)).toDateString(),
+    endDate: new Date(new Date().setHours(new Date().getHours() + 25)).toISOString(),
+    summary: 'Aktivitas 1'
+  },
+  // generate new event for yesterday at noon
+  {
+    startDate: new Date(new Date().setHours(new Date().getHours() - new Date().getHours() - 12, 0)).toISOString(),
+    endDate: new Date(new Date().setHours(new Date().getHours() - new Date().getHours() - 11)).getTime(),
+    summary: 'Aktivitas 2'
+  },
+  // generate new event for the last two days
+  {
+    startDate: new Date(new Date().setHours(new Date().getHours() - 48)).toISOString(),
+    endDate: new Date(new Date().setHours(new Date().getHours() - 24)).getTime(),
+    summary: 'Aktivitas 3'
+  },
+  // generate new event for yesterday at noon
+  {
+    startDate: new Date(new Date().setHours(new Date().getHours() - new Date().getHours() - 12, 0)).toISOString(),
+    endDate: new Date(new Date().setHours(new Date().getHours() - new Date().getHours() - 11)).getTime(),
+    summary: 'Aktivitas 2'
+  },
+  // generate new event for the last two days
+  {
+    startDate: new Date(new Date().setHours(new Date().getHours() - 48)).toISOString(),
+    endDate: new Date(new Date().setHours(new Date().getHours() - 24)).getTime(),
+    summary: 'Aktivitas 3'
+  },
+  // generate new event for yesterday at noon
+  {
+    startDate: new Date(new Date().setHours(new Date().getHours() - new Date().getHours() - 12, 0)).toISOString(),
+    endDate: new Date(new Date().setHours(new Date().getHours() - new Date().getHours() - 11)).getTime(),
+    summary: 'Aktivitas 2'
+  },
+  // generate new event for the last two days
+  {
+    startDate: new Date(new Date().setHours(new Date().getHours() - 48)).toISOString(),
+    endDate: new Date(new Date().setHours(new Date().getHours() - 24)).getTime(),
+    summary: 'Aktivitas 3'
+  }
+],
+
+// disable showing event details
+disableEventDetails: false,
+
+// disable showing empty date details
+disableEmptyDetails: false 
+
+});
+}); 
+$calendar.setEvents(events)
+</script>
     <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
@@ -295,7 +361,8 @@
             <!-- /.card-header -->
             <div class="card-body pt-0">
               <!--The calendar -->
-              <div id="calendar" style="width: 100%"></div>
+              {{-- <div id="calendar" style="width: 100%"></div> --}}
+              <div id="calendar-agenda"></div>
             </div>
             <!-- /.card-body -->
           </div>

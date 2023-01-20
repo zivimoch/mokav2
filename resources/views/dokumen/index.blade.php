@@ -6,7 +6,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Kasus yang anda tangani</h1>
+            <h1 class="m-0">Dokumen</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -31,111 +31,98 @@
             <table id="example1" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
             <thead>
             <tr>
-            <th>Tgl Pelaporan</th>
-            <th>No Regis</th>
-            <th>Nama</th>
-            <th>Kategori Klien</th>
-            <th>Usia</th>
+            <th>Tanggal</th>
+            <th>Layanan</th>
+            <th>Template</th>
+            <th>Judul</th>
             <th>Status</th>
             </tr>
             </thead>
             <tbody>
             <tr id="1">
             <td>2 Januari 2022</td>
-            <td>2/321/2002</td>
-            <td>Addzifi Mochamad Gumelar</td>
-            <td>Anak Laki-laki</td>
-            <td>25</td>
-            <td><span class="badge bg-warning">Terminasi</span></td>
+            <td>Hukum</td>
+            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
+            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
+            <td><span class="badge bg-warning">Tertaut</span></td>
             </tr>
             <tr id="2">
             <td>2 Januari 2022</td>
-            <td>2/321/2002</td>
-            <td>Addzifi Mochamad Gumelar</td>
-            <td>Anak Laki-laki</td>
-            <td>25</td>
-            <td><span class="badge bg-warning">Terminasi</span></td>
+            <td>Hukum</td>
+            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
+            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
+            <td></td>
             </tr>
             <tr id="3">
             <td>2 Januari 2022</td>
-            <td>2/321/2002</td>
-            <td>Addzifi Mochamad Gumelar</td>
-            <td>Anak Laki-laki</td>
-            <td>25</td>
-            <td><span class="badge bg-warning">Terminasi</span></td>
+            <td>Hukum</td>
+            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
+            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
+            <td><span class="badge bg-warning">Tertaut</span></td>
             </tr>
             <tr id="4">
             <td>2 Januari 2022</td>
-            <td>2/321/2002</td>
-            <td>Addzifi Mochamad Gumelar</td>
-            <td>Anak Laki-laki</td>
-            <td>25</td>
-            <td><span class="badge bg-warning">Terminasi</span></td>
+            <td>Hukum</td>
+            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
+            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
+            <td><span class="badge bg-warning">Tertaut</span></td>
             </tr>
             <tr id="5">
             <td>2 Januari 2022</td>
-            <td>2/321/2002</td>
-            <td>Addzifi Mochamad Gumelar</td>
-            <td>Anak Laki-laki</td>
-            <td>25</td>
-            <td><span class="badge bg-warning">Terminasi</span></td>
+            <td>Hukum</td>
+            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
+            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
+            <td><span class="badge bg-warning">Tertaut</span></td>
             </tr>
             <tr id="6">
             <td>2 Januari 2022</td>
-            <td>2/321/2002</td>
-            <td>Addzifi Mochamad Gumelar</td>
-            <td>Anak Laki-laki</td>
-            <td>25</td>
-            <td><span class="badge bg-warning">Terminasi</span></td>
+            <td>Hukum</td>
+            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
+            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
+            <td><span class="badge bg-warning">Tertaut</span></td>
             </tr>
             <tr id="7">
             <td>2 Januari 2022</td>
-            <td>2/321/2002</td>
-            <td>Addzifi Mochamad Gumelar</td>
-            <td>Anak Laki-laki</td>
-            <td>25</td>
-            <td><span class="badge bg-warning">Terminasi</span></td>
+            <td>Hukum</td>
+            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
+            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
+            <td><span class="badge bg-warning">Tertaut</span></td>
             </tr>
             <tr id="8">
             <td>2 Januari 2022</td>
-            <td>2/321/2002</td>
-            <td>Addzifi Mochamad Gumelar</td>
-            <td>Anak Laki-laki</td>
-            <td>25</td>
-            <td><span class="badge bg-warning">Terminasi</span></td>
+            <td>Hukum</td>
+            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
+            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
+            <td><span class="badge bg-warning"></span></td>
             </tr>
             <tr id="10">
             <td>2 Januari 2022</td>
-            <td>2/321/2002</td>
-            <td>Addzifi Mochamad Gumelar</td>
-            <td>Anak Laki-laki</td>
-            <td>25</td>
-            <td><span class="badge bg-warning">Terminasi</span></td>
+            <td>Hukum</td>
+            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
+            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
+            <td><span class="badge bg-warning">Tertaut</span></td>
             </tr>
             <tr id="11">
             <td>2 Januari 2022</td>
-            <td>2/321/2002</td>
-            <td>Addzifi Mochamad Gumelar</td>
-            <td>Anak Laki-laki</td>
-            <td>25</td>
-            <td><span class="badge bg-warning">Terminasi</span></td>
+            <td>Hukum</td>
+            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
+            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
+            <td><span class="badge bg-warning">Tertaut</span></td>
             </tr>
             <tr id="1">
             <td>2 Januari 2022</td>
-            <td>2/321/2002</td>
-            <td>Addzifi Mochamad Gumelar</td>
-            <td>Anak Laki-laki</td>
-            <td>25</td>
-            <td><span class="badge bg-warning">Terminasi</span></td>
+            <td>Hukum</td>
+            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
+            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
+            <td><span class="badge bg-warning">Tertaut</span></td>
             </tr>
             </tbody>
             <tfoot>
             <tr>
-            <th>Tgl Pelaporan</th>
-            <th>No Regis</th>
-            <th>Nama</th>
-            <th>Kategori Klien</th>
-            <th>Usia</th>
+            <th>Tanggal</th>
+            <th>Layanan</th>
+            <th>Detail Layanan</th>
+            <th>Judul</th>
             <th>Status</th>
             </tr>
             </tfoot>
@@ -165,13 +152,27 @@
     $(function () {
       $("#example1").DataTable({
         "responsive": false, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        "buttons": ["copy", "csv", "excel", "pdf", "print", 
+              {
+                className: "btn-success",
+                text: 'Template',
+                  action: function ( ) {
+                    window.location.assign('{{ route("dokumen.add") }}')
+                  }
+              },
+              {
+                className: "btn-info",
+                text: 'Buat Dokumen',
+                  action: function ( ) {
+                    window.location.assign('{{ route("dokumen.add") }}')
+                  }
+              }]
       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     });
 
     $('#example1 tbody').on( 'click', 'tr', function () {
         alert('redirect ke : '+this.id);
-        window.location.assign('{{ route("kasus.detail") }}')
+        window.location.assign('{{ route("dokumen.add") }}')
     } );
   </script>
 @endsection

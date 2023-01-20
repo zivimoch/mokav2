@@ -8,30 +8,41 @@
     position: relative;
   }
 }
+.nav-icon {
+  margin-right: 3px
+}
+
+@media  (max-width:960px) { .dropdown-menu { width: 360px !important; } }
 </style>
 <nav class="main-header navbar navbar-expand-md navbar-black navbar-dark">
   <div class="container">
     <a href="{{ route('dashboard') }}" class="navbar-brand">
-      <img src="{{ asset('img') }}/logo-moka.png" alt="MOKA Logo" class="brand-image" style="opacity: .8; max-width:150px">
-      {{-- <span class="brand-text font-weight-light">MOKA</span> --}}
+      <img src="{{ asset('img') }}/logo-moka.png" alt="MOKA Logo" class="brand-image" style="opacity: .8; max-width:150px; border-radius: 50%;">
+      {{-- <b><span style="background-color: yellow;color:black; padding:3px 3px 3px 5px">MOKA</span><span style="background-color: #fff;color:black; padding:3px 3px 3px 3px">ONLINE</span></b> --}}
+      <b>MOKA 
+        {{-- <span style="color:yellow;">ONLINE</span>' --}}
+      </b>
     </a>
     <div class="collapse navbar-collapse order-3" id="navbarCollapse">
-      <div class="btn-group">
-        <a href="{{ route('formpenerimapengaduan.index') }}" class="btn btn-success">
-          <i class="fa fa-plus"></i> Tambah Kasus
-        </a>
-      </div>
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a href="index3.html" class="nav-link">Statistik</a>
+          <a href="{{ route('kasus') }}" class="nav-link"><i class="nav-icon fas fa-search"></i> Kasus</a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">Agenda</a>
+          <a href="index3.html" class="nav-link"><i class="nav-icon fas fa-chart-line"></i> Statistik</a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">Template</a>
+          <a href="{{ route('agenda') }}" class="nav-link"><i class="nav-icon far fa-calendar-alt"></i> Agenda</a>
+        </li> 
+        <li class="nav-item">
+          <a href="{{ route('dokumen') }}" class="nav-link"><i class="nav-icon fas fa-file-alt"></i> Dokumen</a>
         </li>
       </ul>
+      <div class="btn-group">
+        <a href="{{ route('formpenerimapengaduan.index') }}" class="btn btn-success btn-sm">
+          <i class="fa fa-plus"></i> Tambah Kasus 
+        </a>
+      </div>
     </div>
     <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -42,7 +53,7 @@
             <a class="nav-link dropdown-trigger" data-toggle="dropdown" href="#">
                 <i class="far fa-bell"></i> <i class="fa fa-caret-down"></i>
             </a>
-            <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-lg dropdown-menu-right col-md-12" style="width : 100% !important">                                            
+            <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right" style="width : 400px;">                                            
               <center style="font-weight : bold; margin-bottom : 5px">Task & Notification</center>
               <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
                   <li class="nav-item">
@@ -54,14 +65,88 @@
               </ul>
               <div class="tab-content">
                   <div class="tab-pane fade show active" id="task" role="tabpanel" aria-labelledby="task-tab">
-                      <div class="list-group" id="task_list" style="max-height: 500px; overflow:scroll; overflow-x: hidden; scrollbar-width: thin;">
-                        <a href="" class="list-group-item list-group-item-action flex-column align-items-start">
-                          <h6 class="mb-1"> Korban / Pelapor </h6>
-                          <small>Pelapor / Korban menyetujui laporan pengaduan. Silahkan tentukan Supervisor</small>
-                          <p class="mb-1"></p>
-                          <small>|</small>
-                        </a> 
-                      </div>
+                    <div class="list-group" id="task_list" style="max-height: 500px; overflow:scroll; overflow-x: hidden; scrollbar-width: thin;">
+                      <a href="{{ route('kasus.detail') }}?tab=settings&hightlight=inputsupervisor" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                          <h6 class="mb-1">Korban / Pelapor</h6>
+                          <small>2 hari lalu</small>
+                        </div>
+                        <p class="mb-1">Pelapor / Korban menyetujui laporan pengaduan. Silahkan tentukan Supervisor</p>
+                        <small>|</small>
+                      </a> 
+                      <a href="{{ route('kasus.detail') }}?tab=kasus&hightlight=formulir#custom-tabs-one-home" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                          <h6 class="mb-1">Korban / Pelapor</h6>
+                          <small>2 hari lalu</small>
+                        </div>
+                        <p class="mb-1">Pelapor / Korban tidak menyetujui laporan pengaduan. Silahkan perbaiki data kasus, data korban dan data terlapor</p>
+                        <small>|</small>
+                      </a> 
+                      <a href="{{ route('kasus.detail') }}?tab=settings&hightlight=inputpersetujuankasus" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                          <h6 class="mb-1">Penerima Pengaduan</h6>
+                          <small>2 hari lalu</small>
+                        </div>
+                        <p class="mb-1">Kasus baru. Meminta persetujuan supervisor</p>
+                        <small>Addzifi Mochamad Gumelar (25) | </small>
+                      </a> 
+                      <a href="" class="list-group-item list-group-item-action flex-column align-items-start bg-danger">
+                        <div class="d-flex w-100 justify-content-between">
+                          <h6 class="mb-1">Supervisor</h6>
+                          <small>2 hari lalu</small>
+                        </div>
+                        <p class="mb-1">Supervisor menyetujui kasus. Silahkan input nomor regis.</p>
+                        <small>Addzifi Mochamad Gumelar (25) | </small>
+                      </a> 
+                      <a href="" class="list-group-item list-group-item-action flex-column align-items-start bg-danger">
+                        <div class="d-flex w-100 justify-content-between">
+                          <h6 class="mb-1">Supervisor</h6>
+                          <small>2 hari lalu</small>
+                        </div>
+                        <p class="mb-1">Kasus baru disetujui Supervisor. Silahkan buat link SPP.</p>
+                        <small>Addzifi Mochamad Gumelar (25) | 01/01/2023</small>
+                      </a> 
+                      <a href="" class="list-group-item list-group-item-action flex-column align-items-start bg-danger">
+                        <div class="d-flex w-100 justify-content-between">
+                          <h6 class="mb-1">Supervisor</h6>
+                          <small>2 hari lalu</small>
+                        </div>
+                        <p class="mb-1">Link SPP sudah jadi. Silahkan berikan ke Korban / Pelapor.</p>
+                        <small>Addzifi Mochamad Gumelar (25) | 01/01/2023</small>
+                      </a> 
+                      <a href="" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                          <h6 class="mb-1">Pelapor / Korban </h6>
+                          <small>2 hari lalu</small>
+                        </div>
+                        <p class="mb-1">Pelapor / Korban sudah mengisi Surat Pernyataan Persetujuan. Silahkan lakukan assesment / proses selanjutnya.</p>
+                        <small>Addzifi Mochamad Gumelar (25) | 01/01/2023 </small>
+                      </a> 
+                      <a href="" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                          <h6 class="mb-1">Manager Kasus </h6>
+                          <small>2 hari lalu</small>
+                        </div>
+                        <p class="mb-1">Pelaksanaan intervensi. Silahkan input data intervensi.</p>
+                        <small>Addzifi Mochamad Gumelar (25) | 01/01/2023 </small>
+                      </a> 
+                      <a href="" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                          <h6 class="mb-1">Alexander Grahambell </h6>
+                          <small>2 hari lalu</small>
+                        </div>
+                        <p class="mb-1">Telah menginput data intervensi.</p>
+                        <small>Addzifi Mochamad Gumelar (25) | 01/01/2023 </small>
+                      </a> 
+                      <a href="" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                          <h6 class="mb-1">Manager Kasus </h6>
+                          <small>2 hari lalu</small>
+                        </div>
+                        <p class="mb-1">Pelaksanaan intervensi lanjutan. Silahkan input data intervensi.</p>
+                        <small>Addzifi Mochamad Gumelar (25) | 01/01/2023 </small>
+                      </a> 
+                    </div>
                   </div>
                   <div class="tab-pane fade" id="notif" role="tabpanel" aria-labelledby="notif-tab">
                       <div class="list-group" id="notif_list" style="max-height: 500px; overflow:scroll; overflow-x: hidden; scrollbar-width: thin;">
