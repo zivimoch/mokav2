@@ -294,7 +294,7 @@ $calendar.setEvents(events)
               </div>
               <!-- /.card-body -->
               <div class="card-footer clearfix">
-                <button type="button" class="btn btn-primary float-right"><i class="fas fa-plus"></i> Add item</button>
+                <a href="{{ route('kinerja') }}"><button type="button" class="btn btn-primary float-right"><i class="fas fa-edit"></i> Laporan Kinerja</button></a>
               </div>
             </div>
             <!-- /.card -->

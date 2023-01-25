@@ -29,7 +29,7 @@
           <a href="{{ route('kasus') }}" class="nav-link"><i class="nav-icon fas fa-search"></i> Kasus</a>
         </li>
         <li class="nav-item">
-          <a href="index3.html" class="nav-link"><i class="nav-icon fas fa-chart-line"></i> Statistik</a>
+          <a href="{{ route('statistik') }}" class="nav-link"><i class="nav-icon fas fa-chart-line"></i> Statistik</a>
         </li>
         <li class="nav-item">
           <a href="{{ route('agenda') }}" class="nav-link"><i class="nav-icon far fa-calendar-alt"></i> Agenda</a>

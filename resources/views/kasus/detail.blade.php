@@ -130,7 +130,7 @@
         <a class="nav-link {{ Request::get('tab') == 'kasus' || Request::get('tab') == '' ? 'active' : '' }}" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">Kasus</a>
         </li>
         <li class="nav-item">
-        <a class="nav-link" id="custom-tabs-one-settings-tab" href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="false">Assesment</a>
+            <a class="nav-link {{ Request::get('tab') == 'kasus-assessment' ? 'active' : '' }}" id="kasus-assessment-tab" data-toggle="pill" href="#kasus-assessment" role="tab" aria-controls="kasus-assessment" aria-selected="false">Assessment</a>
         </li>
         <li class="nav-item">
         <a class="nav-link {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan-tab" data-toggle="pill" href="#kasus-layanan" role="tab" aria-controls="kasus-layanan" aria-selected="false">Layanan</a>
@@ -157,9 +157,7 @@
                 <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
                 </button>
                 </div>
-                
                 </div>
-                
                 <div class="card-body">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur maxime est asperiores aut perferendis officia consectetur in illo explicabo possimus. Veniam omnis id optio velit explicabo sapiente quaerat repellat officiis?
                 Dicta facere ducimus eligendi, dolore consequatur exercitationem dolorum eum evus, cupiditate, natus molestias ratione et vel iure sequi modi maxime architecto fugit aliquid! Fugiat?
@@ -329,7 +327,22 @@
                 <tr>
                     <td style="width: 200px">Tempat Kejadian</td>
                     <td>:</td>
-                    <td><b>Kategori Lokasi : </b> Sekolah, <b>Detail Lokasi : </b>Toilet pria lantai 2</td>
+                    <td><b>Kategori Lokasi : </b> Sekolah</td>
+                </tr>
+                <tr>
+                    <td style="width: 200px">Alamat Saat Kejadian</td>
+                    <td>:</td>
+                    <td>Jl. Diponogoro Empu Tantular 45 Jaya, <b>Kelurahan</b> Mantap, <b>Kecamatan</b> Harapan, <b>Kota</b> DKI Jakarta</td>
+                </tr>
+                <tr>
+                    <td style="width: 200px">Pendidikan Saat Kejadian</td>
+                    <td>:</td>
+                    <td><b>Kelas</b> 2, <b>Sekolah</b> SDN 1 Wakanda</td>
+                </tr>
+                <tr>
+                    <td style="width: 200px">Pekerjaan Saat Kejadian</td>
+                    <td>:</td>
+                    <td>Gamer</td>
                 </tr>
                 <tr>
                     <td style="width: 200px">Klasifikasi Kasus</td>
@@ -415,6 +428,228 @@
         <br>
         <button type="button" class="btn btn-block btn-primary">Print</button>
         </div>
+        <div class="tab-pane {{ Request::get('tab') == 'kasus-assessment' ? 'active' : '' }}" id="kasus-assessment" role="tabpanel" aria-labelledby="kasus-assessment-tab">
+            
+            <div class="post clearfix" style="margin: 0px">
+            <b>A. KRONOLOGIS</b>
+            </br>
+            </br>
+            <div style="overflow-x: scroll">
+            <table id="example2" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
+                <thead>
+                <tr>
+                <th>Waktu Kejadian</th>
+                <th>Detail Pristiwa</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr id="1">
+                <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
+                <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
+                Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
+                </tr>
+                <tr id="2">
+                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
+                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
+                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
+                </tr>
+                <tr id="3">
+                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
+                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
+                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
+                </tr>
+                <tr id="4">
+                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
+                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
+                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
+                </tr>
+                <tr id="5">
+                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
+                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
+                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
+                </tr>
+                <tr id="6">
+                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
+                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
+                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
+                </tr>
+                <tr id="7">
+                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
+                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
+                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
+                </tr>
+                <tr id="4">
+                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
+                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
+                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
+                </tr>
+                <tr id="10">
+                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
+                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
+                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
+                </tr>
+                <tr id="1">
+                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
+                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
+                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="exampleInputFile">Assessment tools</label>
+                        <div class="input-group">
+                        <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="exampleInputFile">
+                        <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                        </div>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button">Upload</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="exampleInputFile">Pic 1</label>
+                        <div class="input-group">
+                        <input type="text" class="form-control" readonly value="oojid.png" onclick="alert('oojid.png')" style="cursor: pointer">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="exampleInputFile">Pic 2</label>
+                        <div class="input-group">
+                        <input type="text" class="form-control" readonly value="oojid.png" onclick="alert('oojid.png')" style="cursor: pointer">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="exampleInputFile">Pic 3</label>
+                        <div class="input-group">
+                        <input type="text" class="form-control" readonly value="oojid.png" onclick="alert('oojid.png')" style="cursor: pointer">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 20px">
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Upaya yang pernah dilakukan : </label>
+                    {{-- <textarea name="" id="" cols="30" rows="3" class="form-control" style="resize: none;" readonly>lorem ipsum dolor sit amet</textarea> --}}
+                        <div class="input-group">
+                            <textarea class="form-control" aria-label="With textarea" style="resize: none;"></textarea>
+                            <div class="input-group-prepend">
+                                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-check"></i></button>
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Faktor pendukung pemecahan masalah : </label>
+                    {{-- <textarea name="" id="" cols="30" rows="3" class="form-control" style="resize: none;" readonly>lorem ipsum dolor sit amet</textarea> --}}
+                        <div class="input-group">
+                            <textarea class="form-control" aria-label="With textarea" style="resize: none;"></textarea>
+                            <div class="input-group-prepend">
+                                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-check"></i></button>
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Faktor penghambat pemecahan masalah : </label>
+                    {{-- <textarea name="" id="" cols="30" rows="3" class="form-control" style="resize: none;" readonly>lorem ipsum dolor sit amet</textarea> --}}
+                        <div class="input-group">
+                            <textarea class="form-control" aria-label="With textarea" style="resize: none;"></textarea>
+                            <div class="input-group-prepend">
+                                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-check"></i></button>
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Harapan/Kebutuhan klien : </label>
+                    {{-- <textarea name="" id="" cols="30" rows="3" class="form-control" style="resize: none;" readonly>lorem ipsum dolor sit amet</textarea> --}}
+                        <div class="input-group">
+                            <textarea class="form-control" aria-label="With textarea" style="resize: none;"></textarea>
+                            <div class="input-group-prepend">
+                                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-check"></i></button>
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <div class="post clearfix">
+                <b>B. DAMPAK KEKERASAN</b>
+                </br>
+                <div class="row">
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Kesehatan Fisik</label>
+                    <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Kesehatan Psikologis</label>
+                    <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Kesehatan Reproduksi</label>
+                    <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Sosial</label>
+                    <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Ekonomi</label>
+                    <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Anak/Keluarga</label>
+                    <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Lain-lain</label>
+                    <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-block btn-primary">Simpan</button>
+                </div>
+            </div>
+    </div>
+
         <div class="tab-pane {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan" role="tabpanel" aria-labelledby="kasus-layanan-tab">
             <div class="row">
             <div class="card-body" style="overflow-x: scroll">
@@ -714,6 +949,27 @@
     });
 
     $('#example1 tbody').on( 'click', 'tr', function () {
+        alert('redirect ke : '+this.id);
+        window.location.assign('{{ route("kasus.detail") }}')
+    } );
+
+
+    $(function () {
+      $("#example2").DataTable({
+        "responsive": false, "lengthChange": false, "autoWidth": false,
+        "buttons": ["copy", "csv", "excel", "pdf", "print",
+              {
+                className: "btn-info",
+                text: 'Tambah',
+                  action: function ( ) {
+                    window.location.assign('http://127.0.0.1:8000/dokumen/add')
+                  }
+              }],
+        "pageLength": 5
+      }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+    });
+
+    $('#example2 tbody').on( 'click', 'tr', function () {
         alert('redirect ke : '+this.id);
         window.location.assign('{{ route("kasus.detail") }}')
     } );

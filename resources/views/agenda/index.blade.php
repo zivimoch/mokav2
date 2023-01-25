@@ -105,6 +105,7 @@
 </div>
 <!-- ./wrapper -->
 
+
 <!-- Modal -->
 <div class="modal fade" id="modalCreate" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -123,7 +124,7 @@
           <input type="text" class="form-control" id="title">
       </div>
       <div class="form-group">
-          <label>Jam</label>
+          <label>Jam mulai</label>
           <input type="time" class="form-control" id="jam">
       </div>
       <div class="form-group">
@@ -140,6 +141,7 @@
       <div class="form-group" id="klien_id">
         <label>Pilih Klien</label>
         <select class="form-control select2" style="width: 100%;">
+          <option>pilih data</option>
           <option>Tini</option>
           <option>Tina</option>
           <option>Toni</option>
@@ -157,6 +159,41 @@
         <option>Tony Stark</option>
         </select>
       </div>
+          <div class="col-12" id="accordion" style="padding:0px !important">
+              <div class="card card-primary card-outline">
+              <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
+              <div class="card-header">
+              <h4 class="card-title w-100">
+              Tindak Lanjut
+              </h4>
+              </div>
+              </a>
+              <div id="collapseOne" class="collapse" data-parent="#accordion">
+                <div class="alert alert-warning alert-dismissible">
+                  <i class="icon fas fa-exclamation-triangle"></i> data tindak lanjut hanya tercatat pada akun anda
+                </div>
+              <div class="card-body">
+                  <div class="form-group">
+                      <label>Jam selesai</label>
+                      <input type="time" class="form-control" id="jam">
+                  </div>
+                  <div class="form-group">
+                      <label>Catatan</label>
+                      <textarea name="" class="form-control" id="" cols="30" rows="2"></textarea>
+                  </div>
+                  <div class="form-group">
+                  <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}">disini</a>)</span></label>
+                  <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;">
+                  <option>Dokumen konsultasi hukum kasus Eliza Thornberry</option>
+                  <option>Dokumen Pendampingan pengadilan kasus eliza thornberry</option>
+                  <option>Pendampingan pengadilan kasus tom delounge</option>
+                  <option>Mediasi kasus tom delounge</option>
+                  </select>
+                  </div>
+              </div>
+              </div>
+              </div>
+          </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary btn-block" id="submit">Simpan</button>
