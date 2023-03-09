@@ -128,99 +128,124 @@
 
 <!-- Modal -->
 <div class="modal fade" id="modalCreate" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Buat Agenda</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Buat Agenda #9I21AV</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <input type="text" name="" id="start" hidden>
+          <input type="text" name="" id="end" hidden>
+      <div class="form-group">
+          <label>Judul kegiatan</label>
+          <input type="text" class="form-control" id="judul_kegiatan">
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+              <label>Tanggal</label>
+              <input type="date" class="form-control" id="tanggal_mulai">
+          </div>
         </div>
-        <div class="modal-body">
-            <input type="text" name="" id="start" hidden>
-            <input type="text" name="" id="end" hidden>
-        <div class="form-group">
-            <label>Judul kegiatan</label>
-            <input type="text" class="form-control" id="title">
-        </div>
-        <div class="form-group">
-            <label>Jam mulai</label>
-            <input type="time" class="form-control" id="jam">
-        </div>
-        <div class="form-group">
-            <label>Keterangan</label>
-            <textarea name="" class="form-control" id="" cols="30" rows="2"></textarea>
-        </div>
-        <div class="form-group">
-            <label>Penjadwalan Layanan</label>
-            <select name="" class="form-control" id="penadjawalan_layanan">
-              <option value="0">Tidak</option>
-              <option value="1">Ya</option>
-            </select>
-        </div>
-        <div class="form-group" id="klien_id">
-          <label>Pilih Klien</label>
-          <select class="form-control select2" style="width: 100%;">
-            <option>pilih data</option>
-            <option>Tini</option>
-            <option>Tina</option>
-            <option>Toni</option>
-            <option>Tono</option>
-            <option>Tino</option>
-            <option>Tanos</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Tag</label>
-          <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;">
-          <option>Addzifi Mochamad Gumelar</option>
-          <option>Alexander Grahambell</option>
-          <option>Thomas Alfa Edison</option>
-          <option>Tony Stark</option>
-          </select>
-        </div>
-            <div class="col-12" id="accordion" style="padding:0px !important">
-                <div class="card card-primary card-outline">
-                <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
-                <div class="card-header">
-                <h4 class="card-title w-100">
-                Tindak Lanjut
-                </h4>
-                </div>
-                </a>
-                <div id="collapseOne" class="collapse show" data-parent="#accordion">
-                <div class="alert alert-warning alert-dismissible">
-                <i class="icon fas fa-exclamation-triangle"></i> data tindak lanjut hanya tercatat pada akun anda
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label>Jam selesai</label>
-                        <input type="time" class="form-control" id="jam">
-                    </div>
-                    <div class="form-group">
-                        <label>Catatan</label>
-                        <textarea name="" class="form-control" id="" cols="30" rows="2"></textarea>
-                    </div>
-                    <div class="form-group">
-                    <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}">disini</a>)</span></label>
-                    <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;">
-                    <option>Dokumen konsultasi hukum kasus Eliza Thornberry</option>
-                    <option>Dokumen Pendampingan pengadilan kasus eliza thornberry</option>
-                    <option>Pendampingan pengadilan kasus tom delounge</option>
-                    <option>Mediasi kasus tom delounge</option>
-                    </select>
-                    </div>
-                </div>
-                </div>
-                </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Jam mulai</label>
+                <input type="time" class="form-control" id="jam_mulai">
             </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary btn-block" id="submit">Simpan</button>
+      </div>
+      <div class="form-group">
+          <label>Keterangan</label>
+          <textarea name="" class="form-control" id="keterangan" cols="30" rows="2"></textarea>
+      </div>
+      <div class="form-group">
+          <label>Penjadwalan Layanan</label>
+          <select name="" class="form-control" id="penjadwalan_layanan">
+            <option value="0">Tidak</option>
+            <option value="1">Ya</option>
+          </select>
+      </div>
+      <div class="form-group" id="klien_id">
+        <div class="alert alert-warning alert-dismissible">
+          <i class="icon fas fa-exclamation-triangle"></i> Penjadwalan Layanan membutuhkan Dokumen Pendukung untuk Tindak Lanjutnya
         </div>
+        <label>Pilih Klien</label>
+        <select class="form-control select2" style="width: 100%;" id="klien_id">
+          <option>silahkan pilih</option>
+          <option>Tini</option>
+          <option>Tina</option>
+          <option>Toni</option>
+          <option>Tono</option>
+          <option>Tino</option>
+          <option>Tanos</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Tag</label>
+        <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id">
+        <option>Addzifi Mochamad Gumelar</option>
+        <option>Alexander Graham Bell</option>
+        <option>Thomas Alfa Edison</option>
+        <option>Tony Stark</option>
+        <option>Rudy Tabootie</option>
+        </select>
+      </div>
+        <div class="col-12" id="accordion" style="padding:0px !important">
+            <div class="card card-primary card-outline">
+            <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
+            <div class="card-header">
+            <h4 class="card-title w-100">
+            Tindak Lanjut
+            </h4>
+            </div>
+            </a>
+            <div id="collapseOne" class="collapse show" data-parent="#accordion">
+              <div class="alert alert-warning alert-dismissible">
+                <i class="icon fas fa-exclamation-triangle"></i> Data Tindak Lanjut hanya tercatat pada akun anda
+              </div>
+            <div class="card-body">
+              {{-- <div class="form-group">
+                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                <input type="checkbox" class="custom-control-input" id="customSwitch3">
+                <label class="custom-control-label" for="customSwitch3">Terlaksana</label>
+                </div>
+              </div> --}}
+                <div class="form-group">
+                  <label>Lokasi Kegiatan</label>
+                  <input type="text" class="form-control" id="lokasi">
+                </div>
+                <div class="form-group">
+                    <label>Jam selesai</label>
+                    <input type="time" class="form-control" id="jam_selesai">
+                </div>
+                <div class="form-group">
+                    <label>Catatan</label>
+                    <textarea name="" class="form-control" id="catatan" cols="30" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}">disini</a>)</span></label>
+                <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="dokumen_pendukung">
+                <option>Dokumen konsultasi hukum kasus Eliza Thornberry</option>
+                <option>Dokumen Pendampingan pengadilan kasus eliza thornberry</option>
+                <option>Pendampingan pengadilan kasus tom delounge</option>
+                <option>Mediasi kasus tom delounge</option>
+                </select>
+                </div>
+                <span style="font-size: 14px">*Laporan Tindak Lanjut tersimpan pada tanggal : <span id='ct' ></span></span>
+              </div>
+            </div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-block" id="submit">Simpan</button>
       </div>
     </div>
   </div>
+</div>
 <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -239,9 +264,10 @@
 <script>
 
   $(function () {
+    display_ct();
     $("#klien_id").hide();
-    $('#penadjawalan_layanan').change(function () {
-      if ($('#penadjawalan_layanan').val() == 0) {
+    $('#penjadwalan_layanan').change(function () {
+      if ($('#penjadwalan_layanan').val() == 0) {
         $("#klien_id").hide();
       } else {
         $("#klien_id").show();
@@ -314,5 +340,23 @@
         alert('redirect ke : '+this.id);
         window.location.assign('{{ route("kasus.detail") }}')
     } );
+
+
+function display_c(){
+  var refresh=1000; // Refresh rate in milli seconds
+  mytime=setTimeout('display_ct()',refresh)
+}
+
+function display_ct() {
+  var x = new Date()
+  var x1=x.getDate() + "-" + x.getMonth() + 1+ "-" +  x.getFullYear(); 
+  x1 = x1 + " " +  x.getHours( )+ ":" +  x.getMinutes() + ":" +  x.getSeconds();
+  document.getElementById('ct').innerHTML = x1;
+  display_c();
+ }
+
+ $('#submit').click(function() {
+  alert('heheh');
+ })
 </script>
 @endsection

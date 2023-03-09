@@ -59,16 +59,17 @@
 </div>
 <h3 class="profile-username text-center">Nina Mcintire</h3>
 <p class="text-muted text-center">(26) Perempuan</p>
+<p class="text-center">0004/01/2023</p>
 <ul class="list-group list-group-unbordered mb-3">
 <h5><span class="float-right badge bg-danger btn-block">Pelapor/korban menyetujui laporan pengaduan</span></h5>
 <li class="list-group-item">
-<b>Layanan</b> <a class="float-right">1,322</a>
+<b>Layanan</b> <a class="float-right">5</a>
 </li>
 <li class="list-group-item">
-<b>Intervensi</b> <a class="float-right">543</a>
+<b>Intervensi</b> <a class="float-right">10</a>
 </li>
 <li class="list-group-item">
-<b>Petugas</b> <a class="float-right">13,287</a>
+<b>Petugas</b> <a class="float-right">6</a>
 </li>
 </ul>
 </div>
@@ -795,37 +796,41 @@
 
             <div class="time-label">
             <span class="bg-danger">
-            10 Feb. 2014
+            01 Jan. 2023
             </span>
             </div>
             
             
             <div>
-            <i class="fas fa-envelope bg-primary"></i>
-            <div class="timeline-item">
-            <span class="time"><i class="far fa-clock"></i> 12:05</span>
-            <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email</h3>
-            <div class="timeline-body">
-            Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-            weebly ning heekya handango imeem plugg dopplr jibjab, movity
-            jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-            quora plaxo ideeli hulu weebly balihoo...
+                <i class="fas fa-envelope bg-primary"></i>
+                <div class="timeline-item">
+                <span class="time"><i class="far fa-clock"></i> 12:05</span>
+                <h3 class="timeline-header"><a href="#">Addzifi Mochamad Gumelar</a> menginputkan data kasus</h3>
+                <div class="timeline-body">
+                Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
+                weebly ning heekya handang zimbra. Babblely odeo kaboodle
+                quora plaxo ideeli hulu weebly balihoo...
+                </div>
+                </div>
             </div>
-            <div class="timeline-footer">
-            <a href="#" class="btn btn-primary btn-sm">Read more</a>
-            <a href="#" class="btn btn-danger btn-sm">Delete</a>
-            </div>
-            </div>
-            </div>
-            
-            
+
+
             <div>
-            <i class="fas fa-user bg-info"></i>
-            <div class="timeline-item">
-            <span class="time"><i class="far fa-clock"></i> 5 mins ago</span>
-            <h3 class="timeline-header border-0"><a href="#">Sarah Young</a> accepted your friend request
-            </h3>
-            </div>
+                <i class="fas fa-envelope bg-primary"></i>
+                <div class="timeline-item">
+                <span class="time"><i class="far fa-clock"></i> 12:05</span>
+                <h3 class="timeline-header"><a href="#">Addzifi Mochamad Gumelar</a> menginputkan data kasus</h3>
+                <div class="timeline-body">
+                Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
+                weebly ning heekya handang zimbra. Babblely odeo kaboodle
+                quora plaxo ideeli hulu weebly balihoo...
+                </div>
+                <div class="timeline-footer">
+                <a href="#" class="btn btn-primary btn-sm"><i class="nav-icon fas fa-file-alt"></i> Dokumen Pendukung</a>
+                <a href="#" class="btn btn-primary btn-sm"><i class="nav-icon fas fa-file-alt"></i> Dokumen Pendukung</a>
+                <a href="#" class="btn btn-primary btn-sm"><i class="nav-icon fas fa-file-alt"></i> Dokumen Pendukung</a>
+                </div>
+                </div>
             </div>
             
             
@@ -873,7 +878,26 @@
             </div>
         </div>
         <div class="tab-pane" id="kasus-petugas" role="tabpanel" aria-labelledby="kasus-petugas-tab">
-            kasus petugas
+            <div class="card-body p-0">
+            <table class="table table-striped projects">
+                <thead>
+                <tr>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <img alt="Avatar" class="table-avatar" src="https://adminlte.io/themes/v3/dist/img/avatar.png" style="margin-right: 10px">
+                            Addzifi Mochamad Gumelar
+                        </td>
+                        <td>
+                            <h6><span class="badge badge-pill badge-primary">Penerima Pengaduan</span></h6>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
         </div>
         <div class="tab-pane {{ Request::get('tab') == 'settings' ? 'active' : '' }}" id="kasus-settings" role="tabpanel" aria-labelledby="kasus-settings-tab">
             <div class="row">
@@ -881,13 +905,12 @@
                     <div class="form-group">
                     <label>Supervisor</label>
                     <select class="form-control select2" style="width: 100%;">
-                    <option selected="selected">Alabama</option>
-                    <option>Alaska</option>
-                    <option>California</option>
-                    <option>Delaware</option>
-                    <option>Tennessee</option>
-                    <option>Texas</option>
-                    <option>Washington</option>
+                    <option selected="selected">Silahkan Pilih</option>
+                    <option>Satpel Jakarta Pusat</option>
+                    <option>Satpel Jakarta Utara & Kep. 1000</option>
+                    <option>Satpel Jakarta Barat</option>
+                    <option>Satpel Jakarta Selatan</option>
+                    <option>Satpel Jakarta Timur</option>
                     </select>
                     </div>
                 </div>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FormPenerimaPengaduan;
 use Illuminate\Support\Facades\Route;
@@ -27,9 +28,12 @@ Route::middleware('auth')->group(function () {
     Route::view('dokumen/add','dokumen/add')->name('dokumen.add');
     Route::view('dokumen/create','dokumen/create')->name('dokumen.create');
     Route::view('dokumen/createpsi','dokumen/createpsi')->name('dokumen.createpsi');
+    Route::view('dokumen/createhkm','dokumen/createhkm')->name('dokumen.createhkm');
     Route::view('agenda/index','agenda/index')->name('agenda');
+    Route::view('kinerja','agenda/kinerja')->name('kinerja');
+    Route::get('kinerja', [AgendaController::class, 'kinerja'])->name('kinerja');
+    Route::get('kinerja/detail', [AgendaController::class, 'kinerja_detail'])->name('kinerja.detail');
     Route::view('statistik','statistik/index')->name('statistik');
-    Route::view('kinerja','kinerja/index')->name('kinerja');
 });
 
 require __DIR__.'/auth.php';

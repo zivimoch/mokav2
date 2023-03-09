@@ -94,6 +94,10 @@
                             <label>Nama Dokumen</label>
                             <input type="text" name="judul_surat" class="form-control" id="titleForm" value="">
                         </div>
+                        {{-- <div class="form-group">
+                            <label>Kode Agenda</label>
+                            <input type="text" name="judul_surat" class="form-control" id="titleForm" value="">
+                        </div> --}}
                     </div>
 
                     {{-- <div class="form-group">

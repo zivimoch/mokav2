@@ -72,7 +72,7 @@ $calendar.setEvents(events)
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Selamat pagi, {{ Auth::user()->name }}</h1>
+            <h1 class="m-0">Selamat siang, {{ Auth::user()->name }}</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -307,7 +307,7 @@ $calendar.setEvents(events)
               <!-- Add the bg color to the header using any of the bg-* classes -->
               <div class="widget-user-header bg-warning">
                 <div class="widget-user-image">
-                  <img class="img-circle elevation-2" src="{{ asset('adminlte') }}/dist/img/user7-128x128.jpg" alt="User Avatar">
+                  <img class="img-circle elevation-2" src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" alt="User Avatar">
                 </div>
                 <!-- /.widget-user-image -->
                 <h3 class="widget-user-username">Addzifi Mochamad Gumelear</h3>

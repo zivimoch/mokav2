@@ -105,13 +105,12 @@
 </div>
 <!-- ./wrapper -->
 
-
 <!-- Modal -->
 <div class="modal fade" id="modalCreate" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Buat Agenda</h5>
+        <h5 class="modal-title">Buat Agenda #S92JAQ</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -123,9 +122,23 @@
           <label>Judul kegiatan</label>
           <input type="text" class="form-control" id="title">
       </div>
+      <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+              <label>Tanggal</label>
+              <input type="date" class="form-control" id="title">
+          </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Jam mulai</label>
+                <input type="time" class="form-control" id="jam">
+            </div>
+        </div>
+      </div>
       <div class="form-group">
-          <label>Jam mulai</label>
-          <input type="time" class="form-control" id="jam">
+        <label>Tempat</label>
+        <input type="text" class="form-control" id="title">
       </div>
       <div class="form-group">
           <label>Keterangan</label>
@@ -139,9 +152,12 @@
           </select>
       </div>
       <div class="form-group" id="klien_id">
+        <div class="alert alert-warning alert-dismissible">
+          <i class="icon fas fa-exclamation-triangle"></i> Penjadwalan Layanan membutuhkan Dokumen Pendukung untuk Tindak Lanjutnya
+        </div>
         <label>Pilih Klien</label>
         <select class="form-control select2" style="width: 100%;">
-          <option>pilih data</option>
+          <option>silahkan pilih</option>
           <option>Tini</option>
           <option>Tina</option>
           <option>Toni</option>
@@ -154,9 +170,10 @@
         <label>Tag</label>
         <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;">
         <option>Addzifi Mochamad Gumelar</option>
-        <option>Alexander Grahambell</option>
+        <option>Alexander Graham Bell</option>
         <option>Thomas Alfa Edison</option>
         <option>Tony Stark</option>
+        <option>Rudy Tabootie</option>
         </select>
       </div>
           <div class="col-12" id="accordion" style="padding:0px !important">
@@ -170,7 +187,7 @@
               </a>
               <div id="collapseOne" class="collapse" data-parent="#accordion">
                 <div class="alert alert-warning alert-dismissible">
-                  <i class="icon fas fa-exclamation-triangle"></i> data tindak lanjut hanya tercatat pada akun anda
+                  <i class="icon fas fa-exclamation-triangle"></i> Data Tindak Lanjut hanya tercatat pada akun anda
                 </div>
               <div class="card-body">
                   <div class="form-group">
@@ -190,6 +207,7 @@
                   <option>Mediasi kasus tom delounge</option>
                   </select>
                   </div>
+                  <span style="font-size: 14px">*Laporan Tindak Lanjut tersimpan pada tanggal : <span id='ct' ></span></span>
               </div>
               </div>
               </div>
@@ -214,6 +232,7 @@
 
 <script>
   $(function () {
+    display_ct();
     $("#klien_id").hide();
     $('#penadjawalan_layanan').change(function () {
       if ($('#penadjawalan_layanan').val() == 0) {
@@ -350,6 +369,20 @@
     calendar.render();
     // $('#calendar').fullCalendar()
   })
+
+
+function display_c(){
+  var refresh=1000; // Refresh rate in milli seconds
+  mytime=setTimeout('display_ct()',refresh)
+}
+
+function display_ct() {
+  var x = new Date()
+  var x1=x.getDate() + "-" + x.getMonth() + 1+ "-" +  x.getFullYear(); 
+  x1 = x1 + " " +  x.getHours( )+ ":" +  x.getMinutes() + ":" +  x.getSeconds();
+  document.getElementById('ct').innerHTML = x1;
+  display_c();
+ }
 </script>
 </body>
 @endsection

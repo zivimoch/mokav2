@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateAgendasTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('agenda', function (Blueprint $table) {
+            $table->id();
+            $table->string('uuid');
+            $table->string('klien_id')->nullable();
+            $table->string('judul_kegiatan');
+            $table->date('tanggal_mulai');
+            $table->time('jam_mulai');
+            $table->longText('keterangan');
+            $table->integer('created_by'); 
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('agenda');
+    }
+}

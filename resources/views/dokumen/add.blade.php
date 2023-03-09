@@ -104,6 +104,41 @@ if (isset($alert) and $alert <> '') {
             <!-- /.card-body -->
         </div>
         <!-- /.card -->
+
+        <!-- /.card -->
+        <div class="card collapsed-card target">
+            <div class="card-header" data-card-widget="collapse" style="cursor: pointer;">
+                <h3 class="card-title">Hukum</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool"><i class="fa fa-chevron-down"></i>
+                    </button>
+                </div>
+                <!-- /.card-tools -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table data-order="[]" class="table table-bordered table-striped">
+                    <?php 
+                    // foreach ($template as $key2) {
+                    //     if ($key2['kategori'] == $key['kategori']) {
+                    ?>
+                            <tr>
+                                <td>
+                                    <a href="{{ route('dokumen.createhkm') }}">
+                                        <div style="height:100%;width:100%">[F-ADV-01] Konsultasi Hukum
+                                        </div>
+                                    </a>
+                                </td>
+                            </tr>
+                    <?php
+                    //     }
+                    // } 
+                    ?>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
     </div>
 {{-- endforeach --}}
 </div>

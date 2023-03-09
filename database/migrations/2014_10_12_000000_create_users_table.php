@@ -15,9 +15,14 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid');
             $table->string('name');
+            $table->integer('kotkab_id');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->enum('jabatan', ['Penerima Pengaduan', 'Manajer Kasus', 'Pendamping Kasus', 'Psikolog', 'Konselor', 'Advokat', 'Paralegal', 'Unit Reaksi Cepat', 'Supervisor Kasus', 'Tenaga Ahli', 'Tim Data', 'Sekretariat', 'Kepala Instansi']);
+            $table->integer('supervisor_layanan')->default(0);
+            $table->integer('supervisor_id')->default(0);
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
