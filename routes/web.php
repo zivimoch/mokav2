@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::view('kinerja','agenda/kinerja')->name('kinerja');
     Route::get('kinerja', [AgendaController::class, 'kinerja'])->name('kinerja');
     Route::get('kinerja/detail', [AgendaController::class, 'kinerja_detail'])->name('kinerja.detail');
+    Route::post('agenda/store', [AgendaController::class, 'store'])->name('agenda.store');
     Route::view('statistik','statistik/index')->name('statistik');
 });
 

@@ -23,33 +23,33 @@ class AgendaController extends Controller
     public function kinerja(Request $request)
     {
         try {
-            throw new Exception("");
+            if ($request->get('bulan')) {
+                $bulan = $request->get('bulan');
+            }else{
+                $bulan = date(('m'));
+            }
+            
+            $data = DB::table('agenda as a')
+                        ->select('c.name')
+                        ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
+                        ->leftJoin('users as c', 'c.id', 'b.created_by')
+                        ->whereMonth('a.tanggal_mulai', '=' , $bulan);
+    
+            if (Auth::user()->jabatan != 'Sekretariat') {
+                $data->where('b.created_by', Auth::user()->id);
+            }else{
+                $data->groupBy('c.id');
+            }
+
+            if (empty($data->get())) {
+                throw new Exception("Data not found");
+            }
+    
+            return view('agenda.kinerja_detail');
         } catch (Exception $e){
-            return $e->getMessage();
+            return response()->json(['msg' => $e->getMessage()], 404);
             die();
         }
-
-        if ($request->get('bulan')) {
-            $bulan = $request->get('bulan');
-        }else{
-            $bulan = date(('m'));
-        }
-        
-        $data = DB::table('agenda as a')
-                    ->select('c.name')
-                    ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
-                    ->leftJoin('users as c', 'c.id', 'b.created_by')
-                    ->whereMonth('a.tanggal_mulai', '=' , $bulan);
-
-        if (Auth::user()->jabatan != 'Sekretariat') {
-            $data->where('b.created_by', Auth::user()->id);
-        }else{
-            $data->groupBy('c.id');
-        }
-
-        dd($data->get());
-
-        return view('agenda.kinerja_detail');
     }
 
     public function kinerja_detail(Request $request)
@@ -79,7 +79,14 @@ class AgendaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $this->validate($request,[
+                'judul_kegiatan' => 'required|min:5|max:20'
+            ]);
+        } catch (Exception $e){
+            return response()->json(['msg' => $e->getMessage()], 500);
+            die();
+        }
     }
 
     /**

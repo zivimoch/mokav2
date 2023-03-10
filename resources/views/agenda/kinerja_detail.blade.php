@@ -356,7 +356,27 @@ function display_ct() {
  }
 
  $('#submit').click(function() {
-  alert('heheh');
+  let token   = $("meta[name='csrf-token']").attr("content");
+  $.ajax({
+      url: `/agenda/store/`,
+      type: "POST",
+      data: {
+        judul_kegiatan: $('#judul_kegiatan').val(),
+        tanggal_mulai: $("#tanggal_mulai").val(),
+        jam_mulai: $("#jam_mulai").val(),
+        keterangan: $("#keterangan").val(),
+        klien_id: $("#klien_id").val(),
+        user_id: $("#user_id").val(),
+        lokasi: $("#lokasi").val(),
+        jam_selesai: $("#jam_selesai").val(),
+        catatan: $("#catatan").val(),
+        dokumen_pendukung: $("#dokumen_pendukung").val(),
+        _token: token
+      },
+      success: function (response){
+        console.log(response);
+      }
+  });
  })
 </script>
 @endsection
