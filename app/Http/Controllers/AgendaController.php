@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agenda;
 use Exception;
+use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -45,7 +47,7 @@ class AgendaController extends Controller
                 throw new Exception("Data not found");
             }
     
-            return view('agenda.kinerja_detail');
+            return view('agenda.kinerja');
         } catch (Exception $e){
             return response()->json(['msg' => $e->getMessage()], 404);
             die();
@@ -62,16 +64,6 @@ class AgendaController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -80,9 +72,28 @@ class AgendaController extends Controller
     public function store(Request $request)
     {
         try {
-            $this->validate($request,[
-                'judul_kegiatan' => 'required|min:5|max:20'
-            ]);
+            $validator = Validator::make($request->all(), [
+                'judul_kegiatan' => 'required',
+                'tanggal_mulai' => 'required',
+                'jam_kegiatan' => 'required',
+                'judul_kegiatan' => 'required'
+                ]);
+                if ($validator->fails())
+                {
+                    return response()->json($validator->errors(), 422);
+                }
+
+                //create post
+                $proses = Agenda::create([
+                    'title'     => $request->title, 
+                    'content'   => $request->content
+                ]);
+                //return response
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data Berhasil Disimpan!',
+                    'data'    => $proses  
+                ]);
         } catch (Exception $e){
             return response()->json(['msg' => $e->getMessage()], 500);
             die();
