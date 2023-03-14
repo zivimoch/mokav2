@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agenda;
+use App\Models\DokumenTl;
+use App\Models\TindakLanjut;
 use Exception;
 use Validator;
 use Illuminate\Http\Request;
@@ -75,19 +77,48 @@ class AgendaController extends Controller
             $validator = Validator::make($request->all(), [
                 'judul_kegiatan' => 'required',
                 'tanggal_mulai' => 'required',
-                'jam_kegiatan' => 'required',
-                'judul_kegiatan' => 'required'
+                'jam_mulai' => 'required',
+                'keterangan' => 'required'
                 ]);
                 if ($validator->fails())
                 {
-                    return response()->json($validator->errors(), 422);
+                    throw new Exception('Mohon isi sesuai ketentuan', 422);
                 }
 
                 //create post
                 $proses = Agenda::create([
-                    'title'     => $request->title, 
-                    'content'   => $request->content
+                    'klien_id'     => $request->klien_id, 
+                    'judul_kegiatan'   => $request->judul_kegiatan, 
+                    'tanggal_mulai'   => $request->tanggal_mulai,
+                    'jam_mulai'   => $request->jam_mulai,
+                    'keterangan'   => $request->keterangan,
+                    'created_by'   => Auth::user()->id
                 ]);
+                
+                foreach ($request->user_id as $value) {
+                    TindakLanjut::create([
+                        'agenda_id' => $proses->id,
+                        'created_by' => $value
+                    ]);
+
+                    if ($value == Auth::user()->id) {
+                        TindakLanjut::where('created_by', $value)->where('agenda_id', $proses->id)->update([
+                            'lokasi' => $request->lokasi,
+                            'tanggal_selesai' => $request->tanggal_mulai, //tanggal selesai = tanggal mulai, karna kita main jadwanya per tanggal
+                            'jam_selesai' => $request->jam_selesai,
+                            'catatan' => $request->catatan
+                        ]);
+
+                        if (isset($request->dokumen_pendukung)) {
+                            foreach ($request->dokumen_pendukung as $value_dokumen) {
+                                DokumenTl::create([
+                                    'tindak_lanjut_id' => $value,
+                                    'dokumen_id' => $value_dokumen
+                                ]);
+                            }
+                        }
+                    }
+                }
                 //return response
                 return response()->json([
                     'success' => true,
@@ -95,7 +126,7 @@ class AgendaController extends Controller
                     'data'    => $proses  
                 ]);
         } catch (Exception $e){
-            return response()->json(['msg' => $e->getMessage()], 500);
+            return response()->json(['msg' => $e->getMessage()]);
             die();
         }
     }

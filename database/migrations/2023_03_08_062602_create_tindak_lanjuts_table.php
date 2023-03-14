@@ -17,12 +17,12 @@ class CreateTindakLanjutsTable extends Migration
             $table->id();
             $table->string('uuid');
             $table->integer('agenda_id');
-            $table->date('tanggal_selesai'); 
-            $table->time('jam_selesai'); 
-            $table->string('lokasi'); 
-            $table->longText('catatan'); 
+            $table->date('tanggal_selesai')->nullable(); 
+            $table->time('jam_selesai')->nullable(); 
+            $table->string('lokasi')->nullable(); 
+            $table->longText('catatan')->nullable(); 
             $table->integer('created_by'); //pembuat
-            $table->integer('validated_by'); 
+            $table->integer('validated_by')->nullable(); 
             $table->timestamps();
         });
     }

@@ -1,6 +1,11 @@
 @extends('layouts.template')
 
 @section('content')
+<style>
+  .select2-selection__choice[title="{{ Auth::user()->name }}"] .select2-selection__choice__remove {
+    display: none;
+}
+</style>
     {{-- DataTable --}}
      <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -136,6 +141,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      <div id="alert"></div>
       <div class="modal-body">
           <input type="text" name="" id="start" hidden>
           <input type="text" name="" id="end" hidden>
@@ -175,22 +181,22 @@
         <label>Pilih Klien</label>
         <select class="form-control select2" style="width: 100%;" id="klien_id">
           <option>silahkan pilih</option>
-          <option>Tini</option>
-          <option>Tina</option>
-          <option>Toni</option>
-          <option>Tono</option>
-          <option>Tino</option>
-          <option>Tanos</option>
+          <option value="1">Tini</option>
+          <option value="2">Tina</option>
+          <option value="3">Toni</option>
+          <option value="4">Tono</option>
+          <option value="5">Tino</option>
+          <option value="6">Tanos</option>
         </select>
       </div>
       <div class="form-group">
         <label>Tag</label>
         <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id">
-        <option>Addzifi Mochamad Gumelar</option>
-        <option>Alexander Graham Bell</option>
-        <option>Thomas Alfa Edison</option>
-        <option>Tony Stark</option>
-        <option>Rudy Tabootie</option>
+        <option value="{{ Auth::user()->id }}" selected>{{ Auth::user()->name }}</option>
+        <option value="22">Alexander Graham Bell</option>
+        <option value="23">Thomas Alfa Edison</option>
+        <option value="24">Tony Stark</option>
+        <option value="25">Rudy Tabootie</option>
         </select>
       </div>
         <div class="col-12" id="accordion" style="padding:0px !important">
@@ -228,10 +234,10 @@
                 <div class="form-group">
                 <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}">disini</a>)</span></label>
                 <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="dokumen_pendukung">
-                <option>Dokumen konsultasi hukum kasus Eliza Thornberry</option>
-                <option>Dokumen Pendampingan pengadilan kasus eliza thornberry</option>
-                <option>Pendampingan pengadilan kasus tom delounge</option>
-                <option>Mediasi kasus tom delounge</option>
+                <option value="31">Dokumen konsultasi hukum kasus Eliza Thornberry</option>
+                <option value="32">Dokumen Pendampingan pengadilan kasus eliza thornberry</option>
+                <option value="33">Pendampingan pengadilan kasus tom delounge</option>
+                <option value="34">Mediasi kasus tom delounge</option>
                 </select>
                 </div>
                 <span style="font-size: 14px">*Laporan Tindak Lanjut tersimpan pada tanggal : <span id='ct' ></span></span>
@@ -360,6 +366,7 @@ function display_ct() {
   $.ajax({
       url: `/agenda/store/`,
       type: "POST",
+      cache: false,
       data: {
         judul_kegiatan: $('#judul_kegiatan').val(),
         tanggal_mulai: $("#tanggal_mulai").val(),
@@ -374,7 +381,7 @@ function display_ct() {
         _token: token
       },
       success: function (response){
-        console.log(response);
+        $('#alert').html(response);
       }
   });
  })
