@@ -141,25 +141,36 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div id="alert"></div>
+      <div class="invalid-feedback" id="valid-message">
+         <center style="font-size:20px">Mohon cek ulang data yang wajib diinput</center>
+      </div>
       <div class="modal-body">
           <input type="text" name="" id="start" hidden>
           <input type="text" name="" id="end" hidden>
       <div class="form-group">
-          <label>Judul kegiatan</label>
-          <input type="text" class="form-control" id="judul_kegiatan">
+          <label><span class="text-danger">*</span> Judul kegiatan</label>
+          <input type="text" class="form-control required-field" id="judul_kegiatan">
+          <div class="invalid-feedback" id="valid-judul_kegiatan">
+            Judul Kegiatan wajib diisi.
+          </div>
       </div>
       <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-              <label>Tanggal</label>
-              <input type="date" class="form-control" id="tanggal_mulai">
+              <label><span class="text-danger">*</span>Tanggal</label>
+              <input type="date" class="form-control required-field" id="tanggal_mulai">
+              <div class="invalid-feedback" id="valid-tanggal_mulai">
+                Tanggal Mulai wajib diisi.
+              </div>
           </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label>Jam mulai</label>
-                <input type="time" class="form-control" id="jam_mulai">
+                <label><span class="text-danger">*</span>Jam mulai</label>
+                <input type="time" class="form-control required-field" id="jam_mulai">
+                <div class="invalid-feedback" id="valid-jam_mulai">
+                  Jam Mulai wajib diisi.
+                </div>
             </div>
         </div>
       </div>
@@ -225,7 +236,11 @@
                 </div>
                 <div class="form-group">
                     <label>Jam selesai</label>
-                    <input type="time" class="form-control" id="jam_selesai">
+                    <?php
+                      date_default_timezone_set("asia/jakarta");
+                      $jam_selesai = date("h:i");
+                    ?>
+                    <input type="time" class="form-control" id="jam_selesai" value="{{ $jam_selesai }}">
                 </div>
                 <div class="form-group">
                     <label>Catatan</label>
@@ -267,6 +282,7 @@
 
 <script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
 
+<script src="{{ asset('/source/js/validation.js') }}"></script>
 <script>
 
   $(function () {
@@ -362,6 +378,7 @@ function display_ct() {
  }
 
  $('#submit').click(function() {
+  validateForm();
   let token   = $("meta[name='csrf-token']").attr("content");
   $.ajax({
       url: `/agenda/store/`,
@@ -381,7 +398,7 @@ function display_ct() {
         _token: token
       },
       success: function (response){
-        $('#alert').html(response);
+        $("#alert").toggleClass('in out'); 
       }
   });
  })
