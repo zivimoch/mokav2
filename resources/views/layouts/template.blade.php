@@ -7,8 +7,10 @@
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
+
   <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/fontawesome-free/css/all.min.css">
-  
+
+  <link rel="stylesheet" href="{{ asset('/source/css/main.css') }}">
   
   <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
   
@@ -66,5 +68,12 @@
     <strong>Copyright &copy; 2022 <a href="">MOKA ONLINE</a>.</strong> All rights reserved.
   </footer>
 </div>
+
+<script>
+  //loading submit form
+  $(document).ajaxSend(function() {
+    $("#overlay").fadeIn(300);　
+  });
+</script>
 </body>
 </html>

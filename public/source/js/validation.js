@@ -7,23 +7,27 @@ function validateForm() {
     validshow =  validshow.replace('[','');
     validshow =  validshow.replace(']','');
     if (y[i].classList.contains('tinymce') && tinymce.get(y[i].id).getContent() == "") {
-        $('#modalCreate').scrollTop(0);
           $("#"+y[i].id).css({'background-color': 'red'});
           $("#"+validshow).show();
-          $("#valid-message").show();
           valid = false;
     } else if (!(y[i].classList.contains('tinymce')) && y[i].value == "") {
-        $('#modalCreate').scrollTop(0);
-    
           $("#"+y[i].id).css({'background-color': 'red'});
           $("#"+validshow).show();
-          $("#valid-message").show();
           valid = false;
     }else{
         $("#"+y[i].id).css({'background-color': ''});
         $("#"+validshow).hide();
-        $("#valid-message").hide();
     }
+  }
+
+  $('#modalCreate').scrollTop(0);
+
+  if (valid) {
+    $("#success-message").show();
+    $("#valid-message").hide();
+  }else{
+    $("#success-message").hide();
+    $("#valid-message").show();
   }
   return valid; // return the valid status
 }

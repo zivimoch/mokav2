@@ -5,6 +5,9 @@
   .select2-selection__choice[title="{{ Auth::user()->name }}"] .select2-selection__choice__remove {
     display: none;
 }
+.select2-results__option[aria-selected=true] {
+    display: none;
+}
 </style>
     {{-- DataTable --}}
      <!-- Content Header (Page header) -->
@@ -135,14 +138,28 @@
 <div class="modal fade" id="modalCreate" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
+
+      <div id="overlay" class="overlay dark">
+        <div class="cv-spinner">
+          <span class="spinner"></span>
+        </div>
+      </div>
+      
       <div class="modal-header">
         <h5 class="modal-title">Buat Agenda #9I21AV</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="invalid-feedback" id="valid-message">
-         <center style="font-size:20px">Mohon cek ulang data yang wajib diinput</center>
+      <div class="alert alert-danger alert-dismissible invalid-feedback" id="valid-message">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
+        Mohon cek ulang data yang wajib diinput.
+      </div>
+      <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-check"></i> Success!</h4>
+        Data berhasil disimpan.
       </div>
       <div class="modal-body">
           <input type="text" name="" id="start" hidden>
@@ -378,9 +395,9 @@ function display_ct() {
  }
 
  $('#submit').click(function() {
-  validateForm();
-  let token   = $("meta[name='csrf-token']").attr("content");
-  $.ajax({
+  if(validateForm()){
+    let token   = $("meta[name='csrf-token']").attr("content");
+    $.ajax({
       url: `/agenda/store/`,
       type: "POST",
       cache: false,
@@ -398,9 +415,31 @@ function display_ct() {
         _token: token
       },
       success: function (response){
-        $("#alert").toggleClass('in out'); 
+        console.log(response);
+        if (response.success) {
+          $('#judul_kegiatan').val('');
+          $('#tanggal_mulai').val('');
+          $('#jam_mulai').val('');
+          $('#keterangan').val('');
+          $('#klien_id').val('');
+          $('#lokasi').val('');
+          $('#jam_selesai').val('');
+          $('#catatan').val('');
+          $('#dokumen_pendukung').val('');
+        }
+      },
+      error: function (response){
+        setTimeout(function(){
+          $("#overlay").fadeOut(300);
+        },500);
+        console.log(response);
       }
-  });
+    }).done(function() { //loading submit form
+        setTimeout(function(){
+          $("#overlay").fadeOut(300);
+        },500);
+      });
+  }
  })
 </script>
 @endsection

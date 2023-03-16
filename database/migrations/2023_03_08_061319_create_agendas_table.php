@@ -20,7 +20,7 @@ class CreateAgendasTable extends Migration
             $table->string('judul_kegiatan');
             $table->date('tanggal_mulai');
             $table->time('jam_mulai');
-            $table->longText('keterangan');
+            $table->longText('keterangan')->nullable();
             $table->integer('created_by'); 
             $table->timestamps();
         });

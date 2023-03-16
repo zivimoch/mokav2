@@ -161,8 +161,24 @@
                 <i class="far fa-user"></i> <i class="fa fa-caret-down"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <a href="auth/logout" class="dropdown-item">
-                    <i class="fa fa-power-off"></i> Logout
+              <a href="#" class="dropdown-item">
+                hehe
+              </a>
+              <a href="#" class="dropdown-item">
+                hehe
+              </a>
+              <a href="#" class="dropdown-item">
+                hehe
+              </a>
+                <a href="#" class="">
+                  <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button style="width: 100%"
+                    onclick="event.preventDefault();
+                  this.closest('form').submit();">
+                      <i class="fas fa-arrow-alt-circle-right"></i> Logout
+                    </button>
+                </form>
                 </a>
             </div>
         </li>

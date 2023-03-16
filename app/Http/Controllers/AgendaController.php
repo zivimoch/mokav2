@@ -81,7 +81,12 @@ class AgendaController extends Controller
                 ]);
                 if ($validator->fails())
                 {
-                    throw new Exception('Mohon isi sesuai ketentuan', 422);
+                    return response()->json([
+                        'success' => false,
+                        'code'    => 422,
+                        'message' => $validator->errors(),
+                        'data'    => $request  
+                    ]);
                 }
 
                 //create post
@@ -121,6 +126,7 @@ class AgendaController extends Controller
                 //return response
                 return response()->json([
                     'success' => true,
+                    'code'    => 200,
                     'message' => 'Data Berhasil Disimpan!',
                     'data'    => $proses  
                 ]);
