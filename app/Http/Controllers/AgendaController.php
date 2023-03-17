@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\AgendaDataTable;
 use App\Models\Agenda;
 use App\Models\DokumenTl;
 use App\Models\TindakLanjut;
@@ -19,9 +20,15 @@ class AgendaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
 
+    }
+
+    public function ajax(AgendaDataTable $dataTable)
+    {
+        return $dataTable->render('agenda.ajax');
     }
 
     public function kinerja(Request $request)

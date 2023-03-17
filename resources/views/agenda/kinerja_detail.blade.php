@@ -154,7 +154,7 @@
       <div class="alert alert-danger alert-dismissible invalid-feedback" id="valid-message">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
         <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
-        Mohon cek ulang data yang wajib diinput.
+        <span id="message"></span>
       </div>
       <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -377,7 +377,7 @@
 
     $('#example1 tbody').on( 'click', 'tr', function () {
         alert('redirect ke : '+this.id);
-        window.location.assign('{{ route("kasus.detail") }}')
+        $('#modalCreate').modal('show'); 
     } );
 
 
@@ -415,7 +415,16 @@ function display_ct() {
         _token: token
       },
       success: function (response){
-        console.log(response);
+        if (response.success != true) {
+          console.log(response);
+          $('#message').html(response);
+          $("#success-message").hide();
+          $("#valid-message").show();
+        }else{
+          $('#message').html(response.message);
+          $("#success-message").show();
+          $("#valid-message").hide();
+        }
         if (response.success) {
           $('#judul_kegiatan').val('');
           $('#tanggal_mulai').val('');
@@ -432,13 +441,22 @@ function display_ct() {
         setTimeout(function(){
           $("#overlay").fadeOut(300);
         },500);
+
         console.log(response);
+
+        $('#message').html(JSON.stringify(response));
+        $("#success-message").hide();
+        $("#valid-message").show();
       }
     }).done(function() { //loading submit form
         setTimeout(function(){
           $("#overlay").fadeOut(300);
         },500);
       });
+  }else{
+    $('#message').html('Mohon cek ulang data yang wajib diinput.');
+    $("#success-message").hide();
+    $("#valid-message").show();
   }
  })
 </script>

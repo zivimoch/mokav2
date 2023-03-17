@@ -29,11 +29,15 @@ Route::middleware('auth')->group(function () {
     Route::view('dokumen/create','dokumen/create')->name('dokumen.create');
     Route::view('dokumen/createpsi','dokumen/createpsi')->name('dokumen.createpsi');
     Route::view('dokumen/createhkm','dokumen/createhkm')->name('dokumen.createhkm');
+
     Route::view('agenda/index','agenda/index')->name('agenda');
     Route::view('kinerja','agenda/kinerja')->name('kinerja');
     Route::get('kinerja', [AgendaController::class, 'kinerja'])->name('kinerja');
     Route::get('kinerja/detail', [AgendaController::class, 'kinerja_detail'])->name('kinerja.detail');
     Route::post('agenda/store', [AgendaController::class, 'store'])->name('agenda.store');
+    Route::get('kinerja/ajax', [AgendaController::class, 'ajax'])->name('ajax');
+    
+
     Route::view('statistik','statistik/index')->name('statistik');
 });
 

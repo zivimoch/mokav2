@@ -22,12 +22,5 @@ function validateForm() {
 
   $('#modalCreate').scrollTop(0);
 
-  if (valid) {
-    $("#success-message").show();
-    $("#valid-message").hide();
-  }else{
-    $("#success-message").hide();
-    $("#valid-message").show();
-  }
   return valid; // return the valid status
 }
