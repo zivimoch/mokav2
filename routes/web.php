@@ -38,6 +38,9 @@ Route::middleware('auth')->group(function () {
     Route::get('kinerja/ajax', [AgendaController::class, 'ajax'])->name('ajax');
     
 
+    Route::get('/userdatatable', [DashboardController::class, 'userdatatable'])->name('userdatatable');
+    Route::get('/dashboard-datatables', [DashboardController::class, 'datatable'])->name('dashboard.datatables');
+
     Route::view('statistik','statistik/index')->name('statistik');
 });
 
