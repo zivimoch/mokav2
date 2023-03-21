@@ -3,7 +3,7 @@
 @section('content')
     <!-- Scripts -->
     <!-- Page Heading -->
-    <table id="datatable" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
+    <table id="example1" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
         
         <thead>
         <tr>
@@ -32,7 +32,7 @@
             
 
     $(document).ready(function () {
-        $('#datatable').DataTable({
+        $('#example1').DataTable({
             "processing": true,
             "serverSide": true,
             "ajax": "{{ route('dashboard.datatables') }}",

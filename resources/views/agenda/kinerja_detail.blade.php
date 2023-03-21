@@ -37,83 +37,20 @@
             </div> --}}
             
             <div class="card-body" style="overflow-x: scroll">
-                <table class="datatable-multi-row table table-sm table-bordered  table-hover" id="example1" >
-                    <thead>
-                      <tr>
-                        <th style="width: 23%">Hari / Tanggal</th>
-                        <th style="width: 15%">Waktu</th>
-                        <th style="width: 61%">Aktivitas</th>
-                        <th style="width: 1%">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr id="1">
-                        <td data-datatable-multi-row-rowspan="2">
-                          Senin, 02 Januari 2023
-                          <td>
-                              08:00 - 09:00
-                          </td>
-                          <td>
-                              <b>Pelatihan penanganan korban TPPO</b><br>
-                              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maxime, illo voluptatibus et, aperiam in omnis ullam vel, fugiat laboriosam corrupti ratione ipsam. Nobis commodi, ad repudiandae nisi praesentium sed rerum?
-                          </td>
-                          <td>
-                              <span class="badge bg-success">Virified</span>
-                          </td>
-                          <script type="x/template" class="extra-row-content">
-                            <tr id="2">
-                              <td>
-                                09:00 - 12:00
-                              </td>
-                              <td>
-                              <b>Pelatihan penanganan korban TPPO</b><br>
-                              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maxime, illo voluptatibus et, aperiam in omnis ullam vel, fugiat laboriosam corrupti ratione ipsam. Nobis commodi, ad repudiandae nisi praesentium sed rerum?
-                              <br>
-                              Tindak Lanjut : <br>
-                              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maxime, illo voluptatibus et, aperiam in omnis ullam vel.
-                              </td>
-                              <td><span class="badge bg-success">Virified</span></td>
-                            </tr>
-                          </script>
-                        </td>
-                      </tr>
-                      <tr id="3">
-                        <td data-datatable-multi-row-rowspan="3">
-                          Rabu, 03 Januari 2023
-                          <td>
-                              08:00 - 09:00
-                          </td>
-                          <td>
-                              <b>Pelatihan penanganan korban TPPO judul panjang lagi blablabla blabla blabla</b><br>
-                          </td>
-                          <td>
-                              <span class="badge bg-success">Virified</span>
-                          </td>
-                          <script type="x/template" class="extra-row-content">
-                            <tr id="4">
-                              <td>
-                                09:00 - 12:00
-                              </td>
-                              <td>
-                              <b>Pelatihan penanganan korban KBGO</b><br>
-                              </td>
-                              <td><span class="badge bg-success">Virified</span></td>
-                            </tr>
-                            <tr id="5">
-                              <td>
-                                09:00 - 12:00
-                              </td>
-                              <td>
-                              <b>Pelatihan penanganan korban TPPO</b><br>
-                              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maxime, illo voluptatibus et, aperiam in omnis ullam vel, fugiat laboriosam corrupti ratione ipsam. Nobis commodi, ad repudiandae nisi praesentium sed rerum?
-                              </td>
-                              <td><span class="badge bg-success">Virified</span></td>
-                            </tr>
-                          </script>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+              <table id="example1" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
+        
+                <thead>
+                  <tr>
+                      <th>Hari / Tanggal</th>
+                      <th>Jam</th>
+                      <th>Agenda</th>
+                      <th>Catatan</th>
+                      <th>Validasi</th>
+                  </tr>
+                  </thead>
+                  <tbody></tbody>
+              </table>
+
                   <div class="row">
                     <br>
                     <br>
@@ -165,7 +102,7 @@
           <input type="text" name="" id="start" hidden>
           <input type="text" name="" id="end" hidden>
       <div class="form-group">
-          <label><span class="text-danger">*</span> Judul kegiatan</label>
+          <label><span class="text-danger">*</span>Judul kegiatan</label>
           <input type="text" class="form-control required-field" id="judul_kegiatan">
           <div class="invalid-feedback" id="valid-judul_kegiatan">
             Judul Kegiatan wajib diisi.
@@ -203,9 +140,6 @@
           </select>
       </div>
       <div class="form-group" id="klien_id">
-        <div class="alert alert-warning alert-dismissible">
-          <i class="icon fas fa-exclamation-triangle"></i> Penjadwalan Layanan membutuhkan Dokumen Pendukung untuk Tindak Lanjutnya
-        </div>
         <label>Pilih Klien</label>
         <select class="form-control select2" style="width: 100%;" id="klien_id">
           <option>silahkan pilih</option>
@@ -218,14 +152,17 @@
         </select>
       </div>
       <div class="form-group">
-        <label>Tag</label>
-        <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id">
+        <label><span class="text-danger">*</span>Tag</label>
+        <select class="select2 required-field" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id">
         <option value="{{ Auth::user()->id }}" selected>{{ Auth::user()->name }}</option>
         <option value="22">Alexander Graham Bell</option>
         <option value="23">Thomas Alfa Edison</option>
         <option value="24">Tony Stark</option>
         <option value="25">Rudy Tabootie</option>
         </select>
+        <div class="invalid-feedback" id="valid-user_id">
+          Minimal tag 1 orang.
+        </div>
       </div>
         <div class="col-12" id="accordion" style="padding:0px !important">
             <div class="card card-primary card-outline">
@@ -296,6 +233,7 @@
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script src="https://cdn.rawgit.com/ashl1/datatables-rowsgroup/fbd569b8768155c7a9a62568e66a64115887d7d0/dataTables.rowsGroup.js"></script>
 
 <script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
 
@@ -320,67 +258,101 @@
       theme: 'bootstrap4'
     })
     });
+    
     $('#example1').DataTable({
-        "ordering": false,
-        "responsive": false, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", 
-              {
-                className: "btn-success",
-                text: 'Tambah',
-                  action: function ( ) {
-                    $('#modalCreate').modal('show'); 
-                  }
-              },
-              {
-                className: "btn-info",
-                text: 'Lihat agenda',
-                  action: function ( ) {
-                    window.location.assign('{{ route("agenda") }}')
-                  }
-              }],
-        "fnDrawCallback": function() {
+      "ordering": false,
+      "processing": true,
+      "serverSide": true,
+      "responsive": false, 
+      "lengthChange": false, 
+      "autoWidth": false,
+      "ajax": "/api/agenda?tahun=2023&bulan=3&user_id=2",
+      "rowsGroup": [0],
+      'createdRow': function( row, data, dataIndex ) {
+          $(row).attr('id', data.id);
+      },
+      "columns": [
+        {"data": "tanggal_mulai"},
+        {
+            "mData": "jam_mulai",
+            "mRender": function (data, type, row) {
+              if (row.jam_selesai != null) {
+                return row.jam_mulai+' - '+row.jam_selesai;
+              }else{
+                return row.jam_mulai;
+              }
+            }
+        },
+        {
+            "mData": "jam_mulai",
+            "mRender": function (data, type, row) {
+              judul_kegiatan = keterangan = '';
+              if (row.judul_kegiatan != null) {
+                judul_kegiatan = '<b>'+row.judul_kegiatan+'</b>';
+              }
 
-            $table = $(this);
+              if (row.keterangan != null) {
+                keterangan = '</br>'+row.keterangan;
+              }
+              return judul_kegiatan+keterangan;
+            }
+        },
+        {
+            "mData": "jam_mulai",
+            "mRender": function (data, type, row) {
+              catatan = lokasi = '';
+              
+              if (row.lokasi) {
+                lokasi = '</br>Lokasi : '+row.lokasi;
+              }
 
-            // only apply this to specific tables
-            if ($table.closest(".datatable-multi-row").length) {
-
-            // for each row in the table body...
-            $table.find("tbody>tr").each(function() {
-                var $tr = $(this);
-
-                // get the "extra row" content from the <script> tag.
-                // note, this could be any DOM object in the row.
-                var extra_row = $tr.find(".extra-row-content").html();
-
-                // in case draw() fires multiple times, 
-                // we only want to add new rows once.
-                if (!$tr.next().hasClass('dt-added')) {
-                $tr.after(extra_row);
-                $tr.find("td").each(function() {
-
-                    // for each cell in the top row,
-                    // set the "rowspan" according to the data value.
-                    var $td = $(this);
-                    var rowspan = parseInt($td.data("datatable-multi-row-rowspan"), 10);
-                    if (rowspan) {
-                    $td.attr('rowspan', rowspan);
-                    }
-                });
-                }
-
-            });
-
-            } // end if the table has the proper class
-        }
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+              if (row.catatan) {
+                catatan = row.catatan;
+              }
+              return catatan+lokasi;
+            }
+        },
+        {
+            "mRender": function (data, type, row) {
+              return '<div class="icheck-success d-inline d-flex justify-content-around bd-highlight"><input type="checkbox" checked="" id="checkboxSuccess1"><label for="checkboxSuccess1"></label></div>';
+            }
+        },
+      ],
+      "columnDefs": [
+        { className: "bg-light", "targets": [ 0 ] }
+      ],
+      "pageLength": 25,
+      "lengthMenu": [
+          [10, 25, 50, 100, -1],
+          ['10 rows', '25 rows', '50 rows', '100 rows','All'],
+      ],
+      "dom": 'Blfrtip', // Blfrtip or Bfrtip
+      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print", 
+        {
+          className: "btn-success",
+          text: 'Tambah',
+            action: function ( ) {
+              $("#overlay").hide();
+              $('#modalCreate').modal('show'); 
+            }
+        },
+        {
+          className: "btn-info",
+          text: 'Lihat agenda',
+            action: function ( ) {
+              window.location.assign('{{ route("agenda") }}')
+            }
+        }]
+      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
     $('#example1 tbody').on( 'click', 'tr', function () {
-        alert('redirect ke : '+this.id);
-        $('#modalCreate').modal('show'); 
-    } );
+      $("#overlay").hide();
+      alert('redirect ke : '+this.id);
+      $('#modalCreate').modal('show'); 
+    });
 
-
+    $('#example1_filter').css({'float':'right','display':'inline-block'});
+  
 function display_c(){
   var refresh=1000; // Refresh rate in milli seconds
   mytime=setTimeout('display_ct()',refresh)
@@ -417,13 +389,15 @@ function display_ct() {
       success: function (response){
         if (response.success != true) {
           console.log(response);
-          $('#message').html(response);
+          $('#message').html(JSON.stringify(response));
           $("#success-message").hide();
           $("#valid-message").show();
         }else{
           $('#message').html(response.message);
           $("#success-message").show();
           $("#valid-message").hide();
+
+          $('#example1').DataTable().ajax.reload();
         }
         if (response.success) {
           $('#judul_kegiatan').val('');

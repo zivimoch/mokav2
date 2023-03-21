@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\AgendaDataTable;
 use App\Models\Agenda;
 use App\Models\DokumenTl;
 use App\Models\TindakLanjut;
@@ -12,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Expr\New_;
+use Yajra\DataTables\Facades\DataTables;
 
 class AgendaController extends Controller
 {
@@ -26,9 +26,23 @@ class AgendaController extends Controller
 
     }
 
-    public function ajax(AgendaDataTable $dataTable)
+    public function api_index(Request $request)
     {
-        return $dataTable->render('agenda.ajax');
+        if (isset($request->user_id)) {
+            $user_id = $request->user_id;
+        }else{
+            $user_id = Auth::user()->id;
+        }
+        $data = DB::table('agenda as a')
+                    ->leftJoin('tindak_lanjut as b', 'b.agenda_id', 'a.id')
+                    ->leftJoin('users as c', 'c.id', 'b.validated_by')
+                    ->where('b.created_by', $user_id)
+                    ->whereYear('a.tanggal_mulai', $request->tahun)
+                    ->whereMonth('a.tanggal_mulai', $request->bulan)
+                    ->orderBy('a.tanggal_mulai')
+                    ->orderBy('a.jam_mulai')
+                    ->get(['a.id', 'a.tanggal_mulai', 'a.jam_mulai', 'b.tanggal_selesai', 'b.jam_selesai', 'a.judul_kegiatan', 'a.keterangan', 'b.lokasi', 'b.catatan', 'c.name']);
+        return DataTables::of($data)->make(true);
     }
 
     public function kinerja(Request $request)
