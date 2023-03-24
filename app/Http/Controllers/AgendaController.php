@@ -41,34 +41,13 @@ class AgendaController extends Controller
                     ->whereMonth('a.tanggal_mulai', $request->bulan)
                     ->orderBy('a.tanggal_mulai')
                     ->orderBy('a.jam_mulai')
-                    ->get(['a.id', 'a.tanggal_mulai', 'a.jam_mulai', 'b.tanggal_selesai', 'b.jam_selesai', 'a.judul_kegiatan', 'a.keterangan', 'b.lokasi', 'b.catatan', 'c.name']);
+                    ->get(['a.id', 'a.tanggal_mulai', 'a.jam_mulai', 'a.klien_id', 'b.tanggal_selesai', 'b.jam_selesai', 'a.judul_kegiatan', 'a.keterangan', 'b.uuid', 'b.lokasi', 'b.catatan', 'c.name', 'b.created_by']);
         return DataTables::of($data)->make(true);
     }
 
     public function kinerja(Request $request)
     {
         try {
-            if ($request->get('bulan')) {
-                $bulan = $request->get('bulan');
-            }else{
-                $bulan = date(('m'));
-            }
-            
-            $data = DB::table('agenda as a')
-                        ->select('c.name')
-                        ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
-                        ->leftJoin('users as c', 'c.id', 'b.created_by')
-                        ->whereMonth('a.tanggal_mulai', '=' , $bulan);
-    
-            if (Auth::user()->jabatan != 'Sekretariat') {
-                $data->where('b.created_by', Auth::user()->id);
-            }else{
-                $data->groupBy('c.id');
-            }
-
-            if (empty($data->get())) {
-                throw new Exception("Data not found");
-            }
     
             return view('agenda.kinerja');
         } catch (Exception $e){
@@ -174,9 +153,20 @@ class AgendaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($uuid)
     {
-        //
+        $data = DB::table('agenda as a')
+                    ->leftJoin('tindak_lanjut as b', 'b.agenda_id', 'a.id')
+                    ->leftJoin('users as c', 'c.id', 'b.validated_by')
+                    ->where('b.created_by', Auth::user()->id)
+                    ->where('b.uuid', $uuid)
+                    ->select('a.id', 'a.tanggal_mulai', 'a.jam_mulai', 'a.klien_id', 'b.uuid', 'b.tanggal_selesai', 'b.jam_selesai', 'a.judul_kegiatan', 'a.keterangan', 'b.lokasi', 'b.catatan', 'c.name', 'b.created_by')
+                    ->first();
+        $agenda_id = TindakLanjut::where('uuid', $uuid)->pluck('agenda_id');
+        $user_id = TindakLanjut::where('agenda_id', $agenda_id[0])->pluck('created_by');
+        $data->user_id = $user_id;
+        
+        return response()->json($data);
     }
 
     /**

@@ -1,14 +1,7 @@
 @extends('layouts.template')
 
 @section('content')
-<style>
-  .select2-selection__choice[title="{{ Auth::user()->name }}"] .select2-selection__choice__remove {
-    display: none;
-}
-.select2-results__option[aria-selected=true] {
-    display: none;
-}
-</style>
+<style id="style-select2"></style>
     {{-- DataTable --}}
      <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -49,13 +42,16 @@
                   </tr>
                   </thead>
                   <tbody></tbody>
+                  @if (Auth::user()->jabatan == 'Sekretariat')
+                    <tfoot>
+                      <th colspan="4"><center>Centang Semua</center></th>
+                      <th><div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" id="checkAll"><label for="checkAll"></label></div></th>
+                    </tfoot>
+                  @endif
               </table>
 
                   <div class="row">
-                    <br>
-                    <br>
-                    <br>
-                    <div class="col-md-12 text-center">
+                    <div class="col-md-6 text-center">
                         Jakarta, 31 Januari 2023</br>
                         Yang Membuat,</br>
                         <br>
@@ -63,6 +59,15 @@
                         <br>
                         <br>
                         Addzifi Mochamad Gumelar
+                    </div>
+                    <div class="col-md-6 text-center">
+                        Jakarta, 31 Januari 2023</br>
+                        Yang Memverifikasi,</br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        Sekretariat
                     </div>
                 </div>
             </div>
@@ -72,7 +77,7 @@
     </section>
 
 <!-- Modal -->
-<div class="modal fade" id="modalCreate" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="ajaxModel" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
@@ -83,7 +88,7 @@
       </div>
       
       <div class="modal-header">
-        <h5 class="modal-title">Buat Agenda #9I21AV</h5>
+        <h5 class="modal-title" id="modelHeading"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -99,8 +104,7 @@
         Data berhasil disimpan.
       </div>
       <div class="modal-body">
-          <input type="text" name="" id="start" hidden>
-          <input type="text" name="" id="end" hidden>
+      <input type="hidden" name="uuid" id="uuid">
       <div class="form-group">
           <label><span class="text-danger">*</span>Judul kegiatan</label>
           <input type="text" class="form-control required-field" id="judul_kegiatan">
@@ -134,7 +138,7 @@
       </div>
       <div class="form-group">
           <label>Penjadwalan Layanan</label>
-          <select name="" class="form-control" id="penjadwalan_layanan">
+          <select name="" class="form-control" id="penjadwalan_layanan" onchange="penjadwalan_layanan()">
             <option value="0">Tidak</option>
             <option value="1">Ya</option>
           </select>
@@ -153,7 +157,7 @@
       </div>
       <div class="form-group">
         <label><span class="text-danger">*</span>Tag</label>
-        <select class="select2 required-field" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id">
+        <select class="required-field" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id">
         <option value="{{ Auth::user()->id }}" selected>{{ Auth::user()->name }}</option>
         <option value="22">Alexander Graham Bell</option>
         <option value="23">Thomas Alfa Edison</option>
@@ -221,6 +225,7 @@
     </div>
   </div>
 </div>
+
 <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -238,20 +243,33 @@
 <script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
 
 <script src="{{ asset('/source/js/validation.js') }}"></script>
-<script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+<script>
+ $("#checkAll").click(function () {
+     $('input:checkbox').not(this).prop('checked', this.checked);
+ });
+
+ function validasi(id) {
+  alert('apakah checked : '+$('#checkboxSuccess'+id).is(':checked'));
+  toastr.success('Berhasil update data', 'Event');
+ }
+
+function penjadwalan_layanan() {
+    if ($('#penjadwalan_layanan').val() == 0) {
+      $("#klien_id").hide();
+    } else {
+      $("#klien_id").show();
+    }
+ }
   $(function () {
     display_ct();
     $("#klien_id").hide();
-    $('#penjadwalan_layanan').change(function () {
-      if ($('#penjadwalan_layanan').val() == 0) {
-        $("#klien_id").hide();
-      } else {
-        $("#klien_id").show();
-      }
-    })
     //Initialize Select2 Elements
     $('.select2').select2()
+    $('#user_id').select2();
 
     //Initialize Select2 Elements
     $('.select2bs4').select2({
@@ -269,7 +287,7 @@
       "ajax": "/api/agenda?tahun=2023&bulan=3&user_id=2",
       "rowsGroup": [0],
       'createdRow': function( row, data, dataIndex ) {
-          $(row).attr('id', data.id);
+          $(row).attr('id', data.uuid);
       },
       "columns": [
         {"data": "tanggal_mulai"},
@@ -314,7 +332,19 @@
         },
         {
             "mRender": function (data, type, row) {
-              return '<div class="icheck-success d-inline d-flex justify-content-around bd-highlight"><input type="checkbox" checked="" id="checkboxSuccess1"><label for="checkboxSuccess1"></label></div>';
+              if ('{{ Auth::user()->jabatan }}' != 'Sekretariat') {
+                if (row.name == null) {
+                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" disabled="" id="checkboxSuccess'+row.id+'"><label for="checkboxSuccess'+row.id+'"></label></div>'
+                }else{
+                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" disabled="" checked="" id="checkboxSuccess'+row.id+'"><label for="checkboxSuccess'+row.id+'"></label></div>'
+                }
+              } else {
+                if (row.name == null) {
+                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" id="checkboxSuccess'+row.id+'" onchange="validasi('+row.id+')"><label for="checkboxSuccess'+row.id+'"></label></div>'
+                }else{
+                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" checked="" id="checkboxSuccess'+row.id+'" onchange="validasi('+row.id+')"><label for="checkboxSuccess'+row.id+'"></label></div>';
+                }
+              }
             }
         },
       ],
@@ -332,8 +362,10 @@
           className: "btn-success",
           text: 'Tambah',
             action: function ( ) {
+              $('#style-select2').html('.select2-selection__choice[title="{{ Auth::user()->name }}"] .select2-selection__choice__remove {display: none;}.select2-results__option[aria-selected=true] {display: none;}');
+
               $("#overlay").hide();
-              $('#modalCreate').modal('show'); 
+              $('#ajaxModel').modal('show'); 
             }
         },
         {
@@ -345,11 +377,42 @@
         }]
       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-    $('#example1 tbody').on( 'click', 'tr', function () {
-      $("#overlay").hide();
-      alert('redirect ke : '+this.id);
-      $('#modalCreate').modal('show'); 
-    });
+      if ('{{ Auth::user()->jabatan }}' != 'Sekretariat') {
+
+       $('#example1 tbody').on( 'click', 'tr', function () {
+        $('#style-select2').html('.select2-selection__choice[title="{{ Auth::user()->name }}"] .select2-selection__choice__remove {display: block;}.select2-results__option[aria-selected=true] {display: none;}');
+          $.get(`/agenda/edit/`+this.id, function (data) {
+              $("#overlay").hide();
+              $('#modelHeading').html("Edit Agenda");
+              $('#ajaxModel').modal('show');
+              $('#uuid').val(data.uuid);
+              $('#judul_kegiatan').val(data.judul_kegiatan);
+              $('#tanggal_mulai').val(data.tanggal_mulai);
+              $('#jam_mulai').val(data.jam_mulai);
+              $('#keterangan').val(data.keterangan);
+              $('#klien_id').val(data.klien_id);
+              $('#lokasi').val(data.lokasi);
+              $('#jam_selesai').val(data.jam_selesai);
+              $('#catatan').val(data.catatan);
+              $('#dokumen_pendukung').val(data.dokumen_pendukung);
+
+              if (data.klien_id != null) {
+                $('#penjadwalan_layanan').val(1);
+                $("#klien_id").select2("val", data.klien_id);
+              }else{
+                $('#penjadwalan_layanan').val(0);
+                $("#klien_id").select2("val", "null");
+              }
+              penjadwalan_layanan();
+             
+              $("#user_id").val(data.user_id);
+              $('#user_id').select2();
+
+              $("#dokumen_pendukung").val(data.dokumen_pendukung);
+              $('#dokumen_pendukung').select2();
+          });
+        });
+      }
 
     $('#example1_filter').css({'float':'right','display':'inline-block'});
   
@@ -398,8 +461,8 @@ function display_ct() {
           $("#valid-message").hide();
 
           $('#example1').DataTable().ajax.reload();
-        }
-        if (response.success) {
+
+          // hapus semua inputan
           $('#judul_kegiatan').val('');
           $('#tanggal_mulai').val('');
           $('#jam_mulai').val('');
@@ -415,7 +478,6 @@ function display_ct() {
         setTimeout(function(){
           $("#overlay").fadeOut(300);
         },500);
-
         console.log(response);
 
         $('#message').html(JSON.stringify(response));

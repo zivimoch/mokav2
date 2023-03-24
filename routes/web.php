@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::get('kinerja', [AgendaController::class, 'kinerja'])->name('kinerja');
     Route::get('kinerja/detail', [AgendaController::class, 'kinerja_detail'])->name('kinerja.detail');
     Route::post('agenda/store', [AgendaController::class, 'store'])->name('agenda.store');
+    Route::get('agenda/edit/{id}', [AgendaController::class, 'edit'])->name('agenda.edit');
     Route::get('kinerja/ajax', [AgendaController::class, 'ajax'])->name('ajax');
     
 
