@@ -41,7 +41,7 @@ class AgendaController extends Controller
                     ->whereMonth('a.tanggal_mulai', $request->bulan)
                     ->orderBy('a.tanggal_mulai')
                     ->orderBy('a.jam_mulai')
-                    ->get(['a.id', 'a.tanggal_mulai', 'a.jam_mulai', 'a.klien_id', 'b.tanggal_selesai', 'b.jam_selesai', 'a.judul_kegiatan', 'a.keterangan', 'b.uuid', 'b.lokasi', 'b.catatan', 'c.name', 'b.created_by']);
+                    ->get(['a.tanggal_mulai', 'a.jam_mulai', 'a.klien_id', 'b.tanggal_selesai', 'b.jam_selesai', 'a.judul_kegiatan', 'a.keterangan', 'a.uuid', 'b.lokasi', 'b.catatan', 'c.name', 'b.created_by']);
         return DataTables::of($data)->make(true);
     }
 
@@ -90,7 +90,7 @@ class AgendaController extends Controller
                 }
 
                 //create post
-                $proses = Agenda::create([
+                $proses = Agenda::updateOrCreate(['uuid' => $request->uuid],[
                     'klien_id'     => $request->klien_id, 
                     'judul_kegiatan'   => $request->judul_kegiatan, 
                     'tanggal_mulai'   => $request->tanggal_mulai,
@@ -98,38 +98,62 @@ class AgendaController extends Controller
                     'keterangan'   => $request->keterangan,
                     'created_by'   => Auth::user()->id
                 ]);
-                
-                foreach ($request->user_id as $value) {
-                    TindakLanjut::create([
-                        'agenda_id' => $proses->id,
-                        'created_by' => $value
-                    ]);
 
-                    if ($value == Auth::user()->id) {
-                        TindakLanjut::where('created_by', $value)->where('agenda_id', $proses->id)->update([
-                            'lokasi' => $request->lokasi,
-                            'tanggal_selesai' => $request->tanggal_mulai, //tanggal selesai = tanggal mulai, karna kita main jadwanya per tanggal
-                            'jam_selesai' => $request->jam_selesai,
-                            'catatan' => $request->catatan
-                        ]);
+                $hapus_user = 1;
+                if (!empty($request->user_id)) {
+                    foreach ($request->user_id as $value) {
+                        if (!isset($request->uuid)) { //jika tidak ada maka tambah
+                            TindakLanjut::create([
+                                'agenda_id' => $proses->id,
+                                'created_by' => $value
+                            ]);
 
-                        if (isset($request->dokumen_pendukung)) {
-                            foreach ($request->dokumen_pendukung as $value_dokumen) {
-                                DokumenTl::create([
-                                    'tindak_lanjut_id' => $value,
-                                    'dokumen_id' => $value_dokumen
+                            //kirim notifikasi "anda ditambahkan ke agenda. silahkan isi tindak lanjutnya"
+                        }else{
+                            // buat baru saat edit, cek dulu sudah ada apa belum
+                            $tindak_lanjut = TindakLanjut::where('created_by', $value)->where('agenda_id', $proses->id)->first();
+                            if (empty($tindak_lanjut)) {
+                                TindakLanjut::create([
+                                    'agenda_id' => $proses->id,
+                                    'created_by' => $value
                                 ]);
+
+                                //kirim notifikasi "anda ditambahkan ke agenda. silahkan isi tindak lanjutnya"
                             }
+                        }
+
+                        if ($value == Auth::user()->id) {
+                            TindakLanjut::where('created_by', $value)->where('agenda_id', $proses->id)->update([
+                                'lokasi' => $request->lokasi,
+                                'tanggal_selesai' => $request->tanggal_mulai, //tanggal selesai = tanggal mulai, karna kita main jadwanya per tanggal
+                                'jam_selesai' => $request->jam_selesai,
+                                'catatan' => $request->catatan
+                            ]);
+
+                            if (isset($request->dokumen_pendukung)) {
+                                foreach ($request->dokumen_pendukung as $value_dokumen) {
+                                    DokumenTl::create([
+                                        'tindak_lanjut_id' => $value,
+                                        'dokumen_id' => $value_dokumen
+                                    ]);
+                                }
+                            }
+                            $hapus_user = 0;
                         }
                     }
                 }
-                //return response
-                return response()->json([
-                    'success' => true,
-                    'code'    => 200,
-                    'message' => 'Data Berhasil Disimpan!',
-                    'data'    => $proses  
-                ]);
+
+                //jika tidak ada user_id sesuai dengan yg login, berarti hapus user_id yg login pada tabel tindak lanjut
+                if ($hapus_user) {
+                    TindakLanjut::where('created_by', Auth::user()->id)->where('agenda_id', $proses->id)->delete();
+                }
+            //return response
+            return response()->json([
+                'success' => true,
+                'code'    => 200,
+                'message' => 'Data Berhasil Disimpan!',
+                'data'    => $proses  
+            ]);
         } catch (Exception $e){
             return response()->json(['msg' => $e->getMessage()]);
             die();
@@ -159,10 +183,10 @@ class AgendaController extends Controller
                     ->leftJoin('tindak_lanjut as b', 'b.agenda_id', 'a.id')
                     ->leftJoin('users as c', 'c.id', 'b.validated_by')
                     ->where('b.created_by', Auth::user()->id)
-                    ->where('b.uuid', $uuid)
-                    ->select('a.id', 'a.tanggal_mulai', 'a.jam_mulai', 'a.klien_id', 'b.uuid', 'b.tanggal_selesai', 'b.jam_selesai', 'a.judul_kegiatan', 'a.keterangan', 'b.lokasi', 'b.catatan', 'c.name', 'b.created_by')
+                    ->where('a.uuid', $uuid)
+                    ->select('a.id', 'a.tanggal_mulai', 'a.jam_mulai', 'a.klien_id', 'a.uuid', 'b.tanggal_selesai', 'b.jam_selesai', 'a.judul_kegiatan', 'a.keterangan', 'b.lokasi', 'b.catatan', 'c.name', 'b.created_by')
                     ->first();
-        $agenda_id = TindakLanjut::where('uuid', $uuid)->pluck('agenda_id');
+        $agenda_id = TindakLanjut::where('agenda_id', $data->id)->where('created_by', Auth::user()->id)->pluck('agenda_id');
         $user_id = TindakLanjut::where('agenda_id', $agenda_id[0])->pluck('created_by');
         $data->user_id = $user_id;
         

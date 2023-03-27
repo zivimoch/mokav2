@@ -34,7 +34,7 @@
         
                 <thead>
                   <tr>
-                      <th>Hari / Tanggal</th>
+                      <th>Tanggal</th>
                       <th>Jam</th>
                       <th>Agenda</th>
                       <th>Catatan</th>
@@ -93,7 +93,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="alert alert-danger alert-dismissible invalid-feedback" id="valid-message">
+      <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
         <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
         <span id="message"></span>
@@ -157,7 +157,7 @@
       </div>
       <div class="form-group">
         <label><span class="text-danger">*</span>Tag</label>
-        <select class="required-field" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id">
+        <select class="" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id">
         <option value="{{ Auth::user()->id }}" selected>{{ Auth::user()->name }}</option>
         <option value="22">Alexander Graham Bell</option>
         <option value="23">Thomas Alfa Edison</option>
@@ -179,7 +179,7 @@
             </a>
             <div id="collapseOne" class="collapse show" data-parent="#accordion">
               <div class="alert alert-warning alert-dismissible">
-                <i class="icon fas fa-exclamation-triangle"></i> Data Tindak Lanjut hanya tercatat pada akun anda
+                <i class="icon fas fa-exclamation-triangle"></i> Data <b>Tindak Lanjut</b> hanya tercatat pada akun anda
               </div>
             <div class="card-body">
               {{-- <div class="form-group">
@@ -205,7 +205,7 @@
                     <textarea name="" class="form-control" id="catatan" cols="30" rows="2"></textarea>
                 </div>
                 <div class="form-group">
-                <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}">disini</a>)</span></label>
+                <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}" target="_blank">disini</a>)</span></label>
                 <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="dokumen_pendukung">
                 <option value="31">Dokumen konsultasi hukum kasus Eliza Thornberry</option>
                 <option value="32">Dokumen Pendampingan pengadilan kasus eliza thornberry</option>
@@ -253,7 +253,7 @@
  });
 
  function validasi(id) {
-  alert('apakah checked : '+$('#checkboxSuccess'+id).is(':checked'));
+  // alert('apakah checked : '+$('#checkboxSuccess'+id).is(':checked'));
   toastr.success('Berhasil update data', 'Event');
  }
 
@@ -290,7 +290,7 @@ function penjadwalan_layanan() {
           $(row).attr('id', data.uuid);
       },
       "columns": [
-        {"data": "tanggal_mulai"},
+        {"data": "tanggal_mulai", "width":"10%"},
         {
             "mData": "jam_mulai",
             "mRender": function (data, type, row) {
@@ -334,15 +334,15 @@ function penjadwalan_layanan() {
             "mRender": function (data, type, row) {
               if ('{{ Auth::user()->jabatan }}' != 'Sekretariat') {
                 if (row.name == null) {
-                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" disabled="" id="checkboxSuccess'+row.id+'"><label for="checkboxSuccess'+row.id+'"></label></div>'
+                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" disabled="" id="checkboxSuccess'+row.uuid+'"><label for="checkboxSuccess'+row.uuid+'"></label></div>'
                 }else{
-                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" disabled="" checked="" id="checkboxSuccess'+row.id+'"><label for="checkboxSuccess'+row.id+'"></label></div>'
+                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" disabled="" checked="" id="checkboxSuccess'+row.uuid+'"><label for="checkboxSuccess'+row.uuid+'"></label></div>'
                 }
               } else {
                 if (row.name == null) {
-                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" id="checkboxSuccess'+row.id+'" onchange="validasi('+row.id+')"><label for="checkboxSuccess'+row.id+'"></label></div>'
+                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" id="checkboxSuccess'+row.uuid+'" onchange="validasi('+row.uuid+')"><label for="checkboxSuccess'+row.uuid+'"></label></div>'
                 }else{
-                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" checked="" id="checkboxSuccess'+row.id+'" onchange="validasi('+row.id+')"><label for="checkboxSuccess'+row.id+'"></label></div>';
+                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" checked="" id="checkboxSuccess'+row.uuid+'" onchange="validasi('+row.uuid+')"><label for="checkboxSuccess'+row.uuid+'"></label></div>';
                 }
               }
             }
@@ -364,8 +364,24 @@ function penjadwalan_layanan() {
             action: function ( ) {
               $('#style-select2').html('.select2-selection__choice[title="{{ Auth::user()->name }}"] .select2-selection__choice__remove {display: none;}.select2-results__option[aria-selected=true] {display: none;}');
 
+              $("#success-message").hide();
+              $("#error-message").hide();
               $("#overlay").hide();
+
+              $('#modelHeading').html("Tambah Agenda");
               $('#ajaxModel').modal('show'); 
+
+              // hapus semua inputan
+              $('#uuid').val('');
+              $('#judul_kegiatan').val('');
+              $('#tanggal_mulai').val('');
+              $('#jam_mulai').val('');
+              $('#keterangan').val('');
+              $('#klien_id').val('');
+              $('#lokasi').val('');
+              $('#jam_selesai').val('');
+              $('#catatan').val('');
+              $('#dokumen_pendukung').select2().val('');
             }
         },
         {
@@ -381,6 +397,10 @@ function penjadwalan_layanan() {
 
        $('#example1 tbody').on( 'click', 'tr', function () {
         $('#style-select2').html('.select2-selection__choice[title="{{ Auth::user()->name }}"] .select2-selection__choice__remove {display: block;}.select2-results__option[aria-selected=true] {display: none;}');
+
+        $("#success-message").hide();
+        $("#error-message").hide();
+
           $.get(`/agenda/edit/`+this.id, function (data) {
               $("#overlay").hide();
               $('#modelHeading').html("Edit Agenda");
@@ -437,6 +457,7 @@ function display_ct() {
       type: "POST",
       cache: false,
       data: {
+        uuid: $('#uuid').val(),
         judul_kegiatan: $('#judul_kegiatan').val(),
         tanggal_mulai: $("#tanggal_mulai").val(),
         jam_mulai: $("#jam_mulai").val(),
@@ -454,11 +475,11 @@ function display_ct() {
           console.log(response);
           $('#message').html(JSON.stringify(response));
           $("#success-message").hide();
-          $("#valid-message").show();
+          $("#error-message").show();
         }else{
           $('#message').html(response.message);
           $("#success-message").show();
-          $("#valid-message").hide();
+          $("#error-message").hide();
 
           $('#example1').DataTable().ajax.reload();
 
@@ -482,7 +503,7 @@ function display_ct() {
 
         $('#message').html(JSON.stringify(response));
         $("#success-message").hide();
-        $("#valid-message").show();
+        $("#error-message").show();
       }
     }).done(function() { //loading submit form
         setTimeout(function(){
@@ -492,7 +513,7 @@ function display_ct() {
   }else{
     $('#message').html('Mohon cek ulang data yang wajib diinput.');
     $("#success-message").hide();
-    $("#valid-message").show();
+    $("#error-message").show();
   }
  })
 </script>
