@@ -1,60 +1,65 @@
-$(document).ready(function(){
+$(document).ready(function () {
+    var current_fs, next_fs, previous_fs;
+    var opacity;
 
-var current_fs, next_fs, previous_fs;
-var opacity;
+    $(".next").click(function () {
+        current_fs = $(this).parent();
+        next_fs = $(this).parent().next();
 
-$(".next").click(function(){
+        $("#progressbar li")
+            .eq($("fieldset").index(next_fs))
+            .addClass("active");
 
-current_fs = $(this).parent();
-next_fs = $(this).parent().next();
+        next_fs.show();
 
-$("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+        current_fs.animate(
+            { opacity: 0 },
+            {
+                step: function (now) {
+                    opacity = 1 - now;
 
-next_fs.show();
+                    current_fs.css({
+                        display: "none",
+                        position: "relative",
+                    });
+                    next_fs.css({ opacity: opacity });
+                },
+                duration: 600,
+            }
+        );
+    });
 
-current_fs.animate({opacity: 0}, {
-step: function(now) {
+    $(".previous").click(function () {
+        current_fs = $(this).parent();
+        previous_fs = $(this).parent().prev();
 
-opacity = 1 - now;
+        $("#progressbar li")
+            .eq($("fieldset").index(current_fs))
+            .removeClass("active");
 
-current_fs.css({
-'display': 'none',
-'position': 'relative'
-});
-next_fs.css({'opacity': opacity});
-},
-duration: 600
-});
-});
+        //menampilkan slide sebelumnya
+        previous_fs.show();
 
-$(".previous").click(function(){
+        //hide sebelumnya
+        current_fs.animate(
+            { opacity: 0 },
+            {
+                step: function (now) {
+                    //animasi muncul
+                    opacity = 1 - now;
 
-current_fs = $(this).parent();
-previous_fs = $(this).parent().prev();
+                    current_fs.css({
+                        display: "none",
+                        position: "relative",
+                    });
+                    previous_fs.css({ opacity: opacity });
+                },
+                duration: 600,
+            }
+        );
+    });
 
-$("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
-
-//menampilkan slide sebelumnya
-previous_fs.show();
-
-//hide sebelumnya
-current_fs.animate({opacity: 0}, {
-step: function(now) {
-//animasi muncul
-opacity = 1 - now;
-
-current_fs.css({
-'display': 'none',
-'position': 'relative'
-});
-previous_fs.css({'opacity': opacity});
-},
-duration: 600
-});
-});
-
-$(".submit").click(function(){
-return false;
-})
-
+    $(".submit").click(function () {
+        return false;
+    });
 });

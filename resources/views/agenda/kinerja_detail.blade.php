@@ -449,7 +449,7 @@ function display_ct() {
   display_c();
  }
 
- $('#submit').click(function() {
+$('#submit').click(function() {
   if(validateForm()){
     let token   = $("meta[name='csrf-token']").attr("content");
     $.ajax({

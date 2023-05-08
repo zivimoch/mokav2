@@ -16,10 +16,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::redirect('/', '/login');
+Route::get('formpenerimapengaduan', [FormPenerimaPengaduan::class, 'index'])->name('formpenerimapengaduan.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('formpenerimapengaduan', [FormPenerimaPengaduan::class, 'index'])->name('formpenerimapengaduan.index');
 
     Route::view('kasus/index','/kasus/index')->name('kasus');
     Route::view('kasus/detail/','/kasus/detail')->name('kasus.detail');
@@ -37,7 +37,6 @@ Route::middleware('auth')->group(function () {
     Route::post('agenda/store', [AgendaController::class, 'store'])->name('agenda.store');
     Route::get('agenda/edit/{id}', [AgendaController::class, 'edit'])->name('agenda.edit');
     Route::get('kinerja/ajax', [AgendaController::class, 'ajax'])->name('ajax');
-    
 
     Route::get('/userdatatable', [DashboardController::class, 'userdatatable'])->name('userdatatable');
     Route::get('/dashboard-datatables', [DashboardController::class, 'datatable'])->name('dashboard.datatables');

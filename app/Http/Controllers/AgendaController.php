@@ -48,7 +48,6 @@ class AgendaController extends Controller
     public function kinerja(Request $request)
     {
         try {
-    
             return view('agenda.kinerja');
         } catch (Exception $e){
             return response()->json(['msg' => $e->getMessage()], 404);
