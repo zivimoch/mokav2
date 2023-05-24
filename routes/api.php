@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\WilayahController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,13 @@ use Illuminate\Support\Facades\Route;
 
     Route::get('agenda', [AgendaController::class, 'api_index']);
 // });
+
+Route::prefix('v1')->group(function () {
+    Route::namespace('API')->group(function () {
+        Route::get('/kotkab', [WilayahController::class, 'getKotkab'])->name('api.v1.kotkab');
+    });
+    Route::namespace('API')->group(function () {
+        Route::get('/kecamatan', [WilayahController::class, 'getKecamatan'])->name('api.v1.kecamatan');
+    });
+});
+

@@ -40,7 +40,7 @@
       </ul>
       <div class="btn-group">
         <a href="{{ route('formpenerimapengaduan.index') }}" class="btn btn-success btn-sm">
-          <i class="fa fa-plus"></i> Tambah Kasus 
+          <i class="fas fa-bullhorn"></i> Lapor KBG 
         </a>
       </div>
     </div>
