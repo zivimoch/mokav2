@@ -37,8 +37,8 @@ class CreateKliensTable extends Migration
             $table->string('pekerjaan')->nullable();
             $table->string('status_kawin')->nullable();
             $table->integer('jumlah_anak')->nullable();
+            $table->string('hubungan_klien');
             $table->char('no_lp')->nullable();
-            $table->string('pasal')->nullable();
             $table->string('pengadilan_negri')->nullable();
             $table->text('isi_putusan')->nullable();
             $table->boolean('lpsk')->nullable()->default(0);

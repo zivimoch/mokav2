@@ -15,6 +15,7 @@ class CreateTindakKekerasansTable extends Migration
     {
         Schema::create('tindak_kekerasan', function (Blueprint $table) {
             $table->id();
+            $table->integer('klien_id');
             $table->string('value');
             $table->timestamps();
         });

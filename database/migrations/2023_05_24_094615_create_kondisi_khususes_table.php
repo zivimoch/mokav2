@@ -15,6 +15,7 @@ class CreateKondisiKhususesTable extends Migration
     {
         Schema::create('kondisi_khusus', function (Blueprint $table) {
             $table->id();
+            $table->integer('klien_id');
             $table->string('value');
             $table->timestamps();
         });

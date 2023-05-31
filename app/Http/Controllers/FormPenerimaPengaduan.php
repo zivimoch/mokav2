@@ -2,9 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DifabelType;
 use App\Models\Kasus;
+use App\Models\KategoriKasus;
 use App\Models\Klien;
+use App\Models\KondisiKhusus;
+use App\Models\Pasal;
 use App\Models\Pelapor;
+use App\Models\ProgramPemerintah;
+use App\Models\Terlapor;
+use App\Models\TindakKekerasan;
 use Illuminate\Http\Request;
 use Laravolt\Indonesia\Models\Provinsi;
 use Exception;
@@ -128,41 +135,116 @@ class FormPenerimaPengaduan extends Controller
                 'created_by' => $created_by
             ]);
 
+            // return $arrayName = array('data' => $request->nik_klien, 'pasal' => $request->pasal);
             //Data Klien
             $klien = $request->nama_klien;
             foreach ($klien as $key => $value) {
-                    Klien::create([
-                    'kasus_id' => $kasus->id,
-                    'status' => 'Pelengkapan Data',
-                    'nik' => isset($request->nik_klien[$key]) ? $request->nik_klien[$key] : NULL, 
-                    'nama' => isset($request->nama_klien[$key]) ? $request->nama_klien[$key] : NULL,  
-                    'tempat_lahir' => isset($request->tempat_lahir_klien[$key]) ? $request->tempat_lahir_klien[$key] : NULL,  
-                    'tanggal_lahir' => isset($request->tanggal_lahir_klien[$key]) ? $request->tanggal_lahir_klien[$key] : NULL,  
-                    'provinsi_id' => isset($request->provinsi_id_klien[$key]) ? $request->provinsi_id_klien[$key] : NULL,  
-                    'kotkab_id' => isset($request->kota_id_klien[$key]) ? $request->kota_id_klien[$key] : NULL,  
-                    'kecamatan_id' => isset($request->kecamatan_id_klien[$key]) ? $request->kecamatan_id_klien[$key] : NULL,  
-                    'kelurahan' => isset($request->kelurahan_klien[$key]) ? $request->kelurahan_klien[$key] : NULL,  
-                    'alamat' => isset($request->alamat_klien[$key]) ? $request->alamat_klien[$key] : NULL, 
-                    'jenis_kelamin' => isset($request->jenis_kelamin_klien[$key]) ? $request->jenis_kelamin_klien[$key] : NULL,  
-                    'agama' => isset($request->agama_klien[$key]) ? $request->agama_klien[$key] : NULL,  
-                    'suku' => isset($request->suku_klien[$key]) ? $request->suku_klien[$key] : NULL,  
-                    'no_telp' => isset($request->no_telp_klien[$key]) ? $request->no_telp_klien[$key] : NULL,  
-                    'status_pendidikan' => isset($request->status_pendidikan_klien[$key]) ? $request->status_pendidikan_klien[$key] : NULL,  
-                    'pendidikan' => isset($request->pendidikan_klien[$key]) ? $request->pendidikan_klien[$key] : NULL,  
-                    'pekerjaan' => isset($request->pekerjaan_klien[$key]) ? $request->pekerjaan_klien[$key] : NULL,  
-                    'status_kawin' => isset($request->perkawinan_klien[$key]) ? $request->perkawinan_klien[$key] : NULL,  
-                    'jumlah_anak' => isset($request->jumlah_anak_klien[$key]) ? $request->jumlah_anak_klien[$key] : NULL,  
-                    'no_lp' => isset($request->no_lp[$key]) ? $request->no_lp[$key]  : NULL,  
-                    'pasal' => isset($request->pasal[$key]) ? $request->pasal[$key]  : NULL,  
-                    'pengadilan_negri' => isset($request->pengadilan_negri[$key]) ? $request->pengadilan_negri[$key]  : NULL,  
-                    'isi_putusan' => isset($request->isi_putusan[$key]) ? $request->isi_putusan[$key] : NULL,  
-                    'lpsk' => isset($request->lpsk_klien[$key]) ? $request->lpsk_klien[$key] : NULL,  
-                    'file_ttd' => isset($request->file_ttd_klien[$key]) ? $request->file_ttd_klien[$key] : NULL,  
-                    'desil' => isset($request->desil_klien[$key]) ? $request->desil_klien[$key] : NULL,  
-                    'created_by' => $created_by  
-                ]);
+                $klien = Klien::create([
+                        'kasus_id' => $kasus->id,
+                        'status' => 'Pelengkapan Data',
+                        'nik' => isset($request->nik_klien[$key]) ? $request->nik_klien[$key] : NULL, 
+                        'nama' => isset($request->nama_klien[$key]) ? $request->nama_klien[$key] : NULL,  
+                        'tempat_lahir' => isset($request->tempat_lahir_klien[$key]) ? $request->tempat_lahir_klien[$key] : NULL,  
+                        'tanggal_lahir' => isset($request->tanggal_lahir_klien[$key]) ? $request->tanggal_lahir_klien[$key] : NULL,  
+                        'provinsi_id' => isset($request->provinsi_id_klien[$key]) ? $request->provinsi_id_klien[$key] : NULL,  
+                        'kotkab_id' => isset($request->kota_id_klien[$key]) ? $request->kota_id_klien[$key] : NULL,  
+                        'kecamatan_id' => isset($request->kecamatan_id_klien[$key]) ? $request->kecamatan_id_klien[$key] : NULL,  
+                        'kelurahan' => isset($request->kelurahan_klien[$key]) ? $request->kelurahan_klien[$key] : NULL,  
+                        'alamat' => isset($request->alamat_klien[$key]) ? $request->alamat_klien[$key] : NULL, 
+                        'jenis_kelamin' => isset($request->jenis_kelamin_klien[$key]) ? $request->jenis_kelamin_klien[$key] : NULL,  
+                        'agama' => isset($request->agama_klien[$key]) ? $request->agama_klien[$key] : NULL,  
+                        'suku' => isset($request->suku_klien[$key]) ? $request->suku_klien[$key] : NULL,  
+                        'no_telp' => isset($request->no_telp_klien[$key]) ? $request->no_telp_klien[$key] : NULL,  
+                        'status_pendidikan' => isset($request->status_pendidikan_klien[$key]) ? $request->status_pendidikan_klien[$key] : NULL,  
+                        'pendidikan' => isset($request->pendidikan_klien[$key]) ? $request->pendidikan_klien[$key] : NULL,  
+                        'pekerjaan' => isset($request->pekerjaan_klien[$key]) ? $request->pekerjaan_klien[$key] : NULL,  
+                        'status_kawin' => isset($request->perkawinan_klien[$key]) ? $request->perkawinan_klien[$key] : NULL,  
+                        'jumlah_anak' => isset($request->jumlah_anak_klien[$key]) ? $request->jumlah_anak_klien[$key] : NULL,  
+                        'hubungan_klien' => isset($request->hubungan_klien[$key]) ? $request->hubungan_klien[$key] : NULL,  
+                        'no_lp' => isset($request->no_lp[$key]) ? $request->no_lp[$key]  : NULL,  
+                        'pengadilan_negri' => isset($request->pengadilan_negri[$key]) ? $request->pengadilan_negri[$key]  : NULL,  
+                        'isi_putusan' => isset($request->isi_putusan[$key]) ? $request->isi_putusan[$key] : NULL,  
+                        'lpsk' => isset($request->lpsk_klien[$key]) ? $request->lpsk_klien[$key] : NULL,  
+                        'file_ttd' => isset($request->file_ttd_klien[$key]) ? $request->file_ttd_klien[$key] : NULL,  
+                        'desil' => isset($request->desil_klien[$key]) ? $request->desil_klien[$key] : NULL,  
+                        'created_by' => $created_by  
+                    ]);
+
+                //simpan tindak kekerasan
+                if (isset($request->tindak_kekerasan[$key])) {
+                    $tindak_kekerasan = $request->tindak_kekerasan[$key];
+                    foreach ($tindak_kekerasan as $key1 => $value) {
+                        $proses['tindak_kekerasan'] = TindakKekerasan::create(['klien_id' => $klien->id, 'value' => $tindak_kekerasan[$key1]]);
+                    }
+                }
+                //simpan program pemerintah
+                if (isset($request->program_pemerintah[$key])) {
+                    $program_pemerintah = $request->program_pemerintah[$key];
+                    foreach ($program_pemerintah as $key2 => $value) {
+                        $proses['program_pemerintah'] = ProgramPemerintah::create(['klien_id' => $klien->id, 'value' => $program_pemerintah[$key2]]);
+                    }
+                }
+                //simpan kategori kasus
+                if (isset($request->kategori_kasus[$key])) {
+                    $kategori_kasus = $request->kategori_kasus[$key];
+                    foreach ($kategori_kasus as $key3 => $value) {
+                        $proses['kategori_kasus'] = KategoriKasus::create(['klien_id' => $klien->id, 'value' => $kategori_kasus[$key3]]);
+                    }
+                }
+                //simpan kondisi khusus
+                if (isset($request->kondisi_khusus_klien[$key])) {
+                    $kondisi_khusus = $request->kondisi_khusus_klien[$key];
+                    foreach ($kondisi_khusus as $key4 => $value) {
+                        $proses['kondisi_khusus'] = KondisiKhusus::create(['klien_id' => $klien->id, 'value' => $kondisi_khusus[$key4]]);
+                    }
+                }
+                //simpan difabel type
+                if (isset($request->difabel_type[$key])) {
+                    $difabel_type = $request->difabel_type[$key];
+                    foreach ($difabel_type as $key5 => $value) {
+                        $proses['difabel_type'] = DifabelType::create(['klien_id' => $klien->id, 'value' => $difabel_type[$key5]]);
+                    }
+                }
+                //simpan pasal
+                if (isset($request->pasal[$key])) {
+                    $pasal = $request->pasal[$key];
+                    foreach ($pasal as $key6 => $value) {
+                        $proses['pasal'] = Pasal::create(['klien_id' => $klien->id, 'value' => $pasal[$key6]]);
+                    }
+                }
             }
 
+            //Data Terlapor
+            $terlapor = $request->nama_terlapor;
+            if (isset($terlapor)) {
+                foreach ($terlapor as $key => $value) {
+                    Terlapor::create([
+                        'kasus_id' => $kasus->id,
+                        'nama' => isset($request->nama_terlapor[$key]) ? $request->nama_terlapor[$key] : NULL,
+                        'tempat_lahir_terlapor' => isset($request->tempat_lahir_terlapor[$key]) ? $request->tempat_lahir_terlapor[$key] : NULL,
+                        'tanggal_lahir' => isset($request->tanggal_lahir_terlapor[$key]) ? $request->tanggal_lahir_terlapor[$key] : NULL,
+                        'provinsi_id' => isset($request->provinsi_id_terlapor[$key]) ? $request->provinsi_id_terlapor[$key] : NULL,
+                        'kotkab_id' => isset($request->kota_id_terlapor[$key]) ? $request->kota_id_terlapor[$key] : NULL,
+                        'kecamatan_id' => isset($request->kecamatan_id_terlapor[$key]) ? $request->kecamatan_id_terlapor[$key] : NULL,
+                        'kelurahan' => isset($request->kelurahan_terlapor[$key]) ? $request->kelurahan_terlapor[$key] : NULL,
+                        'alamat' => isset($request->alamat_terlapor[$key]) ? $request->alamat_terlapor[$key] : NULL,
+                        'jenis_kelamin' => isset($request->jenis_kelamin_terlapor[$key]) ? $request->jenis_kelamin_terlapor[$key] : NULL,
+                        'agama' => isset($request->agama_terlapor[$key]) ? $request->agama_terlapor[$key] : NULL,
+                        'suku' => isset($request->suku_terlapor[$key]) ? $request->suku_terlapor[$key] : NULL,
+                        'no_telp' => isset($request->no_telp_terlapor[$key]) ? $request->no_telp_terlapor[$key] : NULL,
+                        'status_pendidikan' => isset($request->status_pendidikan_terlapor[$key]) ? $request->status_pendidikan_terlapor[$key] : NULL,
+                        'pendidikan' => isset($request->pendidikan_terlapor[$key]) ? $request->pendidikan_terlapor[$key] : NULL,
+                        'pekerjaan' => isset($request->pekerjaan_telapor[$key]) ? $request->pekerjaan_telapor[$key] : NULL,
+                        'status_kawin' => isset($request->perkawinan_terlapor[$key]) ? $request->perkawinan_terlapor[$key] : NULL,
+                        'jumlah_anak' => isset($request->jumlah_anak_terlapor[$key]) ? $request->jumlah_anak_terlapor[$key] : NULL,
+                        'hubungan_terlapor' => isset($request->hubungan_terlapor[$key]) ? $request->hubungan_terlapor[$key] : NULL,  
+                        'file_ttd' => isset($request->file_ttd_terlapor[$key]) ? $request->file_ttd_terlapor[$key] : NULL,  
+                        'desil' => isset($request->desil_terlapor[$key]) ? $request->desil_terlapor[$key] : NULL,  
+                        'created_by' => $created_by
+                    ])
+                }
+            }
+            
             //return response
             $response = "Berhasil menginputkan data";
             return redirect()->route('formpenerimapengaduan.index')

@@ -20,7 +20,7 @@ class CreateKasusesTable extends Migration
             $table->date('tanggal_pelaporan');
             $table->date('tanggal_kejadian');
             $table->string('media_pengaduan');
-            $table->string('sumber_rujukan');
+            $table->string('sumber_rujukan')->nullable();
             $table->string('sumber_informasi');
             $table->text('deskripsi');
             $table->integer('provinsi_id');

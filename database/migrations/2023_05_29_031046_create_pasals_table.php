@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDifabelTypesTable extends Migration
+class CreatePasalsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateDifabelTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('difabel_type', function (Blueprint $table) {
+        Schema::create('pasal', function (Blueprint $table) {
             $table->id();
             $table->integer('klien_id');
             $table->string('value');
@@ -28,6 +28,6 @@ class CreateDifabelTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('difabel_type');
+        Schema::dropIfExists('pasal');
     }
 }

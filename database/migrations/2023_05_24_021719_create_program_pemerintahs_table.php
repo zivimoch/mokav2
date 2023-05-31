@@ -15,8 +15,8 @@ class CreateProgramPemerintahsTable extends Migration
     {
         Schema::create('program_pemerintah', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_program');
-            $table->boolean('aktif')->default(0);
+            $table->integer('klien_id');
+            $table->string('value');
             $table->timestamps();
         });
     }
