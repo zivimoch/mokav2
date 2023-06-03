@@ -220,8 +220,9 @@ class FormPenerimaPengaduan extends Controller
                 foreach ($terlapor as $key => $value) {
                     Terlapor::create([
                         'kasus_id' => $kasus->id,
+                        'nik' => isset($request->nik_terlapor[$key]) ? $request->nik_terlapor[$key] : NULL,
                         'nama' => isset($request->nama_terlapor[$key]) ? $request->nama_terlapor[$key] : NULL,
-                        'tempat_lahir_terlapor' => isset($request->tempat_lahir_terlapor[$key]) ? $request->tempat_lahir_terlapor[$key] : NULL,
+                        'tempat_lahir' => isset($request->tempat_lahir_terlapor[$key]) ? $request->tempat_lahir_terlapor[$key] : NULL,
                         'tanggal_lahir' => isset($request->tanggal_lahir_terlapor[$key]) ? $request->tanggal_lahir_terlapor[$key] : NULL,
                         'provinsi_id' => isset($request->provinsi_id_terlapor[$key]) ? $request->provinsi_id_terlapor[$key] : NULL,
                         'kotkab_id' => isset($request->kota_id_terlapor[$key]) ? $request->kota_id_terlapor[$key] : NULL,
@@ -241,7 +242,7 @@ class FormPenerimaPengaduan extends Controller
                         'file_ttd' => isset($request->file_ttd_terlapor[$key]) ? $request->file_ttd_terlapor[$key] : NULL,  
                         'desil' => isset($request->desil_terlapor[$key]) ? $request->desil_terlapor[$key] : NULL,  
                         'created_by' => $created_by
-                    ])
+                    ]);
                 }
             }
             
