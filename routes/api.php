@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\KasusController;
 use App\Http\Controllers\WilayahController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,11 +17,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    // return $request->user();
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
-    Route::get('agenda', [AgendaController::class, 'api_index']);
-// });
+//agenda
+Route::get('agenda', [AgendaController::class, 'api_index']);
 
 Route::prefix('v1')->group(function () {
     Route::namespace('API')->group(function () {

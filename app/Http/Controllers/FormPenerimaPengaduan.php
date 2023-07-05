@@ -9,6 +9,7 @@ use App\Models\Klien;
 use App\Models\KondisiKhusus;
 use App\Models\Pasal;
 use App\Models\Pelapor;
+use App\Models\Petugas;
 use App\Models\ProgramPemerintah;
 use App\Models\Terlapor;
 use App\Models\TindakKekerasan;
@@ -90,7 +91,11 @@ class FormPenerimaPengaduan extends Controller
                 'tanggal_pelaporan' => 'required',
                 'tanggal_kejadian' => 'required'
                 ]);
-                $created_by = isset(Auth::user()->id) ? Auth::user()->id : NULL; 
+                if (Auth::user()->jabatan == 'Penerima Pengaduan') {
+                    $created_by = Auth::user()->id; 
+                }else{
+                    $created_by = NULL;
+                }
 
                 if ($validator->fails())
                 {
@@ -121,6 +126,7 @@ class FormPenerimaPengaduan extends Controller
             //Data Pelapor
             $pelapor = Pelapor::create([
                 'kasus_id' => $kasus->id,
+                'nik' => $request->nik_pelapor,
                 'nama' => $request->nama_pelapor,
                 'tempat_lahir' => $request->tempat_lahir_pelapor,
                 'tanggal_lahir' => $request->tanggal_lahir_pelapor,
@@ -131,6 +137,7 @@ class FormPenerimaPengaduan extends Controller
                 'alamat' => $request->alamat_pelapor,
                 'no_telp' => $request->no_telp_pelapor,
                 'file_ttd' => $request->file_ttd_pelapor,
+                'hubungan_pelapor' => $request->hubungan_pelapor,
                 'desil' => $request->desil_pelapor,
                 'created_by' => $created_by
             ]);
@@ -157,9 +164,18 @@ class FormPenerimaPengaduan extends Controller
                         'no_telp' => isset($request->no_telp_klien[$key]) ? $request->no_telp_klien[$key] : NULL,  
                         'status_pendidikan' => isset($request->status_pendidikan_klien[$key]) ? $request->status_pendidikan_klien[$key] : NULL,  
                         'pendidikan' => isset($request->pendidikan_klien[$key]) ? $request->pendidikan_klien[$key] : NULL,  
+                        'kelas' => isset($request->kelas[$key]) ? $request->kelas[$key] : NULL,  
+                        'institusi_pendidikan' => isset($request->institusi_pendidikan[$key]) ? $request->institusi_pendidikan[$key] : NULL,  
                         'pekerjaan' => isset($request->pekerjaan_klien[$key]) ? $request->pekerjaan_klien[$key] : NULL,  
+                        'penghasilan' => isset($request->penghasilan_klien[$key]) ? $request->penghasilan_klien[$key] : NULL,  
                         'status_kawin' => isset($request->perkawinan_klien[$key]) ? $request->perkawinan_klien[$key] : NULL,  
                         'jumlah_anak' => isset($request->jumlah_anak_klien[$key]) ? $request->jumlah_anak_klien[$key] : NULL,  
+                        'nama_ibu' => isset($request->nama_ibu[$key]) ? $request->nama_ibu[$key] : NULL,  
+                        'tempat_lahir_ibu' => isset($request->tempat_lahir_ibu[$key]) ? $request->tempat_lahir_ibu[$key] : NULL,  
+                        'tanggal_lahir_ibu' => isset($request->tanggal_lahir_ibu[$key]) ? $request->tanggal_lahir_ibu[$key] : NULL,   
+                        'nama_ayah' => isset($request->nama_ayah[$key]) ? $request->nama_ayah[$key] : NULL,  
+                        'tempat_lahir_ayah' => isset($request->tempat_lahir_ayah[$key]) ? $request->tempat_lahir_ayah[$key] : NULL,  
+                        'tanggal_lahir_ayah' => isset($request->tanggal_lahir_ayah[$key]) ? $request->tanggal_lahir_ayah[$key] : NULL,  
                         'hubungan_klien' => isset($request->hubungan_klien[$key]) ? $request->hubungan_klien[$key] : NULL,  
                         'no_lp' => isset($request->no_lp[$key]) ? $request->no_lp[$key]  : NULL,  
                         'pengadilan_negri' => isset($request->pengadilan_negri[$key]) ? $request->pengadilan_negri[$key]  : NULL,  
@@ -245,6 +261,15 @@ class FormPenerimaPengaduan extends Controller
                     ]);
                 }
             }
+
+            //Data Petugas
+            if (Auth::user()->jabatan == 'Penerima Pengaduan') {
+                Petugas::create([
+                    'klien_id' => $klien->id,
+                    'user_id' => $created_by,
+                    'created_by' => $created_by
+                ]);
+            }
             
             //return response
             $response = "Berhasil menginputkan data";
@@ -261,37 +286,41 @@ class FormPenerimaPengaduan extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        try {
+            $data_update = $request->data_update ;
+            if ($data_update == 'pelapor') {
+                $data = Pelapor::where('uuid', $request->uuid)->first();
+            }
+            $klien = Klien::where('id', $data->kasus_id)->first();
+            $request->request->remove('data_update');
+            $data->update($request->all());
+            $perubahan = $data->getChanges();
+            if (!empty($perubahan)) {
+                $perubahan['pengubah'] = 'Addzifi';
+                $perubahan[$data_update] = '';
+            }
+            $perubahan = array_keys($perubahan);
+
+            //return response
+            $response = "Berhasil mengupdate data";
+            return redirect()->route('kasus.show', $klien->uuid)
+                    ->with('data', json_encode($perubahan))
+                    ->with('success', true)
+                    ->with('response', $response);
+        } catch (Exception $e){
+            return redirect()->route('kasus.show', $klien->uuid)
+                    ->with('error', true)
+                    ->with('response', $e->getMessage());
+            die();
+        }
     }
 
     /**

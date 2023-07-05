@@ -284,7 +284,7 @@ function penjadwalan_layanan() {
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
-      "ajax": "/api/agenda?tahun=2023&bulan=3&user_id=2",
+      "ajax": "/api/agenda?tahun=2023&bulan=6&user_id=2",
       "rowsGroup": [0],
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);

@@ -1,72 +1,6 @@
 @extends('layouts.template')
 
 @section('content')
-
-<link rel="stylesheet" href="{{ asset('calendar-agenda') }}/simple-calendar.css">
-<script src="{{ asset('calendar-agenda') }}/jquery.simple-calendar.js"></script>
-<script>
-  $(function(){
-  var calendaragenda = $("#calendar-agenda").simpleCalendar({
-
-// displays events
-displayEvent: true,
-
-// event dates
-events: [
-  // generate new event after tomorrow for one hour
-  {
-    startDate: new Date(new Date().setHours(new Date().getHours() + 24)).toDateString(),
-    endDate: new Date(new Date().setHours(new Date().getHours() + 25)).toISOString(),
-    summary: 'Aktivitas 1'
-  },
-  // generate new event for yesterday at noon
-  {
-    startDate: new Date(new Date().setHours(new Date().getHours() - new Date().getHours() - 12, 0)).toISOString(),
-    endDate: new Date(new Date().setHours(new Date().getHours() - new Date().getHours() - 11)).getTime(),
-    summary: 'Aktivitas 2'
-  },
-  // generate new event for the last two days
-  {
-    startDate: new Date(new Date().setHours(new Date().getHours() - 48)).toISOString(),
-    endDate: new Date(new Date().setHours(new Date().getHours() - 24)).getTime(),
-    summary: 'Aktivitas 3'
-  },
-  // generate new event for yesterday at noon
-  {
-    startDate: new Date(new Date().setHours(new Date().getHours() - new Date().getHours() - 12, 0)).toISOString(),
-    endDate: new Date(new Date().setHours(new Date().getHours() - new Date().getHours() - 11)).getTime(),
-    summary: 'Aktivitas 2'
-  },
-  // generate new event for the last two days
-  {
-    startDate: new Date(new Date().setHours(new Date().getHours() - 48)).toISOString(),
-    endDate: new Date(new Date().setHours(new Date().getHours() - 24)).getTime(),
-    summary: 'Aktivitas 3'
-  },
-  // generate new event for yesterday at noon
-  {
-    startDate: new Date(new Date().setHours(new Date().getHours() - new Date().getHours() - 12, 0)).toISOString(),
-    endDate: new Date(new Date().setHours(new Date().getHours() - new Date().getHours() - 11)).getTime(),
-    summary: 'Aktivitas 2'
-  },
-  // generate new event for the last two days
-  {
-    startDate: new Date(new Date().setHours(new Date().getHours() - 48)).toISOString(),
-    endDate: new Date(new Date().setHours(new Date().getHours() - 24)).getTime(),
-    summary: 'Aktivitas 3'
-  }
-],
-
-// disable showing event details
-disableEventDetails: false,
-
-// disable showing empty date details
-disableEmptyDetails: false 
-
-});
-}); 
-$calendar.setEvents(events)
-</script>
     <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
@@ -157,12 +91,19 @@ $calendar.setEvents(events)
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <div class="callout callout-danger">
-                  <h5>I am a danger callout!</h5>
+                <div class="callout callout-danger" style="cursor: pointer;">
+                  <h5>Laporan Sarmut</h5>
 
-                  <p>There is a problem that we need to fix. A wonderful serenity has taken possession of my entire
-                    soul,
-                    like these sweet mornings of spring which I enjoy with my whole heart.</p>
+                  <p>Mengingatkan kembali sarmut saat ini sudah otomatis dibuat oleh MOKA V.2, jadi tidak perlu manual mengirimkan sarmut lagi.</p>
+                </div>
+                <div class="callout callout-info" style="cursor: pointer;">
+                  <h5>Jadwal Mas Fajar</h5>
+
+                  <p>Selamat Pagi Bapak Ibu, 
+
+                    Izin menyampaikan ulang jadwal kegiatan harian untuk hari ini.
+                    
+                    Atas perhatian dan kerjasamanya diucapkan terima kasih</p>
                 </div>
               </div>
               <!-- /.card-body -->
@@ -201,7 +142,7 @@ $calendar.setEvents(events)
                       <label for="todoCheck1"></label>
                     </div>
                     <!-- todo text -->
-                    <span class="text">Design a nice theme</span>
+                    <span class="text"></span>
                     <!-- Emphasis label -->
                     <small class="badge badge-danger"><i class="far fa-clock"></i> 2 mins</small>
                     <!-- General tools such as edit or delete-->
@@ -359,10 +300,53 @@ $calendar.setEvents(events)
               <!-- /. tools -->
             </div>
             <!-- /.card-header -->
-            <div class="card-body pt-0">
-              <!--The calendar -->
-              {{-- <div id="calendar" style="width: 100%"></div> --}}
-              <div id="calendar-agenda"></div>
+            <div class="card-body pt-0" style="overflow-x: scroll">
+              <link rel="stylesheet" href="{{ asset('calendar') }}/css/style.css" />
+                <div class="calendar">
+                  <div class="year-header">
+                    <span class="left-button fa fa-chevron-left" id="prev"> </span>
+                    <span class="year" id="label"></span>
+                    <span class="right-button fa fa-chevron-right" id="next"> </span>
+                  </div>
+                  <table class="months-table w-100">
+                    <tbody>
+                      <tr class="months-row">
+                        <td class="month">Jan</td>
+                        <td class="month">Feb</td>
+                        <td class="month">Mar</td>
+                        <td class="month">Apr</td>
+                        <td class="month">May</td>
+                        <td class="month">Jun</td>
+                        <td class="month">Jul</td>
+                        <td class="month">Aug</td>
+                        <td class="month">Sep</td>
+                        <td class="month">Oct</td>
+                        <td class="month">Nov</td>
+                        <td class="month">Dec</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <table class="days-table w-100">
+                    <td class="day">Min</td>
+                    <td class="day">Sen</td>
+                    <td class="day">Sel</td>
+                    <td class="day">Rab</td>
+                    <td class="day">Kam</td>
+                    <td class="day">Jum</td>
+                    <td class="day">Sab</td>
+                  </table>
+                  <div class="frame">
+                    <table class="dates-table w-100">
+                      <tbody class="tbody"></tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="dialog" id="dialog">
+                  <input type="button" value="close" id="cancel-button"/>
+                  <div class="events-container"></div>
+                </div>
+                <script src="{{ asset('calendar') }}/js/main.js"></script>
             </div>
             <!-- /.card-body -->
           </div>

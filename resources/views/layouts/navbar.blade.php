@@ -66,7 +66,7 @@
               <div class="tab-content">
                   <div class="tab-pane fade show active" id="task" role="tabpanel" aria-labelledby="task-tab">
                     <div class="list-group" id="task_list" style="max-height: 500px; overflow:scroll; overflow-x: hidden; scrollbar-width: thin;">
-                      <a href="{{ route('kasus.detail') }}?tab=settings&hightlight=inputsupervisor" class="list-group-item list-group-item-action flex-column align-items-start">
+                      <a href="{{ route('kasus.show', '35db5be8-551a-4a8f-91d1-e8ea392q5515') }}?tab=settings&hightlight=inputsupervisor" class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
                           <h6 class="mb-1">Korban / Pelapor</h6>
                           <small>2 hari lalu</small>
@@ -74,7 +74,7 @@
                         <p class="mb-1">Pelapor / Korban menyetujui laporan pengaduan. Silahkan tentukan Supervisor</p>
                         <small>|</small>
                       </a> 
-                      <a href="{{ route('kasus.detail') }}?tab=kasus&hightlight=formulir#custom-tabs-one-home" class="list-group-item list-group-item-action flex-column align-items-start">
+                      <a href="{{ route('kasus.show', 'uuidnya') }}?tab=kasus&hightlight=formulir#custom-tabs-one-home" class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
                           <h6 class="mb-1">Korban / Pelapor</h6>
                           <small>2 hari lalu</small>
@@ -82,7 +82,7 @@
                         <p class="mb-1">Pelapor / Korban tidak menyetujui laporan pengaduan. Silahkan perbaiki data kasus, data korban dan data terlapor</p>
                         <small>|</small>
                       </a> 
-                      <a href="{{ route('kasus.detail') }}?tab=settings&hightlight=inputpersetujuankasus" class="list-group-item list-group-item-action flex-column align-items-start">
+                      <a href="{{ route('kasus.show', 'uuidnya') }}?tab=settings&hightlight=inputpersetujuankasus" class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
                           <h6 class="mb-1">Penerima Pengaduan</h6>
                           <small>2 hari lalu</small>

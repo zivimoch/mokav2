@@ -28,6 +28,7 @@ class AgendaController extends Controller
 
     public function api_index(Request $request)
     {
+        // return Auth::user()->id;
         if (isset($request->user_id)) {
             $user_id = $request->user_id;
         }else{

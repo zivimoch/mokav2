@@ -23,6 +23,22 @@
     50%  { background-color: #ffffd1; }
     100%  { background-color: #FFFFFF; }
     }
+
+    .input_pelapor, #tombol_save_pelapor, .input_klien, #tombol_save_klien, .input_kasus, #tombol_save_kasus, .input_terlapor, #tombol_save_terlapor {
+        display: none;
+    }
+
+    .select2-selection__rendered {
+        line-height: 25px !important;
+        margin-top:-6px !important;   
+    }
+    .select2-container .select2-selection--single {
+        height: 30px !important;
+        border-color: black;
+    }
+    .select2-selection__arrow {
+        height: 30px !important;
+    }
 </style>
 
 <section class="content-header">
@@ -42,6 +58,9 @@
 </section>
 
 <section class="content">
+@if (Session::has('data'))
+    <input type="hidden" id="perubahan" value="{{ Session::get('data')  }}">
+@endif
 <div class="container-fluid">
 <div class="row">
 <div class="col-md-3">
@@ -57,11 +76,11 @@
 <div class="text-center">
 <img class="profile-user-img img-fluid img-circle" src="{{ asset('adminlte') }}/dist/img/user4-128x128.jpg" alt="User profile picture">
 </div>
-<h3 class="profile-username text-center">Nina Mcintire</h3>
-<p class="text-muted text-center">(26) Perempuan</p>
-<p class="text-center">0004/01/2023</p>
+<h3 class="profile-username text-center">{{ $klien->nama }}</h3>
+<p class="text-muted text-center">({{ $klien->tanggal_lahir ? Carbon\Carbon::parse($klien->tanggal_lahir)->age : '' }}) {{ ucfirst($klien->jenis_kelamin) }}</p>
+<p class="text-center">{{ $klien->no_klien }}</p>
 <ul class="list-group list-group-unbordered mb-3">
-<h5><span class="float-right badge bg-danger btn-block">Pelapor/korban menyetujui laporan pengaduan</span></h5>
+<h5><span class="float-right badge bg-danger btn-block">Pelengkapan Data</span></h5>
 <li class="list-group-item">
 <b>Layanan</b> <a class="float-right">5</a>
 </li>
@@ -73,7 +92,35 @@
 </li>
 </ul>
 </div>
+</div>
 
+<div class="card card-warning">
+    <div class="card-header">
+    <h3 class="card-title">Catatan Kasus</h3>
+    </div>
+    
+    <div class="card-body" style="height: 350px; overflow-y:scroll">
+    <a href="#">
+        <strong>Rudi Hartanto (Advokat)</strong>
+        <p class="text-muted">
+            Lorem ipsum, dolor sit amet rupti unde labore error? Ad, dolore inventore. Blanditiis incidunt...
+        </p>
+    </a>
+    <hr>
+    <a href="#">
+        <strong>Adam Levine (Penerima Pengaduan)</strong>
+        <p class="text-muted">
+            Lorem ipsum, dolor sit amet rupti unde labore error? Ad, dolore inventore. Blanditiis incidunt...
+        </p>
+    </a>
+    <hr>
+    <a href="#">
+        <strong>Berliana Dewi (Psikolog)</strong>
+        <p class="text-muted">
+            Lorem ipsum, dolor sit amet rupti unde labore error? Ad, dolore inventore. Blanditiis incidunt...
+        </p>
+    </a>
+    </div>
 </div>
 
 <div class="card card-primary">
@@ -168,62 +215,157 @@
             
             
         <div class="post clearfix">
-            <b>A. IDENTITAS PELAPOR</b>
-            <table class="table table-bottom table-sm">
-                <tr>
-                    <td style="width: 200px">Nama</td>
-                    <td>:</td>
-                    <td>Addzifi Mochamad Gumelar (Laki-laki)</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Tempat/Tgl Lahir</td>
-                    <td>:</td>
-                    <td>Bogor, 13 Februari 1997 (42 Tahun)</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Alamat</td>
-                    <td>:</td>
-                    <td>Jl. Diponogoro Empu Tantular 45 Jaya, <b>Kelurahan</b> Mantap, <b>Kecamatan</b> Harapan, <b>Kota</b> DKI Jakarta</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">No Telp</td>
-                    <td>:</td>
-                    <td>08520885564</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Hubungan dengan anak</td>
-                    <td>:</td>
-                    <td>Ayah Kandung</td>
-                </tr>
-            </table>
+            {{-- @if (Session::has('success'))
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    {!! Session::get('response') !!}
+                </div>
+            @endif --}}
+
+            <b style="position: absolute" id="anchor_pelaporan">A. IDENTITAS PELAPOR</b>{{ isset($data) ? $data : '' }}
+            <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
+                @csrf
+                @method('put')
+                <input type="hidden" name="uuid" value="{{ $pelapor->uuid }}">
+                <input type="hidden" name="data_update" value="pelapor">
+                <span style="float:right">
+                    <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_pelapor" onclick="editdata('pelapor')">
+                    <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_pelapor">
+                    <i class="fas fa-check"></i> Save
+                    </button>
+                </span>
+                <table class="table table-bottom table-sm">
+                    <tr id="nama_pelapor">
+                        <td style="width: 200px">Nama</td>
+                        <td>:</td>
+                        <td><span class="data_pelapor">{{ $pelapor->nama }}</span> <input type="text" name="nama" value="{{ $pelapor->nama }}" class="input_pelapor"></td>
+                    </tr>
+                    <tr id="tanggal_lahir_pelapor">
+                        <td style="width: 200px">Tempat/Tgl Lahir</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_pelapor" id="tempat_lahir_pelapor">{{ $pelapor->tempat_lahir }}</span> 
+                            <input type="text" name="tempat_lahir" value="{{ $pelapor->tempat_lahir }}" class="input_pelapor">, 
+                            <span class="data_pelapor">
+                                {{ $pelapor->tanggal_lahir ? date('d M Y', strtotime($pelapor->tanggal_lahir)) : '' }} ({{ $pelapor->tanggal_lahir ? Carbon\Carbon::parse($pelapor->tanggal_lahir)->age.' tahun' : ' '}})
+                            </span> 
+                            <input type="date" name="tanggal_lahir" value="{{ $pelapor->tanggal_lahir }}" class="input_pelapor">
+                        </td>
+                    </tr>
+                    <tr id="alamat_pelapor">
+                        <td style="width: 200px">Alamat</td>
+                        <td>:</td>
+                        <td><span class="data_pelapor">{{ $pelapor->alamat }}</span> 
+                            <input type="text" name="alamat" value="{{ $pelapor->alamat }}" class="input_pelapor">, 
+                            <b>Provinsi</b> <span class="data_pelapor">{{ $pelapor->provinsi }}</span> 
+                            <select name="provinsi_id" class="input_pelapor select2bs4" id="provinsi_id_pelapor" onchange="getkotkab('pelapor')">
+                                @foreach ($provinsi as $item)
+                                    <option value="{{ $item->code }}" {{ $item->code == $pelapor->provinsi_id ? 'selected' : '' }}>{{ $item->name }}</option>
+                                @endforeach
+                            </select>,
+                            <b>Kota</b> <span class="data_pelapor">{{ $pelapor->kota }}</span> 
+                            <select name="kotkab_id" class="input_pelapor select2bs4" id="kota_id_pelapor" onchange="getkecamatan('pelapor')" style="width:100%">
+                            </select>, 
+                            <b>Kecamatan</b> <span class="data_pelapor">{{ $pelapor->kecamatan }}</span> 
+                            <select name="kecamatan_id" class="input_pelapor select2bs4" id="kecamatan_id_pelapor" style="width:100%">
+                                <option value="" selected></option>
+                            </select>,
+                            <b>Kelurahan</b> <span class="data_pelapor">{{ $pelapor->kelurahan }}</span> 
+                            <input type="text" name="kelurahan" value="{{ $pelapor->kelurahan }}" class="input_pelapor"> 
+                        </td>
+                    </tr>
+                    <tr id="no_telp_pelapor">
+                        <td style="width: 200px">No Telp</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_pelapor">{{ $pelapor->no_telp }}</span> 
+                            <input type="text" name="no_telp" value="{{ $pelapor->no_telp }}" class="input_pelapor">
+                        </td>
+                    </tr>
+                    <tr id="hubungan_pelapor_pelapor">
+                        <td style="width: 200px">Hubungan dengan klien</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_pelapor">{{ $pelapor->hubungan_pelapor }}</span> 
+                            <select name="hubungan_pelapor" class="input_pelapor select2bs4" style="width: 100%;">
+                                @foreach ($hubungan_dengan_terlapor as $item)
+                                    <option value="{{ $item }}" {{ $item == $pelapor->hubungan_pelapor ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </form>
         </div>
         <div class="post clearfix">
-            <b>B. IDENTITAS ANAK</b>
+            <b>B. IDENTITAS KLIEN</b>
+            <span style="float:right">
+                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_klien" onclick="editdata('klien')">
+                <i class="fas fa-edit"></i> Edit
+                </a>
+                <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_klien">
+                <i class="fas fa-check"></i> Save
+                </button>
+            </span>
             <table class="table table-bottom table-sm">
-                <tr>
+                <tr id="nama_klien">
                     <td style="width: 200px">Nama</td>
                     <td>:</td>
-                    <td>Addzifi Mochamad Gumelar (Laki-laki)</td>
+                    <td><span class="data_klien">{{ $klien->nama }}</span> <input type="text" name="nama" value="{{ $klien->nama }}" class="input_klien"></td>
                 </tr>
-                <tr>
+                <tr id="tanggal_lahir_klien">
                     <td style="width: 200px">Tempat/Tgl Lahir</td>
                     <td>:</td>
-                    <td>Bogor, 13 Februari 1997 (25 Tahun)</td>
+                    <td>
+                        <span class="data_klien" id="tempat_lahir_klien">{{ $klien->tempat_lahir }}</span> 
+                        <input type="text" name="tempat_lahir" value="{{ $klien->tempat_lahir }}" class="input_klien">, 
+                        <span class="data_klien">
+                            {{ $klien->tanggal_lahir ? date('d M Y', strtotime($klien->tanggal_lahir)) : '' }} ({{ $klien->tanggal_lahir ? Carbon\Carbon::parse($klien->tanggal_lahir)->age.' tahun' : ' '}})
+                        </span> 
+                        <input type="date" name="tanggal_lahir" value="{{ $klien->tanggal_lahir }}" class="input_klien">
+                    </td>
                 </tr>
-                <tr>
+                <tr id="alamat_klien">
                     <td style="width: 200px">Alamat</td>
                     <td>:</td>
-                    <td>Jl. Diponogoro Empu Tantular 45 Jaya, <b>Kelurahan</b> Mantap, <b>Kecamatan</b> Harapan, <b>Kota</b> DKI Jakarta</td>
+                    <td><span class="data_klien">{{ $pelapor->alamat }}</span> 
+                        <input type="text" name="alamat" value="{{ $pelapor->alamat }}" class="input_klien">, 
+                        <b>Provinsi</b> <span class="data_klien">{{ $pelapor->provinsi }}</span> 
+                        <select name="provinsi_id" class="input_klien select2bs4" id="provinsi_id_klien" onchange="getkotkab('klien')">
+                            @foreach ($provinsi as $item)
+                                <option value="{{ $item->code }}" {{ $item->code == $klien->provinsi_id ? 'selected' : '' }}>{{ $item->name }}</option>
+                            @endforeach
+                        </select>,
+                        <b>Kota</b> <span class="data_klien">{{ $klien->kota }}</span> 
+                        <select name="kotkab_id" class="input_klien select2bs4" id="kota_id_klien" onchange="getkecamatan('klien')" style="width:100%">
+                        </select>, 
+                        <b>Kecamatan</b> <span class="data_klien">{{ $klien->kecamatan }}</span> 
+                        <select name="kecamatan_id" class="input_klien select2bs4" id="kecamatan_id_klien" style="width:100%">
+                            <option value="" selected></option>
+                        </select>,
+                        <b>Kelurahan</b> <span class="data_klien">{{ $klien->kelurahan }}</span> 
+                        <input type="text" name="kelurahan" value="{{ $klien->kelurahan }}" class="input_klien"> 
+                    </td>
                 </tr>
-                <tr>
+                <tr id="pendidikan_klien">
                     <td style="width: 200px">Pendidikan</td>
                     <td>:</td>
-                    <td><b>Kelas</b> 2, <b>Sekolah</b> SDN 1 Wakanda</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->pendidikan }}</span> <input type="text" name="pendidikan" value="{{ $klien->pendidikan }}" class="input_klien">
+                        (<span class="data_klien">{{ $klien->status_pendidikan }}</span> <input type="text" name="status_pendidikan" value="{{ $klien->status_pendidikan }}" class="input_klien">)
+                    </td>
                 </tr>
                 <tr>
                     <td style="width: 200px">Nama Ibu</td>
                     <td>:</td>
                     <td>Siswati Karnasuryatna Gumelar</td>
+                </tr>
+                <tr id="nama_klien">
+                    <td style="width: 200px">Nama Ibu</td>
+                    <td>:</td>
+                    <td><span class="data_klien">{{ $klien->nama }}</span> <input type="text" name="nama" value="{{ $klien->nama }}" class="input_klien"></td>
                 </tr>
                 <tr>
                     <td style="width: 200px">TTL Ibu</td>
@@ -264,6 +406,14 @@
         </div>
         <div class="post clearfix">
             <b>C. IDENTITAS TERLAPOR</b>
+            <span style="float:right">
+                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor" onclick="editdata('terlapor')">
+                <i class="fas fa-edit"></i> Edit
+                </a>
+                <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_terlapor">
+                <i class="fas fa-check"></i> Save
+                </button>
+            </span>
             <table class="table table-bottom table-sm">
                 <tr>
                     <td style="width: 200px">Nama</td>
@@ -319,6 +469,14 @@
         </div>
         <div class="post clearfix">
             <b>D. KASUS KLIEN</b>
+            <span style="float:right">
+                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_kasus" onclick="editdata('kasus')">
+                <i class="fas fa-edit"></i> Edit
+                </a>
+                <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_kasus">
+                <i class="fas fa-check"></i> Save
+                </button>
+            </span>
             <table class="table table-bottom table-sm">
                 <tr>
                     <td style="width: 200px">Tanggal Kejadian</td>
@@ -374,6 +532,14 @@
         </div>
         <div class="post clearfix">
             <b>E. HASIL AKHIR</b>
+            <span style="float:right">
+                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor" onclick="editdata('terlapor')">
+                <i class="fas fa-edit"></i> Edit
+                </a>
+                <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_terlapor">
+                <i class="fas fa-check"></i> Save
+                </button>
+            </span>
             <table class="table table-bottom table-sm">
                 <tr>
                     <td style="width: 200px">Catatan Akhir</td>
@@ -384,6 +550,14 @@
         </div>
         <div class="post clearfix">
             <b>F. BILA DISIDANGKAN</b>
+            <span style="float:right">
+                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor" onclick="editdata('terlapor')">
+                <i class="fas fa-edit"></i> Edit
+                </a>
+                <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_terlapor">
+                <i class="fas fa-check"></i> Save
+                </button>
+            </span>
             <table class="table table-bottom table-sm">
                 <tr>
                     <td style="width: 200px">Pelaku Dihukum</td>
@@ -432,7 +606,7 @@
         <div class="tab-pane {{ Request::get('tab') == 'kasus-assessment' ? 'active' : '' }}" id="kasus-assessment" role="tabpanel" aria-labelledby="kasus-assessment-tab">
             
             <div class="post clearfix" style="margin: 0px">
-            <b>A. KRONOLOGIS</b>
+            <b>A. RIWAYAT KEJADIAN</b>
             </br>
             </br>
             <div style="overflow-x: scroll">
@@ -497,56 +671,6 @@
                 </tbody>
             </table>
             </div>
-            <br>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="exampleInputFile">Assessment tools</label>
-                        <div class="input-group">
-                        <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="exampleInputFile">
-                        <label class="custom-file-label" for="exampleInputFile">Choose file</label>
-                        </div>
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button">Upload</button>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label for="exampleInputFile">Pic 1</label>
-                        <div class="input-group">
-                        <input type="text" class="form-control" readonly value="oojid.png" onclick="alert('oojid.png')" style="cursor: pointer">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label for="exampleInputFile">Pic 2</label>
-                        <div class="input-group">
-                        <input type="text" class="form-control" readonly value="oojid.png" onclick="alert('oojid.png')" style="cursor: pointer">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label for="exampleInputFile">Pic 3</label>
-                        <div class="input-group">
-                        <input type="text" class="form-control" readonly value="oojid.png" onclick="alert('oojid.png')" style="cursor: pointer">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="row" style="margin-top: 20px">
                 <div class="col-md-12">
                     <div class="form-group">
@@ -600,52 +724,82 @@
         </div>
 
             <div class="post clearfix">
-                <b>B. DAMPAK KEKERASAN</b>
+                <b>B. BIOPSIKOSOSIAL</b>
                 </br>
                 <div class="row">
 
                 <div class="col-md-12">
                     <div class="form-group">
-                    <label>Kesehatan Fisik</label>
+                    <label>Biologis (kondisi fisik, catatan kesehatan, pengobatan)</label>
                     <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
-                    <label>Kesehatan Psikologis</label>
+                    <label>Psikologis</label>
                     <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
-                    <label>Kesehatan Reproduksi</label>
+                    <label>Sosial & Spiritual</label>
                     <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
-                    <label>Sosial</label>
+                    <label>Catatan Lainnya</label>
                     <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                    <label>Ekonomi</label>
-                    <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="exampleInputFile">Assessment tools</label>
+                            <div class="input-group">
+                            <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="exampleInputFile">
+                            <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                            </div>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button">Upload</button>
+                            </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                    <label>Anak/Keluarga</label>
-                    <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="exampleInputFile">Pic 1</label>
+                            <div class="input-group">
+                            <input type="text" class="form-control" readonly value="oojid.png" onclick="alert('oojid.png')" style="cursor: pointer">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                            </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                    <label>Lain-lain</label>
-                    <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="exampleInputFile">Pic 2</label>
+                            <div class="input-group">
+                            <input type="text" class="form-control" readonly value="oojid.png" onclick="alert('oojid.png')" style="cursor: pointer">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                            </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="exampleInputFile">Pic 3</label>
+                            <div class="input-group">
+                            <input type="text" class="form-control" readonly value="oojid.png" onclick="alert('oojid.png')" style="cursor: pointer">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                
                 <button type="button" class="btn btn-block btn-primary">Simpan</button>
                 </div>
             </div>
@@ -957,7 +1111,17 @@
 <script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
 
 <script>
+    $(document).ready(function () {
+        getkotkab('pelapor');
+        getkecamatan('pelapor');
+        hightlighting();
+    });
+    
     $(function () {
+
+    $('.input_pelapor').next(".select2-container").hide();
+    $('.input_klien').next(".select2-container").hide();
+
       $("#example1").DataTable({
         "responsive": false, "lengthChange": false, "autoWidth": false,
         "buttons": ["copy", "csv", "excel", "pdf", "print",
@@ -973,7 +1137,7 @@
 
     $('#example1 tbody').on( 'click', 'tr', function () {
         alert('redirect ke : '+this.id);
-        window.location.assign('{{ route("kasus.detail") }}')
+        window.location.assign('{{ route("kasus.show", "dsa") }}')
     } );
 
 
@@ -994,17 +1158,80 @@
 
     $('#example2 tbody').on( 'click', 'tr', function () {
         alert('redirect ke : '+this.id);
-        window.location.assign('{{ route("kasus.detail") }}')
+        window.location.assign('{{ route("kasus.show", "dsa") }}')
     } );
-    
-    $(function () {
-      //Initialize Select2 Elements
-      $('.select2').select2()
-  
-      //Initialize Select2 Elements
-      $('.select2bs4').select2({
-        theme: 'bootstrap4'
-      })
+
+    function editdata(params) {
+        $('.data_'+params).hide();
+        $('#tombol_edit_'+params).hide();
+        $('.input_'+params).show();
+        $('.input_'+params).next(".select2-container").show();
+        $('#tombol_save_'+params).show(); 
+    }
+
+    //Initialize Select2 Elements
+    $('.select2bs4').select2();
+    $('.select-tag').select2({
+    tags: true,
+    theme: 'bootstrap4'
     });
+
+    function getkotkab(field_id='') {
+        province_code = $('#provinsi_id_'+field_id).val();
+        
+        $.ajax({
+          url:'{{ route("api.v1.kotkab") }}?province_code='+province_code,
+          type:'GET',
+          dataType: 'json',
+          success: function( response ) {
+                var option = '<option value="">-- Pilih Kotkab --</option>';
+                var kotkabID = '{{ $pelapor->kotkab_id }}';
+                $.each(response.data, function(i, value) {
+                    var selected = ''
+                    if (kotkabID == value.code) {
+                        selected = `selected="selected"`;
+                    }
+
+                    option += `<option value="${value.code}" ${selected}>${value.name}</option>`
+                });
+                $('#kota_id_'+field_id).html(option);
+            }
+        });
+    };
+
+    function getkecamatan(field_id='') {
+      kota_code = $('#kota_id_'+field_id).val();
+        $.ajax({
+          url:'{{ route("api.v1.kecamatan") }}?kota_code='+kota_code,
+          type:'GET',
+          dataType: 'json',
+          success: function( response ) {
+                var option = '<option value="">-- Pilih Kecamatan --</option>';
+                var kecamatanID = '{{ $pelapor->kecamatan_id }}'
+                $.each(response.data, function(i, value) {
+                    var selected = ''
+                    if (kecamatanID == value.code) {
+                        selected = `selected="selected"`
+                    }
+                    option += `<option value="${value.code}" ${selected}>${value.name}</option>`
+                });
+                $('#kecamatan_id_'+field_id).html(option);
+            }
+        });
+    }; 
+
+    function hightlighting() {
+       
+        var inputValue = $('#perubahan').val();
+
+        if (inputValue) {
+            toastr.success('Berhasil update data!');
+            var value = JSON.parse(inputValue);
+            $.each(value, function(index, element) {
+                data_update = $('#data_update').val();
+                $('#'+element+'_'+value[value.length - 1]).addClass('hightlighting');
+            });
+        } 
+    }
 </script>
 @endsection

@@ -36,6 +36,8 @@ class CreateTerlaporsTable extends Migration
             $table->string('status_kawin')->nullable();
             $table->integer('jumlah_anak')->nullable();
             $table->string('hubungan_terlapor')->nullable();
+            $table->string('masa_hukuman')->nullable();
+            $table->char('denda_hukuman')->nullable();
             $table->string('file_ttd')->nullable();
             $table->integer('desil')->nullable();
             $table->integer('created_by')->nullable();

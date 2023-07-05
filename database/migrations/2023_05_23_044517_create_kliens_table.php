@@ -19,6 +19,8 @@ class CreateKliensTable extends Migration
             $table->integer('kasus_id');
             $table->string('no_klien')->nullable();
             $table->string('status');
+            $table->string('kategori_kasus')->nullable();
+            $table->string('tindak_kekerasan')->nullable();
             $table->char('nik')->nullable();
             $table->string('nama');
             $table->string('tempat_lahir');
@@ -34,9 +36,18 @@ class CreateKliensTable extends Migration
             $table->char('no_telp')->nullable();
             $table->string('status_pendidikan')->nullable();
             $table->string('pendidikan')->nullable();
+            $table->string('kelas')->nullable(); //bisa kelas sd smp sma, atau semester kalau kuliah
+            $table->string('institusi_pendidikan')->nullable();
             $table->string('pekerjaan')->nullable();
+            $table->char('penghasilan')->nullable();
             $table->string('status_kawin')->nullable();
             $table->integer('jumlah_anak')->nullable();
+            $table->string('nama_ibu')->nullable();
+            $table->string('tempat_lahir_ibu')->nullable();
+            $table->date('tanggal_lahir_ibu')->nullable();
+            $table->string('nama_ayah')->nullable();
+            $table->string('tempat_lahir_ayah')->nullable();
+            $table->date('tanggal_lahir_ayah')->nullable();
             $table->string('hubungan_klien');
             $table->char('no_lp')->nullable();
             $table->string('pengadilan_negri')->nullable();

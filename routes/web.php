@@ -3,6 +3,7 @@
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FormPenerimaPengaduan;
+use App\Http\Controllers\KasusController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,15 +22,21 @@ Route::post('formpenerimapengaduan', [FormPenerimaPengaduan::class, 'store'])->n
 
 Route::middleware('auth')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    Route::view('kasus/index','/kasus/index')->name('kasus');
-    Route::view('kasus/detail/','/kasus/detail')->name('kasus.detail');
+    // edit data formulir / data master 
+    Route::put('formpenerimapengaduan', [FormPenerimaPengaduan::class, 'update'])->name('formpenerimapengaduan.update');
+    // kasus
+    Route::get('/kasus', [KasusController::class, 'index'])->name('kasus');
+    Route::get('/kasus/show/{uuid}', [KasusController::class, 'show'])->name('kasus.show');
+    // Route::view('kasus/detail/','/kasus/detail')->name('kasus.detail');
     Route::view('notifikasi','/notifikasi')->name('notifikasi');
     Route::view('dokumen','dokumen/index')->name('dokumen');
     Route::view('dokumen/add','dokumen/add')->name('dokumen.add');
     Route::view('dokumen/create','dokumen/create')->name('dokumen.create');
     Route::view('dokumen/createpsi','dokumen/createpsi')->name('dokumen.createpsi');
     Route::view('dokumen/createhkm','dokumen/createhkm')->name('dokumen.createhkm');
+    
+    Route::view('template','template/index')->name('template');
+    Route::view('template/createpsi','template/createpsi.php')->name('template.createpsi');
 
     Route::view('agenda/index','agenda/index')->name('agenda');
     Route::view('kinerja','agenda/kinerja')->name('kinerja');

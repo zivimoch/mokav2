@@ -157,7 +157,7 @@
                 className: "btn-success",
                 text: 'Template',
                   action: function ( ) {
-                    window.location.assign('{{ route("dokumen.add") }}')
+                    window.location.assign('{{ route("template") }}')
                   }
               },
               {

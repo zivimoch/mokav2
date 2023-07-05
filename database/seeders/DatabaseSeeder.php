@@ -2,13 +2,17 @@
 
 namespace Database\Seeders;
 
+use App\Models\Agenda;
 use App\Models\DifabelType;
 use App\Models\Kasus;
 use App\Models\KategoriKasus;
 use App\Models\Klien;
 use App\Models\KondisiKhusus;
 use App\Models\Pasal;
+use App\Models\Pelapor;
+use App\Models\Petugas;
 use App\Models\ProgramPemerintah;
+use App\Models\Terlapor;
 use App\Models\TindakKekerasan;
 use App\Models\TindakLanjut;
 use App\Models\User;
@@ -43,7 +47,7 @@ class DatabaseSeeder extends Seeder
                 "email" => 'penerima@moka.ol',
                 "email_verified_at" => '2023-03-08 03:28:35',
                 "jabatan" => 'Penerima Pengaduan',
-                "supervisor_layanan" => 0,
+                // "supervisor_layanan" => 0,
                 "supervisor_id" => 0,
                 "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq'
             ],[
@@ -53,7 +57,7 @@ class DatabaseSeeder extends Seeder
                 "email" => "mk@moka.ol",
                 "email_verified_at" => '2023-03-08 03:28:35',
                 "jabatan" => 'Manajer Kasus',
-                "supervisor_layanan" => 0,
+                // "supervisor_layanan" => 0,
                 "supervisor_id" => 9,
                 "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq'
             ],[
@@ -63,7 +67,7 @@ class DatabaseSeeder extends Seeder
                 "email" => "pk@moka.ol",
                 "email_verified_at" => '2023-03-08 03:28:35',
                 "jabatan" => 'Pendamping Kasus',
-                "supervisor_layanan" => 0,
+                // "supervisor_layanan" => 0,
                 "supervisor_id" => 9,
                 "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq'
             ],[
@@ -73,7 +77,7 @@ class DatabaseSeeder extends Seeder
                 "email" => "psikolog@moka.ol",
                 "email_verified_at" => '2023-03-08 03:28:35',
                 "jabatan" => 'Psikolog',
-                "supervisor_layanan" => 0,
+                // "supervisor_layanan" => 0,
                 "supervisor_id" => 13,
                 "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq'
             ],[
@@ -83,7 +87,7 @@ class DatabaseSeeder extends Seeder
                 "email" => "advokat@moka.ol",
                 "email_verified_at" => '2023-03-08 03:28:35',
                 "jabatan" => 'Advokat',
-                "supervisor_layanan" => 0,
+                // "supervisor_layanan" => 0,
                 "supervisor_id" => 12,
                 "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq'
             ],[
@@ -93,7 +97,7 @@ class DatabaseSeeder extends Seeder
                 "email" => "paralegal@moka.ol",
                 "email_verified_at" => '2023-03-08 03:28:35',
                 "jabatan" => 'Paralegal',
-                "supervisor_layanan" => 0,
+                // "supervisor_layanan" => 0,
                 "supervisor_id" => 12,
                 "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq'
             ],[
@@ -103,7 +107,7 @@ class DatabaseSeeder extends Seeder
                 "email" => "urc@moka.ol",
                 "email_verified_at" => '2023-03-08 03:28:35',
                 "jabatan" => 'Unit Reaksi Cepat',
-                "supervisor_layanan" => 0,
+                // "supervisor_layanan" => 0,
                 "supervisor_id" => 12,
                 "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq'
             ],[
@@ -113,7 +117,7 @@ class DatabaseSeeder extends Seeder
                 "email" => "spv@moka.ol",
                 "email_verified_at" => '2023-03-08 03:28:35',
                 "jabatan" => 'Supervisor Kasus',
-                "supervisor_layanan" => 0,
+                // "supervisor_layanan" => 0,
                 "supervisor_id" => 0,
                 "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq'
             ],[
@@ -123,7 +127,7 @@ class DatabaseSeeder extends Seeder
                 "email" => "ta@moka.ol",
                 "email_verified_at" => '2023-03-08 03:28:35',
                 "jabatan" => 'Tenaga Ahli',
-                "supervisor_layanan" => 1,
+                // "supervisor_layanan" => 1,
                 "supervisor_id" => 0,
                 "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq'
             ],[
@@ -133,7 +137,7 @@ class DatabaseSeeder extends Seeder
                 "email" => "timdata@moka.ol",
                 "email_verified_at" => '2023-03-08 03:28:35',
                 "jabatan" => 'Tim Data',
-                "supervisor_layanan" => 0,
+                // "supervisor_layanan" => 0,
                 "supervisor_id" => 0,
                 "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq'
             ],[
@@ -143,7 +147,7 @@ class DatabaseSeeder extends Seeder
                 "email" => "kepala@moka.ol",
                 "email_verified_at" => '2023-03-08 03:28:35',
                 "jabatan" => 'Kepala Instansi',
-                "supervisor_layanan" => 0,
+                // "supervisor_layanan" => 0,
                 "supervisor_id" => 0,
                 "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq'
             ],[
@@ -153,7 +157,7 @@ class DatabaseSeeder extends Seeder
                 "email" => "advokat.spv@moka.ol",
                 "email_verified_at" => '2023-03-08 03:28:35',
                 "jabatan" => 'Advokat',
-                "supervisor_layanan" => 1,
+                // "supervisor_layanan" => 1,
                 "supervisor_id" => 9,
                 "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq'
             ],[
@@ -163,7 +167,7 @@ class DatabaseSeeder extends Seeder
                 "email" => "psikolog.spv@moka.ol",
                 "email_verified_at" => '2023-03-08 03:28:35',
                 "jabatan" => 'Psikolog',
-                "supervisor_layanan" => 1,
+                // "supervisor_layanan" => 1,
                 "supervisor_id" => 9,
                 "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq'
             ],[
@@ -173,7 +177,7 @@ class DatabaseSeeder extends Seeder
                 "email" => "konselor@moka.ol",
                 "email_verified_at" => '2023-03-08 03:28:35',
                 "jabatan" => 'Konselor',
-                "supervisor_layanan" => 0,
+                // "supervisor_layanan" => 0,
                 "supervisor_id" => 13,
                 "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq'
             ],[
@@ -183,7 +187,7 @@ class DatabaseSeeder extends Seeder
                 "email" => "sekretariat@moka.ol",
                 "email_verified_at" => '2023-03-08 03:28:35',
                 "jabatan" => 'Sekretariat',
-                "supervisor_layanan" => 0,
+                // "supervisor_layanan" => 0,
                 "supervisor_id" => 13,
                 "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq'
         ]
@@ -214,12 +218,38 @@ class DatabaseSeeder extends Seeder
         ];
         Kasus::insert($kasus);
 
+        //data pelapor
+        $pelapor = [
+            [
+                "uuid" => "35d43be8-551a-4a8f-91d1-e8ea39295515",
+                "kasus_id" => 1,
+                "nik" => NULL,
+                "nama" => 'Rudy Tabooti',
+                "tempat_lahir" => 'Bandung',
+                "tanggal_lahir" => '1984-01-03',
+                "provinsi_id" => 31,
+                "kotkab_id" => 3172,
+                "kecamatan_id" => 317201,
+                "kelurahan" => 'Pejagalan',
+                "alamat" => 'Jembatan jelambar aladin RT/01/06 Kel; Pejagalan,Kec; penjaringan jakarta utara',
+                "no_telp" => '085210885564',
+                "file_ttd" => NULL,
+                "desil" => NULL,
+                "hubungan_pelapor" => 'Bukan Siapa-Siapa / Tak Dikenal',
+                "created_by" => NULL,
+                "created_at" => '2023-05-16 03:28:35',
+                "updated_at" => '2023-05-16 03:28:35',
+                "deleted_at" => NULL
+            ]
+        ];
+        Pelapor::insert($pelapor);
+
         //data klien
         $klien = [
             [
                 "uuid" => "35db5be8-551a-4a8f-91d1-e8ea392q5515",
                 "kasus_id" => 1,
-                "no_klien" => NULL,
+                "no_klien" => '312/02/2023',
                 "status" => 'Pelengkapan Data',
                 "nik" => NULL,
                 "nama" => 'Ruby Cobalt Berliani',
@@ -234,9 +264,12 @@ class DatabaseSeeder extends Seeder
                 "agama" => 'islam',
                 "suku" => 'Suku Sunda',
                 "no_telp" => '085210885564',
-                "status_pendidikan" => 'Lulusa dan Tidak Melanjutkan (Tamat Belajar)',
+                "status_pendidikan" => 'Lulus dan Tidak Melanjutkan (Tamat Belajar)',
                 "pendidikan" => 'Perguruan Tinggi',
+                "kelas" => 'semester 8',
+                "institusi_pendidikan" => 'Institut Teknologi Bandung',
                 "pekerjaan" => 'Ibu Rumah Tangga',
+                "penghasilan" => '1000000',
                 "status_kawin" => 'Cerai Hidup',
                 "jumlah_anak" => 0,
                 "hubungan_klien" => 'Bukan Siapa-Siapa / Tak Dikenal',
@@ -325,5 +358,269 @@ class DatabaseSeeder extends Seeder
             ]
         ];
         Pasal::insert($pasal);
+
+        //data terlapor
+        $terlapor = [
+            [
+                "uuid" => "35db5be8-a51a-4a8f-91d1-e8ea392q5515",
+                "kasus_id" => 1,
+                "nik" => NULL,
+                "nama" => 'Frankenstein',
+                "tempat_lahir" => 'Bandung',
+                "tanggal_lahir" => '1901-01-03',
+                "provinsi_id" => 31,
+                "kotkab_id" => 3172,
+                "kecamatan_id" => 317201,
+                "kelurahan" => 'Pejagalan',
+                "alamat" => 'Jembatan jelambar aladin RT/01/06 Kel; Pejagalan,Kec; penjaringan jakarta utara',
+                "jenis_kelamin" => 'laki-laki',
+                "agama" => 'islam',
+                "suku" => 'Suku Sunda',
+                "no_telp" => '085210885564',
+                "status_pendidikan" => 'Lulusa dan Tidak Melanjutkan (Tamat Belajar)',
+                "pendidikan" => 'Perguruan Tinggi',
+                "pekerjaan" => 'Ibu Rumah Tangga',
+                "status_kawin" => 'Cerai Hidup',
+                "jumlah_anak" => 0,
+                "hubungan_terlapor" => 'Bukan Siapa-Siapa / Tak Dikenal',
+                "file_ttd" => NULL,
+                "desil" => NULL,
+                "created_by" => NULL,
+                "created_at" => '2023-05-16 03:28:35',
+                "updated_at" => '2023-05-16 03:28:35',
+                "deleted_at" => NULL
+            ]
+        ];
+        Terlapor::insert($terlapor);
+
+        //data petugas
+        $petugas = [
+            [
+                "klien_id" => 1,
+                "user_id" => 1,
+                "created_by" => 1,
+                "created_at" => '2023-05-16 03:28:35',
+                "updated_at" => '2023-05-16 03:28:35',
+                "deleted_at" => NULL
+            ]
+        ];
+        Petugas::insert($petugas);
+
+        //data agenda
+        $agenda = [
+            [
+                "uuid" => '2a83d123-3c86-41f8-aee1-ca22l262f462',
+                "klien_id" => NULL,
+                "judul_kegiatan" => "Koordinasi Terkait PP1",
+                "tanggal_mulai" => '2023-06-05',
+                "jam_mulai" => '08:00:00',
+                "keterangan" => 'koordinasi dengan konselor',
+                "created_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '513c0e13-75a4-4684-a5be-74426786fd8c',
+                "klien_id" => NULL,
+                "judul_kegiatan" => "Membuat tiket MOKA",
+                "tanggal_mulai" => '2023-06-05',
+                "jam_mulai" => '08:00:00',
+                "keterangan" => 'koordinasi dengan konselor',
+                "created_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '513c0e13-75a4-4684-ad8e-74426786fd8c',
+                "klien_id" => NULL,
+                "judul_kegiatan" => "Istirahat",
+                "tanggal_mulai" => '2023-06-05',
+                "jam_mulai" => '12:00:00',
+                "keterangan" => '',
+                "created_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '513c0e13-75a4-4684-a58e-7442a786fd8c',
+                "klien_id" => NULL,
+                "judul_kegiatan" => "Koordinasi dengan MK",
+                "tanggal_mulai" => '2023-06-05',
+                "jam_mulai" => '13:00:00',
+                "keterangan" => 'Berdiskusi dengan manager kasus terkait intervensi lanjutan klien TPPO',
+                "created_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '513c0e13-75a4-46v4-a58e-74426786fd8c',
+                "klien_id" => NULL,
+                "judul_kegiatan" => "Koordinasi dengan Advokat",
+                "tanggal_mulai" => '2023-06-05',
+                "jam_mulai" => '15:00:00',
+                "keterangan" => 'Berkoordinasi dengan advokat, satpel dan psikolog terkait intervensi masalah NA dan rencana reintegrasi klien NA',
+                "created_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '513c0e13-75a4-4684-a58e-74426716fd8c',
+                "klien_id" => NULL,
+                "judul_kegiatan" => "Koordinasi dengan satpel & tenaga layanan",
+                "tanggal_mulai" => '2023-06-06',
+                "jam_mulai" => '08:00:00',
+                "keterangan" => 'Berdiskusi dengan satpel dan tenaga pelayanan terkait agenda visit klien',
+                "created_by" => 2,
+                "created_at" => '2023-06-07 06:00:14',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '513c0e13-75a4-46a4-a58e-74426786fd8c',
+                "klien_id" => NULL,
+                "judul_kegiatan" => "Kunjungan rumah klien",
+                "tanggal_mulai" => '2023-06-06',
+                "jam_mulai" => '09:00:00',
+                "keterangan" => 'Melakukan kunjungan rumah klien NA untuk persiapan reintegrasinya  ',
+                "created_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '513c0e13-75a4-4684-a58e-744f6786fd8c',
+                "klien_id" => NULL,
+                "judul_kegiatan" => "Istirahat",
+                "tanggal_mulai" => '2023-06-06',
+                "jam_mulai" => '12:00:00',
+                "keterangan" => '',
+                "created_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '513c2e13-75a4-4684-a58e-74426786fd8c',
+                "klien_id" => NULL,
+                "judul_kegiatan" => "Koordinasi dengan advokat",
+                "tanggal_mulai" => '2023-06-06',
+                "jam_mulai" => '13:00:00',
+                "keterangan" => 'Melakukan diskusi dengan advokat dan satpel terkait re-integrasi klien NA',
+                "created_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ]
+        ];
+        Agenda::insert($agenda);
+
+        //data tindak lanjut
+        $tindak_lanjut = [
+            [
+                "uuid" => '2a83d123-3c16-41f8-aee1-ca22b262f462',
+                "agenda_id" => 1,
+                "tanggal_selesai" => "2023-06-05",
+                "jam_selesai" => '10:00:00',
+                "lokasi" => 'Kantor Pusat PPA DKI Jakarta',
+                "catatan" => 'hasil koordinasi disepakati tanggal PP1 adalah minggu depan',
+                "created_by" => 2,
+                "validated_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '2a83d123-3c86-41f8-aee1-ca22b2c2f462',
+                "agenda_id" => 2,
+                "tanggal_selesai" => "2023-06-05",
+                "jam_selesai" => '00:00:00',
+                "lokasi" => 'Kantor Pusat PPA DKI Jakarta',
+                "catatan" => 'pemberian tiket sudah dilakukan',
+                "created_by" => 2,
+                "validated_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '2a83d123-3c86-41f8-aee1-ca22b26bf462',
+                "agenda_id" => 3,
+                "tanggal_selesai" => "2023-06-05",
+                "jam_selesai" => '13:00:00',
+                "lokasi" => 'Kantor Pusat PPA DKI Jakarta',
+                "catatan" => NULL,
+                "created_by" => 2,
+                "validated_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '2a83d123-3c86-41f8-aee1-ca22b262f462',
+                "agenda_id" => 4,
+                "tanggal_selesai" => "2023-06-05",
+                "jam_selesai" => '15:00:00',
+                "lokasi" => 'Kantor Pusat PPA DKI Jakarta',
+                "catatan" => 'hasil diskusi dengan MK lain terkait intervensi lanjutan klien TPPO adalah, perlu adanya penjadwalan / pemberian tiket ke layanan-layanan terkait',
+                "created_by" => 2,
+                "validated_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '2a83d123-3c86-41f8-abe1-ca22b262f462',
+                "agenda_id" => 5,
+                "tanggal_selesai" => "2023-06-05",
+                "jam_selesai" => '16:30:00',
+                "lokasi" => 'Kantor Pusat PPA DKI Jakarta',
+                "catatan" => 'Hasil koordinasi ditentukan siapa yang akan mengintervensi klien. Tiket akan segera dibuatkan',
+                "created_by" => 2,
+                "validated_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '2a83d123-3c86-41f8-aee1-ca22b2t2f462',
+                "agenda_id" => 6,
+                "tanggal_selesai" => "2023-06-06",
+                "jam_selesai" => '09:00:00',
+                "lokasi" => 'Kantor Pusat PPA DKI Jakarta',
+                "catatan" => 'hasil dari koordinasi adalah kesepakatan agenda visit yaitu minggu depan',
+                "created_by" => 2,
+                "validated_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '2a81d123-3c86-41f8-aee1-ca22b262f462',
+                "agenda_id" => 7,
+                "tanggal_selesai" => "2023-06-06",
+                "jam_selesai" => '00:00:00',
+                "lokasi" => 'Kantor Pusat PPA DKI Jakarta',
+                "catatan" => NULL,
+                "created_by" => 2,
+                "validated_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '2a83d123-3c81-41f8-aee1-ca22b262f462',
+                "agenda_id" => 8,
+                "tanggal_selesai" => "2023-06-06",
+                "jam_selesai" => '13:00:00',
+                "lokasi" => NULL,
+                "catatan" => NULL,
+                "created_by" => 2,
+                "validated_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ],
+            [
+                "uuid" => '2as3d123-3c86-41f8-aee1-ca22b262f462',
+                "agenda_id" => 9,
+                "tanggal_selesai" => "2023-06-06",
+                "jam_selesai" => '15:00:00',
+                "lokasi" => 'Kantor Pusat PPA DKI Jakarta',
+                "catatan" => 'hasil dari diskusi adalah persiapan2nya',
+                "created_by" => 2,
+                "validated_by" => 2,
+                "created_at" => '2023-06-07 04:51:53',
+                "updated_at" => '2023-06-07 04:51:53'
+            ]
+        ];
+        TindakLanjut::insert($tindak_lanjut);
     }
 }
