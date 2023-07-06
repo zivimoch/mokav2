@@ -12,6 +12,7 @@ use App\Models\Pasal;
 use App\Models\Pelapor;
 use App\Models\Petugas;
 use App\Models\ProgramPemerintah;
+use App\Models\RiwayatKejadian;
 use App\Models\Terlapor;
 use App\Models\TindakKekerasan;
 use App\Models\TindakLanjut;
@@ -201,6 +202,7 @@ class DatabaseSeeder extends Seeder
                 "no_reg" => NULL,
                 "tanggal_pelaporan" => '2023-05-16',
                 "tanggal_kejadian" => '2023-05-13',
+                "tempat_kejadian" => 'Hotel',
                 "media_pengaduan" => 'Hotline',
                 "sumber_rujukan" => NULL,
                 "sumber_informasi" => 'Dinas PPAPP DKI Jakarta',
@@ -267,7 +269,6 @@ class DatabaseSeeder extends Seeder
                 "status_pendidikan" => 'Lulus dan Tidak Melanjutkan (Tamat Belajar)',
                 "pendidikan" => 'Perguruan Tinggi',
                 "kelas" => 'semester 8',
-                "institusi_pendidikan" => 'Institut Teknologi Bandung',
                 "pekerjaan" => 'Ibu Rumah Tangga',
                 "penghasilan" => '1000000',
                 "status_kawin" => 'Cerai Hidup',
@@ -622,5 +623,67 @@ class DatabaseSeeder extends Seeder
             ]
         ];
         TindakLanjut::insert($tindak_lanjut);
+
+
+        //data tindak lanjut
+        $riwayat_kejadian = [
+            [
+                "uuid" => '2a81d123-3a16-41f8-aee1-ca22a262fc62',
+                "klien_id" => 1,
+                "tanggal" => "2023-06-05",
+                "jam" => '10:00:00',
+                "keterangan" => 'Klien pergi hendak pergi ke pasar menggunakan transportasi umum (angkot)',
+                "created_by" => 1
+            ],
+            [
+                "uuid" => '5a81da23-3a16-41f8-aee1-ca22a162fc62',
+                "klien_id" => 1,
+                "tanggal" => "2023-06-05",
+                "jam" => '11:00:00',
+                "keterangan" => 'Klien sampai di pasar dan berbelanja apel',
+                "created_by" => 1
+            ],
+            [
+                "uuid" => '5aa1da23-3a16-4sf8-dee1-ca22a462fc62',
+                "klien_id" => 1,
+                "tanggal" => "2023-06-05",
+                "jam" => '12:00:00',
+                "keterangan" => 'Klien pergi solat di mesjid dekat pasar',
+                "created_by" => 1
+            ],
+            [
+                "uuid" => '46a1da23-3a16-4sf8-dee1-ca22a46sfc62',
+                "klien_id" => 1,
+                "tanggal" => "2023-06-05",
+                "jam" => '13:00:00',
+                "keterangan" => 'Klien main ke TimeZone',
+                "created_by" => 1
+            ],
+            [
+                "uuid" => '56a1wa23-3a16-4sf8-dee1-ca22az6sfc62',
+                "klien_id" => 1,
+                "tanggal" => "2023-06-05",
+                "jam" => '14:00:00',
+                "keterangan" => 'Klien makan somay aa kasep',
+                "created_by" => 1
+            ],
+            [
+                "uuid" => '46a1wa23-1a16-4sf8-dee1-ca22a16sfc62',
+                "klien_id" => 1,
+                "tanggal" => "2023-06-05",
+                "jam" => '15:00:00',
+                "keterangan" => 'Klien pulang ke rumah',
+                "created_by" => 1
+            ],
+            [
+                "uuid" => '66a1wa23-1a16-4sf8-dee1-c322a16sfc62',
+                "klien_id" => 1,
+                "tanggal" => "2023-06-05",
+                "jam" => '16:00:00',
+                "keterangan" => 'Klien cuci tangan dan kaki lalu bobo',
+                "created_by" => 1
+            ]
+        ];
+        RiwayatKejadian::insert($riwayat_kejadian);
     }
 }

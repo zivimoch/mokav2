@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\AsesmenConntroller;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FormPenerimaPengaduan;
 use App\Http\Controllers\KasusController;
@@ -28,6 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/kasus', [KasusController::class, 'index'])->name('kasus');
     Route::get('/kasus/show/{uuid}', [KasusController::class, 'show'])->name('kasus.show');
     // Route::view('kasus/detail/','/kasus/detail')->name('kasus.detail');
+    // asesmen & riwayat
+    Route::get('/asesmen/riwayat/', [AsesmenConntroller::class, 'index'])->name('asesmen.riwayat');
     Route::view('notifikasi','/notifikasi')->name('notifikasi');
     Route::view('dokumen','dokumen/index')->name('dokumen');
     Route::view('dokumen/add','dokumen/add')->name('dokumen.add');

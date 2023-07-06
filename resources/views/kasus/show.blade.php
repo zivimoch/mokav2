@@ -1095,6 +1095,67 @@
 </div>
 </section>
 
+<!-- Modal Riwayat Kejadian-->
+<div class="modal fade" id="riwayatModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+  
+        <div id="overlay" class="overlay dark">
+          <div class="cv-spinner">
+            <span class="spinner"></span>
+          </div>
+        </div>
+        
+        <div class="modal-header">
+          <h5 class="modal-title" id="modelHeading"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
+          <span id="message"></span>
+        </div>
+        <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <h4><i class="icon fa fa-check"></i> Success!</h4>
+          Data berhasil disimpan.
+        </div>
+        <div class="modal-body">
+        <input type="hidden" name="uuid" id="uuid">
+        <div class="row">
+          <div class="col-md-6">
+              <div class="form-group">
+                <label><span class="text-danger">*</span>Tanggal</label>
+                <input type="date" class="form-control required-field" id="tanggal_mulai">
+                <div class="invalid-feedback" id="valid-tanggal_mulai">
+                  Tanggal Mulai wajib diisi.
+                </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+              <div class="form-group">
+                  <label><span class="text-danger">*</span>Jam</label>
+                  <input type="time" class="form-control required-field" id="jam_mulai">
+                  <div class="invalid-feedback" id="valid-jam_mulai">
+                    Jam Mulai wajib diisi.
+                  </div>
+              </div>
+          </div>
+        </div>
+        <div class="form-group">
+            <label>Keterangan</label>
+            <textarea name="" class="form-control" id="keterangan" cols="30" rows="5"></textarea>
+        </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary btn-block" id="submitRiwayatKejadian">Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -1142,24 +1203,61 @@
 
 
     $(function () {
-      $("#example2").DataTable({
-        "responsive": false, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print",
+
+    $('#example2').DataTable({
+      "ordering": true,
+      "processing": true,
+      "serverSide": true,
+      "responsive": false, 
+      "lengthChange": false, 
+      "autoWidth": false,
+      "ajax": "/asesmen/riwayat?uuid={{ $klien->uuid }}",
+      'createdRow': function( row, data, dataIndex ) {
+          $(row).attr('id', data.uuid);
+      },
+      "columns": [
+        {
+            "mData": "tanggal",
+            "width": "10%",
+            "mRender": function (data, type, row) {
+                return row.tanggal+"<br><span style='font-size:15px'>"+row.jam+"</span>";
+            }
+        },
+        {
+            "mData": "keterangan",
+            "mRender": function (data, type, row) {
+              return row.keterangan;
+            }
+        }
+      ],
+      "pageLength": 5,
+      "lengthMenu": [
+          [10, 25, 50, 100, -1],
+          ['10 rows', '25 rows', '50 rows', '100 rows','All'],
+      ],
+      "dom": 'Blfrtip', // Blfrtip or Bfrtip
+      "buttons": ["copy", "csv", "excel", "pdf", "print",
               {
                 className: "btn-info",
                 text: 'Tambah',
                   action: function ( ) {
-                    window.location.assign('http://127.0.0.1:8000/dokumen/add')
+                    $('#modelHeading').html("Tambah Riwayat Kejadian");
+                    $('#riwayatModal').modal('show'); 
+                    $("#overlay").hide();
                   }
-              }],
-        "pageLength": 5
+              }]
       }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+
+      $('#example2_filter').css({'float':'right','display':'inline-block; background-color:black'});
     });
 
-    $('#example2 tbody').on( 'click', 'tr', function () {
-        alert('redirect ke : '+this.id);
-        window.location.assign('{{ route("kasus.show", "dsa") }}')
-    } );
+    $('#example2 tbody').on('click', 'tr', function () {
+        $("#success-message").hide();
+        $("#error-message").hide();
+        
+        // $.get(`/kasus/show/`+this.id, function (data) {
+        // });
+    });
 
     function editdata(params) {
         $('.data_'+params).hide();
@@ -1219,6 +1317,74 @@
             }
         });
     }; 
+
+    $('#submitRiwayatKejadian').click(function() {
+        if(validateForm()){
+            let token   = $("meta[name='csrf-token']").attr("content");
+            $.ajax({
+            url: `/asesment/store/`,
+            type: "POST",
+            cache: false,
+            data: {
+                uuid: $('#uuid').val(),
+                judul_kegiatan: $('#judul_kegiatan').val(),
+                tanggal_mulai: $("#tanggal_mulai").val(),
+                jam_mulai: $("#jam_mulai").val(),
+                keterangan: $("#keterangan").val(),
+                klien_id: $("#klien_id").val(),
+                user_id: $("#user_id").val(),
+                lokasi: $("#lokasi").val(),
+                jam_selesai: $("#jam_selesai").val(),
+                catatan: $("#catatan").val(),
+                dokumen_pendukung: $("#dokumen_pendukung").val(),
+                _token: token
+            },
+            success: function (response){
+                if (response.success != true) {
+                console.log(response);
+                $('#message').html(JSON.stringify(response));
+                $("#success-message").hide();
+                $("#error-message").show();
+                }else{
+                $('#message').html(response.message);
+                $("#success-message").show();
+                $("#error-message").hide();
+
+                $('#example1').DataTable().ajax.reload();
+
+                // hapus semua inputan
+                $('#judul_kegiatan').val('');
+                $('#tanggal_mulai').val('');
+                $('#jam_mulai').val('');
+                $('#keterangan').val('');
+                $('#klien_id').val('');
+                $('#lokasi').val('');
+                $('#jam_selesai').val('');
+                $('#catatan').val('');
+                $('#dokumen_pendukung').val('');
+                }
+            },
+            error: function (response){
+                setTimeout(function(){
+                $("#overlay").fadeOut(300);
+                },500);
+                console.log(response);
+
+                $('#message').html(JSON.stringify(response));
+                $("#success-message").hide();
+                $("#error-message").show();
+            }
+            }).done(function() { //loading submit form
+                setTimeout(function(){
+                $("#overlay").fadeOut(300);
+                },500);
+            });
+        }else{
+            $('#message').html('Mohon cek ulang data yang wajib diinput.');
+            $("#success-message").hide();
+            $("#error-message").show();
+        }
+        })
 
     function hightlighting() {
        

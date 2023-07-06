@@ -6,6 +6,34 @@ use Illuminate\Http\Request;
 
 class OpsiController extends Controller
 {
+    public function api_tempat_kejadian()
+    {
+        $data = ['Rumah Tinggal', //Tempat tinggal
+                'Apartemen',
+                'Kos-kosan',
+                'Hotel', //Penginapan
+                'Villa',
+                'Kantor Swasta', //Lokasi komersial
+                'Pabrik',
+                'Toko',
+                'Pasar',
+                'Museum', //Cagar budaya
+                'Tempat Wisata',
+                'Kantor Pemerintahan', //Pemerintahan
+                'Bajaj', //Transportasi
+                'Lahanan Transportasi Online', 
+                'Transjakarta', 
+                'MRT', 
+                'LRT', 
+                'KRL', 
+                'Angkot', 
+                'Kendaraan Pribadi', 
+                'Media Online / Digital' //Online
+            ];
+
+        return $data;
+    }
+
     public function api_status_pendidikan()
     {
         $data = ['Belum Sekolah',
@@ -26,6 +54,14 @@ class OpsiController extends Controller
                 'SMP / Sederajat',
                 'SMA / Sederajat',
                 'Perguruan Tinggi'];
+                
+        return $data;
+    }
+
+    public function api_kelas()
+    {
+        $data = ['1','2','3','4','5','6','7','8','9','10','11','12',
+                'Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8', 'Semester Lanjut'];
                 
         return $data;
     }

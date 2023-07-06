@@ -37,10 +37,10 @@ class CreateKliensTable extends Migration
             $table->string('status_pendidikan')->nullable();
             $table->string('pendidikan')->nullable();
             $table->string('kelas')->nullable(); //bisa kelas sd smp sma, atau semester kalau kuliah
-            $table->string('institusi_pendidikan')->nullable();
             $table->string('pekerjaan')->nullable();
             $table->char('penghasilan')->nullable();
             $table->string('status_kawin')->nullable();
+            $table->integer('anak_ke')->nullable();
             $table->integer('jumlah_anak')->nullable();
             $table->string('nama_ibu')->nullable();
             $table->string('tempat_lahir_ibu')->nullable();

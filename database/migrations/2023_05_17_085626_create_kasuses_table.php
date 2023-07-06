@@ -19,6 +19,7 @@ class CreateKasusesTable extends Migration
             $table->string('no_reg')->nullable();
             $table->date('tanggal_pelaporan');
             $table->date('tanggal_kejadian');
+            $table->string('tempat_kejadian');
             $table->string('media_pengaduan');
             $table->string('sumber_rujukan')->nullable();
             $table->string('sumber_informasi');

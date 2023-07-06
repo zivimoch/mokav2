@@ -47,6 +47,7 @@ class KasusController extends Controller
 
        $status_pendidikan =  app('App\Http\Controllers\OpsiController')->api_status_pendidikan();
        $pendidikan_terakhir =  app('App\Http\Controllers\OpsiController')->api_pendidikan_terakhir();
+       $kelas =  app('App\Http\Controllers\OpsiController')->api_kelas();
        $agama =  app('App\Http\Controllers\OpsiController')->api_agama();
        $suku =  app('App\Http\Controllers\OpsiController')->api_suku();
        $pekerjaan =  app('App\Http\Controllers\OpsiController')->api_pekerjaan();
@@ -63,6 +64,7 @@ class KasusController extends Controller
        $sumber_rujukan =  app('App\Http\Controllers\OpsiController')->api_sumber_rujukan();
        $sumber_informasi =  app('App\Http\Controllers\OpsiController')->api_sumber_infromasi();
        $program_pemerintah =  app('App\Http\Controllers\OpsiController')->api_program_pemerintah();
+       $tempat_kejadian =  app('App\Http\Controllers\OpsiController')->api_tempat_kejadian();
        $provinsi = Province::get();
 
        //data klien (nanti edit lagi)
@@ -93,6 +95,7 @@ class KasusController extends Controller
                 ->with('provinsi', $provinsi)
                 ->with('status_pendidikan', $status_pendidikan)
                 ->with('pendidikan_terakhir', $pendidikan_terakhir)
+                ->with('kelas', $kelas)
                 ->with('agama', $agama)
                 ->with('suku', $suku)
                 ->with('pekerjaan', $pekerjaan)
@@ -108,6 +111,7 @@ class KasusController extends Controller
                 ->with('media_pengaduan', $media_pengaduan)
                 ->with('sumber_rujukan', $sumber_rujukan)
                 ->with('sumber_informasi', $sumber_informasi)
-                ->with('program_pemerintah', $program_pemerintah);
+                ->with('program_pemerintah', $program_pemerintah)
+                ->with('tempat_kejadian',$tempat_kejadian);
     }
 }

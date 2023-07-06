@@ -30,6 +30,7 @@ class FormPenerimaPengaduan extends Controller
     {
         $status_pendidikan =  app('App\Http\Controllers\OpsiController')->api_status_pendidikan();
         $pendidikan_terakhir =  app('App\Http\Controllers\OpsiController')->api_pendidikan_terakhir();
+        $kelas =  app('App\Http\Controllers\OpsiController')->api_kelas();
         $agama =  app('App\Http\Controllers\OpsiController')->api_agama();
         $suku =  app('App\Http\Controllers\OpsiController')->api_suku();
         $pekerjaan =  app('App\Http\Controllers\OpsiController')->api_pekerjaan();
@@ -46,10 +47,12 @@ class FormPenerimaPengaduan extends Controller
         $sumber_rujukan =  app('App\Http\Controllers\OpsiController')->api_sumber_rujukan();
         $sumber_informasi =  app('App\Http\Controllers\OpsiController')->api_sumber_infromasi();
         $program_pemerintah =  app('App\Http\Controllers\OpsiController')->api_program_pemerintah();
+        $tempat_kejadian =  app('App\Http\Controllers\OpsiController')->api_tempat_kejadian();
         $provinsi = Provinsi::get();
         return view('formpenerimapengaduan')->with('provinsi', $provinsi)
                                             ->with('status_pendidikan', $status_pendidikan)
                                             ->with('pendidikan_terakhir', $pendidikan_terakhir)
+                                            ->with('kelas', $kelas)
                                             ->with('agama', $agama)
                                             ->with('suku', $suku)
                                             ->with('pekerjaan', $pekerjaan)
@@ -65,7 +68,8 @@ class FormPenerimaPengaduan extends Controller
                                             ->with('media_pengaduan', $media_pengaduan)
                                             ->with('sumber_rujukan', $sumber_rujukan)
                                             ->with('sumber_informasi', $sumber_informasi)
-                                            ->with('program_pemerintah', $program_pemerintah);
+                                            ->with('program_pemerintah', $program_pemerintah)
+                                            ->with('tempat_kejadian',$tempat_kejadian);
     }
 
     /**
@@ -111,6 +115,7 @@ class FormPenerimaPengaduan extends Controller
             $kasus = Kasus::create([
                 'tanggal_pelaporan' => $request->tanggal_pelaporan,
                 'tanggal_kejadian' => $request->tanggal_kejadian,
+                'tempat_kejadian' => $request->tempat_kejadian,
                 'media_pengaduan' => $request->media_pengaduan,
                 'sumber_rujukan' => $request->sumber_rujukan,
                 'sumber_informasi' => $request->sumber_informasi,
@@ -165,10 +170,10 @@ class FormPenerimaPengaduan extends Controller
                         'status_pendidikan' => isset($request->status_pendidikan_klien[$key]) ? $request->status_pendidikan_klien[$key] : NULL,  
                         'pendidikan' => isset($request->pendidikan_klien[$key]) ? $request->pendidikan_klien[$key] : NULL,  
                         'kelas' => isset($request->kelas[$key]) ? $request->kelas[$key] : NULL,  
-                        'institusi_pendidikan' => isset($request->institusi_pendidikan[$key]) ? $request->institusi_pendidikan[$key] : NULL,  
                         'pekerjaan' => isset($request->pekerjaan_klien[$key]) ? $request->pekerjaan_klien[$key] : NULL,  
                         'penghasilan' => isset($request->penghasilan_klien[$key]) ? $request->penghasilan_klien[$key] : NULL,  
                         'status_kawin' => isset($request->perkawinan_klien[$key]) ? $request->perkawinan_klien[$key] : NULL,  
+                        'anak_ke' => isset($request->anak_ke[$key]) ? $request->anak_ke[$key] : NULL,  
                         'jumlah_anak' => isset($request->jumlah_anak_klien[$key]) ? $request->jumlah_anak_klien[$key] : NULL,  
                         'nama_ibu' => isset($request->nama_ibu[$key]) ? $request->nama_ibu[$key] : NULL,  
                         'tempat_lahir_ibu' => isset($request->tempat_lahir_ibu[$key]) ? $request->tempat_lahir_ibu[$key] : NULL,  
