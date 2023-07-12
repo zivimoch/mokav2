@@ -26,10 +26,10 @@
     <div class="collapse navbar-collapse order-3" id="navbarCollapse">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a href="{{ route('kasus') }}" class="nav-link"><i class="nav-icon fas fa-search"></i> Kasus</a>
+          <a href="{{ route('monitoring') }}" class="nav-link"><i class="nav-icon fas fa-tv"></i> Monitoring</a>
         </li>
         <li class="nav-item">
-          <a href="{{ route('statistik') }}" class="nav-link"><i class="nav-icon fas fa-chart-line"></i> Statistik</a>
+          <a href="{{ route('kasus') }}" class="nav-link"><i class="nav-icon fas fa-search"></i> Kasus</a>
         </li>
         <li class="nav-item">
           <a href="{{ route('agenda') }}" class="nav-link"><i class="nav-icon far fa-calendar-alt"></i> Agenda</a>

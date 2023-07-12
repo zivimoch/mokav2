@@ -790,4 +790,23 @@ class OpsiController extends Controller
                 
         return $data;
     }
+
+    public function api_jabatan()
+    {
+        $data = ['Manajer Kasus',
+                'Pendamping Kasus',
+                'Advokat',
+                'Paralegal',
+                'Unit Reaksi Cepat',
+                'Psikolog',
+                'Konselor',
+                'Penerima Pengaduan',
+                'Tenaga Ahli',
+                'Sekretariat',
+                'Supervisor Kasus',
+                'Tim Data',
+                'Kepala Instansi'];
+                
+        return $data;
+    }
 }

@@ -97,9 +97,15 @@
 <div class="card card-warning">
     <div class="card-header">
     <h3 class="card-title">Catatan Kasus</h3>
+    <div class="card-tools">
+        <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="nav-icon fas fa-edit"></i>
+        </button>
+        <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
+        </button>
+    </div>
     </div>
     
-    <div class="card-body" style="height: 350px; overflow-y:scroll">
+    <div class="card-body" style="height: 350px; overflow-y:scroll;">
     <a href="#">
         <strong>Rudi Hartanto (Advokat)</strong>
         <p class="text-muted">
@@ -173,18 +179,22 @@
 <div class="col-md-9">
     <div class="card card-primary card-tabs">
         <div class="card-header p-0 pt-1">
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
+                </button>
+            </div>
         <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
         <li class="nav-item">
         <a class="nav-link {{ Request::get('tab') == 'kasus' || Request::get('tab') == '' ? 'active' : '' }}" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">Kasus</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ Request::get('tab') == 'kasus-assessment' ? 'active' : '' }}" id="kasus-assessment-tab" data-toggle="pill" href="#kasus-assessment" role="tab" aria-controls="kasus-assessment" aria-selected="false">Assessment</a>
+            <a class="nav-link {{ Request::get('tab') == 'kasus-Asesmen' ? 'active' : '' }}" id="kasus-Asesmen-tab" data-toggle="pill" href="#kasus-Asesmen" role="tab" aria-controls="kasus-Asesmen" aria-selected="false">Asesmen</a>
         </li>
         <li class="nav-item">
         <a class="nav-link {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan-tab" data-toggle="pill" href="#kasus-layanan" role="tab" aria-controls="kasus-layanan" aria-selected="false">Layanan</a>
         </li>
         <li class="nav-item">
-        <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="false">Timeline</a>
+        <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="false">Log Activity</a>
         </li>
         <li class="nav-item">
         <a class="nav-link" id="kasus-petugas-tab" data-toggle="pill" href="#kasus-petugas" role="tab" aria-controls="kasus-petugas" aria-selected="false">Petugas</a>
@@ -214,7 +224,7 @@
         </div>
             
             
-        <div class="post clearfix">
+        <div class="post clearfix" style="color:black">
             {{-- @if (Session::has('success'))
                 <div class="alert alert-success alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -222,7 +232,7 @@
                 </div>
             @endif --}}
 
-            <b style="position: absolute" id="anchor_pelaporan">A. IDENTITAS PELAPOR</b>{{ isset($data) ? $data : '' }}
+            <b id="anchor_pelaporan">A. IDENTITAS PELAPOR</b>{{ isset($data) ? $data : '' }}
             <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
                 @csrf
                 @method('put')
@@ -299,7 +309,7 @@
                 </table>
             </form>
         </div>
-        <div class="post clearfix">
+        <div class="post clearfix" style="color:black">
             <b>B. IDENTITAS KLIEN</b>
             <span style="float:right">
                 <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_klien" onclick="editdata('klien')">
@@ -404,7 +414,7 @@
                 </tr>
             </table>
         </div>
-        <div class="post clearfix">
+        <div class="post clearfix" style="color:black">
             <b>C. IDENTITAS TERLAPOR</b>
             <span style="float:right">
                 <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor" onclick="editdata('terlapor')">
@@ -467,7 +477,7 @@
                 </tr>
             </table>
         </div>
-        <div class="post clearfix">
+        <div class="post clearfix" style="color:black">
             <b>D. KASUS KLIEN</b>
             <span style="float:right">
                 <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_kasus" onclick="editdata('kasus')">
@@ -530,7 +540,7 @@
                 </tr>
             </table>
         </div>
-        <div class="post clearfix">
+        <div class="post clearfix" style="color:black">
             <b>E. HASIL AKHIR</b>
             <span style="float:right">
                 <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor" onclick="editdata('terlapor')">
@@ -548,7 +558,7 @@
                 </tr>
             </table>
         </div>
-        <div class="post clearfix">
+        <div class="post clearfix" style="color:black">
             <b>F. BILA DISIDANGKAN</b>
             <span style="float:right">
                 <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor" onclick="editdata('terlapor')">
@@ -571,7 +581,7 @@
                 </tr>
             </table>
         </div>
-        <div class="post clearfix">
+        <div class="post clearfix" style="color:black">
             <div class="row">
                 <div class="col-md-4 text-center">
                     <b>Penerima Pengaduan</b>
@@ -603,72 +613,21 @@
         <br>
         <button type="button" class="btn btn-block btn-primary">Print</button>
         </div>
-        <div class="tab-pane {{ Request::get('tab') == 'kasus-assessment' ? 'active' : '' }}" id="kasus-assessment" role="tabpanel" aria-labelledby="kasus-assessment-tab">
+        <div class="tab-pane {{ Request::get('tab') == 'kasus-Asesmen' ? 'active' : '' }}" id="kasus-Asesmen" role="tabpanel" aria-labelledby="kasus-Asesmen-tab">
             
             <div class="post clearfix" style="margin: 0px">
             <b>A. RIWAYAT KEJADIAN</b>
             </br>
             </br>
             <div style="overflow-x: scroll">
-            <table id="example2" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
+            <table id="example2" class="table table-sm table-bordered  table-hover" style="cursor:pointer; color:black">
                 <thead>
                 <tr>
                 <th>Waktu Kejadian</th>
                 <th>Detail Pristiwa</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr id="1">
-                <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
-                <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
-                Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
-                </tr>
-                <tr id="2">
-                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
-                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
-                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
-                </tr>
-                <tr id="3">
-                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
-                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
-                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
-                </tr>
-                <tr id="4">
-                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
-                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
-                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
-                </tr>
-                <tr id="5">
-                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
-                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
-                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
-                </tr>
-                <tr id="6">
-                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
-                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
-                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
-                </tr>
-                <tr id="7">
-                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
-                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
-                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
-                </tr>
-                <tr id="4">
-                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
-                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
-                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
-                </tr>
-                <tr id="10">
-                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
-                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
-                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
-                </tr>
-                <tr id="1">
-                    <td>2 Januari 2022</br><span style="font-size:14px">14:00 s/d 15:00</span></td>
-                    <td>Ab id, quaerat itaque ipsa, explicabo quas corporis exercitationem architecto labore placeat corrupti magni sunt quod consequuntur suscipit nemo maxime delectus sequi?
-                    Saepe facere repellendus repellat sunt. Vitae laudantium veritatis nobis....</td>
-                </tr>
-                </tbody>
+                <tbody></tbody>
             </table>
             </div>
             <div class="row" style="margin-top: 20px">
@@ -754,7 +713,7 @@
                 </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="exampleInputFile">Assessment tools</label>
+                            <label for="exampleInputFile">Asesmen tools</label>
                             <div class="input-group">
                             <div class="custom-file">
                             <input type="file" class="custom-file-input" id="exampleInputFile">
@@ -1128,29 +1087,30 @@
           <div class="col-md-6">
               <div class="form-group">
                 <label><span class="text-danger">*</span>Tanggal</label>
-                <input type="date" class="form-control required-field" id="tanggal_mulai">
+                <input type="date" class="form-control" id="tanggal">
                 <div class="invalid-feedback" id="valid-tanggal_mulai">
-                  Tanggal Mulai wajib diisi.
+                  Tanggal Kejadian wajib diisi.
                 </div>
             </div>
           </div>
           <div class="col-md-6">
               <div class="form-group">
                   <label><span class="text-danger">*</span>Jam</label>
-                  <input type="time" class="form-control required-field" id="jam_mulai">
+                  <input type="time" class="form-control" id="jam">
                   <div class="invalid-feedback" id="valid-jam_mulai">
-                    Jam Mulai wajib diisi.
+                    Jam Kejadian wajib diisi.
                   </div>
               </div>
           </div>
         </div>
         <div class="form-group">
             <label>Keterangan</label>
-            <textarea name="" class="form-control" id="keterangan" cols="30" rows="5"></textarea>
+            <textarea name="" class="form-control required-field" id="keterangan" cols="30" rows="5"></textarea>
         </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary btn-block" id="submitRiwayatKejadian">Simpan</button>
+          <button type="button" class="btn btn-success btn-block" id="submitRiwayatKejadian"><i class="fa fa-check"></i> Simpan</button>
+          <button type="button" class="btn btn-danger btn-block" id="deleteRiwayatKejadian"><i class="fa fa-trash"></i> Hapus</button>
         </div>
       </div>
     </div>
@@ -1170,6 +1130,7 @@
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <!-- Bootstrap -->
 <script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
+<script src="{{ asset('/source/js/validation.js') }}"></script>
 
 <script>
     $(document).ready(function () {
@@ -1211,7 +1172,7 @@
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
-      "ajax": "/asesmen/riwayat?uuid={{ $klien->uuid }}",
+      "ajax": "/riwayatkejadian/index?uuid={{ $klien->uuid }}",
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
       },
@@ -1220,7 +1181,7 @@
             "mData": "tanggal",
             "width": "10%",
             "mRender": function (data, type, row) {
-                return row.tanggal+"<br><span style='font-size:15px'>"+row.jam+"</span>";
+                return row.tanggal+"<br><span style='font-size:13px'>"+row.jam+"</span>";
             }
         },
         {
@@ -1236,11 +1197,15 @@
           ['10 rows', '25 rows', '50 rows', '100 rows','All'],
       ],
       "dom": 'Blfrtip', // Blfrtip or Bfrtip
-      "buttons": ["copy", "csv", "excel", "pdf", "print",
+      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print",
               {
                 className: "btn-info",
                 text: 'Tambah',
-                  action: function ( ) {
+                action: function ( ) {
+                    $('#deleteRiwayatKejadian').hide();
+                    $('#tanggal').val('');
+                    $('#jam').val('');
+                    $('#keterangan').val('');
                     $('#modelHeading').html("Tambah Riwayat Kejadian");
                     $('#riwayatModal').modal('show'); 
                     $("#overlay").hide();
@@ -1254,9 +1219,17 @@
     $('#example2 tbody').on('click', 'tr', function () {
         $("#success-message").hide();
         $("#error-message").hide();
-        
-        // $.get(`/kasus/show/`+this.id, function (data) {
-        // });
+        $.get(`/riwayatkejadian/edit/`+this.id, function (data) {
+            $("#overlay").hide();
+            $('#modelHeading').html("Edit Riwayat Kegiatan");
+            $('#riwayatModal').modal('show');
+            $('#deleteRiwayatKejadian').show();
+
+            $('#uuid').val(data.uuid);
+            $('#tanggal').val(data.tanggal);
+            $('#jam').val(data.jam);
+            $('#keterangan').val(data.keterangan);
+        });
     });
 
     function editdata(params) {
@@ -1322,46 +1295,34 @@
         if(validateForm()){
             let token   = $("meta[name='csrf-token']").attr("content");
             $.ajax({
-            url: `/asesment/store/`,
+            url: `/riwayatkejadian/store/`,
             type: "POST",
             cache: false,
             data: {
                 uuid: $('#uuid').val(),
-                judul_kegiatan: $('#judul_kegiatan').val(),
-                tanggal_mulai: $("#tanggal_mulai").val(),
-                jam_mulai: $("#jam_mulai").val(),
+                uuid_klien: '{{ $klien->uuid }}',
+                tanggal: $("#tanggal").val(),
+                jam: $("#jam").val(),
                 keterangan: $("#keterangan").val(),
-                klien_id: $("#klien_id").val(),
-                user_id: $("#user_id").val(),
-                lokasi: $("#lokasi").val(),
-                jam_selesai: $("#jam_selesai").val(),
-                catatan: $("#catatan").val(),
-                dokumen_pendukung: $("#dokumen_pendukung").val(),
                 _token: token
             },
             success: function (response){
                 if (response.success != true) {
-                console.log(response);
-                $('#message').html(JSON.stringify(response));
-                $("#success-message").hide();
-                $("#error-message").show();
+                    console.log(response);
+                    $('#message').html(JSON.stringify(response));
+                    $("#success-message").hide();
+                    $("#error-message").show();
                 }else{
-                $('#message').html(response.message);
-                $("#success-message").show();
-                $("#error-message").hide();
+                    $('#message').html(response.message);
+                    $("#success-message").show();
+                    $("#error-message").hide();
 
-                $('#example1').DataTable().ajax.reload();
+                    $('#example2').DataTable().ajax.reload();
 
-                // hapus semua inputan
-                $('#judul_kegiatan').val('');
-                $('#tanggal_mulai').val('');
-                $('#jam_mulai').val('');
-                $('#keterangan').val('');
-                $('#klien_id').val('');
-                $('#lokasi').val('');
-                $('#jam_selesai').val('');
-                $('#catatan').val('');
-                $('#dokumen_pendukung').val('');
+                    // hapus semua inputan
+                    $('#tanggal').val('');
+                    $('#jam').val('');
+                    $('#keterangan').val('');
                 }
             },
             error: function (response){
@@ -1384,10 +1345,61 @@
             $("#success-message").hide();
             $("#error-message").show();
         }
-        })
+    })
+
+    $('#deleteRiwayatKejadian').click(function() {
+        if(validateForm()){
+            let token   = $("meta[name='csrf-token']").attr("content");
+            uuid = $('#uuid').val();
+            $.ajax({
+            url: `/riwayatkejadian/destroy/`+uuid,
+            type: "DELETE",
+            cache: false,
+            data: {
+                _token: token
+            },
+            success: function (response){
+                if (response.success != true) {
+                    console.log(response);
+                    $('#message').html(JSON.stringify(response));
+                    $("#success-message").hide();
+                    $("#error-message").show();
+                }else{
+                    $('#riwayatModal').modal('hide');
+                    $("#success-message").hide();
+                    $("#error-message").hide();
+
+                    $('#example2').DataTable().ajax.reload();
+
+                    // hapus semua inputan
+                    $('#tanggal').val('');
+                    $('#jam').val('');
+                    $('#keterangan').val('');
+                }
+            },
+            error: function (response){
+                setTimeout(function(){
+                $("#overlay").fadeOut(300);
+                },500);
+                console.log(response);
+
+                $('#message').html(JSON.stringify(response));
+                $("#success-message").hide();
+                $("#error-message").show();
+            }
+            }).done(function() { //loading submit form
+                setTimeout(function(){
+                $("#overlay").fadeOut(300);
+                },500);
+            });
+        }else{
+            $('#message').html('Mohon cek ulang data yang wajib diinput.');
+            $("#success-message").hide();
+            $("#error-message").show();
+        }
+    })
 
     function hightlighting() {
-       
         var inputValue = $('#perubahan').val();
 
         if (inputValue) {

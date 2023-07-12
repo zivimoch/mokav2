@@ -103,12 +103,7 @@ class FormPenerimaPengaduan extends Controller
 
                 if ($validator->fails())
                 {
-                    return response()->json([
-                        'success' => false,
-                        'code'    => 422,
-                        'message' => $validator->errors(),
-                        'data'    => $request  
-                    ]);
+                    throw new Exception($validator->errors());
                 }
             
             //Data Kasus

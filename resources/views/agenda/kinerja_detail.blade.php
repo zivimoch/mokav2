@@ -201,10 +201,6 @@
                     <input type="time" class="form-control" id="jam_selesai" value="{{ $jam_selesai }}">
                 </div>
                 <div class="form-group">
-                    <label>Catatan</label>
-                    <textarea name="" class="form-control" id="catatan" cols="30" rows="2"></textarea>
-                </div>
-                <div class="form-group">
                 <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}" target="_blank">disini</a>)</span></label>
                 <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="dokumen_pendukung">
                 <option value="31">Dokumen konsultasi hukum kasus Eliza Thornberry</option>
@@ -213,6 +209,10 @@
                 <option value="34">Mediasi kasus tom delounge</option>
                 </select>
                 </div>
+                <div class="form-group">
+                    <label>Catatan</label>
+                    <textarea name="" class="form-control" id="catatan" cols="30" rows="2"></textarea>
+                </div>
                 <span style="font-size: 14px">*Laporan Tindak Lanjut tersimpan pada tanggal : <span id='ct' ></span></span>
               </div>
             </div>
@@ -220,7 +220,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary btn-block" id="submit">Simpan</button>
+        <button type="button" class="btn btn-success btn-block" id="submit"><i class="fa fa-check"></i> Simpan</button>
       </div>
     </div>
   </div>
@@ -405,6 +405,7 @@ function penjadwalan_layanan() {
               $("#overlay").hide();
               $('#modelHeading').html("Edit Agenda");
               $('#ajaxModel').modal('show');
+
               $('#uuid').val(data.uuid);
               $('#judul_kegiatan').val(data.judul_kegiatan);
               $('#tanggal_mulai').val(data.tanggal_mulai);

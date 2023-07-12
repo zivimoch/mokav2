@@ -1,149 +1,58 @@
 @extends('layouts.template')
 
 @section('content')
-<?php
-if (isset($alert) and $alert <> '') {
-    echo $alert;
-    unset($alert);
-}
-?>
-
-<section class="content-header">
-    <div class="container-fluid">
+<!-- Content Header (Page header) -->
+<div class="content-header">
     <div class="row mb-2">
-    <div class="col-sm-6">
-    <h1>Buat Dokumen</h1>
-    </div>
-    <div class="col-sm-6">
-    <ol class="breadcrumb float-sm-right">
-    <li class="breadcrumb-item"><a href="#">Home</a></li>
-    <li class="breadcrumb-item active">Detail Kasus</li>
-    </ol>
-    </div>
-    </div>
-    </div>
-</section>
-
-<section class="content">
-    <div class="container-fluid">
-
-<div class="col-md-12 col-sm-12 col-12">
-    <h4>Pilih template</h4>
+      <div class="col-sm-6">
+        <h1 class="m-0"><i class="nav-icon fas fa-file-alt"></i> Buat Dokumen</h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+        <a href="http://localhost/suratresmi/template/add" class="btn btn-success float-right">
+            <i class="far fa-copy"></i> Blank Template
+        </a>
+      </div><!-- /.col -->
+    </div><!-- /.row -->
 </div>
-
-<div class="col-md-12 col-sm-12 col-12">
+<!-- /.content-header -->
+    <div class="col-md-12 col-sm-12 col-12">
+        <h4>Pilih template</h4>
+    </div>
     <div class="form-group">
         <input type="text" id="Search" class="form-control" onkeyup="search()" placeholder="Cari template atau kategori...">
     </div>
-</div>
-{{-- foreach --}}
-    <div class="col-md-12">
-        <div class="card collapsed-card target">
-            <div class="card-header" data-card-widget="collapse" style="cursor: pointer;">
-                <h3 class="card-title">Surat Tugas</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool"><i class="fa fa-chevron-down"></i>
-                    </button>
-                </div>
-                <!-- /.card-tools -->
+<div class="row">
+    @foreach ($template as $item)
+    <div class="col-md-4 target" data-toggle="tooltip" data-placement="bottom" title="{{ $item->nama_template }}">
+        <a href="{{ route('dokumen.create') }}?uuid={{ $item->uuid }}">
+            <div class="info-box" style="text-decoration: inherit;color: black;">
+            <span class="info-box-icon bg-info"><i class="far fa-copy"></i></span>
+            <div class="info-box-content">
+            <span class="info-box-text" style="font-size:15px">{{ $item->nama_template }}</span>
+            <span class="info-box-number" style="margin-top: -5px; font-size:13px">{{ $item->pemilik }}</span>
+            <span style="margin-top: -5px; font-size:10px">Created by {{ $item->name }}</span>
+            <span style="margin-top: -5px; font-size:10px">Created at {{ $item->created_at }}</span>
+            <span style="margin-top: -5px; font-size:10px">Modified at {{  $item->updated_at }}
             </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-                <table data-order="[]" class="table table-bordered table-striped">
-                    <?php 
-                    // foreach ($template as $key2) {
-                    //     if ($key2['kategori'] == $key['kategori']) {
-                    ?>
-                            <tr>
-                                <td>
-                                    <a href="{{ route('dokumen.create') }}">
-                                        <div style="height:100%;width:100%">[F-ADV-02] Laporan Hasil Pendampingan Di Pengadilan
-                                        </div>
-                                    </a>
-                                </td>
-                            </tr>
-                    <?php
-                    //     }
-                    // } 
-                    ?>
-                </table>
             </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-        <div class="card collapsed-card target">
-            <div class="card-header" data-card-widget="collapse" style="cursor: pointer;">
-                <h3 class="card-title">Psikolog</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool"><i class="fa fa-chevron-down"></i>
-                    </button>
-                </div>
-                <!-- /.card-tools -->
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-                <table data-order="[]" class="table table-bordered table-striped">
-                    <?php 
-                    // foreach ($template as $key2) {
-                    //     if ($key2['kategori'] == $key['kategori']) {
-                    ?>
-                            <tr>
-                                <td>
-                                    <a href="{{ route('dokumen.createpsi') }}">
-                                        <div style="height:100%;width:100%">[F-PSI-01] Laporan Hasil Psikologi (STIPS)
-                                        </div>
-                                    </a>
-                                </td>
-                            </tr>
-                    <?php
-                    //     }
-                    // } 
-                    ?>
-                </table>
-            </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-
-        <!-- /.card -->
-        <div class="card collapsed-card target">
-            <div class="card-header" data-card-widget="collapse" style="cursor: pointer;">
-                <h3 class="card-title">Hukum</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool"><i class="fa fa-chevron-down"></i>
-                    </button>
-                </div>
-                <!-- /.card-tools -->
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-                <table data-order="[]" class="table table-bordered table-striped">
-                    <?php 
-                    // foreach ($template as $key2) {
-                    //     if ($key2['kategori'] == $key['kategori']) {
-                    ?>
-                            <tr>
-                                <td>
-                                    <a href="{{ route('dokumen.createhkm') }}">
-                                        <div style="height:100%;width:100%">[F-ADV-01] Konsultasi Hukum
-                                        </div>
-                                    </a>
-                                </td>
-                            </tr>
-                    <?php
-                    //     }
-                    // } 
-                    ?>
-                </table>
-            </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
+        </a>
     </div>
-{{-- endforeach --}}
+    @endforeach
 </div>
-</section>
-<script type="text/javascript">
+<script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="{{ asset('adminlte') }}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="{{ asset('adminlte') }}/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="{{ asset('adminlte') }}/plugins/jszip/jszip.min.js"></script>
+<script src="{{ asset('adminlte') }}/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="{{ asset('adminlte') }}/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+<script>
     // Javascript Serch saat pilih template buat dokumen
     function search() {
         var input = document.getElementById("Search");
@@ -158,5 +67,5 @@ if (isset($alert) and $alert <> '') {
             }
         }
     }
-</script>
+  </script>
 @endsection

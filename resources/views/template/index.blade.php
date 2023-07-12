@@ -1,158 +1,116 @@
 @extends('layouts.template')
 
 @section('content')
-<!-- Content Header (Page header) -->
-<div class="content-header">
-  <div class="container-fluid">
-    <div class="row mb-2">
-      <div class="col-sm-6">
-        <h1 class="m-0">Template</h1>
-      </div><!-- /.col -->
-      <div class="col-sm-6">
-        <a href="http://localhost/suratresmi/template/add" class="btn btn-success float-right">
-            <i class="fa fa-plus"></i> Buat Template
-        </a>
-      </div><!-- /.col -->
-    </div><!-- /.row -->
-  </div><!-- /.container-fluid -->
-</div>
-<!-- /.content-header -->
-<div class="col-md-12 col-sm-12 col-12">
-    <div class="form-group">
-        <input type="text" id="Search" class="form-control" onkeyup="search()" placeholder="Cari template atau kategori...">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0"><i class="far fa-copy"></i> Template</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
     </div>
+    <!-- /.content-header -->
+    
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="card">
+            {{-- <div class="card-header">
+            <h3 class="card-title">DataTable with default features</h3>
+            </div> --}}
+            
+            <div class="card-body" style="overflow-x: scroll">
+            <table id="example1" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
+            <thead>
+            <tr>
+            <th>Nama Template</th>
+            <th>Pemilik</th>
+            <th>Created By</th>
+            <th>Created At</th>
+            <th>Modified At</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            <tr>
+            <th>Nama Template</th>
+            <th>Pemilik</th>
+            <th>Created By</th>
+            <th>Created At</th>
+            <th>Modified At</th>
+            </tr>
+            </tfoot>
+            </table>
+            </div>
+            
+            </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+<!-- Modal -->
+<div class="modal fade" id="ajaxModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div id="overlay" class="overlay dark">
+        <div class="cv-spinner">
+          <span class="spinner"></span>
+        </div>
+      </div>
+      
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
+        <span id="message"></span>
+      </div>
+      <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-check"></i> Success!</h4>
+        Data berhasil disimpan.
+      </div>
+      <div class="modal-body">
+        <div class="box-profile">
+          <div class="text-center">
+          <img class="profile-user-img img-fluid img-circle" src="http://127.0.0.1:8000/adminlte/dist/img/user4-128x128.jpg" alt="User profile picture">
+          </div>
+          <h3 class="profile-username text-center" id="nama"></h3>
+          <p class="text-muted text-center">(<span id="usia"></span>) <span id="jenis_kelamin"></span></p>
+          <p class="text-center" id="no_klien"></p>
+          <ul class="list-group list-group-unbordered mb-3">
+          <h5><span class="float-right badge bg-danger btn-block" id="status"></span></h5>
+          <li class="list-group-item">
+          <b>Layanan</b> <a class="float-right">5</a>
+          </li>
+          <li class="list-group-item">
+          <b>Intervensi</b> <a class="float-right">10</a>
+          </li>
+          <li class="list-group-item">
+          <b>Petugas</b> <a class="float-right">6</a>
+          </li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer" id="buttons">
+      </div>
+    </div>
+  </div>
 </div>
 
-
-    <div class="col-md-12">
-        <div class="card collapsed-card target">
-            <div class="card-header" data-card-widget="collapse" style="cursor: pointer;">
-                <h3 class="card-title">Surat Tugas</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool"><i class="fa fa-chevron-down"></i>
-                    </button>
-                </div>
-                <!-- /.card-tools -->
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-                <table data-order="[]" class="NormalTable table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Nama Template</th>
-                            <th>Kategori</th>
-                            <th>Dibuat Oleh</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                                                        <tr>
-                                    <td>Perjanjian Pengadaan Barang Tanpa Dp</td>
-                                    <td>Purchasing</td>
-                                    <td>Sumarno</td>
-                                    <td><a href='./template/edit/P58wnxXw' title="Edit">edit</a> | <a href='./template/delete/P58wnxXw' title="Trash" onClick="return confirm('Anda yakin akan menghapus?')">delete</a></td>
-                                </tr>
-                                            </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Nama Template</th>
-                            <th>Kategori</th>
-                            <th>Dibuat Oleh</th>
-                            <th>Action</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-    </div>
-    <div class="col-md-12">
-        <div class="card collapsed-card target">
-            <div class="card-header" data-card-widget="collapse" style="cursor: pointer;">
-                <h3 class="card-title">Psikolog</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool"><i class="fa fa-chevron-down"></i>
-                    </button>
-                </div>
-                <!-- /.card-tools -->
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-                <table data-order="[]" class="NormalTable table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Nama Template</th>
-                            <th>Kategori</th>
-                            <th>Dibuat Oleh</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                                                        <tr>
-                                    <td>[F-PSI-01] Laporan Hasil Psikologi (STIPS)</td>
-                                    <td>Psikolog</td>
-                                    <td>Koordinator Psikolog</td>
-                                    <td><a href='{{ route('template.createpsi') }}' title="Edit">edit</a> | <a href='./template/delete/x7zS2734' title="Trash" onClick="return confirm('Anda yakin akan menghapus?')">delete</a></td>
-                                </tr>
-                                            </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Nama Template</th>
-                            <th>Kategori</th>
-                            <th>Dibuat Oleh</th>
-                            <th>Action</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-    </div>
-    <div class="col-md-12">
-        <div class="card collapsed-card target">
-            <div class="card-header" data-card-widget="collapse" style="cursor: pointer;">
-                <h3 class="card-title">Hukum</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool"><i class="fa fa-chevron-down"></i>
-                    </button>
-                </div>
-                <!-- /.card-tools -->
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-                <table data-order="[]" class="NormalTable table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Nama Template</th>
-                            <th>Kategori</th>
-                            <th>Dibuat Oleh</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                                                        <tr>
-                                    <td>Nah Ini Bener</td>
-                                    <td>Marketing</td>
-                                    <td>Indraco</td>
-                                    <td><a href='./template/edit/x7zS2734' title="Edit">edit</a> | <a href='./template/delete/x7zS2734' title="Trash" onClick="return confirm('Anda yakin akan menghapus?')">delete</a></td>
-                                </tr>
-                                            </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Nama Template</th>
-                            <th>Kategori</th>
-                            <th>Dibuat Oleh</th>
-                            <th>Action</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-    </div>
+    {{-- DataTable --}}
 
 <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
@@ -168,46 +126,75 @@
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
 <script>
-    // Javascript Serch saat pilih template buat dokumen
-    function search() {
-        var input = document.getElementById("Search");
-        var filter = input.value.toLowerCase();
-        var nodes = document.getElementsByClassName('target');
-
-        for (i = 0; i < nodes.length; i++) {
-            if (nodes[i].innerText.toLowerCase().includes(filter)) {
-                nodes[i].style.display = "block";
-            } else {
-                nodes[i].style.display = "none";
+    $(function () {
+    $('#example1').DataTable({
+      "ordering": true,
+      "processing": true,
+      "serverSide": true,
+      "responsive": false, 
+      "lengthChange": false, 
+      "autoWidth": false,
+      "ajax": "/template",
+      'createdRow': function( row, data, dataIndex ) {
+          $(row).attr('id', data.uuid);
+      },
+      "columns": [
+        {
+            "mData": "nama_template",
+            "mRender": function (data, type, row) {
+              return '<i class="far fa-copy"></i> '+row.nama_template;
             }
-        }
-    }
-    $(function() {
+        },
+        {"data": "pemilik"},
+        {"data": "petugas"},
+        {"data": "created_at"},
+        {"data": "updated_at"},
+      ],
+      "pageLength": 25,
+      "lengthMenu": [
+          [10, 25, 50, 100, -1],
+          ['10 rows', '25 rows', '50 rows', '100 rows','All'],
+      ],
+      "dom": 'Blfrtip', // Blfrtip or Bfrtip
+      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print",
+              {
+                className: "btn-info",
+                text: 'Buat Template',
+                  action: function ( ) {
+                    window.location.assign('{{ route("template.create") }}')
+                  }
+              }]
+      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-//Datemask dd/mm/yyyy
-$('#datemask').inputmask('dd/mm/yyyy', {
-    'placeholder': 'dd/mm/yyyy'
-})
+      $('#example1_filter').css({'float':'right','display':'inline-block; background-color:black'});
+    });
 
-$("table.NormalTable").DataTable({
-    "responsive": true,
-    "autoWidth": false,
-});
-$("#example1").DataTable({
-    "responsive": true,
-    "autoWidth": false,
-});
-$('#example2').DataTable({
-    "paging": true,
-    "lengthChange": false,
-    "searching": false,
-    "ordering": false,
-    "info": true,
-    "autoWidth": false,
-    "responsive": true,
-});
-});
-//Bootstrap Duallistbox
-$('.duallistbox').bootstrapDualListbox()
+    $('#example1 tbody').on('click', 'tr', function () {
+      $("#success-message").hide();
+      $("#error-message").hide();
+      
+      $.get(`/kasus/show/`+this.id, function (data) {
+          dob = new Date(data.tanggal_lahir);
+          var today = new Date();
+          var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
+
+          $("#overlay").hide();
+          $('#nama').html(data.nama);
+          $('#usia').html(age);
+          $('#jenis_kelamin').html(data.jenis_kelamin);
+          $('#no_klien').html(data.no_klien);
+          $('#status').html(data.status);
+          $('#ajaxModal').modal('show');
+          //munculkan tombol
+          $('#buttons').html('');
+          $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="window.location.assign(`'+"{{route('kasus.show', '')}}"+"/"+data.uuid+'`)"><i class="fa fa-info-circle"></i> Detail Kasus</button>');
+          $('#buttons').append('<button type="button" class="btn btn-success btn-block" id="terima"><i class="fa fa-check"></i> Terima Kasus</button>');
+          $('#buttons').append('<button type="button" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
+        });
+    });
+
   </script>
+{{-- 
+// alert('redirect ke : '+this.id);
+// window.location.assign('{{ route("kasus.detail") }}') --}}
 @endsection

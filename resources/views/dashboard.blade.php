@@ -6,13 +6,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Selamat siang, {{ Auth::user()->name }}</h1>
+            <h1 class="m-0"><i class="far fa-smile"></i> Selamat siang, {{ Auth::user()->name }}</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard</li>
+              <li class="breadcrumb-item" id="clock" style="font-size: 20px; background-color:#343a40; color:#fff; padding:8px"></li>
             </ol>
+            
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -82,12 +82,18 @@
         <div class="row">
           <!-- Left col -->
           <section class="col-lg-7 connectedSortable">
-            <div class="card card-default">
+            <div class="card card-danger">
               <div class="card-header">
                 <h3 class="card-title">
                   <i class="fas fa-bullhorn"></i>
                   Pengumuman
                 </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="nav-icon fas fa-edit"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
+                    </button>
+                </div>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -110,21 +116,17 @@
             </div>
             <!-- /.card -->
             <!-- TO DO List -->
-            <div class="card">
+            <div class="card card-primary">
               <div class="card-header">
                 <h3 class="card-title">
-                  <i class="ion ion-clipboard mr-1"></i>
+                  <i class="fas fa-tasks"></i>
                   To Do List
                 </h3>
-
                 <div class="card-tools">
-                  <ul class="pagination pagination-sm">
-                    <li class="page-item"><a href="#" class="page-link">&laquo;</a></li>
-                    <li class="page-item"><a href="#" class="page-link">1</a></li>
-                    <li class="page-item"><a href="#" class="page-link">2</a></li>
-                    <li class="page-item"><a href="#" class="page-link">3</a></li>
-                    <li class="page-item"><a href="#" class="page-link">&raquo;</a></li>
-                  </ul>
+                    <a href="{{ route('kinerja.detail') }}?bulan=2" class="btn btn-tool"><i class="nav-icon fas fa-edit"></i>
+                    </a>
+                    <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
+                    </button>
                 </div>
               </div>
               <!-- /.card-header -->
@@ -232,10 +234,6 @@
                     </div>
                   </li>
                 </ul>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer clearfix">
-                <a href="{{ route('kinerja') }}"><button type="button" class="btn btn-primary float-right"><i class="fas fa-edit"></i> Laporan Kinerja</button></a>
               </div>
             </div>
             <!-- /.card -->
@@ -357,4 +355,22 @@
         <!-- /.row (main row) -->
       </div><!-- /.container-fluid -->
     </section>
+    <script>
+      startTime();
+      function startTime() {
+        const today = new Date();
+        let h = today.getHours();
+        let m = today.getMinutes();
+        let s = today.getSeconds();
+        m = checkTime(m);
+        s = checkTime(s);
+        document.getElementById('clock').innerHTML =  h + ":" + m + ":" + s;
+        setTimeout(startTime, 1000);
+      }
+
+      function checkTime(i) {
+        if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+        return i;
+      }
+    </script>
 @endsection

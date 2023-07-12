@@ -55,7 +55,7 @@
 <script src="{{ asset('adminlte') }}/plugins/moment/moment.min.js"></script>
 {{-- toast, bikin alert yang melayang dan hilang --}}
 <script src="{{ asset('adminlte') }}/plugins/toastr/toastr.min.js"></script>
-  <div class="content-wrapper">
+<div class="content-wrapper">
     <div class="content">
       <div class="container">
       @yield('content')
@@ -71,11 +71,43 @@
   </footer>
 </div>
 
+<!-- Modal Riwayat Kejadian-->
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="timeOutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="text-align: center">
+        <h4 style="font-weight:bold; background-color:rgb(174, 149, 114); color:#fff">SESI HABIS, TERLALU LAMA MENINGGALKAN MOKA ANDA</h4>
+      </br>
+      <center>
+        <img src="{{ asset('img/mocha.gif') }}" alt="" class="img-fluid">
+        <br>
+        <br>
+        <button type="button" class="btn btn-primary btn-lg" onclick="location.reload()">Reload Halaman</button>
+      </center>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   //loading submit form
   $(document).ajaxSend(function() {
     $("#overlay").fadeIn(300);　
   });
+
+     // TimeOut
+    var activityTimeout = setTimeout(inActive, 3600000); //1 jam
+    function resetActive(){
+        // $(document.body).attr('class', 'active');
+        clearTimeout(activityTimeout);
+        activityTimeout = setTimeout(inActive, 3600000); //1 jam
+    }
+    function inActive(){
+        $('#timeOutModal').modal({backdrop: 'static', keyboard: false});
+    }
+    // Check for mousemove, could add other events here such as checking for key presses ect.
+    $(document).bind('mousemove', function(){resetActive()});
 </script>
 </body>
 </html>
