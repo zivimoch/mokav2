@@ -8,6 +8,7 @@ use App\Http\Controllers\FormPenerimaPengaduan;
 use App\Http\Controllers\KasusController;
 use App\Http\Controllers\RiwayatKejadianController;
 use App\Http\Controllers\TemplateController;
+use App\Models\Agenda;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,13 +49,14 @@ Route::middleware('auth')->group(function () {
     Route::get('template', [TemplateController::class, 'index'])->name('template');
     Route::get('template/create', [TemplateController::class, 'create'])->name('template.create');
     Route::post('template/store', [TemplateController::class, 'store'])->name('template.store');
-
+    //agenda & kinerja
     Route::view('agenda/index','agenda/index')->name('agenda');
+    Route::get('agenda/show/{uuid}', [AgendaController::class, 'show'])->name('agenda.show');
+    Route::post('agenda/store', [AgendaController::class, 'store'])->name('agenda.store');
+    Route::get('agenda/edit/{id}', [AgendaController::class, 'edit'])->name('agenda.edit');
     Route::view('kinerja','agenda/kinerja')->name('kinerja');
     Route::get('kinerja', [AgendaController::class, 'kinerja'])->name('kinerja');
     Route::get('kinerja/detail', [AgendaController::class, 'kinerja_detail'])->name('kinerja.detail');
-    Route::post('agenda/store', [AgendaController::class, 'store'])->name('agenda.store');
-    Route::get('agenda/edit/{id}', [AgendaController::class, 'edit'])->name('agenda.edit');
     Route::get('kinerja/ajax', [AgendaController::class, 'ajax'])->name('ajax');
 
     Route::get('userdatatable', [DashboardController::class, 'userdatatable'])->name('userdatatable');

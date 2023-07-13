@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agenda;
 use App\Models\Dokumen;
 use App\Models\DokumenKeyword;
+use App\Models\DokumenTl;
 use App\Models\Template;
+use App\Models\TindakLanjut;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Validator;
@@ -46,7 +49,17 @@ class DokumenController extends Controller
                         ->where('a.uuid', $request->uuid)
                         ->groupBy('a.id')
                         ->first();
-        return view('dokumen.create')->with('template', $template);
+
+        $agenda = DB::table('agenda as a')
+                        ->select(DB::raw('a.*, b.uuid as uuid_tindak_lanjut'))
+                        ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
+                        ->where('b.created_by', Auth::user()->id)
+                        ->orderBy('a.tanggal_mulai', 'DESC')
+                        ->orderBy('a.jam_mulai', 'DESC')
+                        ->get();
+        return view('dokumen.create')
+                        ->with('agenda', $agenda)
+                        ->with('template', $template);
     }
 
     /**
@@ -92,6 +105,23 @@ class DokumenController extends Controller
                 for ($i=0; $i < count($dokumen_keyword); $i++) { 
                     $proses['keyword'] = DokumenKeyword::create(['dokumen_id' => $dokumen->id, 'keyword' => $dokumen_keyword[$i]]);
                 }
+            }
+
+            //tautkan dengan agenda terkait jika ada
+            if ($request->uuid_tindak_lanjut != '') {
+                //update tindak lanjut
+                TindakLanjut::where('uuid', $request->uuid_tindak_lanjut)
+                            ->update([
+                                'lokasi' => $request->lokasi,
+                                'jam_selesai' => $request->jam_selesai,
+                                'catatan' => $request->catatan
+                            ]);
+                //tambah tautan tindak lanjut dan dokumen
+                $tindak_lanjut = TindakLanjut::where('uuid', $request->uuid_tindak_lanjut)->first();
+                DokumenTl::create([
+                    'tindak_lanjut_id' => $tindak_lanjut->id,
+                    'dokumen_id' => $dokumen->id
+                ]);
             }
             
             //return response

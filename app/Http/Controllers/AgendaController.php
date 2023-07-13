@@ -37,12 +37,23 @@ class AgendaController extends Controller
         $data = DB::table('agenda as a')
                     ->leftJoin('tindak_lanjut as b', 'b.agenda_id', 'a.id')
                     ->leftJoin('users as c', 'c.id', 'b.validated_by')
+                    ->leftJoin(DB::raw('(
+                        SELECT 
+                        a.tindak_lanjut_id, GROUP_CONCAT(CONCAT(",|"),b.judul) AS judul
+                        FROM dokumen_tl a LEFT JOIN dokumen b ON a.dokumen_id = b.id
+                        GROUP BY a.tindak_lanjut_id) z'), 
+                    function($join)
+                    {
+                    $join->on('z.tindak_lanjut_id', '=', 'b.id');
+                    })
                     ->where('b.created_by', $user_id)
                     ->whereYear('a.tanggal_mulai', $request->tahun)
                     ->whereMonth('a.tanggal_mulai', $request->bulan)
                     ->orderBy('a.tanggal_mulai')
                     ->orderBy('a.jam_mulai')
-                    ->get(['a.tanggal_mulai', 'a.jam_mulai', 'a.klien_id', 'b.tanggal_selesai', 'b.jam_selesai', 'a.judul_kegiatan', 'a.keterangan', 'a.uuid', 'b.lokasi', 'b.catatan', 'c.name', 'b.created_by']);
+                    ->select(DB::raw('a.tanggal_mulai, a.jam_mulai, a.klien_id, b.tanggal_selesai, 
+                    b.jam_selesai, a.judul_kegiatan, a.keterangan, a.uuid, b.lokasi, b.catatan, c.name, b.created_by, z.judul'))
+                    ->get();
         return DataTables::of($data)->make(true);
     }
 
@@ -161,9 +172,27 @@ class AgendaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($uuid)
     {
-        //
+        try {
+            $agenda = DB::table('agenda as a')
+                            ->select(DB::raw('a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, a.keterangan, c.nama, b.lokasi, b.jam_selesai, b.catatan'))
+                            ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id') 
+                            ->leftJoin('klien as c', 'c.id', 'a.klien_id')
+                            ->where('b.uuid', $uuid)
+                            ->where('b.created_by', Auth::user()->id)
+                            ->first();
+            //return response
+            return response()->json([
+                'success' => true,
+                'code'    => 200,
+                'message' => 'Success',
+                'data'    => $agenda  
+            ]);
+        } catch (Exception $e){
+            return response()->json(['msg' => $e->getMessage()]);
+            die();
+        }
     }
 
     /**

@@ -37,6 +37,8 @@
         }
     }
 </style>
+<link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 <link rel="stylesheet" type="text/css" href="{{ asset('source') }}/css/ckeditor.css">
 <!-- daterange picker -->
 
@@ -93,65 +95,146 @@
                             tampil.innerHTML = span.textContent;
                         }
                     </script>
+                    <div class="form-group">
+                        <label>Detail Template</label>
+                        <div class="col-md-12" style="background-color:aliceblue; padding:10px">
+                            <table>
+                                <tr>
+                                    <td>
+                                        Nama Template
+                                    </td>
+                                    <td>
+                                        : {{ $template->nama_template }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Detail Kasus / Keyword
+                                    </td>
+                                    <td>
+                                        : {{ $template->keyword }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Kepemilikan Template
+                                    </td>
+                                    <td>
+                                        : {{ $template->pemilik }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Created by
+                                    </td>
+                                    <td>
+                                        : {{ $template->name }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Created at
+                                    </td>
+                                    <td>
+                                        : {{ $template->created_at }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Modified at
+                                    </td>
+                                    <td>
+                                        : {{ $template->updated_at }}
+                                    </td>
+                                </tr>
+                            </table>  
+                        </div>
+                    </div>
                     <div class="form-card">
                         <div class="form-group">
                             <label>Judul Dokumen</label>
                             <input type="text" name="judul" class="form-control" id="titleForm" value="">
                         </div>
-                        <div class="form-group">
-                            <label>Detail Template</label>
+                        <div class="form-card">
+                            <label>Agenda Terkait </label>
+                            <span style="font-size:13px">(Belum membuat agenda? <a href="">klik disini</a>)</span>
+                            <select name="uuid_tindak_lanjut" class="form-control select2bs4" id="uuid_tindak_lanjut" style="width:100%" required>
+                                <option value="" selected>Tidak ada agenda terkait yang dipilih</option>
+                                @foreach ($agenda as $item)
+                                    <option value="{{ $item->uuid_tindak_lanjut }}" >[ {{ $item->tanggal_mulai ? date('d M Y', strtotime($item->tanggal_mulai)) : '' }} | {{ $item->jam_mulai }} ] {{ $item->judul_kegiatan }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        </br>
+                        <div id="tindak_lanjut" style="display: none">
+                            <div class="form-group">
+                                <label>Detail Agenda</label>
+                            <span style="font-size:13px">(<a href="">edit agenda</a>)</span>
                             <div class="col-md-12" style="background-color:aliceblue; padding:10px">
-                                <table>
-                                    <tr>
-                                        <td>
-                                            Nama Template
-                                        </td>
-                                        <td>
-                                            : {{ $template->nama_template }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Detail Kasus / Keyword
-                                        </td>
-                                        <td>
-                                            : {{ $template->keyword }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Kepemilikan Template
-                                        </td>
-                                        <td>
-                                            : {{ $template->pemilik }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Created by
-                                        </td>
-                                        <td>
-                                            : {{ $template->name }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Created at
-                                        </td>
-                                        <td>
-                                            : {{ $template->created_at }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Modified at
-                                        </td>
-                                        <td>
-                                            : {{ $template->updated_at }}
-                                        </td>
-                                    </tr>
-                                </table>  
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                Judul Agenda
+                                            </td>
+                                            <td> : </td>
+                                            <td id="judul_kegiatan"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Tanggal Mulai
+                                            </td>
+                                            <td> : </td>
+                                            <td id="tanggal_mulai"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Jam Mulai
+                                            </td>
+                                            <td> : </td>
+                                            <td id="jam_mulai"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Keterangan
+                                            </td>
+                                            <td> : </td>
+                                            <td id="keterangan"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Nama Klien
+                                            </td>
+                                            <td> : </td>
+                                            <td id="nama"></td>
+                                        </tr>
+                                    </table>  
+                                </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Lokasi Kegiatan</label>
+                                        <input type="text" name="lokasi" class="form-control" id="lokasi" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Jam selesai</label>
+                                        <?php
+                                        date_default_timezone_set("asia/jakarta");
+                                        $jam_selesai = date("h:i");
+                                        ?>
+                                        <input type="time" name="jam_selesai" class="form-control" id="jam_selesai" value="{{ $jam_selesai }}" required>
+                                    </div>
+                                </div>
+                            </div>
+                          <div class="form-group">
+                              <label>Catatan</label>
+                              <textarea name="catatan" class="form-control" id="catatan" cols="30" rows="2"></textarea>
+                          </div>
+                          <span style="font-size: 14px">*Laporan Tindak Lanjut tersimpan pada tanggal : <span id='ct' ></span></span>
+                        </br>
+                        </br>
                         </div>
                     </div>
 
@@ -234,5 +317,62 @@
 </div>
 <script src="{{ asset('source') }}/js/wizard.js"></script>
 <script src="{{ asset('source') }}/js/main.js"></script>
+<script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
 <script src="{{ asset('source') }}/js/replacetemplate.js"></script>
+<script>
+    $(function () {
+        display_ct();
+    });
+      //Initialize Select2 Elements
+  $('.select2bs4').select2({
+      theme: 'bootstrap4'
+      });
+  $('.select-tag').select2({
+    tags: true,
+    theme: 'bootstrap4'
+  });  
+
+  $('#uuid_tindak_lanjut').on('change', function() {
+    uuid_tindak_lanjut = $('#uuid_tindak_lanjut').val();
+
+    if (uuid_tindak_lanjut != '') {
+    $.ajax({
+          url:'{{ route("agenda.show", "") }}/'+uuid_tindak_lanjut,
+          type:'GET',
+          dataType: 'json',
+          success: function( response ) {
+            if (response.success) {
+                agenda = response.data;
+                $('#lokasi').val(agenda.lokasi);
+                $('#jam_selesai').val(agenda.jam_selesai);
+                $('#catatan').val(agenda.catatan);
+                
+                $('#judul_kegiatan').html(agenda.judul_kegiatan);
+                $('#tanggal_mulai').html(agenda.tanggal_mulai);
+                $('#jam_mulai').html(agenda.jam_mulai);
+                $('#keterangan').html(agenda.keterangan);
+                $('#nama').html(agenda.nama);
+
+                $('#tindak_lanjut').show();
+            }
+            }
+        });
+    }else{
+        $('#tindak_lanjut').hide();
+    }
+  })
+
+  function display_c(){
+        var refresh=1000; // Refresh rate in milli seconds
+        mytime=setTimeout('display_ct()',refresh)
+    }
+
+    function display_ct() {
+        var x = new Date()
+        var x1=x.getDate() + "-" + x.getMonth() + 1+ "-" +  x.getFullYear(); 
+        x1 = x1 + " " +  x.getHours( )+ ":" +  x.getMinutes() + ":" +  x.getSeconds();
+        document.getElementById('ct').innerHTML = x1;
+        display_c();
+    }
+</script>
 @endsection

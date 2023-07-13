@@ -1,6 +1,11 @@
 @extends('layouts.template')
 
 @section('content')
+<style>
+  .cursor-disabled {
+    cursor:not-allowed;
+  }
+</style>
 <style id="style-select2"></style>
     {{-- DataTable --}}
      <!-- Content Header (Page header) -->
@@ -42,12 +47,10 @@
                   </tr>
                   </thead>
                   <tbody></tbody>
-                  @if (Auth::user()->jabatan == 'Sekretariat')
                     <tfoot>
                       <th colspan="4"><center>Centang Semua</center></th>
                       <th><div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" id="checkAll"><label for="checkAll"></label></div></th>
                     </tfoot>
-                  @endif
               </table>
 
                   <div class="row">
@@ -254,7 +257,8 @@
 
  function validasi(id) {
   // alert('apakah checked : '+$('#checkboxSuccess'+id).is(':checked'));
-  toastr.success('Berhasil update data', 'Event');
+  // toastr.success('Berhasil update data', 'Event');
+  alert(id);
  }
 
 function penjadwalan_layanan() {
@@ -312,6 +316,7 @@ function penjadwalan_layanan() {
               if (row.keterangan != null) {
                 keterangan = '</br>'+row.keterangan;
               }
+
               return judul_kegiatan+keterangan;
             }
         },
@@ -327,29 +332,32 @@ function penjadwalan_layanan() {
               if (row.catatan) {
                 catatan = row.catatan;
               }
-              return catatan+lokasi;
+
+              if(row.judul != null){
+                dokumen = row.judul;
+                var array = dokumen.split(",|");
+                for (i=1;i<array.length;i++){
+                  dokumens += '<a href="https://facebook.com"><span class="badge bg-primary"><i class="nav-icon fas fa-file-alt"></i> '+array[i]+'</span></a> ';
+                };
+              }else{
+                dokumens = '';
+              }
+              return catatan+lokasi+'<br>'+dokumens;
             }
         },
         {
             "mRender": function (data, type, row) {
-              if ('{{ Auth::user()->jabatan }}' != 'Sekretariat') {
                 if (row.name == null) {
-                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" disabled="" id="checkboxSuccess'+row.uuid+'"><label for="checkboxSuccess'+row.uuid+'"></label></div>'
+                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" id="checkboxSuccess'+row.uuid+'" onchange="validasi(`'+row.uuid+'`)"><label for="checkboxSuccess'+row.uuid+'"></label></div>'
                 }else{
-                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" disabled="" checked="" id="checkboxSuccess'+row.uuid+'"><label for="checkboxSuccess'+row.uuid+'"></label></div>'
+                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" checked="" id="checkboxSuccess'+row.uuid+'" onchange="validasi(`'+row.uuid+'`)"><label for="checkboxSuccess'+row.uuid+'"></label></div>';
                 }
-              } else {
-                if (row.name == null) {
-                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" id="checkboxSuccess'+row.uuid+'" onchange="validasi('+row.uuid+')"><label for="checkboxSuccess'+row.uuid+'"></label></div>'
-                }else{
-                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" checked="" id="checkboxSuccess'+row.uuid+'" onchange="validasi('+row.uuid+')"><label for="checkboxSuccess'+row.uuid+'"></label></div>';
-                }
-              }
             }
         },
       ],
       "columnDefs": [
-        { className: "bg-light", "targets": [ 0 ] }
+        { className: "bg-light", "targets": [ 0 ] },
+        { className: "cursor-disabled", "targets": [ 3 ] }
       ],
       "pageLength": 25,
       "lengthMenu": [
@@ -393,9 +401,8 @@ function penjadwalan_layanan() {
         }]
       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-      if ('{{ Auth::user()->jabatan }}' != 'Sekretariat') {
 
-       $('#example1 tbody').on( 'click', 'tr', function () {
+       $('#example1 tbody').on( 'click', 'tr', function (evt) {
         $('#style-select2').html('.select2-selection__choice[title="{{ Auth::user()->name }}"] .select2-selection__choice__remove {display: block;}.select2-results__option[aria-selected=true] {display: none;}');
 
         $("#success-message").hide();
@@ -404,36 +411,39 @@ function penjadwalan_layanan() {
           $.get(`/agenda/edit/`+this.id, function (data) {
               $("#overlay").hide();
               $('#modelHeading').html("Edit Agenda");
-              $('#ajaxModel').modal('show');
 
-              $('#uuid').val(data.uuid);
-              $('#judul_kegiatan').val(data.judul_kegiatan);
-              $('#tanggal_mulai').val(data.tanggal_mulai);
-              $('#jam_mulai').val(data.jam_mulai);
-              $('#keterangan').val(data.keterangan);
-              $('#klien_id').val(data.klien_id);
-              $('#lokasi').val(data.lokasi);
-              $('#jam_selesai').val(data.jam_selesai);
-              $('#catatan').val(data.catatan);
-              $('#dokumen_pendukung').val(data.dokumen_pendukung);
+              var $cell=$(evt.target).closest('td');
+              if($cell.index()<3){
+                $('#ajaxModel').modal('show');
 
-              if (data.klien_id != null) {
-                $('#penjadwalan_layanan').val(1);
-                $("#klien_id").select2("val", data.klien_id);
-              }else{
-                $('#penjadwalan_layanan').val(0);
-                $("#klien_id").select2("val", "null");
+                $('#uuid').val(data.uuid);
+                $('#judul_kegiatan').val(data.judul_kegiatan);
+                $('#tanggal_mulai').val(data.tanggal_mulai);
+                $('#jam_mulai').val(data.jam_mulai);
+                $('#keterangan').val(data.keterangan);
+                $('#klien_id').val(data.klien_id);
+                $('#lokasi').val(data.lokasi);
+                $('#jam_selesai').val(data.jam_selesai);
+                $('#catatan').val(data.catatan);
+                $('#dokumen_pendukung').val(data.dokumen_pendukung);
+
+                if (data.klien_id != null) {
+                  $('#penjadwalan_layanan').val(1);
+                  $("#klien_id").select2("val", data.klien_id);
+                }else{
+                  $('#penjadwalan_layanan').val(0);
+                  $("#klien_id").select2("val", "null");
+                }
+                penjadwalan_layanan();
+              
+                $("#user_id").val(data.user_id);
+                $('#user_id').select2();
+
+                $("#dokumen_pendukung").val(data.dokumen_pendukung);
+                $('#dokumen_pendukung').select2();
               }
-              penjadwalan_layanan();
-             
-              $("#user_id").val(data.user_id);
-              $('#user_id').select2();
-
-              $("#dokumen_pendukung").val(data.dokumen_pendukung);
-              $('#dokumen_pendukung').select2();
           });
         });
-      }
 
     $('#example1_filter').css({'float':'right','display':'inline-block'});
   
@@ -473,7 +483,6 @@ $('#submit').click(function() {
       },
       success: function (response){
         if (response.success != true) {
-          console.log(response);
           $('#message').html(JSON.stringify(response));
           $("#success-message").hide();
           $("#error-message").show();
@@ -500,7 +509,6 @@ $('#submit').click(function() {
         setTimeout(function(){
           $("#overlay").fadeOut(300);
         },500);
-        console.log(response);
 
         $('#message').html(JSON.stringify(response));
         $("#success-message").hide();
