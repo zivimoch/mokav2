@@ -51,7 +51,7 @@
       @csrf
         @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('response') }}
+            {{ session('response') }}. <a href="{{ route('tempalte') }}">Lihat data</a>
         </div>
         @endif
         @if (session('error'))

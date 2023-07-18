@@ -1,8 +1,30 @@
 @extends('layouts.template')
 
 @section('content')
-<!-- fullCalendar -->
-<link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/fullcalendar/main.css">
+<style>
+  .fc-title{
+    font-size: 20px;
+  }
+  .fc-content{
+    cursor: pointer;
+  }
+  .fc-day:hover{
+    background-color: yellow;
+  }
+  .fc-today{
+    background-color:antiquewhite !important;
+  }
+  .modal {
+    overflow-y:auto;
+  }
+</style>
+<link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/fullcalendar-3.9.0/dist/fullcalendar.css">
+<script src="{{ asset('adminlte') }}/plugins/moment/moment.min.js"></script> 
+<script src="{{ asset('adminlte') }}/plugins/fullcalendar-3.9.0/dist/fullcalendar.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
   <!-- Navbar -->   
@@ -16,10 +38,9 @@
             <h1><i class="nav-icon far fa-calendar-alt"></i> Agenda</h1>
           </div>
           <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Calendar</li>
-            </ol>
+            <a href="{{ route('kinerja') }}" class="btn btn-success float-right">
+              <i class="fas fa-tasks"></i> Laporan Kinerja
+            </a>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -40,61 +61,6 @@
             </div>
             <!-- /.card -->
           </div>
-
-          <div class="col-md-3">
-            <div class="sticky-top mb-3">
-              <div class="card">
-                <div class="card-header">
-                  <h4 class="card-title">Draggable Events</h4>
-                </div>
-                <div class="card-body">
-                  <!-- the events -->
-                  <div id="external-events">
-                    <div class="external-event bg-success">Lunch</div>
-                    <div class="external-event bg-warning">Go home</div>
-                    <div class="external-event bg-info">Do homework</div>
-                    <div class="external-event bg-primary">Work on UI design</div>
-                    <div class="external-event bg-danger">Sleep tight</div>
-                    <div class="checkbox">
-                      <label for="drop-remove">
-                        <input type="checkbox" id="drop-remove">
-                        remove after drop
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <!-- /.card-body -->
-              </div>
-              <!-- /.card -->
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">Create Event</h3>
-                </div>
-                <div class="card-body">
-                  <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
-                    <ul class="fc-color-picker" id="color-chooser">
-                      <li><a class="text-primary" href="#"><i class="fas fa-square"></i></a></li>
-                      <li><a class="text-warning" href="#"><i class="fas fa-square"></i></a></li>
-                      <li><a class="text-success" href="#"><i class="fas fa-square"></i></a></li>
-                      <li><a class="text-danger" href="#"><i class="fas fa-square"></i></a></li>
-                      <li><a class="text-muted" href="#"><i class="fas fa-square"></i></a></li>
-                    </ul>
-                  </div>
-                  <!-- /btn-group -->
-                  <div class="input-group">
-                    <input id="new-event" type="text" class="form-control" placeholder="Event Title">
-
-                    <div class="input-group-append">
-                      <button id="add-new-event" type="button" class="btn btn-primary">Add</button>
-                    </div>
-                    <!-- /btn-group -->
-                  </div>
-                  <!-- /input-group -->
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- /.col -->
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -106,115 +72,173 @@
 <!-- ./wrapper -->
 
 <!-- Modal -->
-<div class="modal fade" id="modalCreate" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="ajaxModel" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
+
+      <div id="overlay" class="overlay dark">
+        <div class="cv-spinner">
+          <span class="spinner"></span>
+        </div>
+      </div>
+      
       <div class="modal-header">
-        <h5 class="modal-title">Buat Agenda #S92JAQ</h5>
+        <h5 class="modal-title" id="modelHeading"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
+        <span id="message"></span>
+      </div>
+      <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-check"></i> Success!</h4>
+        Data berhasil disimpan.
+      </div>
       <div class="modal-body">
-          <input type="text" name="" id="start" hidden>
-          <input type="text" name="" id="end" hidden>
+      <input type="hidden" name="uuid" id="uuid">
       <div class="form-group">
-          <label>Judul kegiatan</label>
-          <input type="text" class="form-control" id="title">
+          <label><span class="text-danger">*</span>Judul kegiatan</label>
+          <input type="text" class="form-control required-field" id="judul_kegiatan">
+          <div class="invalid-feedback" id="valid-judul_kegiatan">
+            Judul Kegiatan wajib diisi.
+          </div>
       </div>
       <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-              <label>Tanggal</label>
-              <input type="date" class="form-control" id="title">
+              <label><span class="text-danger">*</span>Tanggal</label>
+              <input type="date" class="form-control required-field" id="tanggal_mulai">
+              <div class="invalid-feedback" id="valid-tanggal_mulai">
+                Tanggal Mulai wajib diisi.
+              </div>
           </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label>Jam mulai</label>
-                <input type="time" class="form-control" id="jam">
+                <label><span class="text-danger">*</span>Jam mulai</label>
+                <input type="time" class="form-control required-field" id="jam_mulai">
+                <div class="invalid-feedback" id="valid-jam_mulai">
+                  Jam Mulai wajib diisi.
+                </div>
             </div>
         </div>
       </div>
       <div class="form-group">
-        <label>Tempat</label>
-        <input type="text" class="form-control" id="title">
-      </div>
-      <div class="form-group">
           <label>Keterangan</label>
-          <textarea name="" class="form-control" id="" cols="30" rows="2"></textarea>
+          <textarea name="" class="form-control" id="keterangan" cols="30" rows="2"></textarea>
       </div>
       <div class="form-group">
           <label>Penjadwalan Layanan</label>
-          <select name="" class="form-control" id="penadjawalan_layanan">
+          <select name="" class="form-control" id="penjadwalan_layanan" onchange="penjadwalan_layanan()">
             <option value="0">Tidak</option>
             <option value="1">Ya</option>
           </select>
       </div>
       <div class="form-group" id="klien_id">
-        <div class="alert alert-warning alert-dismissible">
-          <i class="icon fas fa-exclamation-triangle"></i> Penjadwalan Layanan membutuhkan Dokumen Pendukung untuk Tindak Lanjutnya
-        </div>
         <label>Pilih Klien</label>
-        <select class="form-control select2" style="width: 100%;">
+        <select class="form-control select2" style="width: 100%;" id="klien_id">
           <option>silahkan pilih</option>
-          <option>Tini</option>
-          <option>Tina</option>
-          <option>Toni</option>
-          <option>Tono</option>
-          <option>Tino</option>
-          <option>Tanos</option>
+          <option value="1">Tini</option>
+          <option value="2">Tina</option>
+          <option value="3">Toni</option>
+          <option value="4">Tono</option>
+          <option value="5">Tino</option>
+          <option value="6">Tanos</option>
         </select>
       </div>
       <div class="form-group">
-        <label>Tag</label>
-        <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;">
-        <option>Addzifi Mochamad Gumelar</option>
-        <option>Alexander Graham Bell</option>
-        <option>Thomas Alfa Edison</option>
-        <option>Tony Stark</option>
-        <option>Rudy Tabootie</option>
+        <label><span class="text-danger">*</span>Tag</label>
+        <select class="" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id">
+        <option value="{{ Auth::user()->id }}" selected>{{ Auth::user()->name }}</option>
+        <option value="22">Alexander Graham Bell</option>
+        <option value="23">Thomas Alfa Edison</option>
+        <option value="24">Tony Stark</option>
+        <option value="25">Rudy Tabootie</option>
         </select>
+        <div class="invalid-feedback" id="valid-user_id">
+          Minimal tag 1 orang.
+        </div>
       </div>
-          <div class="col-12" id="accordion" style="padding:0px !important">
-              <div class="card card-primary card-outline">
-              <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
-              <div class="card-header">
-              <h4 class="card-title w-100">
-              Tindak Lanjut
-              </h4>
+        <div class="col-12" id="accordion" style="padding:0px !important">
+            <div class="card card-primary card-outline">
+            <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
+            <div class="card-header">
+            <h4 class="card-title w-100">
+            Tindak Lanjut
+            </h4>
+            </div>
+            </a>
+            <div id="collapseOne" class="collapse" data-parent="#accordion">
+              <div class="alert alert-warning alert-dismissible">
+                <i class="icon fas fa-exclamation-triangle"></i> Data <b>Tindak Lanjut</b> hanya tercatat pada akun anda
               </div>
-              </a>
-              <div id="collapseOne" class="collapse" data-parent="#accordion">
-                <div class="alert alert-warning alert-dismissible">
-                  <i class="icon fas fa-exclamation-triangle"></i> Data Tindak Lanjut hanya tercatat pada akun anda
+            <div class="card-body">
+              {{-- <div class="form-group">
+                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                <input type="checkbox" class="custom-control-input" id="customSwitch3">
+                <label class="custom-control-label" for="customSwitch3">Terlaksana</label>
                 </div>
-              <div class="card-body">
-                  <div class="form-group">
-                      <label>Jam selesai</label>
-                      <input type="time" class="form-control" id="jam">
-                  </div>
-                  <div class="form-group">
-                      <label>Catatan</label>
-                      <textarea name="" class="form-control" id="" cols="30" rows="2"></textarea>
-                  </div>
-                  <div class="form-group">
-                  <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}">disini</a>)</span></label>
-                  <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;">
-                  <option>Dokumen konsultasi hukum kasus Eliza Thornberry</option>
-                  <option>Dokumen Pendampingan pengadilan kasus eliza thornberry</option>
-                  <option>Pendampingan pengadilan kasus tom delounge</option>
-                  <option>Mediasi kasus tom delounge</option>
-                  </select>
-                  </div>
-                  <span style="font-size: 14px">*Laporan Tindak Lanjut tersimpan pada tanggal : <span id='ct' ></span></span>
+              </div> --}}
+                <div class="form-group">
+                  <label>Lokasi Kegiatan</label>
+                  <input type="text" class="form-control" id="lokasi">
+                </div>
+                <div class="form-group">
+                    <label>Jam selesai</label>
+                    <?php
+                      date_default_timezone_set("asia/jakarta");
+                      $jam_selesai = date("h:i");
+                    ?>
+                    <input type="time" class="form-control" id="jam_selesai" value="">
+                </div>
+                <div class="form-group">
+                <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}" target="_blank">disini</a>)<br>*Laporan Hasil Pelayanan</span></label>
+                <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="dokumen_pendukung">
+                <option value="31"><i class="fas fa-file-alt"></i> Dokumen konsultasi hukum kasus Eliza Thornberry</option>
+                <option value="32"><i class="fas fa-file-alt"></i> Dokumen Pendampingan pengadilan kasus eliza thornberry</option>
+                <option value="33"><i class="fas fa-file-alt"></i> Pendampingan pengadilan kasus tom delounge</option>
+                <option value="34"><i class="fas fa-file-alt"></i> Mediasi kasus tom delounge</option>
+                </select>
+                </div>
+                <div class="form-group">
+                    <label>Catatan</label>
+                    <textarea name="" class="form-control" id="catatan" cols="30" rows="2"></textarea>
+                </div>
+                <span style="font-size: 14px">*Laporan Tindak Lanjut tersimpan pada tanggal : <span id='ct' ></span></span>
               </div>
-              </div>
-              </div>
-          </div>
+            </div>
+            </div>
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary btn-block" id="submit">Simpan</button>
+        <button type="button" class="btn btn-success btn-block" id="submit"><i class="fa fa-check"></i> Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Detail Agenda-->
+<div class="modal fade" id="ajaxModelDetail" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title" id="modelHeading2"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- /.card-header -->
+        <b style="font-size:20px" id="agendaAndaHeading"></b>
+        <ul class="todo-list" data-widget="todo-list" id="agendaSaya"></ul>
+        <br>
+        <b style="font-size:20px" id="agendaSemuaHeading"></b>
+        <ul class="todo-list" data-widget="todo-list" id="agendaSemua"></ul>
       </div>
     </div>
   </div>
@@ -224,153 +248,184 @@
 <script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
 <!-- jQuery UI -->
 <script src="{{ asset('adminlte') }}/plugins/jquery-ui/jquery-ui.min.js"></script>
-<!-- fullCalendar 2.2.5 -->
-<script src="{{ asset('adminlte') }}/plugins/moment/moment.min.js"></script> 
-<script src="{{ asset('adminlte') }}/plugins/fullcalendar/main.js"></script>
-<!-- AdminLTE for demo purposes -->
 
+<script src="{{ asset('/source/js/validation.js') }}"></script>
 
 <script>
-  $(function () {
+$(document).ready(function () {
+   var SITEURL = "{{ url('/') }}";
+     
+   $.ajaxSetup({
+       headers: {
+       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+       }
+   });
+     
+   var calendar = $('#calendar').fullCalendar({
+          eventColor: '#378006',
+          eventTextColor: '#fff',
+          eventTextSize: '20px',
+          editable: false,
+          events: SITEURL + "/agenda",
+          displayEventTime: false,
+          eventRender: function (event, element, view) {
+              if (event.allDay === 'true') {
+                      event.allDay = true;
+              } else {
+                      event.allDay = false;
+              }
+          },
+          selectable: true,
+          selectHelper: true,
+          select: function (start, end, allDay) {
+            showModal($.fullCalendar.formatDate(start, "Y-MM-DD"),0);
+          },
+          eventClick: function (event) {
+              tanggal_mulai = event.start._i;
+              $('#modelHeading2').html('Agenda Tanggal : '+tanggal_mulai); 
+              $('#ajaxModelDetail').modal('show'); 
+              $.ajax({
+                  type: "GET",
+                  url: SITEURL + '/agenda/showdate/' + tanggal_mulai,
+                  success: function (response) {
+                    $('#agendaSaya').html('');
+                    agenda_saya = response.data.agenda_saya;
+                    i = 1;
+                    agenda_saya.forEach(e => {
+                      if (e.jam_selesai == null) {
+                        done = '';
+                        checked = '';
+                        disabled = 'disabled';
+                      } else {
+                        done = 'done';
+                        checked = 'checked';
+                        disabled = 'disabled';
+                      }
+                      $('#agendaSaya').append('<li class="'+done+'"><div  class="icheck-primary d-inline ml-2"><input type="checkbox" value="" id="todoCheck'+i+'" '+checked+' '+disabled+' onclick="showModal(`'+e.tanggal_mulai+'`,`'+e.uuid+'`)"><label for="todoCheck'+i+'"></label></div><span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span></li>');
+                      $('#agendaAndaHeading').html('Agenda Anda ('+i+' agenda)')
+                      i++;
+                    });
+
+                    $('#agendaSemua').html('');
+                    agenda_semua = response.data.agenda_semua;
+                    y = 1;
+                    agenda_semua.forEach(e => {
+                      $('#agendaSemua').append('<li>'+y+'. <span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span></li>');
+                      $('#agendaSemuaHeading').html('Agenda Seluruh Petugas ('+y+' agenda)')
+                      y++;
+                    });
+                  }
+              });
+          }
+
+      });
+
+      $('#submit').click(function() {
+        if(validateForm()){
+          let token   = $("meta[name='csrf-token']").attr("content");
+          $.ajax({
+            url: `/agenda/store/`,
+            type: "POST",
+            cache: false,
+            data: {
+              uuid: $('#uuid').val(),
+              judul_kegiatan: $('#judul_kegiatan').val(),
+              tanggal_mulai: $("#tanggal_mulai").val(),
+              jam_mulai: $("#jam_mulai").val(),
+              keterangan: $("#keterangan").val(),
+              klien_id: $("#klien_id").val(),
+              user_id: $("#user_id").val(),
+              lokasi: $("#lokasi").val(),
+              jam_selesai: $("#jam_selesai").val(),
+              catatan: $("#catatan").val(),
+              dokumen_pendukung: $("#dokumen_pendukung").val(),
+              _token: token
+            },
+            success: function (response){
+              if (response.success != true) {
+                $('#message').html(JSON.stringify(response));
+                $("#success-message").hide();
+                $("#error-message").show();
+              }else{
+                $('#message').html(response.message);
+                $("#success-message").show();
+                $("#error-message").hide();
+                calendar.fullCalendar( 'refetchEvents' );
+                calendar.fullCalendar('unselect');
+
+                // hapus semua inputan
+                $('#judul_kegiatan').val('');
+                $('#tanggal_mulai').val('');
+                $('#jam_mulai').val('');
+                $('#keterangan').val('');
+                $('#klien_id').val('');
+                $('#lokasi').val('');
+                $('#jam_selesai').val('');
+                $('#catatan').val('');
+                $('#dokumen_pendukung').val('');
+              }
+            },
+            error: function (response){
+              setTimeout(function(){
+                $("#overlay").fadeOut(300);
+              },500);
+
+              $('#message').html(JSON.stringify(response));
+              $("#success-message").hide();
+              $("#error-message").show();
+            }
+          }).done(function() { //loading submit form
+              setTimeout(function(){
+                $("#overlay").fadeOut(300);
+              },500);
+            });
+        }else{
+          $('#message').html('Mohon cek ulang data yang wajib diinput.');
+          $("#success-message").hide();
+          $("#error-message").show();
+        }
+      });
+    
+   });
+    
+   function displayMessage(message) {
+       toastr.success(message, 'Event');
+   } 
+
+  function display_c(){
+    var refresh=1000; // Refresh rate in milli seconds
+    mytime=setTimeout('display_ct()',refresh)
+  }
+
+  function display_ct() {
+    var x = new Date();
+    var x1=x.getDate() + "-" + x.getMonth() + 1+ "-" +  x.getFullYear(); 
+    x1 = x1 + " " +  x.getHours( )+ ":" +  x.getMinutes() + ":" +  x.getSeconds();
+    document.getElementById('ct').innerHTML = x1;
+    display_c();
+  }
+     
+  function penjadwalan_layanan() {
+    if ($('#penjadwalan_layanan').val() == 0) {
+      $("#klien_id").hide();
+    } else {
+      $("#klien_id").show();
+    }
+ }
+
+$(function () {
     display_ct();
     $("#klien_id").hide();
-    $('#penadjawalan_layanan').change(function () {
-      if ($('#penadjawalan_layanan').val() == 0) {
-        $("#klien_id").hide();
-      } else {
-        $("#klien_id").show();
-      }
-    })
     //Initialize Select2 Elements
     $('.select2').select2()
+    $('#user_id').select2();
 
     //Initialize Select2 Elements
     $('.select2bs4').select2({
       theme: 'bootstrap4'
     })
-
-    /* initialize the external events
-     -----------------------------------------------------------------*/
-    function ini_events(ele) {
-      ele.each(function () {
-
-        // create an Event Object (https://fullcalendar.io/docs/event-object)
-        // it doesn't need to have a start or end
-        var eventObject = {
-          title: $.trim($(this).text()) // use the element's text as the event title
-        }
-
-        // store the Event Object in the DOM element so we can get to it later
-        $(this).data('eventObject', eventObject)
-
-        // make the event draggable using jQuery UI
-        $(this).draggable({
-          zIndex        : 1070,
-          revert        : true, // will cause the event to go back to its
-          revertDuration: 0  //  original position after the drag
-        })
-
-      })
-    }
-
-    ini_events($('#external-events div.external-event'))
-
-    /* initialize the calendar
-     -----------------------------------------------------------------*/
-    //Date for the calendar events (dummy data)
-    var date = new Date()
-    var d    = date.getDate(),
-        m    = date.getMonth(),
-        y    = date.getFullYear()
-
-    var Calendar = FullCalendar.Calendar;
-    var Draggable = FullCalendar.Draggable;
-
-    var containerEl = document.getElementById('external-events');
-    var checkbox = document.getElementById('drop-remove');
-    var calendarEl = document.getElementById('calendar');
-
-    // initialize the external events
-    // -----------------------------------------------------------------
-
-    new Draggable(containerEl, {
-      itemSelector: '.external-event',
-      eventData: function(eventEl) {
-        return {
-          title: eventEl.innerText,
-          backgroundColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
-          borderColor: window.getComputedStyle( eventEl ,null).getPropertyValue('background-color'),
-          textColor: window.getComputedStyle( eventEl ,null).getPropertyValue('color'),
-        };
-      }
-    });
-
-    var calendar = new Calendar(calendarEl, {
-      headerToolbar: {
-        left  : 'prev,next today',
-        center: 'title',
-        right : 'dayGridMonth,timeGridWeek,timeGridDay'
-      },
-      themeSystem: 'bootstrap',
-      //Random default events
-      events: [
-        {
-          title          : 'All Day Event',
-          start          : new Date(y, m, 2),
-          backgroundColor: '#f56954', //red
-          borderColor    : '#f56954', //red
-        },
-        {
-          title          : 'Long Event',
-          start          : new Date('2023-01-11'),
-          backgroundColor: '#f39c12', //yellow
-          borderColor    : '#f39c12' //yellow
-        },
-        {
-          title          : 'Meeting',
-          start          : new Date(y, m, d, 10, 30),
-          allDay         : false,
-          backgroundColor: '#0073b7', //Blue
-          borderColor    : '#0073b7' //Blue
-        },
-        {
-          title          : 'Lunch',
-          start          : new Date(y, m, d, 12, 0),
-          end            : new Date(y, m, d, 14, 0),
-          allDay         : false,
-          backgroundColor: '#00c0ef', //Info (aqua)
-          borderColor    : '#00c0ef' //Info (aqua)
-        },
-        {
-          title          : 'Birthday Party',
-          start          : new Date(y, m, d + 1, 19, 0),
-          end            : new Date(y, m, d + 1, 22, 30),
-          allDay         : false,
-          backgroundColor: '#00a65a', //Success (green)
-          borderColor    : '#00a65a' //Success (green)
-        },
-        {
-          title          : 'Click for Google',
-          start          : new Date(y, m, 28),
-          end            : new Date(y, m, 29),
-          url            : 'https://www.google.com/',
-          backgroundColor: '#3c8dbc', //Primary (light-blue)
-          borderColor    : '#3c8dbc' //Primary (light-blue)
-        }
-      ],
-      editable  : true,
-      droppable : true, 
-      selectable: true,
-      select: function (start, end, allDay) {
-          $('#modalCreate').modal('show'); 
-      },
-    });
-
-    calendar.render();
-    // $('#calendar').fullCalendar()
-  })
-
-
+});
+    
 function display_c(){
   var refresh=1000; // Refresh rate in milli seconds
   mytime=setTimeout('display_ct()',refresh)
@@ -382,6 +437,51 @@ function display_ct() {
   x1 = x1 + " " +  x.getHours( )+ ":" +  x.getMinutes() + ":" +  x.getSeconds();
   document.getElementById('ct').innerHTML = x1;
   display_c();
+ }
+ 
+ function showModal(tanggal_mulai, agenda_id) {
+  if (agenda_id != 0) {
+    $.get(`/agenda/edit/`+agenda_id, function (data) {
+        $('#modelHeading').html("Edit Agenda");
+
+        $('#uuid').val(data.uuid);
+        $('#judul_kegiatan').val(data.judul_kegiatan);
+        $('#tanggal_mulai').val(data.tanggal_mulai);
+        $('#jam_mulai').val(data.jam_mulai);
+        $('#keterangan').val(data.keterangan);
+        $('#klien_id').val(data.klien_id);
+        $('#lokasi').val(data.lokasi);
+        $('#jam_selesai').val(data.jam_selesai);
+        $('#catatan').val(data.catatan);
+        $('#dokumen_pendukung').val(data.dokumen_pendukung);
+
+        if (data.klien_id != null) {
+          $('#penjadwalan_layanan').val(1);
+          $("#klien_id").select2("val", data.klien_id);
+        }else{
+          $('#penjadwalan_layanan').val(0);
+          $("#klien_id").select2("val", "null");
+        }
+        penjadwalan_layanan();
+        $("#collapseOne").addClass("show");
+      
+        $("#user_id").val(data.user_id);
+        $('#user_id').select2();
+
+        $("#dokumen_pendukung").val(data.dokumen_pendukung);
+        $('#dokumen_pendukung').select2();
+    });
+  }
+
+  $("#success-message").hide();
+  $("#error-message").hide();
+  $("#overlay").hide();
+  
+  $('#tanggal_mulai').val(tanggal_mulai); 
+  $('#modelHeading').html('Tambah Agenda'); 
+  $('#ajaxModel').modal('show'); 
+  $('#ajaxModelDetail').modal('hide'); 
+  
  }
 </script>
 </body>

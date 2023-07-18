@@ -275,6 +275,7 @@ class FormPenerimaPengaduan extends Controller
             $response = "Berhasil menginputkan data";
             return redirect()->route('formpenerimapengaduan.index')
                     ->with('success', true)
+                    ->with('uuid', $klien->uuid)
                     ->with('response', $response);
 
         } catch (Exception $e){

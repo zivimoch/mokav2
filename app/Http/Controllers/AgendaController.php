@@ -21,9 +21,22 @@ class AgendaController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function index()
+    public function index(Request $request)
     {
-
+        if($request->ajax()) {
+       
+            $data = DB::table('agenda as a')
+                        ->select(DB::raw('CONCAT(COUNT(*), " agenda") as title, a.tanggal_mulai as start'))
+                        ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
+                        ->whereDate('a.tanggal_mulai', '>=', $request->start)
+                        ->whereDate('b.tanggal_selesai', '<=', $request->end)
+                        ->groupBy('a.tanggal_mulai')
+                        ->get();
+ 
+            return response()->json($data);
+       }
+ 
+       return view('agenda.index');
     }
 
     public function api_index(Request $request)
@@ -105,6 +118,10 @@ class AgendaController extends Controller
                     'created_by'   => Auth::user()->id
                 ]);
 
+                $jumlah_agenda = Agenda::where('tanggal_mulai', $request->tanggal_mulai)
+                                        ->count();
+                $proses->jumlah_agenda = $jumlah_agenda." Agenda"; //untuk fullcalendar
+
                 $hapus_user = 1;
                 if (!empty($request->user_id)) {
                     foreach ($request->user_id as $value) {
@@ -182,6 +199,41 @@ class AgendaController extends Controller
                             ->where('b.uuid', $uuid)
                             ->where('b.created_by', Auth::user()->id)
                             ->first();
+            //return response
+            return response()->json([
+                'success' => true,
+                'code'    => 200,
+                'message' => 'Success',
+                'data'    => $agenda  
+            ]);
+        } catch (Exception $e){
+            return response()->json(['msg' => $e->getMessage()]);
+            die();
+        }
+    }
+
+    public function showdate($date)
+    {
+        try {
+            $agenda_semua = DB::table('agenda as a')
+                            ->select(DB::raw('a.uuid, a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, a.keterangan, c.nama'))
+                            ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id') 
+                            ->leftJoin('klien as c', 'c.id', 'a.klien_id')
+                            ->where('a.tanggal_mulai', $date)
+                            ->orderBy('a.jam_mulai')
+                            ->groupBy('a.id')
+                            ->get();
+
+            $agenda_saya = DB::table('agenda as a')
+                            ->select(DB::raw('a.uuid, a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, a.keterangan, c.nama, b.lokasi, b.jam_selesai, b.catatan'))
+                            ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id') 
+                            ->leftJoin('klien as c', 'c.id', 'a.klien_id')
+                            ->where('a.tanggal_mulai', $date)
+                            ->where('b.created_by', Auth::user()->id)
+                            ->orderBy('a.jam_mulai')
+                            ->get();
+            $agenda = array('agenda_semua' => $agenda_semua, 
+                            'agenda_saya' => $agenda_saya);
             //return response
             return response()->json([
                 'success' => true,

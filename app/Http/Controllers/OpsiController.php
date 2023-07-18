@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Petugas;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class OpsiController extends Controller
@@ -807,6 +809,12 @@ class OpsiController extends Controller
                 'Tim Data',
                 'Kepala Instansi'];
                 
+        return $data;
+    }
+
+    public function api_petugas()
+    {
+        $data = User::get();
         return $data;
     }
 }

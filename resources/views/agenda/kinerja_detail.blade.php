@@ -13,7 +13,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Laporan Kinerja</h1>
+            <h1 class="m-0"><i class="fas fa-tasks"></i> Laporan Kinerja</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -42,7 +42,7 @@
                       <th>Tanggal</th>
                       <th>Jam</th>
                       <th>Agenda</th>
-                      <th>Catatan</th>
+                      <th>Tindak Lanjut</th>
                       <th>Validasi</th>
                   </tr>
                   </thead>
@@ -201,15 +201,15 @@
                       date_default_timezone_set("asia/jakarta");
                       $jam_selesai = date("h:i");
                     ?>
-                    <input type="time" class="form-control" id="jam_selesai" value="{{ $jam_selesai }}">
+                    <input type="time" class="form-control" id="jam_selesai" value="">
                 </div>
                 <div class="form-group">
-                <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}" target="_blank">disini</a>)</span></label>
+                <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}" target="_blank">disini</a>)<br>*Laporan Hasil Pelayanan</span></label>
                 <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="dokumen_pendukung">
-                <option value="31">Dokumen konsultasi hukum kasus Eliza Thornberry</option>
-                <option value="32">Dokumen Pendampingan pengadilan kasus eliza thornberry</option>
-                <option value="33">Pendampingan pengadilan kasus tom delounge</option>
-                <option value="34">Mediasi kasus tom delounge</option>
+                <option value="31"><i class="fas fa-file-alt"></i> Dokumen konsultasi hukum kasus Eliza Thornberry</option>
+                <option value="32"><i class="fas fa-file-alt"></i> Dokumen Pendampingan pengadilan kasus eliza thornberry</option>
+                <option value="33"><i class="fas fa-file-alt"></i> Pendampingan pengadilan kasus tom delounge</option>
+                <option value="34"><i class="fas fa-file-alt"></i> Mediasi kasus tom delounge</option>
                 </select>
                 </div>
                 <div class="form-group">
@@ -288,7 +288,7 @@ function penjadwalan_layanan() {
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
-      "ajax": "/api/agenda?tahun=2023&bulan=6&user_id=2",
+      "ajax": "/api/agenda?tahun=2023&bulan=7&user_id=2",
       "rowsGroup": [0],
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);

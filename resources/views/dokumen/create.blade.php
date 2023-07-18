@@ -74,7 +74,7 @@
             @csrf
             @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('response') }}
+                {{ session('response') }}. <a href="{{ route('dokumen') }}">Lihat data</a>
             </div>
             @endif
             @if (session('error'))
@@ -109,7 +109,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        Detail Kasus / Keyword
+                                        Detail Layanan / Keyword
                                     </td>
                                     <td>
                                         : {{ $template->keyword }}
@@ -157,8 +157,8 @@
                         </div>
                         <div class="form-card">
                             <label>Agenda Terkait </label>
-                            <span style="font-size:13px">(Belum membuat agenda? <a href="">klik disini</a>)</span>
-                            <select name="uuid_tindak_lanjut" class="form-control select2bs4" id="uuid_tindak_lanjut" style="width:100%" required>
+                            <span style="font-size:13px">(Belum membuat agenda? <a href="#" type="button" data-toggle="modal" data-target="#ajaxModal">klik disini</a>)</span>
+                            <select name="uuid_tindak_lanjut" class="form-control select2bs4" id="uuid_tindak_lanjut" style="width:100%">
                                 <option value="" selected>Tidak ada agenda terkait yang dipilih</option>
                                 @foreach ($agenda as $item)
                                     <option value="{{ $item->uuid_tindak_lanjut }}" >[ {{ $item->tanggal_mulai ? date('d M Y', strtotime($item->tanggal_mulai)) : '' }} | {{ $item->jam_mulai }} ] {{ $item->judul_kegiatan }}</option>
@@ -214,7 +214,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Lokasi Kegiatan</label>
-                                        <input type="text" name="lokasi" class="form-control" id="lokasi" required>
+                                        <input type="text" name="lokasi" class="form-control" id="lokasi">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -224,7 +224,7 @@
                                         date_default_timezone_set("asia/jakarta");
                                         $jam_selesai = date("h:i");
                                         ?>
-                                        <input type="time" name="jam_selesai" class="form-control" id="jam_selesai" value="{{ $jam_selesai }}" required>
+                                        <input type="time" name="jam_selesai" class="form-control" id="jam_selesai" value="{{ $jam_selesai }}">
                                     </div>
                                 </div>
                             </div>
@@ -315,10 +315,113 @@
     </div>
     <!-- /.card -->
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="ajaxModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+  
+        <div id="overlay" class="overlay dark">
+          <div class="cv-spinner">
+            <span class="spinner"></span>
+          </div>
+        </div>
+        
+        <div class="modal-header">
+          <h5 class="modal-title" id="modelHeading">Tambah Agenda</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
+          <span id="message"></span>
+        </div>
+        <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <h4><i class="icon fa fa-check"></i> Success!</h4>
+          Data berhasil disimpan.
+        </div>
+        <div class="modal-body">
+        <input type="hidden" name="uuid" id="uuid">
+        <div class="form-group">
+            <label><span class="text-danger">*</span>Judul kegiatan</label>
+            <input type="text" class="form-control required-field" id="judul_kegiatan_add">
+            <div class="invalid-feedback" id="valid-judul_kegiatan">
+              Judul Kegiatan wajib diisi.
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+              <div class="form-group">
+                <label><span class="text-danger">*</span>Tanggal</label>
+                <input type="date" class="form-control required-field" id="tanggal_mulai_add">
+                <div class="invalid-feedback" id="valid-tanggal_mulai">
+                  Tanggal Mulai wajib diisi.
+                </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+              <div class="form-group">
+                  <label><span class="text-danger">*</span>Jam mulai</label>
+                  <input type="time" class="form-control required-field" id="jam_mulai_add">
+                  <div class="invalid-feedback" id="valid-jam_mulai">
+                    Jam Mulai wajib diisi.
+                  </div>
+              </div>
+          </div>
+        </div>
+        <div class="form-group">
+            <label>Keterangan</label>
+            <textarea name="" class="form-control" id="keterangan_add" cols="30" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Penjadwalan Layanan</label>
+            <select name="" class="form-control select2bs4" id="penjadwalan_layanan" onchange="penjadwalan_layanan()">
+              <option value="0">Tidak</option>
+              <option value="1">Ya</option>
+            </select>
+        </div>
+        <div class="form-group" id="klien_id">
+          <label>Pilih Klien</label>
+          <select class="form-control select2bs4" style="width: 100%;" id="klien_id_add">
+            <option>silahkan pilih</option>
+            <option value="1">Tini</option>
+            <option value="2">Tina</option>
+            <option value="3">Toni</option>
+            <option value="4">Tono</option>
+            <option value="5">Tino</option>
+            <option value="6">Tanos</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label><span class="text-danger">*</span>Tag</label>
+          <select class="select2bs4" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id_add">
+          <option value="{{ Auth::user()->id }}" selected>{{ Auth::user()->name }}</option>
+          <option value="22">Alexander Graham Bell</option>
+          <option value="23">Thomas Alfa Edison</option>
+          <option value="24">Tony Stark</option>
+          <option value="25">Rudy Tabootie</option>
+          </select>
+          <div class="invalid-feedback" id="valid-user_id">
+            Minimal tag 1 orang.
+          </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success btn-block" id="submit2"><i class="fa fa-check"></i> Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>
 <script src="{{ asset('source') }}/js/wizard.js"></script>
 <script src="{{ asset('source') }}/js/main.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
 <script src="{{ asset('source') }}/js/replacetemplate.js"></script>
+
+<script src="{{ asset('/source/js/validation.js') }}"></script>
+
 <script>
     $(function () {
         display_ct();
@@ -351,7 +454,12 @@
                 $('#tanggal_mulai').html(agenda.tanggal_mulai);
                 $('#jam_mulai').html(agenda.jam_mulai);
                 $('#keterangan').html(agenda.keterangan);
-                $('#nama').html(agenda.nama);
+                if (agenda.nama == null) {
+                    nama_klien = "<span style='color:red'>AGENDA INI BUKAN PENJADWALAN LAYANAN, TIDAK AKAN MASUK REKAPAN PELAYANAN KASUS.</span>";
+                }else{
+                    nama_klien = agenda.nama;
+                }
+                $('#nama').html("<b>"+nama_klien+"</b>");
 
                 $('#tindak_lanjut').show();
             }
@@ -374,5 +482,71 @@
         document.getElementById('ct').innerHTML = x1;
         display_c();
     }
+
+
+$('#submit2').click(function() {
+  if(validateForm()){
+    let token   = $("meta[name='csrf-token']").attr("content");
+    $.ajax({
+      url: `/agenda/store/`,
+      type: "POST",
+      cache: false,
+      data: {
+        uuid: $('#uuid').val(),
+        judul_kegiatan: $('#judul_kegiatan_add').val(),
+        tanggal_mulai: $("#tanggal_mulai_add").val(),
+        jam_mulai: $("#jam_mulai_add").val(),
+        keterangan: $("#keterangan_add").val(),
+        klien_id: $("#klien_id_add").val(),
+        user_id: $("#user_id_add").val(),
+        _token: token
+      },
+      success: function (response){
+        if (response.success != true) {
+          $('#message').html(JSON.stringify(response));
+          $("#success-message").hide();
+          $("#error-message").show();
+        }else{
+          $('#message').html(response.message);
+          $("#success-message").show();
+          $("#error-message").hide();
+          location.reload();
+
+          // hapus semua inputan
+          $('#judul_kegiatan_add').val('');
+          $('#tanggal_mulai_add').val('');
+          $('#jam_mulai_add').val('');
+          $('#keterangan_add').val('');
+          $('#klien_id_add').val('');
+        }
+      },
+      error: function (response){
+        setTimeout(function(){
+          $("#overlay").fadeOut(300);
+        },500);
+
+        $('#message').html(JSON.stringify(response));
+        $("#success-message").hide();
+        $("#error-message").show();
+      }
+    }).done(function() { //loading submit form
+        setTimeout(function(){
+          $("#overlay").fadeOut(300);
+        },500);
+      });
+  }else{
+    $('#message').html('Mohon cek ulang data yang wajib diinput.');
+    $("#success-message").hide();
+    $("#error-message").show();
+  }
+ });
+
+ function penjadwalan_layanan() {
+    if ($('#penjadwalan_layanan').val() == 0) {
+      $("#klien_id").hide();
+    } else {
+      $("#klien_id").show();
+    }
+ }
 </script>
 @endsection

@@ -112,6 +112,9 @@
         @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('response') }}
+            @if (Auth::user()->jabatan == "Penerima Pengaduan")
+                <a href="{{ route('kasus.show', session('uuid')) }}" class="btn btn-success">Lihat Kasus</a>
+            @endif
         </div>
         @endif
         @if (session('error'))

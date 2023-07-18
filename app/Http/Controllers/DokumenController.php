@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Validator;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\Facades\DataTables;
 
 class DokumenController extends Controller
 {
@@ -21,9 +22,35 @@ class DokumenController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+
+    public function index(Request $request)
     {
-        //
+        if($request->ajax()) {
+            $data = DB::table('dokumen as a')
+                        ->select(DB::raw('a.*, z.keyword, b.id as status, d.tanggal_mulai, d.jam_mulai, c.tanggal_selesai, c.jam_selesai, f.name'))
+                        ->leftJoin('dokumen_tl as b', 'a.id', 'b.dokumen_id')
+                        ->leftJoin(DB::raw('(
+                            SELECT dokumen_id, GROUP_CONCAT(CONCAT(" "), keyword) AS keyword FROM dokumen_keyword GROUP BY dokumen_id) z'), 
+                        function($join)
+                        {
+                        $join->on('z.dokumen_id', '=', 'a.id');
+                        })
+                        ->leftJoin('tindak_lanjut as c', 'c.id', 'b.tindak_lanjut_id')
+                        ->leftJoin('agenda as d', 'd.id', 'c.agenda_id')
+                        ->leftJoin('klien as e', 'e.id', 'd.klien_id')
+                        ->leftJoin('users as f', 'f.id', 'c.created_by')
+                        ->orderBy('a.created_at', 'DESC');
+
+            if ($request->uuid) { //jika data ini untuk di halaman map klien digital
+                $data->where('e.uuid', $request->uuid);
+            } else { //ini untuk di halaman dokumen index
+                $data->where('a.created_by', Auth::user()->id);
+            }
+            
+            return DataTables::of($data->get())->make(true);
+       }
+
+       return view('dokumen.index');
     }
 
     public function add(Request $request)
@@ -144,9 +171,15 @@ class DokumenController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $uuid)
     {
-        //
+        if($request->ajax()) { //dipakai di datatable
+            $data = DB::table('dokumen as a')
+                        ->leftJoin('dokumen_keyword as b', 'a.id', 'b.dokumen_id')
+                        ->where('a.uuid', $request->uuid)
+                        ->first(['a.*', 'b.keyword']);
+            return $data;
+       }
     }
 
     /**

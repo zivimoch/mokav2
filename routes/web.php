@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\FormPenerimaPengaduan;
 use App\Http\Controllers\KasusController;
+use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\RiwayatKejadianController;
 use App\Http\Controllers\TemplateController;
 use App\Models\Agenda;
@@ -33,6 +34,9 @@ Route::middleware('auth')->group(function () {
     Route::get('kasus', [KasusController::class, 'index'])->name('kasus');
     Route::get('kasus/show/{uuid}', [KasusController::class, 'show'])->name('kasus.show');
     // Route::view('kasus/detail/','/kasus/detail')->name('kasus.detail');
+    // petugas
+    Route::post('petugas/store/{uuid}', [PetugasController::class, 'store'])->name(('petugas.store'));
+    Route::delete('petugas/destroy/{id}', [PetugasController::class, 'destroy'])->name(('petugas.destroy'));
     // riwayat kejadian
     Route::get('riwayatkejadian/index/', [RiwayatKejadianController::class, 'index'])->name('riwayatkejadian');
     Route::post('riwayatkejadian/store/', [RiwayatKejadianController::class, 'store'])->name('riwayatkejadian.store');
@@ -41,17 +45,19 @@ Route::middleware('auth')->group(function () {
     
     Route::view('notifikasi','/notifikasi')->name('notifikasi');
     //dokumen
-    Route::view('dokumen','dokumen/index')->name('dokumen');
+    Route::get('dokumen',[DokumenController::class, 'index'])->name('dokumen');
     Route::get('dokumen/add',[DokumenController::class, 'add'])->name('dokumen.add');
     Route::get('dokumen/create',[DokumenController::class, 'create'])->name('dokumen.create');
     Route::post('dokumen/store',[DokumenController::class, 'store'])->name('dokumen.store');
+    Route::get('dokumen/show/{uuid}',[DokumenController::class, 'show'])->name('dokumen.show');
     //template
     Route::get('template', [TemplateController::class, 'index'])->name('template');
     Route::get('template/create', [TemplateController::class, 'create'])->name('template.create');
     Route::post('template/store', [TemplateController::class, 'store'])->name('template.store');
     //agenda & kinerja
-    Route::view('agenda/index','agenda/index')->name('agenda');
+    Route::get('agenda', [AgendaController::class, 'index'])->name('agenda');
     Route::get('agenda/show/{uuid}', [AgendaController::class, 'show'])->name('agenda.show');
+    Route::get('agenda/showdate/{date}', [AgendaController::class, 'showdate'])->name('agenda.showdate');
     Route::post('agenda/store', [AgendaController::class, 'store'])->name('agenda.store');
     Route::get('agenda/edit/{id}', [AgendaController::class, 'edit'])->name('agenda.edit');
     Route::view('kinerja','agenda/kinerja')->name('kinerja');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kasus;
 use App\Models\Pelapor;
+use App\Models\Petugas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -17,14 +18,15 @@ class KasusController extends Controller
     {
         if($request->ajax()) {
             $data = DB::table('klien as a')
+                        ->select('a.uuid', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 'a.jenis_kelamin', 'a.tanggal_lahir', 'a.status', 'a.uuid', 'd.name as petugas')
                         ->leftJoin('kasus as b', 'b.id', 'a.kasus_id')
                         ->leftJoin('petugas as c', 'a.id', 'c.klien_id')
                         ->leftJoin('users as d', 'd.id', 'a.created_by')
-                        ->get(['a.uuid', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 'a.jenis_kelamin', 'a.tanggal_lahir', 'a.status', 'a.uuid', 'd.name as petugas']);
+                        ->groupBy('a.id');
             if (Auth::user()->supervisor_id != 0) { // petugas penerima pengaduan tidak masalah bisa melihat semua kasus
                 $data->where('c.user_id', Auth::user()->id);
             }
-            return DataTables::of($data)->make(true);
+            return DataTables::of($data->get())->make(true);
        }
 
        return view('kasus.index');
@@ -65,6 +67,7 @@ class KasusController extends Controller
        $sumber_informasi =  app('App\Http\Controllers\OpsiController')->api_sumber_infromasi();
        $program_pemerintah =  app('App\Http\Controllers\OpsiController')->api_program_pemerintah();
        $tempat_kejadian =  app('App\Http\Controllers\OpsiController')->api_tempat_kejadian();
+       $users =  app('App\Http\Controllers\OpsiController')->api_petugas(); //untuk tambah petugas
        $provinsi = Province::get();
 
        //data klien (nanti edit lagi)
@@ -75,6 +78,11 @@ class KasusController extends Controller
                     ->leftJoin('indonesia_districts as d', 'd.city_code', 'c.code')
                     ->where('a.uuid', $uuid)
                     ->first();
+
+        $akses = Petugas::where('klien_id', $klien->id)->where('user_id', Auth::user()->id)->first();
+        if (!isset($akses)) {
+            return abort(404);
+        }
 
        //data kasus (nanti edit lagi)
        $kasus = DB::table('kasus as a')
@@ -88,6 +96,14 @@ class KasusController extends Controller
                     ->leftJoin('indonesia_cities as c', 'c.province_code', 'b.code')
                     ->leftJoin('indonesia_districts as d', 'd.city_code', 'c.code')
                     ->first();
+        //data petugas
+        $petugas = DB::table('petugas as a')
+                    ->select(DB::raw('a.*, b.name, b.jabatan'))
+                    ->leftJoin('users as b','a.user_id', 'b.id')
+                    ->where('a.klien_id', $klien->id)
+                    ->whereNULL('a.deleted_at')
+                    ->orderBy('a.created_at')
+                    ->get();
 
        return view('kasus.show')
                 ->with('klien', $klien)
@@ -112,6 +128,8 @@ class KasusController extends Controller
                 ->with('sumber_rujukan', $sumber_rujukan)
                 ->with('sumber_informasi', $sumber_informasi)
                 ->with('program_pemerintah', $program_pemerintah)
-                ->with('tempat_kejadian',$tempat_kejadian);
+                ->with('tempat_kejadian',$tempat_kejadian)
+                ->with('petugas',$petugas)
+                ->with('users',$users);
     }
 }

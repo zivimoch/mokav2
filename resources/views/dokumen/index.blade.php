@@ -1,7 +1,18 @@
 @extends('layouts.template')
 
 @section('content')
-    <!-- Content Header (Page header) -->
+<style type="text/css">
+  @media screen {
+    @font-face {
+      font-family: 'Cambria::Menu';
+      font-style: normal;
+      font-weight: normal;
+      src: local('Cambria'), url('https://themes.googleusercontent.com/font?kit=FuCXqyJXTEEvujaBqOffUw') format('woff');
+    }
+  }
+</style>
+<link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+<!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -31,98 +42,19 @@
             <table id="example1" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
             <thead>
             <tr>
-            <th>Tanggal</th>
-            <th>Layanan</th>
-            <th>Template</th>
-            <th>Judul</th>
+            <th>Judul Dokumen</th>
+            <th>Detail Layanan / Keyword</th>
+            <th>Tanggal Pembuatan</th>
             <th>Status</th>
             </tr>
             </thead>
             <tbody>
-            <tr id="1">
-            <td>2 Januari 2022</td>
-            <td>Hukum</td>
-            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
-            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
-            <td><span class="badge bg-warning">Tertaut</span></td>
-            </tr>
-            <tr id="2">
-            <td>2 Januari 2022</td>
-            <td>Hukum</td>
-            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
-            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
-            <td></td>
-            </tr>
-            <tr id="3">
-            <td>2 Januari 2022</td>
-            <td>Hukum</td>
-            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
-            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
-            <td><span class="badge bg-warning">Tertaut</span></td>
-            </tr>
-            <tr id="4">
-            <td>2 Januari 2022</td>
-            <td>Hukum</td>
-            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
-            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
-            <td><span class="badge bg-warning">Tertaut</span></td>
-            </tr>
-            <tr id="5">
-            <td>2 Januari 2022</td>
-            <td>Hukum</td>
-            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
-            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
-            <td><span class="badge bg-warning">Tertaut</span></td>
-            </tr>
-            <tr id="6">
-            <td>2 Januari 2022</td>
-            <td>Hukum</td>
-            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
-            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
-            <td><span class="badge bg-warning">Tertaut</span></td>
-            </tr>
-            <tr id="7">
-            <td>2 Januari 2022</td>
-            <td>Hukum</td>
-            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
-            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
-            <td><span class="badge bg-warning">Tertaut</span></td>
-            </tr>
-            <tr id="8">
-            <td>2 Januari 2022</td>
-            <td>Hukum</td>
-            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
-            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
-            <td><span class="badge bg-warning"></span></td>
-            </tr>
-            <tr id="10">
-            <td>2 Januari 2022</td>
-            <td>Hukum</td>
-            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
-            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
-            <td><span class="badge bg-warning">Tertaut</span></td>
-            </tr>
-            <tr id="11">
-            <td>2 Januari 2022</td>
-            <td>Hukum</td>
-            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
-            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
-            <td><span class="badge bg-warning">Tertaut</span></td>
-            </tr>
-            <tr id="1">
-            <td>2 Januari 2022</td>
-            <td>Hukum</td>
-            <td>F-ADV-01 / 2 Jan 2020 / Rev. 3</td>
-            <td>Dokumen konsultasi hukum kasus Eliza Thornberry</td>
-            <td><span class="badge bg-warning">Tertaut</span></td>
-            </tr>
             </tbody>
             <tfoot>
             <tr>
-            <th>Tanggal</th>
-            <th>Layanan</th>
-            <th>Detail Layanan</th>
-            <th>Judul</th>
+            <th>Judul Dokumen</th>
+            <th>Detail Layanan / Keyword</th>
+            <th>Tanggal Pembuatan</th>
             <th>Status</th>
             </tr>
             </tfoot>
@@ -132,6 +64,46 @@
             </div>
       </div><!-- /.container-fluid -->
     </section>
+
+<!-- Modal -->
+<div class="modal fade" id="ajaxModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+
+      <div id="overlay" class="overlay dark">
+        <div class="cv-spinner">
+          <span class="spinner"></span>
+        </div>
+      </div>
+      
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-card">
+          <div class="form-group">
+
+            <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
+              <div id="mytoolbar" style="width: 1000px"></div>
+              <main>
+                <div class="centered">
+                  <div class="row-editor">
+                    <textarea name="konten" readonly class="textarea-replace editor textarea-tinymce" id="konten">
+                    </textarea>
+                  </div>
+                </div>
+              </main>
+            </body>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" id="buttons">
+      </div>
+    </div>
+  </div>
+</div>
 
     {{-- DataTable --}}
 
@@ -147,12 +119,49 @@
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script src="{{ asset('vendor/tinymce4/tinymce.min.js') }}"></script>
 
 <script>
     $(function () {
-      $("#example1").DataTable({
-        "responsive": false, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", 
+    $('#example1').DataTable({
+      "ordering": true,
+      "processing": true,
+      "serverSide": true,
+      "responsive": false, 
+      "lengthChange": false, 
+      "autoWidth": false,
+      "ajax": "/dokumen",
+      'createdRow': function( row, data, dataIndex ) {
+          $(row).attr('id', data.uuid);
+      },
+      "columns": [
+        {
+            "mData": "judul",
+            "mRender": function (data, type, row) {
+              return '<i class="nav-icon fas fa-file-alt"></i> '+row.judul;
+            }
+        },
+        {"data": "keyword"},
+        {"data": "created_at"},
+        {
+            "mData": "status",
+            "mRender": function (data, type, row) {
+              if (row.status != null) {
+                return '<span class="badge bg-warning">Tertaut</span>';
+              }else {
+                return '';
+              }
+            }
+        }
+      ],
+      "pageLength": 25,
+      "lengthMenu": [
+          [10, 25, 50, 100, -1],
+          ['10 rows', '25 rows', '50 rows', '100 rows','All'],
+      ],
+      "order": [[2, 'desc']],
+      "dom": 'Blfrtip', // Blfrtip or Bfrtip
+      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print", 
               {
                 className: "btn-success",
                 text: 'Template',
@@ -168,11 +177,82 @@
                   }
               }]
       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+      $('#example1_filter').css({'float':'right','display':'inline-block; background-color:black'});
     });
 
-    $('#example1 tbody').on( 'click', 'tr', function () {
-        alert('redirect ke : '+this.id);
-        window.location.assign('{{ route("dokumen.add") }}')
-    } );
+    $('#example1 tbody').on('click', 'tr', function () {
+      $("#success-message").hide();
+      $("#error-message").hide();
+      
+      $.get(`/dokumen/show/`+this.id, function (data) {
+          $("#overlay").hide();
+          console.log(data);
+          tinymce.activeEditor.setContent(JSON.parse(data.konten));
+          $('#ajaxModal').modal('show');
+          //munculkan tombol
+          $('#buttons').html('');
+          $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="saveAndPrint()"><i class="fas fa-print"></i> Print Dokumen</button>');
+          $('#buttons').append('<button type="button" class="btn btn-warning btn-block" id="terima"><i class="fas fa-edit"></i> Edit Dokumen</button>');
+          $('#buttons').append('<button type="button" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Dokumen</button>');
+        });
+    });
+
+    tinymce.init({
+        selector: ".textarea-tinymce",
+        toolbar: '#mytoolbar',
+        lineheight_formats: "8pt 9pt 10pt 11pt 12pt 14pt 16pt 18pt 20pt 22pt 24pt 26pt 36pt",
+        // ukuran A4 Potrait
+        height: "500",
+        readonly: 1,
+        menubar: false,
+        toolbar: false,
+        plugins: 'textcolor table paste',
+        plugins: [
+            "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+            "searchreplace wordcount visualblocks visualchars code fullscreen",
+            "insertdatetime nonbreaking save table contextmenu directionality",
+            "emoticons template paste textcolor colorpicker textpattern"
+        ],
+        visual: false,
+        toolbar: "saveandprint",
+        convert_fonts_to_spans: true,
+        paste_word_valid_elements: "b,strong,i,em,h1,h2,u,p,ol,ul,li,a[href],span,color,font-size,font-color,font-family,mark,table,tr,td",
+        paste_retain_style_properties: "all",
+        automatic_uploads: true,
+        image_advtab: true,
+        file_picker_types: 'image',
+        paste_data_images: true,
+        relative_urls: false,
+        remove_script_host: false,
+        file_picker_callback: function(cb, value, meta) {
+            var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.onchange = function() {
+                var file = this.files[0];
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function() {
+                    var id = 'post-image-' + (new Date()).getTime();
+                    var blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                    var blobInfo = blobCache.create(id, file, reader.result);
+                    blobCache.add(blobInfo);
+                    cb(blobInfo.blobUri(), {
+                        title: file.name
+                    });
+                };
+            };
+            input.click();
+        }
+    });
+    function saveAndPrint() {
+        tinymce.activeEditor.execCommand('mcePrint');
+    }
   </script>
+{{-- 
+// alert('redirect ke : '+this.id);
+// window.location.assign('{{ route("kasus.detail") }}') --}}
+
+
 @endsection

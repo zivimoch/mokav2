@@ -31,9 +31,9 @@
         <li class="nav-item">
           <a href="{{ route('kasus') }}" class="nav-link"><i class="nav-icon fas fa-search"></i> Kasus</a>
         </li>
-        <li class="nav-item">
+        {{-- <li class="nav-item">
           <a href="{{ route('agenda') }}" class="nav-link"><i class="nav-icon far fa-calendar-alt"></i> Agenda</a>
-        </li> 
+        </li>  --}}
         <li class="nav-item">
           <a href="{{ route('dokumen') }}" class="nav-link"><i class="nav-icon fas fa-file-alt"></i> Dokumen</a>
         </li>

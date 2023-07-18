@@ -71,8 +71,7 @@
   </footer>
 </div>
 
-<!-- Modal Riwayat Kejadian-->
-<!-- Modal -->
+<!-- Modal timeOutModal-->
 <div class="modal fade bd-example-modal-lg" id="timeOutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
     <div class="modal-content">

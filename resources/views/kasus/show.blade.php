@@ -191,13 +191,13 @@
             <a class="nav-link {{ Request::get('tab') == 'kasus-Asesmen' ? 'active' : '' }}" id="kasus-Asesmen-tab" data-toggle="pill" href="#kasus-Asesmen" role="tab" aria-controls="kasus-Asesmen" aria-selected="false">Asesmen</a>
         </li>
         <li class="nav-item">
-        <a class="nav-link {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan-tab" data-toggle="pill" href="#kasus-layanan" role="tab" aria-controls="kasus-layanan" aria-selected="false">Layanan</a>
+        <a class="nav-link {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan-tab" data-toggle="pill" href="#kasus-layanan" role="tab" aria-controls="kasus-layanan" aria-selected="false">SPP & Layanan</a>
         </li>
         <li class="nav-item">
         <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="false">Log Activity</a>
         </li>
         <li class="nav-item">
-        <a class="nav-link" id="kasus-petugas-tab" data-toggle="pill" href="#kasus-petugas" role="tab" aria-controls="kasus-petugas" aria-selected="false">Petugas</a>
+        <a class="nav-link {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas-tab" data-toggle="pill" href="#kasus-petugas" role="tab" aria-controls="kasus-petugas" aria-selected="false">Petugas</a>
         </li>
         <li class="nav-item">
         <a class="nav-link {{ Request::get('tab') == 'settings' ? 'active' : '' }}" id="kasus-settings-tab" data-toggle="pill" href="#kasus-settings" role="tab" aria-controls="kasus-settings" aria-selected="false">Settings</a>
@@ -774,130 +774,15 @@
                 <th>Layanan</th>
                 <th>Detail Layanan</th>
                 <th>Petugas</th>
-                <th>Status</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr id="1">
-                <td>
-2 Januari 2022
-</br><span style="font-size:14px">14:00 s/d 15:00</span>
-</td>
-                <td>Hukum</td>
-                <td>Konsultasi hukum</td>
-                <td>Addzifi Mochamad Gumelar</td>
-                <td><span class="badge bg-success">Terlaksana</span></td>
-                </tr>
-                <tr id="2">
-                <td>
-2 Januari 2022
-</br><span style="font-size:14px">14:00 s/d 15:00</span>
-</td>
-                <td>Hukum</td>
-                <td>Konsultasi hukum</td>
-                <td>Addzifi Mochamad Gumelar</td>
-                <td><span class="badge bg-danger">Dibatalkan</span></td>
-                </tr>
-                <tr id="3" style="background:#a2a2a2" class="hightlighting">
-                <td>
-2 Januari 2022
-</br><span style="font-size:14px">14:00 s/d 15:00</span>
-</td>
-                <td>Hukum</td>
-                <td></td>
-                <td>Addzifi Mochamad Gumelar</td>
-                <td>
-                    {{-- <span class="badge bg-danger">Belum</span> --}}
-                </td>
-                </tr>
-                <tr id="4" style="background-color:rgb(156, 240, 255)">
-                <td>
-2 Januari 2022
-</br><span style="font-size:14px">14:00 s/d 15:00</span>
-</td>
-                <td>MK</td>
-                <td>Monitoring 2</td>
-                <td>Addzifi Mochamad Gumelar</td>
-                <td><span class="badge bg-success">Terlaksana</span></td>
-                </tr>
-                <tr id="5">
-                <td>
-2 Januari 2022
-</br><span style="font-size:14px">14:00 s/d 15:00</span>
-</td>
-                <td>Hukum</td>
-                <td>Konsultasi hukum</td>
-                <td>Addzifi Mochamad Gumelar</td>
-                <td><span class="badge bg-success">Terlaksana</span></td>
-                </tr>
-                <tr id="6">
-                <td>
-2 Januari 2022
-</br><span style="font-size:14px">14:00 s/d 15:00</span>
-</td>
-                <td>Hukum</td>
-                <td>Konsultasi hukum</td>
-                <td>Addzifi Mochamad Gumelar</td>
-                <td><span class="badge bg-success">Terlaksana</span></td>
-                </tr>
-                <tr id="7">
-                <td>
-2 Januari 2022
-</br><span style="font-size:14px">14:00 s/d 15:00</span>
-</td>
-                <td>Hukum</td>
-                <td>Konsultasi hukum</td>
-                <td>Addzifi Mochamad Gumelar</td>
-                <td><span class="badge bg-success">Terlaksana</span></td>
-                </tr>
-                <tr id="4" style="background-color:rgb(156, 240, 255)">
-                <td>
-2 Januari 2022
-</br><span style="font-size:14px">14:00 s/d 15:00</span>
-</td>
-                <td>MK</td>
-                <td>Monitoring 1</td>
-                <td>Addzifi Mochamad Gumelar</td>
-                <td><span class="badge bg-success">Terlaksana</span></td>
-                </tr>
-                <tr id="10">
-                <td>
-2 Januari 2022
-</br><span style="font-size:14px">14:00 s/d 15:00</span>
-</td>
-                <td>Hukum</td>
-                <td>Konsultasi hukum</td>
-                <td>Addzifi Mochamad Gumelar</td>
-                <td><span class="badge bg-success">Terlaksana</span></td>
-                </tr>
-                <tr id="11">
-                <td>
-2 Januari 2022
-</br><span style="font-size:14px">14:00 s/d 15:00</span>
-</td>
-                <td>Hukum</td>
-                <td>Konsultasi hukum</td>
-                <td>Addzifi Mochamad Gumelar</td>
-                <td><span class="badge bg-success">Terlaksana</span></td>
-                </tr>
-                <tr id="1">
-                <td>
-2 Januari 2022
-</br><span style="font-size:14px">14:00 s/d 15:00</span>
-</td>
-                <td>Hukum</td>
-                <td>Konsultasi hukum</td>
-                <td>Addzifi Mochamad Gumelar</td>
-                <td><span class="badge bg-success">Terlaksana</span></td>
-                </tr>
-                </tbody>
+                <tbody></tbody>
                 <tfoot>
                 <tr>
                     <th>Waktu Kegiatan</th>
                     <th>Layanan</th>
                     <th>Detail Layanan</th>
                     <th>Petugas</th>
-                    <th>Status</th>
                 </tr>
                 </tfoot>
             </table>
@@ -990,8 +875,8 @@
             </div>
             </div>
         </div>
-        <div class="tab-pane" id="kasus-petugas" role="tabpanel" aria-labelledby="kasus-petugas-tab">
-            <div class="card-body p-0">
+        <div class="tab-pane {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas" role="tabpanel" aria-labelledby="kasus-petugas-tab">
+            <div class="card-body p-0 {{ Request::get('tab') == 'kasus-petugas' ? 'hightlighting' : '' }}">
             <table class="table table-striped projects">
                 <thead>
                 <tr>
@@ -999,18 +884,44 @@
                 </tr>
                 </thead>
                 <tbody>
+                    @foreach ($petugas as $item)
                     <tr>
                         <td>
                             <img alt="Avatar" class="table-avatar" src="https://adminlte.io/themes/v3/dist/img/avatar.png" style="margin-right: 10px">
-                            Addzifi Mochamad Gumelar
+                            {{ $item->name }}
                         </td>
                         <td>
-                            <h6><span class="badge badge-pill badge-primary">Penerima Pengaduan</span></h6>
+                            <h6><span class="badge badge-pill badge-primary">{{ $item->jabatan }}</span></h6>
+                        </td>
+                        <td>
+                            <form action="{{ route('petugas.destroy',$item->id) }}" method="post">
+                                @csrf 
+                                @method('delete')
+                                <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                              </form>
                         </td>
                     </tr>
+                    @endforeach
                 </tbody>
             </table>
             </div>
+            <br>
+            <form action="{{ route('petugas.store', $klien->uuid) }}" method="POST">
+                @csrf
+                <div class="row">
+                    <div class="col-md-9">
+                        <select name="user_id" class="select2bs4" style="width: 100%;">
+                            <option>Silahkan pilih petugas</option>
+                            @foreach ($users as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-success btn-sm btn-block" type="submit"><i class="nav-icon fa fa-user-plus"></i> Tambah Petugas</button>
+                    </div>
+                </div>
+            </form>
         </div>
         <div class="tab-pane {{ Request::get('tab') == 'settings' ? 'active' : '' }}" id="kasus-settings" role="tabpanel" aria-labelledby="kasus-settings-tab">
             <div class="row">
@@ -1144,23 +1055,66 @@
     $('.input_pelapor').next(".select2-container").hide();
     $('.input_klien').next(".select2-container").hide();
 
-      $("#example1").DataTable({
-        "responsive": false, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print",
+    $('#example1').DataTable({
+      "ordering": true,
+      "processing": true,
+      "serverSide": true,
+      "responsive": false, 
+      "lengthChange": false, 
+      "autoWidth": false,
+      "ajax": "/dokumen?uuid={{ $klien->uuid }}",
+      'createdRow': function( row, data, dataIndex ) {
+          $(row).attr('id', data.uuid);
+      },
+      "columns": [
+        {
+            "mData": "tanggal_mulai",
+            "mRender": function (data, type, row) {
+                return row.tanggal_mulai+"<br><span style='font-size:13px'>"+row.jam_mulai+" s/d "+row.jam_selesai+"</span>";
+            }
+        },
+        {"data": "pemilik_template"},
+        {"data": "keyword"},
+        {"data": "name"}
+      ],
+      "pageLength": 25,
+      "lengthMenu": [
+          [10, 25, 50, 100, -1],
+          ['10 rows', '25 rows', '50 rows', '100 rows','All'],
+      ],
+      "order": [[0, 'ASC']],
+      "dom": 'Blfrtip', // Blfrtip or Bfrtip
+      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print", 
               {
                 className: "btn-info",
                 text: 'Tambah',
                   action: function ( ) {
-                    window.location.assign('http://127.0.0.1:8000/dokumen/add')
+                    if (confirm('Untuk memasukan laporan hasil pelayanan anda, silahkan buat Agenda dan Dokumen yang ditautkan.\nApakah anda ingin membuat Dokumen sekarang?') == true) {
+                        window.location.assign('{{ route("dokumen") }}');
+                    }
                   }
               }]
       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+      $('#example1_filter').css({'float':'right','display':'inline-block; background-color:black'});
     });
 
-    $('#example1 tbody').on( 'click', 'tr', function () {
-        alert('redirect ke : '+this.id);
-        window.location.assign('{{ route("kasus.show", "dsa") }}')
-    } );
+    $('#example1 tbody').on('click', 'tr', function () {
+      $("#success-message").hide();
+      $("#error-message").hide();
+      
+      $.get(`/dokumen/show/`+this.id, function (data) {
+          $("#overlay").hide();
+          console.log(data);
+          tinymce.activeEditor.setContent(JSON.parse(data.konten));
+          $('#ajaxModal').modal('show');
+          //munculkan tombol
+          $('#buttons').html('');
+          $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="saveAndPrint()"><i class="fas fa-print"></i> Print Dokumen</button>');
+          $('#buttons').append('<button type="button" class="btn btn-warning btn-block" id="terima"><i class="fas fa-edit"></i> Edit Dokumen</button>');
+          $('#buttons').append('<button type="button" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Dokumen</button>');
+        });
+    });
 
 
     $(function () {

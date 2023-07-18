@@ -1,27 +1,45 @@
 /* loading submit form */
-#overlay{	
+#overlay {
     display: none;
-  }
-  .cv-spinner {
+}
+.cv-spinner {
     height: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;  
-  }
-  .spinner {
+    align-items: center;
+}
+.spinner {
     width: 80px;
     height: 80px;
     border: 4px #ddd solid;
     border-top: 4px #2e93e6 solid;
     border-radius: 50%;
     animation: sp-anime 0.8s infinite linear;
-  }
-  @keyframes sp-anime {
-    100% { 
-      transform: rotate(360deg); 
+}
+@keyframes sp-anime {
+    100% {
+        transform: rotate(360deg);
     }
-  }
-  .is-hide{
-    display:none;
-  }
-  /* loading submit form end*/
+}
+.is-hide {
+    display: none;
+}
+/* loading submit form end*/
+
+/* SCROLLBAR STYLE */
+/* width */
+::-webkit-scrollbar {
+    width: 8px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

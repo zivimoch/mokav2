@@ -84,6 +84,8 @@
               </div>
             </div>
         </div>
+        - performa Petugas <br>
+        - rata2 waktu pelayanan <br>
         - bar chart jumlah kasus perempuan dan anak per bulan <br>
         - profile P2 terupdate <br>
         - pie chart jenis kekerasan <br>
