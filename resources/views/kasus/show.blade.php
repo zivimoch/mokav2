@@ -191,13 +191,16 @@
             <a class="nav-link {{ Request::get('tab') == 'kasus-Asesmen' ? 'active' : '' }}" id="kasus-Asesmen-tab" data-toggle="pill" href="#kasus-Asesmen" role="tab" aria-controls="kasus-Asesmen" aria-selected="false">Asesmen</a>
         </li>
         <li class="nav-item">
-        <a class="nav-link {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan-tab" data-toggle="pill" href="#kasus-layanan" role="tab" aria-controls="kasus-layanan" aria-selected="false">SPP & Layanan</a>
+        <a class="nav-link {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan-tab" data-toggle="pill" href="#kasus-layanan" role="tab" aria-controls="kasus-layanan" aria-selected="false">Layanan</a>
         </li>
         <li class="nav-item">
         <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="false">Log Activity</a>
         </li>
         <li class="nav-item">
-        <a class="nav-link {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas-tab" data-toggle="pill" href="#kasus-petugas" role="tab" aria-controls="kasus-petugas" aria-selected="false">Petugas</a>
+        <a class="nav-link {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas-tab" data-toggle="pill" href="#kasus-petugas" role="tab" aria-controls="kasus-petugas" aria-selected="false">Petugas <i class="fas fa-exclamation-circle" style="color: red; font-size:20px"></i></a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link {{ Request::get('tab') == 'kasus-persetujuan' ? 'active' : '' }}" id="kasus-persetujuan-tab" data-toggle="pill" href="#kasus-persetujuan" role="tab" aria-controls="kasus-persetujuan" aria-selected="false">Persetujuan <i class="fas fa-exclamation-circle" style="color: red; font-size:20px"></i></a>
         </li>
         <li class="nav-item">
         <a class="nav-link {{ Request::get('tab') == 'settings' ? 'active' : '' }}" id="kasus-settings-tab" data-toggle="pill" href="#kasus-settings" role="tab" aria-controls="kasus-settings" aria-selected="false">Settings</a>
@@ -300,7 +303,7 @@
                         <td>
                             <span class="data_pelapor">{{ $pelapor->hubungan_pelapor }}</span> 
                             <select name="hubungan_pelapor" class="input_pelapor select2bs4" style="width: 100%;">
-                                @foreach ($hubungan_dengan_terlapor as $item)
+                                @foreach ($hubungan_dengan_klien as $item)
                                     <option value="{{ $item }}" {{ $item == $pelapor->hubungan_pelapor ? 'selected' : '' }}>{{ $item }}</option>
                                 @endforeach
                             </select>
@@ -311,6 +314,11 @@
         </div>
         <div class="post clearfix" style="color:black">
             <b>B. IDENTITAS KLIEN</b>
+            <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
+            @csrf
+            @method('put')
+            <input type="hidden" name="uuid" value="{{ $klien->uuid }}">
+            <input type="hidden" name="data_update" value="klien">
             <span style="float:right">
                 <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_klien" onclick="editdata('klien')">
                 <i class="fas fa-edit"></i> Edit
@@ -359,63 +367,122 @@
                         <input type="text" name="kelurahan" value="{{ $klien->kelurahan }}" class="input_klien"> 
                     </td>
                 </tr>
-                <tr id="pendidikan_klien">
+                <tr id="pendidikan_terakhir_klien">
                     <td style="width: 200px">Pendidikan</td>
                     <td>:</td>
                     <td>
-                        <span class="data_klien">{{ $klien->pendidikan }}</span> <input type="text" name="pendidikan" value="{{ $klien->pendidikan }}" class="input_klien">
-                        (<span class="data_klien">{{ $klien->status_pendidikan }}</span> <input type="text" name="status_pendidikan" value="{{ $klien->status_pendidikan }}" class="input_klien">)
+                        <span class="data_klien">{{ $klien->pendidikan }}</span> 
+                        <select name="pendidikan" class="input_klien select2bs4" style="width: 100%;">
+                            @foreach ($pendidikan_terakhir as $item)
+                                <option value="{{ $item }}" {{ $item == $klien->pendidikan ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                        (<span class="data_klien">{{ $klien->status_pendidikan }}</span> 
+                        <select name="status_pendidikan" class="input_klien select2bs4" style="width: 100%;">
+                            @foreach ($status_pendidikan as $item)
+                                <option value="{{ $item }}" {{ $item == $klien->status_pendidikan ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                        )
                     </td>
                 </tr>
-                <tr>
+                <tr id="nama_ibu_klien">
                     <td style="width: 200px">Nama Ibu</td>
                     <td>:</td>
-                    <td>Siswati Karnasuryatna Gumelar</td>
+                    <td><span class="data_klien">{{ $klien->nama_ibu }}</span> <input type="text" name="nama_ibu" value="{{ $klien->nama_ibu }}" class="input_klien"></td>
                 </tr>
-                <tr id="nama_klien">
-                    <td style="width: 200px">Nama Ibu</td>
+                <tr id="tanggal_lahir_ibu_klien">
+                    <td style="width: 200px">Tempat/Tgl Lahir Ibu</td>
                     <td>:</td>
-                    <td><span class="data_klien">{{ $klien->nama }}</span> <input type="text" name="nama" value="{{ $klien->nama }}" class="input_klien"></td>
+                    <td>
+                        <span class="data_klien" id="tempat_lahir_ibu">{{ $klien->tempat_lahir_ibu }}</span> 
+                        <input type="text" name="tempat_lahir_ibu" value="{{ $klien->tempat_lahir_ibu }}" class="input_klien">, 
+                        <span class="data_klien">
+                            {{ $klien->tanggal_lahir_ibu ? date('d M Y', strtotime($klien->tanggal_lahir_ibu)) : '' }} ({{ $klien->tanggal_lahir_ibu ? Carbon\Carbon::parse($klien->tanggal_lahir_ibu)->age.' tahun' : ' '}})
+                        </span> 
+                        <input type="date" name="tanggal_lahir_ibu" value="{{ $klien->tanggal_lahir_ibu }}" class="input_klien">
+                    </td>
                 </tr>
-                <tr>
-                    <td style="width: 200px">TTL Ibu</td>
-                    <td>:</td>
-                    <td>Bandung, 20 Februari 1980 (42 Tahun)</td>
-                </tr>
-                <tr>
+                <tr id="nama_ayah_klien">
                     <td style="width: 200px">Nama Ayah</td>
                     <td>:</td>
-                    <td>Agun Gumelar</td>
+                    <td><span class="data_klien">{{ $klien->nama_ayah }}</span> <input type="text" name="nama_ayah" value="{{ $klien->nama_ayah }}" class="input_klien"></td>
                 </tr>
-                <tr>
-                    <td style="width: 200px">TTL Ibu</td>
+                <tr id="tanggal_lahir_ayah_klien">
+                    <td style="width: 200px">Tempat/Tgl Lahir Ayah</td>
                     <td>:</td>
-                    <td>Subang, 20 Februari 1980 (42 Tahun)</td>
+                    <td>
+                        <span class="data_klien" id="tempat_lahir_ayah">{{ $klien->tempat_lahir_ayah }}</span> 
+                        <input type="text" name="tempat_lahir_ayah" value="{{ $klien->tempat_lahir_ayah }}" class="input_klien">, 
+                        <span class="data_klien">
+                            {{ $klien->tanggal_lahir_ayah ? date('d M Y', strtotime($klien->tanggal_lahir_ayah)) : '' }} ({{ $klien->tanggal_lahir_ayah ? Carbon\Carbon::parse($klien->tanggal_lahir_ayah)->age.' tahun' : ' '}})
+                        </span> 
+                        <input type="date" name="tanggal_lahir_ayah" value="{{ $klien->tanggal_lahir_ayah }}" class="input_klien">
+                    </td>
                 </tr>
-                <tr>
+                <tr id="agama_klien">
                     <td style="width: 200px">Agama / Suku</td>
                     <td>:</td>
-                    <td>Islam / Sunda</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->agama }}</span> 
+                        <select name="agama" class="input_klien select2bs4" style="width: 100%;">
+                            @foreach ($agama as $item)
+                                <option value="{{ $item }}" {{ $item == $klien->agama ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select> / 
+                        <span class="data_klien">{{ $klien->suku }}</span> 
+                        <select name="suku" class="input_klien select2bs4" style="width: 100%;">
+                            @foreach ($suku as $item)
+                                <option value="{{ $item }}" {{ $item == $klien->suku ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </td>
                 </tr>
-                <tr>
+                <tr id="anak_ke_klien">
                     <td style="width: 200px">Anak Ke</td>
                     <td>:</td>
-                    <td>2 <b>dari</b> 5 bersaudara</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->anak_ke }}</span> <input type="text" name="anak_ke" value="{{ $klien->anak_ke }}" class="input_klien"> 
+                        <b>dari</b> 
+                        <span class="data_klien">{{ $klien->jumlah_anak }}</span> <input type="text" name="jumlah_anak" value="{{ $klien->jumlah_anak }}" class="input_klien"> bersaudara
+                    </td>
                 </tr>
-                <tr>
-                    <td style="width: 200px">Hubungan Terlapor</td>
+                <tr id="hubungan_klien_klien">
+                    <td style="width: 200px">Hubungan dengan terlapor</td>
                     <td>:</td>
-                    <td>Teman</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->hubungan_klien }}</span> 
+                        <select name="hubungan_klien" class="input_klien select2bs4" style="width: 100%;">
+                            @foreach ($hubungan_dengan_terlapor as $item)
+                                <option value="{{ $item }}" {{ $item == $klien->hubungan_klien ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </td>
                 </tr>
-                <tr>
-                    <td style="width: 200px">Kekhususuan</td>
+                <tr id="kondisi_khusus_klien">
+                    <td style="width: 200px">Kekhususan</td>
                     <td>:</td>
-                    <td>Super Power Flying</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->kondisi_khusus }}</span> 
+                        <select name="kondisi_khusus[]" class="input_klien select2bs4" style="width: 100%;" multiple="multiple">
+                            @php
+                            $kondisi_khusus = explode(",",$klien->kondisi_khusus);
+                            @endphp
+                            @foreach ($kekhususan as $item)
+                                <option value="{{ $item }}" {{ in_array(' '.$item, $kondisi_khusus) ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </td>
                 </tr>
             </table>
+            </form>
         </div>
         <div class="post clearfix" style="color:black">
             <b>C. IDENTITAS TERLAPOR</b>
+            <?php $no_terlapor = 1;?>
+            @foreach ($terlapor as $item)
+            <br>
+            <b> Terlapor {{ $no_terlapor }}</b>
             <span style="float:right">
                 <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor" onclick="editdata('terlapor')">
                 <i class="fas fa-edit"></i> Edit
@@ -424,58 +491,60 @@
                 <i class="fas fa-check"></i> Save
                 </button>
             </span>
-            <table class="table table-bottom table-sm">
-                <tr>
-                    <td style="width: 200px">Nama</td>
-                    <td>:</td>
-                    <td>Addzifi Mochamad Gumelar (Laki-laki)</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Tempat/Tgl Lahir</td>
-                    <td>:</td>
-                    <td>Bogor, 13 Februari 1997 (25 Tahun)</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Alamat</td>
-                    <td>:</td>
-                    <td>Jl. Diponogoro Empu Tantular 45 Jaya, <b>Kelurahan</b> Mantap, <b>Kecamatan</b> Harapan, <b>Kota</b> DKI Jakarta</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Pendidikan Terakhir</td>
-                    <td>:</td>
-                    <td><b>Kelas</b> 2, <b>Sekolah</b> SDN 1 Wakanda</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Agama / Suku</td>
-                    <td>:</td>
-                    <td>Islam / Sunda</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Pekerjaan</td>
-                    <td>:</td>
-                    <td>Gamer</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Penghasilan Perbulan</td>
-                    <td>:</td>
-                    <td>6.000.000.000.000</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Status Perkawinan</td>
-                    <td>:</td>
-                    <td>Single</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Jumlah Anak</td>
-                    <td>:</td>
-                    <td>6</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Hubungan dengan klien</td>
-                    <td>:</td>
-                    <td>Teman</td>
-                </tr>
-            </table>
+                <table class="table table-bottom table-sm">
+                    <tr>
+                        <td style="width: 200px">Nama</td>
+                        <td>:</td>
+                        <td>{{ $item->nama }} (Laki-laki)</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px">Tempat/Tgl Lahir</td>
+                        <td>:</td>
+                        <td>Bogor, 13 Februari 1997 (25 Tahun)</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px">Alamat</td>
+                        <td>:</td>
+                        <td>Jl. Diponogoro Empu Tantular 45 Jaya, <b>Kelurahan</b> Mantap, <b>Kecamatan</b> Harapan, <b>Kota</b> DKI Jakarta</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px">Pendidikan Terakhir</td>
+                        <td>:</td>
+                        <td><b>Kelas</b> 2, <b>Sekolah</b> SDN 1 Wakanda</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px">Agama / Suku</td>
+                        <td>:</td>
+                        <td>Islam / Sunda</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px">Pekerjaan</td>
+                        <td>:</td>
+                        <td>Gamer</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px">Penghasilan Perbulan</td>
+                        <td>:</td>
+                        <td>6.000.000.000.000</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px">Status Perkawinan</td>
+                        <td>:</td>
+                        <td>Single</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px">Jumlah Anak</td>
+                        <td>:</td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px">Hubungan dengan klien</td>
+                        <td>:</td>
+                        <td>Teman</td>
+                    </tr>
+                </table>
+                <?php $no_terlapor++;?>
+            @endforeach
         </div>
         <div class="post clearfix" style="color:black">
             <b>D. KASUS KLIEN</b>
@@ -537,47 +606,6 @@
                     <td style="width: 200px">Catatan Kasus</td>
                     <td>:</td>
                     <td>Klien LPSK, Persidangan</td>
-                </tr>
-            </table>
-        </div>
-        <div class="post clearfix" style="color:black">
-            <b>E. HASIL AKHIR</b>
-            <span style="float:right">
-                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor" onclick="editdata('terlapor')">
-                <i class="fas fa-edit"></i> Edit
-                </a>
-                <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_terlapor">
-                <i class="fas fa-check"></i> Save
-                </button>
-            </span>
-            <table class="table table-bottom table-sm">
-                <tr>
-                    <td style="width: 200px">Catatan Akhir</td>
-                    <td>:</td>
-                    <td>Klien LPSK, Persidangan</td>
-                </tr>
-            </table>
-        </div>
-        <div class="post clearfix" style="color:black">
-            <b>F. BILA DISIDANGKAN</b>
-            <span style="float:right">
-                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor" onclick="editdata('terlapor')">
-                <i class="fas fa-edit"></i> Edit
-                </a>
-                <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_terlapor">
-                <i class="fas fa-check"></i> Save
-                </button>
-            </span>
-            <table class="table table-bottom table-sm">
-                <tr>
-                    <td style="width: 200px">Pelaku Dihukum</td>
-                    <td>:</td>
-                    <td>1 Tahun</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Dengan Denda</td>
-                    <td>:</td>
-                    <td>Rp. 1.000.000.000.000</td>
                 </tr>
             </table>
         </div>
@@ -763,32 +791,42 @@
                 </div>
             </div>
     </div>
-
-        <div class="tab-pane {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan" role="tabpanel" aria-labelledby="kasus-layanan-tab">
-            <div class="row">
-            <div class="card-body" style="overflow-x: scroll">
+    
+    <div class="tab-pane {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan" role="tabpanel" aria-labelledby="kasus-layanan-tab">
+            
+        <div class="post clearfix" style="margin: 0px">
+            <h4>Progres Layanan</h4>
+            <div class="progress" style="height: 25px;">
+                <?php
+                    $progres_layanan = number_format(($status['jumlah_layanan_selesai'] / $status['jumlah_layanan']) * 100, 2);
+                ?>
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ $progres_layanan }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px">{{ $progres_layanan }}%</span></div>
+            </div>
+            <br>
+        <div style="overflow-x: scroll">
             <table id="example1" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
                 <thead>
                 <tr>
                 <th>Waktu Kegiatan</th>
-                <th>Layanan</th>
-                <th>Detail Layanan</th>
-                <th>Petugas</th>
+                <th>Agenda</th>
+                <th>Tindak Lanjut</th>
+                <th>Centang</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
                 <tfoot>
                 <tr>
                     <th>Waktu Kegiatan</th>
-                    <th>Layanan</th>
-                    <th>Detail Layanan</th>
-                    <th>Petugas</th>
+                    <th>Agenda</th>
+                    <th>Tindak Lanjut</th>
+                    <th>Centang</th>
                 </tr>
                 </tfoot>
             </table>
-            </div>
         </div>
-        </div>
+    </div>
+    </div>
+
         <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
             <div class="timeline timeline-inverse">
 
@@ -876,7 +914,15 @@
             </div>
         </div>
         <div class="tab-pane {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas" role="tabpanel" aria-labelledby="kasus-petugas-tab">
-            <div class="card-body p-0 {{ Request::get('tab') == 'kasus-petugas' ? 'hightlighting' : '' }}">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-danger">
+                    <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+                    Minimal harus ada 1 Supervisor, 1 Manager Kasus dan 1 Petugas Penerima Pengaduan.
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0 {{ Request::get('tab') == 'kasus-petugas' ? 'hightlighting' : '' }}" style="overflow-x:scroll">
             <table class="table table-striped projects">
                 <thead>
                 <tr>
@@ -923,6 +969,65 @@
                 </div>
             </form>
         </div>
+        <div class="tab-pane {{ Request::get('tab') == 'kasus-persetujuan' ? 'active' : '' }}" id="kasus-persetujuan" role="tabpanel" aria-labelledby="kasus-persetujuan-tab">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-danger">
+                    <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+                    Surat Persetujuan Pelayanan belum dibuat. Silahkan buat link Surat Persetujuan Pelayanan.
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0 {{ Request::get('tab') == 'kasus-persetujuan' ? 'hightlighting' : '' }}" style="overflow-x:scroll">
+                <table class="table table-striped projects">
+                    <thead>
+                    <tr>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($persetujuan as $item)
+                            <tr>
+                                <td>
+                                    <a href="#" onclick="showPersetujuan('{{ $item->uuid }}')"><i class="nav-icon fas fa-file-alt"></i> {{ $item->judul }}</a>
+                                </td>
+                                <td>
+                                    {{ $item->created_at }}
+                                </td>
+                                <td>
+                                    @if ($item->tandatangan != null)
+                                    <h6><span class="badge badge-pill badge-success">sudah ditandatangani</span></h6>
+                                    @else
+                                    <h6><span class="badge badge-pill badge-warning">belum ditandatangani</span></h6>
+                                    @endif
+                                </td>
+                                <td>
+                                    <input type="text" id="link-form-{{ $item->uuid }}" value="{{ route('persetujuan.persetujuan_pelayanan', $item->uuid) }}" hidden>
+                                    <button type="button" class="btn btn-primary" onclick="copyClipboard('{{ $item->uuid }}')"><i class="fas fa-link"></i></button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                </div>
+                <br>
+                <form action="{{ route('persetujuan.create', $klien->uuid) }}" method="POST">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-9">
+                            <select name="persetujuan_template_uuid" class="select2bs4" style="width: 100%;">
+                                <option>Silahkan pilih surat persetujuan</option>
+                                @foreach ($persetujuan_template as $item)
+                                    <option value="{{ $item->uuid }}">{{ $item->judul }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-success btn-sm btn-block" type="submit"><i class="nav-icon fas fa-plus"></i> Tambah Persetujuan</button>
+                        </div>
+                    </div>
+                </form>
+        </div>
         <div class="tab-pane {{ Request::get('tab') == 'settings' ? 'active' : '' }}" id="kasus-settings" role="tabpanel" aria-labelledby="kasus-settings-tab">
             <div class="row">
                 <div class="col-md-12 {{ Request::get('hightlight') == 'inputsupervisor' ? 'hightlighting' : '' }}">
@@ -968,6 +1073,109 @@
 <!-- Modal Riwayat Kejadian-->
 <div class="modal fade" id="riwayatModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+        <div id="overlay" class="overlay dark">
+            <div class="cv-spinner">
+            <span class="spinner"></span>
+            </div>
+        </div>
+        
+        <div class="modal-header">
+            <h5 class="modal-title" id="modelHeading"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
+            <span id="message"></span>
+        </div>
+        <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-check"></i> Success!</h4>
+            Data berhasil disimpan.
+        </div>
+        <div class="modal-body">
+        <input type="hidden" name="uuid" id="uuid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                <label><span class="text-danger">*</span>Tanggal</label>
+                <input type="date" class="form-control" id="tanggal">
+                <div class="invalid-feedback" id="valid-tanggal_mulai">
+                    Tanggal Kejadian wajib diisi.
+                </div>
+            </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label><span class="text-danger">*</span>Jam</label>
+                    <input type="time" class="form-control" id="jam">
+                    <div class="invalid-feedback" id="valid-jam_mulai">
+                    Jam Kejadian wajib diisi.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Keterangan</label>
+            <textarea name="" class="form-control required-field" id="keterangan" cols="30" rows="5"></textarea>
+        </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-success btn-block" id="submitRiwayatKejadian"><i class="fa fa-check"></i> Simpan</button>
+            <button type="button" class="btn btn-danger btn-block" id="deleteRiwayatKejadian"><i class="fa fa-trash"></i> Hapus</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Surat Persetujuan-->
+<div class="modal fade" id="sppModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content card">
+        <div id="overlay" class="overlay dark">
+            <div class="cv-spinner">
+                <span class="spinner"></span>
+            </div>
+        </div>
+        <div class="modal-header">
+            <h4 class="modal-title">Default Modal</h4>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                    <i class="fas fa-expand"></i>
+                </button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="form-card">
+              <div class="form-group">
+                <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
+                  <div id="mytoolbar" style="width: 1000px"></div>
+                  <main>
+                    <div class="centered">
+                      <iframe class="embed-responsive-item" src="http://127.0.0.1:8000/persetujuan/donepelayanan/343ff690-cfd6-41e4-b9f3-6c41cfe8e9e8" style="width: 100%; height:1000px"></iframe>
+                    </div>
+                  </main>
+                </body>
+              </div>
+            </div>
+          </div>            
+        <div class="modal-footer justify-content-between">
+        </div>
+        </div>
+    </div>
+</div>
+
+
+ <!-- Modal -->
+ <div class="modal fade" id="ajaxModel" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
       <div class="modal-content">
   
         <div id="overlay" class="overlay dark">
@@ -994,34 +1202,122 @@
         </div>
         <div class="modal-body">
         <input type="hidden" name="uuid" id="uuid">
+        <div class="form-group">
+            <label><span class="text-danger">*</span>Judul kegiatan</label>
+            <input type="text" class="form-control required-field" id="judul_kegiatan">
+            <div class="invalid-feedback" id="valid-judul_kegiatan">
+              Judul Kegiatan wajib diisi.
+            </div>
+        </div>
         <div class="row">
           <div class="col-md-6">
               <div class="form-group">
                 <label><span class="text-danger">*</span>Tanggal</label>
-                <input type="date" class="form-control" id="tanggal">
+                <input type="date" class="form-control required-field" id="tanggal_mulai">
                 <div class="invalid-feedback" id="valid-tanggal_mulai">
-                  Tanggal Kejadian wajib diisi.
+                  Tanggal Mulai wajib diisi.
                 </div>
             </div>
           </div>
           <div class="col-md-6">
               <div class="form-group">
-                  <label><span class="text-danger">*</span>Jam</label>
-                  <input type="time" class="form-control" id="jam">
+                  <label><span class="text-danger">*</span>Jam mulai</label>
+                  <input type="time" class="form-control required-field" id="jam_mulai">
                   <div class="invalid-feedback" id="valid-jam_mulai">
-                    Jam Kejadian wajib diisi.
+                    Jam Mulai wajib diisi.
                   </div>
               </div>
           </div>
         </div>
         <div class="form-group">
             <label>Keterangan</label>
-            <textarea name="" class="form-control required-field" id="keterangan" cols="30" rows="5"></textarea>
+            <textarea name="" class="form-control" id="keterangan" cols="30" rows="2"></textarea>
         </div>
+        <div class="form-group">
+            <label>Penjadwalan Layanan</label>
+            <select name="" class="form-control" id="penjadwalan_layanan" onchange="penjadwalan_layanan()">
+              <option value="0">Tidak</option>
+              <option value="1">Ya</option>
+            </select>
+        </div>
+        <div class="form-group" id="klien_id">
+          <label>Pilih Klien</label>
+          <select class="form-control select2" style="width: 100%;" id="klien_id">
+            <option>silahkan pilih</option>
+            <option value="1">Tini</option>
+            <option value="2">Tina</option>
+            <option value="3">Toni</option>
+            <option value="4">Tono</option>
+            <option value="5">Tino</option>
+            <option value="6">Tanos</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label><span class="text-danger">*</span>Tag</label>
+          <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id">
+          <option value="{{ Auth::user()->id }}" selected>{{ Auth::user()->name }}</option>
+          <option value="22">Alexander Graham Bell</option>
+          <option value="23">Thomas Alfa Edison</option>
+          <option value="24">Tony Stark</option>
+          <option value="25">Rudy Tabootie</option>
+          </select>
+          <div class="invalid-feedback" id="valid-user_id">
+            Minimal tag 1 orang.
+          </div>
+        </div>
+          <div class="col-12" id="accordion" style="padding:0px !important">
+              <div class="card card-primary card-outline">
+              <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
+              <div class="card-header">
+              <h4 class="card-title w-100">
+              Tindak Lanjut
+              </h4>
+              </div>
+              </a>
+              <div id="collapseOne" class="collapse" data-parent="#accordion">
+                <div class="alert alert-warning alert-dismissible">
+                  <i class="icon fas fa-exclamation-triangle"></i> Data <b>Tindak Lanjut</b> hanya tercatat pada akun anda
+                </div>
+              <div class="card-body">
+                {{-- <div class="form-group">
+                  <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                  <input type="checkbox" class="custom-control-input" id="customSwitch3">
+                  <label class="custom-control-label" for="customSwitch3">Terlaksana</label>
+                  </div>
+                </div> --}}
+                  <div class="form-group">
+                    <label>Lokasi Kegiatan</label>
+                    <input type="text" class="form-control" id="lokasi">
+                  </div>
+                  <div class="form-group">
+                      <label>Jam selesai</label>
+                      <?php
+                        date_default_timezone_set("asia/jakarta");
+                        $jam_selesai = date("h:i");
+                      ?>
+                      <input type="time" class="form-control" id="jam_selesai" value="">
+                  </div>
+                  <div class="form-group">
+                  <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}" target="_blank">disini</a>)<br>*Laporan Hasil Pelayanan</span></label>
+                  <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="dokumen_pendukung">
+                  <option value="31"><i class="fas fa-file-alt"></i> Dokumen konsultasi hukum kasus Eliza Thornberry</option>
+                  <option value="32"><i class="fas fa-file-alt"></i> Dokumen Pendampingan pengadilan kasus eliza thornberry</option>
+                  <option value="33"><i class="fas fa-file-alt"></i> Pendampingan pengadilan kasus tom delounge</option>
+                  <option value="34"><i class="fas fa-file-alt"></i> Mediasi kasus tom delounge</option>
+                  </select>
+                  </div>
+                  <div class="form-group">
+                      <label>Catatan</label>
+                      <textarea name="" class="form-control" id="catatan" cols="30" rows="2"></textarea>
+                  </div>
+                  <span style="font-size: 14px">*Laporan Tindak Lanjut tersimpan pada tanggal : <span id='ct' ></span></span>
+                </div>
+              </div>
+              </div>
+          </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-success btn-block" id="submitRiwayatKejadian"><i class="fa fa-check"></i> Simpan</button>
-          <button type="button" class="btn btn-danger btn-block" id="deleteRiwayatKejadian"><i class="fa fa-trash"></i> Hapus</button>
+          <button type="button" class="btn btn-success btn-block" id="submit"><i class="fa fa-check"></i> Simpan</button>
         </div>
       </div>
     </div>
@@ -1046,8 +1342,16 @@
 <script>
     $(document).ready(function () {
         getkotkab('pelapor');
-        getkecamatan('pelapor');
+        getkotkab('klien');
         hightlighting();
+
+        //Initialize Select2 Elements
+        $('.select2').select2();
+        $('.select2bs4').select2();
+        $('.select-tag').select2({
+        tags: true,
+        theme: 'bootstrap4'
+        });
     });
     
     $(function () {
@@ -1062,7 +1366,7 @@
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
-      "ajax": "/dokumen?uuid={{ $klien->uuid }}",
+      "ajax": "/agenda/api_index?uuid={{ $klien->uuid }}",
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
       },
@@ -1070,12 +1374,72 @@
         {
             "mData": "tanggal_mulai",
             "mRender": function (data, type, row) {
-                return row.tanggal_mulai+"<br><span style='font-size:13px'>"+row.jam_mulai+" s/d "+row.jam_selesai+"</span>";
+                if (row.jam_selesai != null) {
+                    jam_mulai = row.jam_mulai+' - '+row.jam_selesai;
+                }else{
+                    jam_mulai =  row.jam_mulai;
+                }
+                return row.tanggal_mulai+"<br><span style='font-size:13px'>"+jam_mulai+"</span>";
             }
         },
-        {"data": "pemilik_template"},
-        {"data": "keyword"},
-        {"data": "name"}
+        {
+            "mData": "judul_kegiatan",
+            "mRender": function (data, type, row) {
+                judul_kegiatan = keterangan = '';
+                if (row.judul_kegiatan != null) {
+                    judul_kegiatan = '<b>'+row.judul_kegiatan+'</b>';
+                }
+
+                if (row.keterangan != null) {
+                    keterangan = '</br>'+row.keterangan;
+                }
+
+                return judul_kegiatan+keterangan;
+            }
+        },
+        {
+            "mData": "catatan",
+            "mRender": function (data, type, row) {
+                catatan = lokasi = '';
+
+                if (row.catatan) {
+                    catatan = row.catatan+'<br>';
+                }
+
+                if (row.lokasi) {
+                    lokasi = 'Lokasi : '+row.lokasi;
+                }
+
+                if(row.judul != null){
+                    dokumen = row.judul;
+                    dokumens = '';
+                    var array = dokumen.split(",|");
+                    for (i=1;i<array.length;i++){
+                    dokumens += '<a href="https://facebook.com"><span class="badge bg-primary"><i class="nav-icon fas fa-file-alt"></i> '+array[i]+'</span></a> ';
+                    };
+                }else{
+                    dokumens = '';
+                }
+                return catatan+lokasi+'<br>'+dokumens;
+            }
+        },
+        {
+            "mData": "ceklis",
+            "mRender": function (data, type, row) {
+                if (row.jam_selesai == null) {
+                    done = '';
+                    checked = '';
+                    disabled = '';
+                    selesaiLayanan = '';
+                } else {
+                    done = 'done';
+                    checked = 'checked';
+                    disabled = 'disabled';
+                    selesaiLayanan = 'layananSelesai';
+                }
+                return '<div  class="icheck-primary d-inline ml-2"><input class="checkboxSelesai '+selesaiLayanan+'" type="checkbox" value="" id="todoCheck'+row.uuid+'" '+checked+' '+disabled+' onclick="showModal(`'+row.tanggal_mulai+'`,`'+row.uuid+'`)"><label for="todoCheck'+row.uuid+'"></label></div>';
+            }
+        }
       ],
       "pageLength": 25,
       "lengthMenu": [
@@ -1089,7 +1453,7 @@
                 className: "btn-info",
                 text: 'Tambah',
                   action: function ( ) {
-                    if (confirm('Untuk memasukan laporan hasil pelayanan anda, silahkan buat Agenda dan Dokumen yang ditautkan.\nApakah anda ingin membuat Dokumen sekarang?') == true) {
+                    if (confirm('modal input agenda') == true) {
                         window.location.assign('{{ route("dokumen") }}');
                     }
                   }
@@ -1103,17 +1467,17 @@
       $("#success-message").hide();
       $("#error-message").hide();
       
-      $.get(`/dokumen/show/`+this.id, function (data) {
-          $("#overlay").hide();
-          console.log(data);
-          tinymce.activeEditor.setContent(JSON.parse(data.konten));
-          $('#ajaxModal').modal('show');
-          //munculkan tombol
-          $('#buttons').html('');
-          $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="saveAndPrint()"><i class="fas fa-print"></i> Print Dokumen</button>');
-          $('#buttons').append('<button type="button" class="btn btn-warning btn-block" id="terima"><i class="fas fa-edit"></i> Edit Dokumen</button>');
-          $('#buttons').append('<button type="button" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Dokumen</button>');
-        });
+    //   $.get(`/dokumen/show/`+this.id, function (data) {
+    //       $("#overlay").hide();
+    //       console.log(data);
+    //       tinymce.activeEditor.setContent(JSON.parse(data.konten));
+    //       $('#ajaxModal').modal('show');
+    //       //munculkan tombol
+    //       $('#buttons').html('');
+    //       $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="saveAndPrint()"><i class="fas fa-print"></i> Print Dokumen</button>');
+    //       $('#buttons').append('<button type="button" class="btn btn-warning btn-block" id="terima"><i class="fas fa-edit"></i> Edit Dokumen</button>');
+    //       $('#buttons').append('<button type="button" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Dokumen</button>');
+    //     });
     });
 
 
@@ -1194,13 +1558,6 @@
         $('#tombol_save_'+params).show(); 
     }
 
-    //Initialize Select2 Elements
-    $('.select2bs4').select2();
-    $('.select-tag').select2({
-    tags: true,
-    theme: 'bootstrap4'
-    });
-
     function getkotkab(field_id='') {
         province_code = $('#provinsi_id_'+field_id).val();
         
@@ -1220,6 +1577,10 @@
                     option += `<option value="${value.code}" ${selected}>${value.name}</option>`
                 });
                 $('#kota_id_'+field_id).html(option);
+
+                //panggil kecamatan
+                getkecamatan('pelapor');
+                getkecamatan('klien');
             }
         });
     };
@@ -1232,7 +1593,7 @@
           dataType: 'json',
           success: function( response ) {
                 var option = '<option value="">-- Pilih Kecamatan --</option>';
-                var kecamatanID = '{{ $pelapor->kecamatan_id }}'
+                var kecamatanID = '{{ $pelapor->kecamatan_id }}';
                 $.each(response.data, function(i, value) {
                     var selected = ''
                     if (kecamatanID == value.code) {
@@ -1364,6 +1725,81 @@
                 $('#'+element+'_'+value[value.length - 1]).addClass('hightlighting');
             });
         } 
+    }
+
+    function copyClipboard(uuid) {
+        var copyText = document.getElementById("link-form-"+uuid);
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); // For mobile devices
+        navigator.clipboard.writeText(copyText.value);
+        alert('Link berhasil dicopy');
+    }
+
+    function showPersetujuan(uuid){
+        $('#sppModal').modal('show');
+    }
+
+    function showModal(tanggal_mulai, agenda_id) {
+    if (agenda_id != 0) {
+        $.get(`/agenda/edit/`+agenda_id, function (data) {
+            $('#modelHeading').html("Edit Agenda");
+
+            $('#uuid').val(data.uuid);
+            $('#judul_kegiatan').val(data.judul_kegiatan);
+            $('#tanggal_mulai').val(data.tanggal_mulai);
+            $('#jam_mulai').val(data.jam_mulai);
+            $('#keterangan').val(data.keterangan);
+            $('#klien_id').val(data.klien_id);
+            $('#lokasi').val(data.lokasi);
+            $('#jam_selesai').val(data.jam_selesai);
+            $('#catatan').val(data.catatan);
+            $('#dokumen_pendukung').val(data.dokumen_pendukung);
+
+            if (data.klien_id != null) {
+            $('#penjadwalan_layanan').val(1);
+            $("#klien_id").select2("val", data.klien_id);
+            }else{
+            $('#penjadwalan_layanan').val(0);
+            $("#klien_id").select2("val", "null");
+            }
+            penjadwalan_layanan();
+            $("#collapseOne").addClass("show");
+        
+            $("#user_id").val(data.user_id);
+            $('#user_id').select2();
+
+            $("#dokumen_pendukung").val(data.dokumen_pendukung);
+            $('#dokumen_pendukung').select2();
+        });
+    }
+
+    $("#success-message").hide();
+    $("#error-message").hide();
+    $("#overlay").hide();
+    
+    // hapus semua inputan
+    $('#judul_kegiatan').val('');
+    $('#jam_mulai').val('');
+    $('#keterangan').val('');
+    $('#klien_id').val('');
+    $('#lokasi').val('');
+    $('#jam_selesai').val('');
+    $('#catatan').val('');
+    $('#dokumen_pendukung').val('');
+
+    $("#klien_id").hide();
+
+    $('#tanggal_mulai').val(tanggal_mulai); 
+    $('#modelHeading').html('Tambah Agenda'); 
+    $('#ajaxModel').modal('show'); 
+    }
+
+    function penjadwalan_layanan() {
+        if ($('#penjadwalan_layanan').val() == 0) {
+            $("#klien_id").hide();
+        } else {
+            $("#klien_id").show();
+        }
     }
 </script>
 @endsection

@@ -44,17 +44,17 @@
 
 <section class="content-header">
     <div class="container-fluid">
-    <div class="row mb-2">
-    <div class="col-sm-6">
-    <h1><i class="nav-icon fas fa-file-alt"></i> Buat Dokumen</h1>
-    </div>
-    <div class="col-sm-6">
-    <ol class="breadcrumb float-sm-right">
-    <li class="breadcrumb-item"><a href="#">Home</a></li>
-    <li class="breadcrumb-item active">Detail Kasus</li>
-    </ol>
-    </div>
-    </div>
+        <div class="row mb-2">
+        <div class="col-sm-6">
+        <h1><i class="nav-icon fas fa-file-alt"></i> Buat Dokumen</h1>
+        </div>
+        <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item active">Detail Kasus</li>
+        </ol>
+        </div>
+        </div>
     </div>
 </section>
 
@@ -444,6 +444,9 @@
           type:'GET',
           dataType: 'json',
           success: function( response ) {
+
+          $("#overlay").fadeOut(300);
+          
             if (response.success) {
                 agenda = response.data;
                 $('#lokasi').val(agenda.lokasi);

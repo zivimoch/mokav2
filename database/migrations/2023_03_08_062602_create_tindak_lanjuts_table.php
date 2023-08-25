@@ -24,6 +24,7 @@ class CreateTindakLanjutsTable extends Migration
             $table->integer('created_by'); //pembuat
             $table->integer('validated_by')->nullable(); 
             $table->timestamps();
+            $table->dateTime('deleted_at')->nullable();
         });
     }
 

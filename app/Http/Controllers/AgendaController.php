@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Agenda;
 use App\Models\DokumenTl;
+use App\Models\Klien;
 use App\Models\TindakLanjut;
 use Exception;
 use Validator;
@@ -40,8 +41,7 @@ class AgendaController extends Controller
     }
 
     public function api_index(Request $request)
-    {
-        // return Auth::user()->id;
+    { // nanti benerin lagi, buat lebih sederhana masukin ke function show
         if (isset($request->user_id)) {
             $user_id = $request->user_id;
         }else{
@@ -59,15 +59,20 @@ class AgendaController extends Controller
                     {
                     $join->on('z.tindak_lanjut_id', '=', 'b.id');
                     })
-                    ->where('b.created_by', $user_id)
-                    ->whereYear('a.tanggal_mulai', $request->tahun)
-                    ->whereMonth('a.tanggal_mulai', $request->bulan)
                     ->orderBy('a.tanggal_mulai')
                     ->orderBy('a.jam_mulai')
-                    ->select(DB::raw('a.tanggal_mulai, a.jam_mulai, a.klien_id, b.tanggal_selesai, 
-                    b.jam_selesai, a.judul_kegiatan, a.keterangan, a.uuid, b.lokasi, b.catatan, c.name, b.created_by, z.judul'))
-                    ->get();
-        return DataTables::of($data)->make(true);
+                    ->select(DB::raw('b.uuid, a.tanggal_mulai, a.jam_mulai, a.klien_id, b.tanggal_selesai, 
+                    b.jam_selesai, a.judul_kegiatan, a.keterangan, a.uuid, b.lokasi, b.catatan, c.name, b.created_by, z.judul'));
+
+                    if ($request->uuid) { //ini untuk di halaman map klien digital
+                        $klien = Klien::where('uuid', $request->uuid)->first();
+                        $data->where('a.klien_id', $klien->id);
+                    } else { //ini untuk di halaman kinerja masing2 user
+                        $data->where('b.created_by', $user_id)
+                            ->whereYear('a.tanggal_mulai', $request->tahun)
+                            ->whereMonth('a.tanggal_mulai', $request->bulan);
+                    }
+        return DataTables::of($data->get())->make(true);
     }
 
     public function kinerja(Request $request)
@@ -108,7 +113,7 @@ class AgendaController extends Controller
                     throw new Exception($validator->errors());
                 }
 
-                //create post
+                //simpan data agenda
                 $proses = Agenda::updateOrCreate(['uuid' => $request->uuid],[
                     'klien_id'     => $request->klien_id, 
                     'judul_kegiatan'   => $request->judul_kegiatan, 
@@ -189,7 +194,7 @@ class AgendaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($uuid)
+    public function show($uuid) //buat menampilkan agenda (nanti benerin lagi coba)
     {
         try {
             $agenda = DB::table('agenda as a')

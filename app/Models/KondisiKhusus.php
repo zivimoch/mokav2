@@ -9,4 +9,9 @@ class KondisiKhusus extends Model
 {
     protected $table = 'kondisi_khusus';
     protected $guarded = [];
+
+    public function clients()
+    {
+        return $this->hasMany(Klien::class);
+    }
 }

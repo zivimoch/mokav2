@@ -288,7 +288,7 @@ function penjadwalan_layanan() {
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
-      "ajax": "/api/agenda?tahun=2023&bulan=7&user_id=2",
+      "ajax": "/agenda/api_index?tahun=2023&bulan=7&user_id=2",
       "rowsGroup": [0],
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
@@ -306,7 +306,7 @@ function penjadwalan_layanan() {
             }
         },
         {
-            "mData": "jam_mulai",
+            "mData": "judul_kegiatan",
             "mRender": function (data, type, row) {
               judul_kegiatan = keterangan = '';
               if (row.judul_kegiatan != null) {
@@ -321,20 +321,21 @@ function penjadwalan_layanan() {
             }
         },
         {
-            "mData": "jam_mulai",
+            "mData": "catatan",
             "mRender": function (data, type, row) {
               catatan = lokasi = '';
-              
-              if (row.lokasi) {
-                lokasi = '</br>Lokasi : '+row.lokasi;
-              }
 
               if (row.catatan) {
-                catatan = row.catatan;
+                catatan = row.catatan+'<br>';
+              }
+
+              if (row.lokasi) {
+                lokasi = 'Lokasi : '+row.lokasi;
               }
 
               if(row.judul != null){
                 dokumen = row.judul;
+                dokumens = '';
                 var array = dokumen.split(",|");
                 for (i=1;i<array.length;i++){
                   dokumens += '<a href="https://facebook.com"><span class="badge bg-primary"><i class="nav-icon fas fa-file-alt"></i> '+array[i]+'</span></a> ';

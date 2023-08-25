@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kasus;
 use App\Models\Pelapor;
+use App\Models\PersetujuanTemplate;
 use App\Models\Petugas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -61,7 +62,7 @@ class KasusController extends Controller
        $kategori_kasus =  app('App\Http\Controllers\OpsiController')->api_kategori_kasus();
        $tindak_kekerasan =  app('App\Http\Controllers\OpsiController')->api_tindak_kekerasan();
        $pengadilan_negri =  app('App\Http\Controllers\OpsiController')->api_pengadilan_negri();
-       $pasal =  app('App\Http\Controllers\OpsiController')->api_pasal();
+       $pasal = app('App\Http\Controllers\OpsiController')->api_pasal();
        $media_pengaduan =  app('App\Http\Controllers\OpsiController')->api_media_pengaduan();
        $sumber_rujukan =  app('App\Http\Controllers\OpsiController')->api_sumber_rujukan();
        $sumber_informasi =  app('App\Http\Controllers\OpsiController')->api_sumber_infromasi();
@@ -72,13 +73,15 @@ class KasusController extends Controller
 
        //data klien (nanti edit lagi)
        $klien = DB::table('klien as a')
-                    ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan'))
+                    ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan, e.difabel_type, f.kondisi_khusus'))
                     ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
-                    ->leftJoin('indonesia_cities as c', 'c.province_code', 'b.code')
-                    ->leftJoin('indonesia_districts as d', 'd.city_code', 'c.code')
+                    ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
+                    ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
+                    ->leftJoin(DB::raw('(SELECT klien_id, GROUP_CONCAT(" ", value) as difabel_type FROM difabel_type GROUP BY klien_id) as e'), 'a.id', 'e.klien_id')
+                    ->leftJoin(DB::raw('(SELECT klien_id, GROUP_CONCAT(" ", value) as kondisi_khusus FROM kondisi_khusus GROUP BY klien_id) as f'), 'a.id', 'f.klien_id')
                     ->where('a.uuid', $uuid)
+                    ->groupBy('a.id')
                     ->first();
-
         $akses = Petugas::where('klien_id', $klien->id)->where('user_id', Auth::user()->id)->first();
         if (!isset($akses)) {
             return abort(404);
@@ -93,9 +96,17 @@ class KasusController extends Controller
        $pelapor = DB::table('pelapor as a')
                     ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan'))
                     ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
-                    ->leftJoin('indonesia_cities as c', 'c.province_code', 'b.code')
-                    ->leftJoin('indonesia_districts as d', 'd.city_code', 'c.code')
+                    ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
+                    ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
                     ->first();
+        //data terlapor
+        $terlapor = DB::table('terlapor as a')
+                    ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan'))
+                    ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
+                    ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
+                    ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
+                    ->where('a.kasus_id', $klien->kasus_id)
+                    ->get();
         //data petugas
         $petugas = DB::table('petugas as a')
                     ->select(DB::raw('a.*, b.name, b.jabatan'))
@@ -104,10 +115,35 @@ class KasusController extends Controller
                     ->whereNULL('a.deleted_at')
                     ->orderBy('a.created_at')
                     ->get();
+        //data surat persetujuan
+        $persetujuan = DB::table('persetujuan_isi as a')
+                    ->select(DB::raw('a.*, b.judul'))
+                    ->leftJoin('persetujuan_template as b', 'a.persetujuan_template_id', 'b.id')
+                    ->where('a.klien_id', $klien->id)
+                    ->whereNULL('a.deleted_at')
+                    ->orderBy('a.created_at')
+                    ->get();
+        //data surat template persetujuan 
+        $persetujuan_template = PersetujuanTemplate::whereNULL('deleted_at')->get();
+
+        $status['jumlah_layanan'] = DB::table(('agenda as a'))
+                                        ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
+                                        ->where('a.klien_id', $klien->id)
+                                        ->whereNull('a.deleted_at')
+                                        ->whereNull('b.deleted_at')
+                                        ->count();
+        $status['jumlah_layanan_selesai'] = DB::table(('agenda as a'))
+                                        ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
+                                        ->where('a.klien_id', $klien->id)
+                                        ->whereNull('a.deleted_at')
+                                        ->whereNull('b.deleted_at')
+                                        ->whereNotNull('b.tanggal_selesai')
+                                        ->count();
 
        return view('kasus.show')
                 ->with('klien', $klien)
                 ->with('pelapor', $pelapor)
+                ->with('terlapor', $terlapor)
                 ->with('provinsi', $provinsi)
                 ->with('status_pendidikan', $status_pendidikan)
                 ->with('pendidikan_terakhir', $pendidikan_terakhir)
@@ -129,7 +165,10 @@ class KasusController extends Controller
                 ->with('sumber_informasi', $sumber_informasi)
                 ->with('program_pemerintah', $program_pemerintah)
                 ->with('tempat_kejadian',$tempat_kejadian)
+                ->with('users',$users)
                 ->with('petugas',$petugas)
-                ->with('users',$users);
+                ->with('persetujuan',$persetujuan)
+                ->with('persetujuan_template',$persetujuan_template)
+                ->with('status',$status);
     }
 }

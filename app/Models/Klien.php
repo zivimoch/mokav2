@@ -15,4 +15,15 @@ class Klien extends Model
 
     protected $table = 'klien';
     protected $guarded = [];
+
+
+    public function difabel_type()
+    {
+        return $this->belongsTo(DifabelType::class);
+    }
+
+    public function kondisi_khusus()
+    {
+        return $this->belongsTo(KondisiKhusus::class);
+    }
 }

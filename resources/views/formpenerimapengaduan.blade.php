@@ -559,6 +559,14 @@
           <textarea class="form-control" name="deskripsi_kasus" required></textarea>
           </div>
       </fieldset>
+
+      <fieldset>
+        Riview laporan
+        hasil inputan
+        ttd 
+        (mirip seperti form manual)
+        ada beberapa form berarti, karna kliennya bisa lebih dari 1
+      </fieldset>
       
       {{-- <fieldset>
         <legend>E. Surat Pernyataan Persetujuan</legend>

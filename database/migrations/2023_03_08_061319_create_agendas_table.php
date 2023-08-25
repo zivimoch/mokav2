@@ -23,6 +23,7 @@ class CreateAgendasTable extends Migration
             $table->longText('keterangan')->nullable();
             $table->integer('created_by'); 
             $table->timestamps();
+            $table->dateTime('deleted_at')->nullable();
         });
     }
 

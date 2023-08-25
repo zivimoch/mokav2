@@ -295,33 +295,52 @@ class FormPenerimaPengaduan extends Controller
      */
     public function update(Request $request)
     {
-        try {
+        // try {
             $data_update = $request->data_update ;
             if ($data_update == 'pelapor') {
                 $data = Pelapor::where('uuid', $request->uuid)->first();
+                $kasus_id = $data->kasus_id;
             }
-            $klien = Klien::where('id', $data->kasus_id)->first();
+            if ($data_update == 'klien') {
+                $data = Klien::where('uuid', $request->uuid)->first();
+                $kasus_id = $data->kasus_id;
+                //proses update kondisi_khusus klien di tabel kondisi_khusus
+                KondisiKhusus::where('klien_id', $data->id)->delete();
+                //simpan kondisi_khusus
+                if (isset($request->kondisi_khusus)) {
+                    $kondisi_khusus = $request->kondisi_khusus;
+                    foreach ($kondisi_khusus as $key4 => $value) {
+                        $proses['kondisi_khusus'] = KondisiKhusus::create(['klien_id' => $data->id, 'value' => $kondisi_khusus[$key4]]);
+                    }
+                }
+
+                $request->request->remove('kondisi_khusus');
+                $request->request->remove('difabel_type');
+            }
+            $klien = Klien::where('id', $kasus_id)->first();
+            //hapus value data_update
             $request->request->remove('data_update');
             $data->update($request->all());
             $perubahan = $data->getChanges();
+
             if (!empty($perubahan)) {
-                $perubahan['pengubah'] = 'Addzifi';
+                $perubahan['pengubah'] = Auth::user()->name;
                 $perubahan[$data_update] = '';
             }
             $perubahan = array_keys($perubahan);
-
+            
             //return response
             $response = "Berhasil mengupdate data";
             return redirect()->route('kasus.show', $klien->uuid)
                     ->with('data', json_encode($perubahan))
                     ->with('success', true)
                     ->with('response', $response);
-        } catch (Exception $e){
-            return redirect()->route('kasus.show', $klien->uuid)
-                    ->with('error', true)
-                    ->with('response', $e->getMessage());
-            die();
-        }
+        // } catch (Exception $e){
+        //     return redirect()->route('kasus.show', $klien->uuid)
+        //             ->with('error', true)
+        //             ->with('response', $e->getMessage());
+        //     die();
+        // }
     }
 
     /**

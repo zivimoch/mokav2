@@ -11,4 +11,10 @@ class DifabelType extends Model
 
     protected $table = 'difabel_type';
     protected $guarded = [];
+
+
+    public function klien()
+    {
+        return $this->hasMany(Klien::class);
+    }
 }

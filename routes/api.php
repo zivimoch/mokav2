@@ -21,9 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//agenda
-Route::get('agenda', [AgendaController::class, 'api_index']);
-
 Route::prefix('v1')->group(function () {
     Route::namespace('API')->group(function () {
         Route::get('/kotkab', [WilayahController::class, 'getKotkab'])->name('api.v1.kotkab');
