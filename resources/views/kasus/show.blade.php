@@ -2,6 +2,10 @@
 
 @section('content')
 <style>
+    .input_pelapor, .input_klien {
+        display: none;
+    }
+
     .hightlighting {
     background-color: none !important; 
     -webkit-animation-name: animate1; /* Chrome, Safari, Opera */
@@ -235,7 +239,7 @@
                 </div>
             @endif --}}
 
-            <b id="anchor_pelaporan">A. IDENTITAS PELAPOR</b>{{ isset($data) ? $data : '' }}
+            <b id="anchor_pelaporan">A. IDENTITAS PELAPOR</b>
             <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
                 @csrf
                 @method('put')
@@ -348,9 +352,9 @@
                 <tr id="alamat_klien">
                     <td style="width: 200px">Alamat</td>
                     <td>:</td>
-                    <td><span class="data_klien">{{ $pelapor->alamat }}</span> 
-                        <input type="text" name="alamat" value="{{ $pelapor->alamat }}" class="input_klien">, 
-                        <b>Provinsi</b> <span class="data_klien">{{ $pelapor->provinsi }}</span> 
+                    <td><span class="data_klien">{{ $klien->alamat }}</span> 
+                        <input type="text" name="alamat" value="{{ $klien->alamat }}" class="input_klien">, 
+                        <b>Provinsi</b> <span class="data_klien">{{ $klien->provinsi }}</span> 
                         <select name="provinsi_id" class="input_klien select2bs4" id="provinsi_id_klien" onchange="getkotkab('klien')">
                             @foreach ($provinsi as $item)
                                 <option value="{{ $item->code }}" {{ $item->code == $klien->provinsi_id ? 'selected' : '' }}>{{ $item->name }}</option>
@@ -367,7 +371,7 @@
                         <input type="text" name="kelurahan" value="{{ $klien->kelurahan }}" class="input_klien"> 
                     </td>
                 </tr>
-                <tr id="pendidikan_terakhir_klien">
+                <tr id="pendidikan_klien">
                     <td style="width: 200px">Pendidikan</td>
                     <td>:</td>
                     <td>
@@ -1560,6 +1564,11 @@
 
     function getkotkab(field_id='') {
         province_code = $('#provinsi_id_'+field_id).val();
+        if (field_id == 'pelapor') { //pelapor
+            var kotkabID = '{{ $pelapor->kotkab_id }}';
+        } else { //klien
+            var kotkabID = '{{ $klien->kotkab_id }}';
+        }
         
         $.ajax({
           url:'{{ route("api.v1.kotkab") }}?province_code='+province_code,
@@ -1567,7 +1576,6 @@
           dataType: 'json',
           success: function( response ) {
                 var option = '<option value="">-- Pilih Kotkab --</option>';
-                var kotkabID = '{{ $pelapor->kotkab_id }}';
                 $.each(response.data, function(i, value) {
                     var selected = ''
                     if (kotkabID == value.code) {
@@ -1577,23 +1585,25 @@
                     option += `<option value="${value.code}" ${selected}>${value.name}</option>`
                 });
                 $('#kota_id_'+field_id).html(option);
-
                 //panggil kecamatan
-                getkecamatan('pelapor');
-                getkecamatan('klien');
+                getkecamatan(field_id);
             }
         });
     };
 
     function getkecamatan(field_id='') {
-      kota_code = $('#kota_id_'+field_id).val();
+        kota_code = $('#kota_id_'+field_id).val();
+        if (field_id == 'pelapor') { //pelapor
+            var kecamatanID = '{{ $pelapor->kecamatan_id }}';
+        } else { //klien
+            var kecamatanID = '{{ $klien->kecamatan_id }}';
+        }
         $.ajax({
           url:'{{ route("api.v1.kecamatan") }}?kota_code='+kota_code,
           type:'GET',
           dataType: 'json',
           success: function( response ) {
                 var option = '<option value="">-- Pilih Kecamatan --</option>';
-                var kecamatanID = '{{ $pelapor->kecamatan_id }}';
                 $.each(response.data, function(i, value) {
                     var selected = ''
                     if (kecamatanID == value.code) {

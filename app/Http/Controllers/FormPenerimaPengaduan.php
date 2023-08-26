@@ -295,7 +295,7 @@ class FormPenerimaPengaduan extends Controller
      */
     public function update(Request $request)
     {
-        // try {
+        try {
             $data_update = $request->data_update ;
             if ($data_update == 'pelapor') {
                 $data = Pelapor::where('uuid', $request->uuid)->first();
@@ -328,19 +328,33 @@ class FormPenerimaPengaduan extends Controller
                 $perubahan[$data_update] = '';
             }
             $perubahan = array_keys($perubahan);
-            
-            //return response
-            $response = "Berhasil mengupdate data";
-            return redirect()->route('kasus.show', $klien->uuid)
-                    ->with('data', json_encode($perubahan))
-                    ->with('success', true)
-                    ->with('response', $response);
-        // } catch (Exception $e){
-        //     return redirect()->route('kasus.show', $klien->uuid)
-        //             ->with('error', true)
-        //             ->with('response', $e->getMessage());
-        //     die();
-        // }
+
+            if($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'code'    => 200,
+                    'message' => 'Data Berhasil Disimpan!',
+                    'data'    => $perubahan  
+                ]);
+            }else{
+                //return response
+                $response = "Berhasil mengupdate data";
+                return redirect()->route('kasus.show', $klien->uuid)
+                        ->with('data', json_encode($perubahan))
+                        ->with('success', true)
+                        ->with('response', $response);
+
+            }
+        } catch (Exception $e){
+            if($request->ajax()) {
+                return response()->json(['msg' => $e->getMessage()], 500);
+            }else{
+                return redirect()->route('kasus.show', $klien->uuid)
+                        ->with('error', true)
+                        ->with('response', $e->getMessage());
+            }
+            die();
+        }
     }
 
     /**
