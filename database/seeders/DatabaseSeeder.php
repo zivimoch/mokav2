@@ -12,6 +12,8 @@ use App\Models\KategoriKasus;
 use App\Models\Klien;
 use App\Models\KondisiKhusus;
 use App\Models\Layanan;
+use App\Models\LogActivity;
+use App\Models\Notifikasi;
 use App\Models\Pasal;
 use App\Models\Pelapor;
 use App\Models\PersetujuanIsi;
@@ -228,6 +230,46 @@ class DatabaseSeeder extends Seeder
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()->addDays(5),
                 "deleted_at" => NULL
+            ],
+            [
+                "uuid" => "3ae38e2b-f482-45f5-93d1-f50b20bc672a",
+                "no_reg" => NULL,
+                "tanggal_pelaporan" => '2023-08-31',
+                "tanggal_kejadian" => '2023-08-31',
+                "tempat_kejadian" => 'Apartemen',
+                "media_pengaduan" => 'Hotline',
+                "sumber_rujukan" => NULL,
+                "sumber_informasi" => 'Komnas HAM',
+                "deskripsi" => 'KASUS 2 : - Menurut keterangan Heri (kakak ipar korban) bahwa pada rabu, 04 januari 2023, sekitar 19.00 WIB, awal mula kejadian, pacar korban menjemput korban ditempat kerja kemudian korban dan pacarnya mampir diwarung milik adek korban di Jembatan jelambar aladin RT. 04 RW 06, Kel. Penjagalan, Kec. Penjaringan, Jakarta Utara. Menurut keterangan Heri (kakak ipar korban) bahwa saat korban dan pacarnya duduk bersama di warung milik Adek korban (Probo Sutejo), kemudian terlapor datang dan langsung menyiram bensin kearah korban dan pacarnya kemudian menyalakan api menggunakan korek gas sehingga menyebabkan kebakar korban dan pacarnya. Ketika dibakar korban menceburkan/kecebur ke kali dan teman laki lakinya /pacar hanyut sementara korban /dewi tidak karena kecebur kali yang ada dangkal airnya... Korban Dewi dapat tertolong sementara teman laki lakinya meninggal.',
+                "provinsi_id" => 14,
+                "kotkab_id" => 1403,
+                "kecamatan_id" => 140302,
+                "kelurahan" => 'Banten',
+                "alamat" => 'jalan yang lurus',
+                "created_by" => NULL,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->subDays(5),
+                "deleted_at" => NULL
+            ],
+            [
+                "uuid" => "2afa1f5d-fbf3-4997-b10d-4d2682238b7d",
+                "no_reg" => NULL,
+                "tanggal_pelaporan" => '2023-08-31',
+                "tanggal_kejadian" => '2023-08-09',
+                "tempat_kejadian" => 'Apartemen',
+                "media_pengaduan" => 'Pos Pengaduan RPTRA',
+                "sumber_rujukan" => NULL,
+                "sumber_informasi" => 'Komnas HAM',
+                "deskripsi" => 'KASUS 3 : - Menurut keterangan Heri (kakak ipar korban) bahwa pada rabu, 04 januari 2023, sekitar 19.00 WIB, awal mula kejadian, pacar korban menjemput korban ditempat kerja kemudian korban dan pacarnya mampir diwarung milik adek korban di Jembatan jelambar aladin RT. 04 RW 06, Kel. Penjagalan, Kec. Penjaringan, Jakarta Utara. Menurut keterangan Heri (kakak ipar korban) bahwa saat korban dan pacarnya duduk bersama di warung milik Adek korban (Probo Sutejo), kemudian terlapor datang dan langsung menyiram bensin kearah korban dan pacarnya kemudian menyalakan api menggunakan korek gas sehingga menyebabkan kebakar korban dan pacarnya. Ketika dibakar korban menceburkan/kecebur ke kali dan teman laki lakinya /pacar hanyut sementara korban /dewi tidak karena kecebur kali yang ada dangkal airnya... Korban Dewi dapat tertolong sementara teman laki lakinya meninggal.',
+                "provinsi_id" => 12,
+                "kotkab_id" => 1202,
+                "kecamatan_id" => 120203,
+                "kelurahan" => 'Adian Baru',
+                "alamat" => 'jalan berlubang no 43',
+                "created_by" => NULL,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->subDays(2),
+                "deleted_at" => NULL
             ]
         ];
         Kasus::insert($kasus);
@@ -253,6 +295,48 @@ class DatabaseSeeder extends Seeder
                 "created_by" => NULL,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()->addDays(5),
+                "deleted_at" => NULL
+            ],
+            [
+                "uuid" => "051b8f1c-73c0-40d0-bf6e-fc6256999801",
+                "kasus_id" => 2,
+                "nik" => '19200292109',
+                "nama" => 'Addzifi Mochamad Gumelar',
+                "tempat_lahir" => NULL,
+                "tanggal_lahir" => NULL,
+                "provinsi_id" => NULL,
+                "kotkab_id" => NULL,
+                "kecamatan_id" => 317201,
+                "kelurahan" => NULL,
+                "alamat" => NULL,
+                "no_telp" => NULL,
+                "file_ttd" => NULL,
+                "desil" => NULL,
+                "hubungan_pelapor" => 'Ayah Kandung',
+                "created_by" => NULL,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->subDays(5),
+                "deleted_at" => NULL
+            ],
+            [
+                "uuid" => "a3da48d2-cc39-4e41-96e6-74e7f96af474",
+                "kasus_id" => 3,
+                "nik" => '24319228837',
+                "nama" => 'Pak RT',
+                "tempat_lahir" => NULL,
+                "tanggal_lahir" => NULL,
+                "provinsi_id" => NULL,
+                "kotkab_id" => NULL,
+                "kecamatan_id" => 317201,
+                "kelurahan" => NULL,
+                "alamat" => NULL,
+                "no_telp" => NULL,
+                "file_ttd" => NULL,
+                "desil" => NULL,
+                "hubungan_pelapor" => 'RT',
+                "created_by" => NULL,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->subDays(2),
                 "deleted_at" => NULL
             ]
         ];
@@ -298,6 +382,135 @@ class DatabaseSeeder extends Seeder
                 "lpsk" => 0,
                 "file_ttd" => NULL,
                 "desil" => NULL,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5),
+                "deleted_at" => NULL
+            ],
+            [
+                "uuid" => "35dbs9e8-551a-4a8f-91d1-e8ea392q5515",
+                "kasus_id" => 2,
+                "no_klien" => NULL,
+                "status" => 'Pelengkapan Data',
+                "nik" => NULL,
+                "nama" => 'ZiBoy',
+                "tempat_lahir" => 'Bandung',
+                "tanggal_lahir" => '2015-01-03',
+                "provinsi_id" => 31,
+                "kotkab_id" => 3172,
+                "kecamatan_id" => 317201,
+                "kelurahan" => 'Pejagalan',
+                "alamat" => 'Jembatan jelambar aladin RT/01/06 Kel; Pejagalan,Kec; penjaringan jakarta utara',
+                "jenis_kelamin" => 'perempuan',
+                "agama" => 'islam',
+                "suku" => 'Suku Sunda',
+                "no_telp" => '085210885564',
+                "status_pendidikan" => 'Lulus dan Tidak Melanjutkan (Tamat Belajar)',
+                "pendidikan" => 'Perguruan Tinggi',
+                "kelas" => 'semester 8',
+                "pekerjaan" => 'Ibu Rumah Tangga',
+                "penghasilan" => '1000000',
+                "status_kawin" => 'Cerai Hidup',
+                "jumlah_anak" => 0,
+                "nama_ibu" => 'Siswati Karnasuryatna Gumelar',
+                "tempat_lahir_ibu" => 'Bandung',
+                "tanggal_lahir_ibu" => '1945-01-03',
+                "nama_ayah" => 'Agun Gumelar',
+                "tempat_lahir_ayah" => 'Subang',
+                "tanggal_lahir_ayah" => '1945-01-03',
+                "hubungan_klien" => 'Bukan Siapa-Siapa / Tak Dikenal',
+                "no_lp" => NULL,
+                "pengadilan_negri" => NULL,
+                "isi_putusan" => NULL,
+                "lpsk" => 0,
+                "file_ttd" => NULL,
+                "desil" => NULL,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5),
+                "deleted_at" => NULL
+            ],
+            [
+                "uuid" => "35dbsbe8-556a-4a8f-91d1-e8ea392q5515",
+                "kasus_id" => 3,
+                "no_klien" => NULL,
+                "status" => 'Pelengkapan Data',
+                "nik" => NULL,
+                "nama" => 'Caca Marica Hey Hye',
+                "tempat_lahir" => 'Bandung',
+                "tanggal_lahir" => '1993-01-03',
+                "provinsi_id" => 31,
+                "kotkab_id" => 3172,
+                "kecamatan_id" => 317201,
+                "kelurahan" => 'Pejagalan',
+                "alamat" => 'Jembatan jelambar aladin RT/01/06 Kel; Pejagalan,Kec; penjaringan jakarta utara',
+                "jenis_kelamin" => 'perempuan',
+                "agama" => 'islam',
+                "suku" => 'Suku Sunda',
+                "no_telp" => '085210885564',
+                "status_pendidikan" => 'Lulus dan Tidak Melanjutkan (Tamat Belajar)',
+                "pendidikan" => 'Perguruan Tinggi',
+                "kelas" => 'semester 8',
+                "pekerjaan" => 'Ibu Rumah Tangga',
+                "penghasilan" => '1000000',
+                "status_kawin" => 'Cerai Hidup',
+                "jumlah_anak" => 0,
+                "nama_ibu" => 'Siswati Karnasuryatna Gumelar',
+                "tempat_lahir_ibu" => 'Bandung',
+                "tanggal_lahir_ibu" => '1945-01-03',
+                "nama_ayah" => 'Agun Gumelar',
+                "tempat_lahir_ayah" => 'Subang',
+                "tanggal_lahir_ayah" => '1945-01-03',
+                "hubungan_klien" => 'Bukan Siapa-Siapa / Tak Dikenal',
+                "no_lp" => NULL,
+                "pengadilan_negri" => NULL,
+                "isi_putusan" => NULL,
+                "lpsk" => 0,
+                "file_ttd" => NULL,
+                "desil" => NULL,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5),
+                "deleted_at" => NULL
+            ],
+            [
+                "uuid" => "35dssbe8-551a-4a8f-91d1-e8ea392q5515",
+                "kasus_id" => 3,
+                "no_klien" => NULL,
+                "status" => 'Pelengkapan Data',
+                "nik" => NULL,
+                "nama" => 'Anak Gembala',
+                "tempat_lahir" => 'Bandung',
+                "tanggal_lahir" => '2022-01-03',
+                "provinsi_id" => 31,
+                "kotkab_id" => 3172,
+                "kecamatan_id" => 317201,
+                "kelurahan" => 'Pejagalan',
+                "alamat" => 'Jembatan jelambar aladin RT/01/06 Kel; Pejagalan,Kec; penjaringan jakarta utara',
+                "jenis_kelamin" => 'perempuan',
+                "agama" => 'islam',
+                "suku" => 'Suku Sunda',
+                "no_telp" => '085210885564',
+                "status_pendidikan" => 'Lulus dan Tidak Melanjutkan (Tamat Belajar)',
+                "pendidikan" => 'Perguruan Tinggi',
+                "kelas" => 'semester 8',
+                "pekerjaan" => 'Ibu Rumah Tangga',
+                "penghasilan" => '1000000',
+                "status_kawin" => 'Cerai Hidup',
+                "jumlah_anak" => 0,
+                "nama_ibu" => 'Caca Marica Hey Hey',
+                "tempat_lahir_ibu" => 'Bandung',
+                "tanggal_lahir_ibu" => '1993-01-03',
+                "nama_ayah" => 'Agun Gumelar',
+                "tempat_lahir_ayah" => 'Subang',
+                "tanggal_lahir_ayah" => '1945-01-03',
+                "hubungan_klien" => 'Bukan Siapa-Siapa / Tak Dikenal',
+                "no_lp" => NULL,
+                "pengadilan_negri" => NULL,
+                "isi_putusan" => NULL,
+                "lpsk" => 0,
+                "file_ttd" => NULL,
+                "desil" => NULL,
                 "created_by" => NULL,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()->addDays(5),
@@ -318,6 +531,18 @@ class DatabaseSeeder extends Seeder
             [
                 "klien_id" => 1,
                 "value" => 'Psikis'
+            ],
+            [
+                "klien_id" => 2,
+                "value" => 'ini nanti diupdate lagi yaaaaa'
+            ],
+            [
+                "klien_id" => 3,
+                "value" => 'ini nanti diupdate lagi yaaaaa'
+            ],
+            [
+                "klien_id" => 4,
+                "value" => 'ini nanti diupdate lagi yaaaaa'
             ]
         ];
         TindakKekerasan::insert($tindak_kekerasan);
@@ -330,6 +555,14 @@ class DatabaseSeeder extends Seeder
             [
                 "klien_id" => 1,
                 "value" => 'KLJ'
+            ],
+            [
+                "klien_id" => 2,
+                "value" => 'Mekaar'
+            ],
+            [
+                "klien_id" => 2,
+                "value" => 'PKD'
             ]
         ];
         ProgramPemerintah::insert($program_pemerintah);
@@ -342,9 +575,26 @@ class DatabaseSeeder extends Seeder
             [
                 "klien_id" => 1,
                 "value" => 'KDRT'
+            ],
+            [
+                "klien_id" => 2,
+                "value" => 'KS'
+            ],
+            [
+                "klien_id" => 2,
+                "value" => 'KTP'
+            ],
+            [
+                "klien_id" => 3,
+                "value" => 'KDRT'
+            ],
+            [
+                "klien_id" => 3,
+                "value" => 'KTA'
             ]
         ];
         KategoriKasus::insert($kategori_kasus);
+
         //data tindak kekerasan
         $kondisi_khusus = [
             [
@@ -357,6 +607,7 @@ class DatabaseSeeder extends Seeder
             ]
         ];
         KondisiKhusus::insert($kondisi_khusus);
+
         //data tindak kekerasan
         $difabel_type = [
             [
@@ -366,6 +617,18 @@ class DatabaseSeeder extends Seeder
             [
                 "klien_id" => 1,
                 "value" => 'Anxietas'
+            ],
+            [
+                "klien_id" => 2,
+                "value" => 'Lumpuh Layuh / Kaku'
+            ],
+            [
+                "klien_id" => 2,
+                "value" => 'Hiperaktif'
+            ],
+            [
+                "klien_id" => 2,
+                "value" => 'Disabilitas Netra'
             ]
         ];
         DifabelType::insert($difabel_type);
@@ -374,6 +637,10 @@ class DatabaseSeeder extends Seeder
         $pasal = [
             [
                 "klien_id" => 1,
+                "value" => 'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 12 TAHUN 2022 TENTANG TINDAK PIDANA KEKERASAN SEKSUAL'
+            ],
+            [
+                "klien_id" => 2,
                 "value" => 'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 12 TAHUN 2022 TENTANG TINDAK PIDANA KEKERASAN SEKSUAL'
             ]
         ];
@@ -408,6 +675,64 @@ class DatabaseSeeder extends Seeder
                 "created_by" => NULL,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()->addDays(5),
+                "deleted_at" => NULL
+            ],
+            [
+                "uuid" => "8c05719d-ac64-4dbe-a9db-87767b43959f",
+                "kasus_id" => 2,
+                "nik" => NULL,
+                "nama" => 'Jack The Ripper',
+                "tempat_lahir" => NULL,
+                "tanggal_lahir" => NULL,
+                "provinsi_id" => 31,
+                "kotkab_id" => 3172,
+                "kecamatan_id" => 317201,
+                "kelurahan" => NULL,
+                "alamat" => NULL,
+                "jenis_kelamin" => 'laki-laki',
+                "agama" => NULL,
+                "suku" => NULL,
+                "no_telp" => NULL,
+                "status_pendidikan" => NULL,
+                "pendidikan" => NULL,
+                "pekerjaan" => NULL,
+                "status_kawin" => NULL,
+                "jumlah_anak" => 0,
+                "hubungan_terlapor" => 'Bukan Siapa-Siapa / Tak Dikenal',
+                "file_ttd" => NULL,
+                "desil" => NULL,
+                "created_by" => NULL,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->subDays(5),
+                "deleted_at" => NULL
+            ],
+            [
+                "uuid" => "8205719d-ac64-4dbe-a9db-87767b43959f",
+                "kasus_id" => 3,
+                "nik" => NULL,
+                "nama" => 'Chester Bennington',
+                "tempat_lahir" => NULL,
+                "tanggal_lahir" => NULL,
+                "provinsi_id" => 31,
+                "kotkab_id" => 3172,
+                "kecamatan_id" => 317201,
+                "kelurahan" => NULL,
+                "alamat" => NULL,
+                "jenis_kelamin" => 'laki-laki',
+                "agama" => NULL,
+                "suku" => NULL,
+                "no_telp" => NULL,
+                "status_pendidikan" => NULL,
+                "pendidikan" => NULL,
+                "pekerjaan" => NULL,
+                "status_kawin" => NULL,
+                "jumlah_anak" => 0,
+                "hubungan_terlapor" => 'Bukan Siapa-Siapa / Tak Dikenal',
+                "file_ttd" => NULL,
+                "desil" => NULL,
+                "created_by" => NULL,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->subDays(5),
                 "deleted_at" => NULL
             ]
         ];
@@ -509,6 +834,30 @@ class DatabaseSeeder extends Seeder
                 "created_by" => 1,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()->addDays(5),
+                "deleted_at" => NULL
+            ],
+            [
+                "klien_id" => 2,
+                "user_id" => 1,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->subDays(5),
+                "deleted_at" => NULL
+            ],
+            [
+                "klien_id" => 3,
+                "user_id" => 1,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->subDays(5),
+                "deleted_at" => NULL
+            ],
+            [
+                "klien_id" => 4,
+                "user_id" => 1,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->subDays(5),
                 "deleted_at" => NULL
             ]
         ];
@@ -812,22 +1161,22 @@ class DatabaseSeeder extends Seeder
                 "uuid" => '513c0e13-75a4-4684-a58e-744f6786fd8c',
                 "klien_id" => NULL,
                 "judul_kegiatan" => "Istirahat",
-                "tanggal_mulai" => Carbon::today()->subDays(2)->toDateString(),
+                "tanggal_mulai" => Carbon::today(),
                 "jam_mulai" => '12:00:00',
                 "keterangan" => '',
                 "created_by" => 2,
-                "created_at" => Carbon::now()->subDays(2),
+                "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
             [
                 "uuid" => '513c2e13-75a4-4684-a58e-74426786fd8c',
                 "klien_id" => NULL,
                 "judul_kegiatan" => "Koordinasi dengan advokat",
-                "tanggal_mulai" => Carbon::today()->subDays(2)->toDateString(),
+                "tanggal_mulai" => Carbon::today(),
                 "jam_mulai" => '13:00:00',
                 "keterangan" => 'Melakukan diskusi dengan advokat dan satpel terkait re-integrasi klien NA',
                 "created_by" => 2,
-                "created_at" => Carbon::now()->subDays(2),
+                "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ]
         ];
@@ -1131,5 +1480,72 @@ class DatabaseSeeder extends Seeder
             ]
         ];
         DokumenTl::insert($dokumen_tl);
+
+        //data notifikasi & task
+        $notifikasi = [
+            [
+                "uuid" => '8bf11224-1018-411d-97c0-342ab598c2cf',
+                "klien_id" => 2,
+                "receiver_id" => 1,
+                "type_notif" => 'task',
+                "no_reg" => NULL,
+                "from" => 'System',
+                "message" => 'Kasus baru. Silahkan pilih Supervisor & Manajer Kasus',
+                "kasus" => 'Ziboy (5)',
+                "url" => 'http://127.0.0.1:8000/kasus/show/678905eb-66b9-4170-a632-f81eb8fc1a8b',
+                "read" => 0,
+                "created_by" => 1
+            ],
+            [
+                "uuid" => '5f585c2c-852d-4823-995a-6f9b2b16f07d',
+                "klien_id" => 3,
+                "receiver_id" => 1,
+                "type_notif" => 'task',
+                "no_reg" => NULL,
+                "from" => 'System',
+                "message" => 'Kasus baru. Silahkan pilih Supervisor & Manajer Kasus',
+                "kasus" => 'Caca Marica Hey Hey (27)',
+                "url" => 'http://127.0.0.1:8000/kasus/show/83d099c2-dbf2-4060-9aaf-5d6dd889a57f',
+                "read" => 0,
+                "created_by" => 1
+            ],
+            [
+                "uuid" => '70c89f97-b5d8-4c8b-bc1e-1f50d7de7f18',
+                "klien_id" => 4,
+                "receiver_id" => 1,
+                "type_notif" => 'task',
+                "no_reg" => NULL,
+                "from" => 'System',
+                "message" => 'Kasus baru. Silahkan pilih Supervisor & Manajer Kasus',
+                "kasus" => 'Anak Gembala (2)',
+                "url" => 'http://127.0.0.1:8000/kasus/show/a9fe65da-a0f9-4f82-a0c1-2968deba2252',
+                "read" => 0,
+                "created_by" => 1
+            ]
+        ];
+        Notifikasi::insert($notifikasi);
+
+        //data log activity
+        $log_activity = [
+            [
+                "uuid" => '2921de61-0439-40d4-ac46-10ebd530bd2a',
+                "klien_id" => 2,
+                "message" => 'Petugas Penerima Pengaduan menginputkan data kasus baru',
+                "ip" => '127.0.0.1',
+                "browser" => 'Chrome 103.0.0.0',
+                "device" => 'WebKit',
+                "created_by" => 1
+            ],
+            [
+                "uuid" => '532b1e9f-c9ce-42ec-ae83-67c1fd1b55a5',
+                "klien_id" => 3,
+                "message" => 'Petugas Penerima Pengaduan menginputkan data kasus baru',
+                "ip" => '127.0.0.1',
+                "browser" => 'Chrome 103.0.0.0',
+                "device" => 'WebKit',
+                "created_by" => 1
+            ]
+        ];
+        LogActivity::insert($log_activity);
     }
 }

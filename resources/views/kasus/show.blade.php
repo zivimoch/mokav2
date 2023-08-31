@@ -797,16 +797,17 @@
     </div>
     
     <div class="tab-pane {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan" role="tabpanel" aria-labelledby="kasus-layanan-tab">
-            
         <div class="post clearfix" style="margin: 0px">
+            @if($status['jumlah_layanan']>0)
             <h4>Progres Layanan</h4>
             <div class="progress" style="height: 25px;">
-                <?php
+                @php
                     $progres_layanan = number_format(($status['jumlah_layanan_selesai'] / $status['jumlah_layanan']) * 100, 2);
-                ?>
+                @endphp
                 <div class="progress-bar bg-success" role="progressbar" style="width: {{ $progres_layanan }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px">{{ $progres_layanan }}%</span></div>
             </div>
             <br>
+            @endif
         <div style="overflow-x: scroll">
             <table id="example1" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
                 <thead>

@@ -42,7 +42,8 @@ class OpsiController extends Controller
                 'Sekolah (Aktif)',
                 'Putus Sekolah',
                 'Lulus dan Tidak Melanjutkan (Tamat Belajar)',
-                'Tidak Diketahui'];
+                'Tidak Diketahui'
+            ];
 
         return $data;
     }
@@ -55,7 +56,9 @@ class OpsiController extends Controller
                 'SD / Sederajat',
                 'SMP / Sederajat',
                 'SMA / Sederajat',
-                'Perguruan Tinggi'];
+                'Perguruan Tinggi',
+                'Tidak Diketahui'
+            ];
                 
         return $data;
     }
@@ -206,7 +209,11 @@ class OpsiController extends Controller
                 'Customer',
                 'Driver Ojek Online',
                 'Driver Taksi Online',
-                'Driver Transportasi Publik'
+                'Driver Transportasi Publik',
+                'RT',
+                'RW',
+                'Dokter',
+                'Perawat'
                 ];
                 
         return $data;

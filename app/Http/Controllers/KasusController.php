@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kasus;
+use App\Models\Klien;
 use App\Models\Pelapor;
 use App\Models\PersetujuanTemplate;
 use App\Models\Petugas;
@@ -170,5 +171,15 @@ class KasusController extends Controller
                 ->with('persetujuan',$persetujuan)
                 ->with('persetujuan_template',$persetujuan_template)
                 ->with('status',$status);
+    }
+
+    public function set_status($uuid)
+    {
+        $klien = Klien::where('uuid', $uuid)->first();
+
+        // $petugas ;
+        if ($klien = '') {
+            # code...
+        }
     }
 }

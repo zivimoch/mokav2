@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\LogActivityHelper;
+use App\Helpers\NotifHelper;
 use App\Models\DifabelType;
 use App\Models\Kasus;
 use App\Models\KategoriKasus;
@@ -150,7 +152,7 @@ class FormPenerimaPengaduan extends Controller
                         'kasus_id' => $kasus->id,
                         'status' => 'Pelengkapan Data',
                         'nik' => isset($request->nik_klien[$key]) ? $request->nik_klien[$key] : NULL, 
-                        'nama' => isset($request->nama_klien[$key]) ? $request->nama_klien[$key] : NULL,  
+                        'nama' => $request->nama_klien[$key],  
                         'tempat_lahir' => isset($request->tempat_lahir_klien[$key]) ? $request->tempat_lahir_klien[$key] : NULL,  
                         'tanggal_lahir' => isset($request->tanggal_lahir_klien[$key]) ? $request->tanggal_lahir_klien[$key] : NULL,  
                         'provinsi_id' => isset($request->provinsi_id_klien[$key]) ? $request->provinsi_id_klien[$key] : NULL,  
@@ -185,6 +187,13 @@ class FormPenerimaPengaduan extends Controller
                         'desil' => isset($request->desil_klien[$key]) ? $request->desil_klien[$key] : NULL,  
                         'created_by' => $created_by  
                     ]);
+
+                //simpan petugas yang bertanggung jawab pada kasus
+                if (isset(Auth::user()->id)) {
+                    if (Auth::user()->jabatan == 'Penerima Pengaduan') {
+                    Petugas::create(['klien_id' => $klien->id, 'user_id' => Auth::user()->id, 'created_by' => Auth::user()->id]);
+                    }
+                }
 
                 //simpan tindak kekerasan
                 if (isset($request->tindak_kekerasan[$key])) {
@@ -228,6 +237,34 @@ class FormPenerimaPengaduan extends Controller
                         $proses['pasal'] = Pasal::create(['klien_id' => $klien->id, 'value' => $pasal[$key6]]);
                     }
                 }
+
+
+            if (isset(Auth::user()->id)) {
+                if (Auth::user()->jabatan == 'Penerima Pengaduan') {
+                    //push notifikasi ///////////////////////////////////////////////////////////////////////////
+                    NotifHelper::push_notif(
+                        Auth::user()->id , //receiver_id
+                        $klien->id, //klien_id
+                        'task', //type_notif
+                        $klien->no_klien ? $klien->no_klien : '', //noregis
+                        'System', //from
+                        'Kasus baru. Silahkan pilih Supervisor & Manajer Kasus', //message
+                        $request->nama_klien[$key], //nama korban 
+                        isset($request->tanggal_lahir_klien[$key]) ? $request->tanggal_lahir_klien[$key] : NULL, //tanggal lahir korban
+                        url('/kasus/show/'.$klien->uuid), //url
+                        Auth::user()->id //sender_id
+                    );
+                    //write log activity ////////////////////////////////////////////////////////////////////////
+                    LogActivityHelper::push_log(
+                        //message
+                        Auth::user()->name.' menginputkan data kasus baru', 
+                        //klien_id
+                        $klien->id 
+                    );
+                    /////////////////////////////////////////////////////////////////////////////////////////////
+                }
+            }
+
             }
 
             //Data Terlapor
@@ -270,7 +307,7 @@ class FormPenerimaPengaduan extends Controller
                     'created_by' => $created_by
                 ]);
             }
-            
+
             //return response
             $response = "Berhasil menginputkan data";
             return redirect()->route('formpenerimapengaduan.index')
