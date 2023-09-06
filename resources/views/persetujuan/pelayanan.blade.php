@@ -172,14 +172,14 @@
                     <div id="sig" >
                     <button id="clear" class="btn btn-danger btn-sm" style="position: absolute">Hapus</button>
                     </div>
-                    <textarea class="required-field" id="signature64" name="tandatangan" style="display: none"></textarea>
+                    <textarea class="required-field-agenda" id="signature64" name="tandatangan" style="display: none"></textarea>
                     <div class="invalid-feedback" id="valid-signature64">
                         Tanda Tangan wajib diisi.
                     </div>
                     <br/>
                 <tr>
                     <td>
-                        <input type="text" name="nama_penandatangan" class="form-control required-field" id="nama_penandatangan" style="border: none; border-bottom: 2px solid black;" placeholder="Nama Lengkap"/>
+                        <input type="text" name="nama_penandatangan" class="form-control required-field-agenda" id="nama_penandatangan" style="border: none; border-bottom: 2px solid black;" placeholder="Nama Lengkap"/>
                         <div class="invalid-feedback" id="valid-nama_penandatangan">
                             Nama Lengkap wajib diisi.
                         </div>
@@ -216,7 +216,7 @@
     });
 
     $('#submit').click(function() {
-        if(validateForm() == false){
+        if(validateForm('agenda') == false){
             return false;
             $('#message').html('Mohon cek ulang data yang wajib diinput.');
             $("#success-message").hide();

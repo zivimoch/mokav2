@@ -90,23 +90,85 @@
 </div>
 
 <script>
-  //loading submit form
+  $(function() {
+    loadnotif(0);
+  });
+  // Prevent dropdown from closing when clicking on tab links
+  document.querySelectorAll('.nav-tabs .nav-link').forEach(function(link) {
+      link.addEventListener('click', function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          $(this).tab('show');
+      });
+  });
+  //loading submit form semua form
   $(document).ajaxSend(function() {
     $("#overlay").fadeIn(300);　
   });
+  // TimeOut
+  var activityTimeout = setTimeout(inActive, 3600000); //1 jam
+  function resetActive(){
+      // $(document.body).attr('class', 'active');
+      clearTimeout(activityTimeout);
+      activityTimeout = setTimeout(inActive, 3600000); //1 jam
+  }
+  function inActive(){
+      $('#timeOutModal').modal({backdrop: 'static', keyboard: false});
+  }
+  // Check for mousemove, could add other events here such as checking for key presses ect.
+  $(document).bind('mousemove', function(){resetActive()});
 
-     // TimeOut
-    var activityTimeout = setTimeout(inActive, 3600000); //1 jam
-    function resetActive(){
-        // $(document.body).attr('class', 'active');
-        clearTimeout(activityTimeout);
-        activityTimeout = setTimeout(inActive, 3600000); //1 jam
-    }
-    function inActive(){
-        $('#timeOutModal').modal({backdrop: 'static', keyboard: false});
-    }
-    // Check for mousemove, could add other events here such as checking for key presses ect.
-    $(document).bind('mousemove', function(){resetActive()});
+  function loadnotif(add){
+    $.ajax({
+        url:'{{ route("notifikasi.pull_notif") }}',
+        type:'GET',
+        dataType: 'json',
+        success: function( response ) {
+            task = response.task;
+            notif = response.notif;
+            $('#count_task').html(task.length);
+            $('#count_notif').html(notif.length);
+            if (add == 1) {
+                notif_count = parseInt(task.length + notif.length + add);
+            }else{
+                notif_count = parseInt(task.length + notif.length);
+            }
+            if (notif_count>0) {
+                $('#notif_count').html('<span class="badge-notif badge-notif-danger">'+notif_count+'</span>');   
+            }
+
+            task.forEach(e => {
+              if (e.kasus != null) {
+                kasus = e.kasus;
+              }else{
+                kasus = '';
+              }
+
+              if (e.no_reg != null) {
+                no_reg = e.no_reg;
+              }else{
+                no_reg = '';
+              }
+              $('#task_list').prepend('<a href=\"'+e.url+'\" class=\"list-group-item list-group-item-action flex-column align-items-start\"> <div class=\"d-flex w-100 justify-content-between\"> <h6 class=\"mb-1\"><b>'+e.from+'</b></h6> <small>'+e.formattedDate+' lalu</small> </div> <p class=\"mb-1\">'+e.message+'</p> <small> '+kasus+' '+no_reg+' </small> </a>')
+            });
+
+            notif.forEach(e => {
+              if (e.kasus != null) {
+                kasus = e.kasus;
+              }else{
+                kasus = '';
+              }
+
+              if (e.no_reg != null) {
+                no_reg = e.no_reg;
+              }else{
+                no_reg = '';
+              }
+              $('#notif_list').prepend('<a href=\"'+e.url+'\" class=\"list-group-item list-group-item-action flex-column align-items-start\"> <div class=\"d-flex w-100 justify-content-between\"> <h6 class=\"mb-1\">'+e.from+'</h6> <small>'+e.formattedDate+' lalu</small> </div> <p class=\"mb-1\">'+e.message+'</p> <small> '+kasus+' '+no_reg+' </small> </a>')
+            });
+        }
+    });
+  }
 </script>
 </body>
 </html>

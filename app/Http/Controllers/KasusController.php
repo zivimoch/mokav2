@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\LogActivityHelper;
+use App\Helpers\NotifHelper;
 use App\Models\Kasus;
 use App\Models\Klien;
 use App\Models\Pelapor;
+use App\Models\PersetujuanIsi;
 use App\Models\PersetujuanTemplate;
 use App\Models\Petugas;
 use Illuminate\Http\Request;
@@ -12,7 +15,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Laravolt\Indonesia\Models\Province;
 use Yajra\DataTables\Facades\DataTables;
-
+use Validator;
+use Exception;
 
 class KasusController extends Controller
 {
@@ -49,27 +53,27 @@ class KasusController extends Controller
             return $data;
        }
 
-       $status_pendidikan =  app('App\Http\Controllers\OpsiController')->api_status_pendidikan();
-       $pendidikan_terakhir =  app('App\Http\Controllers\OpsiController')->api_pendidikan_terakhir();
-       $kelas =  app('App\Http\Controllers\OpsiController')->api_kelas();
-       $agama =  app('App\Http\Controllers\OpsiController')->api_agama();
-       $suku =  app('App\Http\Controllers\OpsiController')->api_suku();
-       $pekerjaan =  app('App\Http\Controllers\OpsiController')->api_pekerjaan();
-       $status_perkawinan =  app('App\Http\Controllers\OpsiController')->api_status_perkawinan();
-       $hubungan_dengan_terlapor =  app('App\Http\Controllers\OpsiController')->api_hubungan_dengan_terlapor();
-       $hubungan_dengan_klien =  app('App\Http\Controllers\OpsiController')->api_hubungan_dengan_klien();
-       $kekhususan =  app('App\Http\Controllers\OpsiController')->api_kekhususan();
-       $difabel_type =  app('App\Http\Controllers\OpsiController')->api_difabel_type();
-       $kategori_kasus =  app('App\Http\Controllers\OpsiController')->api_kategori_kasus();
-       $tindak_kekerasan =  app('App\Http\Controllers\OpsiController')->api_tindak_kekerasan();
-       $pengadilan_negri =  app('App\Http\Controllers\OpsiController')->api_pengadilan_negri();
-       $pasal = app('App\Http\Controllers\OpsiController')->api_pasal();
-       $media_pengaduan =  app('App\Http\Controllers\OpsiController')->api_media_pengaduan();
-       $sumber_rujukan =  app('App\Http\Controllers\OpsiController')->api_sumber_rujukan();
-       $sumber_informasi =  app('App\Http\Controllers\OpsiController')->api_sumber_infromasi();
-       $program_pemerintah =  app('App\Http\Controllers\OpsiController')->api_program_pemerintah();
-       $tempat_kejadian =  app('App\Http\Controllers\OpsiController')->api_tempat_kejadian();
-       $users =  app('App\Http\Controllers\OpsiController')->api_petugas(); //untuk tambah petugas
+       $status_pendidikan =  (new OpsiController)->api_status_pendidikan();
+       $pendidikan_terakhir =  (new OpsiController)->api_pendidikan_terakhir();
+       $kelas =  (new OpsiController)->api_kelas();
+       $agama =  (new OpsiController)->api_agama();
+       $suku =  (new OpsiController)->api_suku();
+       $pekerjaan =  (new OpsiController)->api_pekerjaan();
+       $status_perkawinan =  (new OpsiController)->api_status_perkawinan();
+       $hubungan_dengan_terlapor =  (new OpsiController)->api_hubungan_dengan_terlapor();
+       $hubungan_dengan_klien =  (new OpsiController)->api_hubungan_dengan_klien();
+       $kekhususan =  (new OpsiController)->api_kekhususan();
+       $difabel_type =  (new OpsiController)->api_difabel_type();
+       $kategori_kasus =  (new OpsiController)->api_kategori_kasus();
+       $tindak_kekerasan =  (new OpsiController)->api_tindak_kekerasan();
+       $pengadilan_negri =  (new OpsiController)->api_pengadilan_negri();
+       $pasal = (new OpsiController)->api_pasal();
+       $media_pengaduan =  (new OpsiController)->api_media_pengaduan();
+       $sumber_rujukan =  (new OpsiController)->api_sumber_rujukan();
+       $sumber_informasi =  (new OpsiController)->api_sumber_infromasi();
+       $program_pemerintah =  (new OpsiController)->api_program_pemerintah();
+       $tempat_kejadian =  (new OpsiController)->api_tempat_kejadian();
+       $users =  (new OpsiController)->api_petugas(); //untuk tambah petugas
        $provinsi = Province::get();
 
        //data klien (nanti edit lagi)
@@ -127,13 +131,13 @@ class KasusController extends Controller
         //data surat template persetujuan 
         $persetujuan_template = PersetujuanTemplate::whereNULL('deleted_at')->get();
 
-        $status['jumlah_layanan'] = DB::table(('agenda as a'))
+        $detail['jumlah_layanan'] = DB::table(('agenda as a'))
                                         ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
                                         ->where('a.klien_id', $klien->id)
                                         ->whereNull('a.deleted_at')
                                         ->whereNull('b.deleted_at')
                                         ->count();
-        $status['jumlah_layanan_selesai'] = DB::table(('agenda as a'))
+        $detail['jumlah_layanan_selesai'] = DB::table(('agenda as a'))
                                         ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
                                         ->where('a.klien_id', $klien->id)
                                         ->whereNull('a.deleted_at')
@@ -141,6 +145,25 @@ class KasusController extends Controller
                                         ->whereNotNull('b.tanggal_selesai')
                                         ->count();
 
+       //Cek kelengkapan kasus
+       // 1. Apakah kasus terdiri dari minimal 1 Petugas Penerima Pengaduan, 1 Supervisor & 1 MK
+       $kelengkapan_petugas = $this->check_kelengkapan_petugas($klien->id);
+       // 2. Apakah terdapat minimal 1 SPP
+       $kelengkapan_spp = $this->check_kelengkapan_spp($klien->id);
+
+       // ===========================================================================================
+        //Proses read, push notif & log activity ////////////////////////////////////////////////////
+        // jika petugas sudah melihat data kasus maka tasknya (T3) selesai
+        NotifHelper::read_notif(
+            Auth::user()->id, // receiver_id
+            $klien->id, // klien_id
+            $request->kode, // kode
+            $request->tipe // type_notif
+        );
+        /////////////////////////////////////////////////////////////////////////////////////////////
+
+       $detail['kelengkapan_petugas'] = $kelengkapan_petugas;
+       $detail['kelengkapan_spp'] = $kelengkapan_spp;
        return view('kasus.show')
                 ->with('klien', $klien)
                 ->with('pelapor', $pelapor)
@@ -170,16 +193,165 @@ class KasusController extends Controller
                 ->with('petugas',$petugas)
                 ->with('persetujuan',$persetujuan)
                 ->with('persetujuan_template',$persetujuan_template)
-                ->with('status',$status);
+                ->with('detail', $detail);
     }
 
-    public function set_status($uuid)
+    public function approval($uuid, Request $request)
     {
-        $klien = Klien::where('uuid', $uuid)->first();
+        try {
+            $validator = Validator::make($request->all(), [
+                'approval' => 'required'
+                ]);
+                if ($validator->fails())
+                {
+                    throw new Exception($validator->errors());
+                }
 
-        // $petugas ;
-        if ($klien = '') {
-            # code...
+                $klien = Klien::where('uuid', $uuid)->first();
+                // jika kasus diapprove maka generate no regis klien
+                if ($request->approval) {
+                    //buat & simpan no regis
+                    $no_klien = $this->generate_noreg();
+                    $klien->no_klien = $no_klien;
+                    $klien->save;
+
+                    $message_notif = Auth::user()->name.' menyetujui kasus. Nomor regis berhasil dibuat. Silahkan lihat catatan supervisor';
+                    $message_log = Auth::user()->name.' menyetujui kasus. Nomor regis berhasil dibuat';
+                    $kode = 'T4';
+                    $url =  url('/kasus/show/'.$klien->uuid.'?tab=kasus&catatan-kasus=1&kode=T4&tipe=task');
+                }else{
+                    $message_notif = Auth::user()->name.' tidak menyetujui kasus. Silahkan lakukan terminasi sepihak / kasus ditutup';
+                    $message_log = Auth::user()->name.' {tidak menyetujui kasus. Proses terminasi';
+                    $kode = 'T5';
+                    $url =  url('/kasus/show/'.$klien->uuid.'?tab=settings&kolom-terminasi=1');
+                }
+            // ===========================================================================================
+            //Proses read, push notif & log activity ////////////////////////////////////////////////////
+            // jika supervisor sudah menekan tombol approval maka tasknya (T3) selesai
+            NotifHelper::read_notif(
+                Auth::user()->id, // receiver_id
+                $klien->id, // klien_id
+                'T3', // kode
+                'task' // type_notif
+            );
+            //push notifikasi ///////////////////////////////////////////////////////////////////////////
+            //kirim notifikasi ke MK, MK bisa jadi lebih dari 1
+            $mk = DB::table('petugas as a')
+                    ->leftJoin('users as b', 'a.user_id', 'b.id')
+                    ->where('b.jabatan', 'Manajer Kasus')
+                    ->where('a.klien_id', $klien->id)
+                    ->pluck('b.id');
+            foreach ($mk as $key => $value) {
+                NotifHelper::push_notif(
+                    $value , //receiver_id
+                    $klien->id, //klien_id
+                    $kode, //kode
+                    'task', //type_notif
+                    $klien->no_klien ? $klien->no_klien : '', //noregis
+                    Auth::user()->name, //from
+                    $message_notif, //message
+                    $klien->nama, //nama korban 
+                    isset($klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
+                    $url, //url
+                    Auth::user()->id //created_by
+                );
+            }
+            //write log activity ////////////////////////////////////////////////////////////////////////
+            LogActivityHelper::push_log(
+                //message
+                $message_log,
+                //klien_id
+                $klien->id 
+            );
+            /////////////////////////////////////////////////////////////////////////////////////////////
+
+            //return response
+            $response =  response()->json([
+                'success' => true,
+                'code'    => 200,
+                'message' => 'Data Berhasil Disimpan!'
+            ]);
+            
+            return redirect()->route('kasus.show', ['uuid' => $uuid, 'tab' => 'settings', 'persetujuan-supervisor' => 1])
+            ->with('success', true)
+            ->with('response', $response);
+        } catch (Exception $e){
+            return response()->json(['message' => $e->getMessage()]);
+            die();
         }
+    }
+
+    public function check_kelengkapan_petugas($klien_id)
+    {
+        $supervisor = DB::table('petugas as a')
+                            ->leftJoin('users as b', 'a.user_id', '=', 'b.id')
+                            ->where('a.klien_id', $klien_id)
+                            ->where('b.jabatan', 'Supervisor Kasus')
+                            ->whereNull('a.deleted_at')
+                            ->count();
+        $mk = DB::table('petugas as a')
+                        ->leftJoin('users as b', 'a.user_id', '=', 'b.id')
+                        ->where('a.klien_id', $klien_id)
+                        ->where('b.jabatan', 'Manajer Kasus')
+                        ->whereNull('a.deleted_at')
+                        ->count();
+        if (($supervisor > 0) && ($mk > 0)) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function check_kelengkapan_spp($klien_id)
+    {
+        $persetujuan_template = PersetujuanTemplate::where('kategori', 'persetujuan pelayanan')->pluck('id');
+        $persetujuan_isi = PersetujuanIsi::whereIn('persetujuan_template_id', [$persetujuan_template])
+                                        ->where('klien_id', $klien_id)
+                                        ->whereNull('deleted_at')
+                                        ->count();
+        if ($persetujuan_isi > 0) {
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
+
+    public function check_asesmen($klien_id)
+    {
+        $persetujuan_template = PersetujuanTemplate::where('kategori', 'persetujuan pelayanan')->pluck('id');
+        $persetujuan_isi = PersetujuanIsi::whereIn('persetujuan_template_id', [$persetujuan_template])
+                                        ->where('klien_id', $klien_id)
+                                        ->whereNull('deleted_at')
+                                        ->count();
+        if ($persetujuan_isi > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function generate_noreg()
+    {
+        // 1. Jumlahkan kasus yang ada no regisnya dan bukan empty
+        // 2. Cari yang tahun ini saja
+        // 3. Jumlahnya tambah 1
+        // 4. Kombinasikan dengan bulan dan tahun saat ini
+
+        $kasus_regis = Klien::whereNull('deleted_at')
+                            ->whereIn('no_klien', ['',NULL])
+                            ->whereYear('created_at', date('Y'))
+                            ->count();
+        $urutan_regis = $kasus_regis + 1;
+        if ($urutan_regis < 10) {
+            $urutan_regis = '00'.$urutan_regis;
+        }else if($urutan_regis < 100){
+            $urutan_regis = '0'.$urutan_regis;
+        }else{
+            $urutan_regis = $urutan_regis;
+        }
+        $no_klien = $urutan_regis.'/'.date('m').'/'.date('Y');
+
+        return $no_klien;
     }
 }

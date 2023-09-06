@@ -51,7 +51,7 @@
     <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-trigger" data-toggle="dropdown" href="#">
-                <i class="far fa-bell"></i> <i class="fa fa-caret-down"></i>
+                <i class="far fa-bell"></i> <span id="notif_count"></span> <i class="fa fa-caret-down"></i>
             </a>
             <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right" style="width : 400px;">                                            
               <center style="font-weight : bold; margin-bottom : 5px">Task & Notification</center>
@@ -66,86 +66,6 @@
               <div class="tab-content">
                   <div class="tab-pane fade show active" id="task" role="tabpanel" aria-labelledby="task-tab">
                     <div class="list-group" id="task_list" style="max-height: 500px; overflow:scroll; overflow-x: hidden; scrollbar-width: thin;">
-                      <a href="{{ route('kasus.show', '35db5be8-551a-4a8f-91d1-e8ea392q5515') }}?tab=settings&hightlight=inputsupervisor" class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                          <h6 class="mb-1">Korban / Pelapor</h6>
-                          <small>2 hari lalu</small>
-                        </div>
-                        <p class="mb-1">Pelapor / Korban menyetujui laporan pengaduan. Silahkan tentukan Supervisor</p>
-                        <small>|</small>
-                      </a> 
-                      <a href="{{ route('kasus.show', 'uuidnya') }}?tab=kasus&hightlight=formulir#custom-tabs-one-home" class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                          <h6 class="mb-1">Korban / Pelapor</h6>
-                          <small>2 hari lalu</small>
-                        </div>
-                        <p class="mb-1">Pelapor / Korban tidak menyetujui laporan pengaduan. Silahkan perbaiki data kasus, data korban dan data terlapor</p>
-                        <small>|</small>
-                      </a> 
-                      <a href="{{ route('kasus.show', 'uuidnya') }}?tab=settings&hightlight=inputpersetujuankasus" class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                          <h6 class="mb-1">Penerima Pengaduan</h6>
-                          <small>2 hari lalu</small>
-                        </div>
-                        <p class="mb-1">Kasus baru. Meminta persetujuan supervisor</p>
-                        <small>Addzifi Mochamad Gumelar (25) | </small>
-                      </a> 
-                      <a href="" class="list-group-item list-group-item-action flex-column align-items-start bg-danger">
-                        <div class="d-flex w-100 justify-content-between">
-                          <h6 class="mb-1">Supervisor</h6>
-                          <small>2 hari lalu</small>
-                        </div>
-                        <p class="mb-1">Supervisor menyetujui kasus. Silahkan input nomor regis.</p>
-                        <small>Addzifi Mochamad Gumelar (25) | </small>
-                      </a> 
-                      <a href="" class="list-group-item list-group-item-action flex-column align-items-start bg-danger">
-                        <div class="d-flex w-100 justify-content-between">
-                          <h6 class="mb-1">Supervisor</h6>
-                          <small>2 hari lalu</small>
-                        </div>
-                        <p class="mb-1">Kasus baru disetujui Supervisor. Silahkan buat link SPP.</p>
-                        <small>Addzifi Mochamad Gumelar (25) | 01/01/2023</small>
-                      </a> 
-                      <a href="" class="list-group-item list-group-item-action flex-column align-items-start bg-danger">
-                        <div class="d-flex w-100 justify-content-between">
-                          <h6 class="mb-1">Supervisor</h6>
-                          <small>2 hari lalu</small>
-                        </div>
-                        <p class="mb-1">Link SPP sudah jadi. Silahkan berikan ke Korban / Pelapor.</p>
-                        <small>Addzifi Mochamad Gumelar (25) | 01/01/2023</small>
-                      </a> 
-                      <a href="" class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                          <h6 class="mb-1">Pelapor / Korban </h6>
-                          <small>2 hari lalu</small>
-                        </div>
-                        <p class="mb-1">Pelapor / Korban sudah mengisi Surat Pernyataan Persetujuan. Silahkan lakukan assesment / proses selanjutnya.</p>
-                        <small>Addzifi Mochamad Gumelar (25) | 01/01/2023 </small>
-                      </a> 
-                      <a href="" class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                          <h6 class="mb-1">Manager Kasus </h6>
-                          <small>2 hari lalu</small>
-                        </div>
-                        <p class="mb-1">Pelaksanaan intervensi. Silahkan input data intervensi.</p>
-                        <small>Addzifi Mochamad Gumelar (25) | 01/01/2023 </small>
-                      </a> 
-                      <a href="" class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                          <h6 class="mb-1">Alexander Grahambell </h6>
-                          <small>2 hari lalu</small>
-                        </div>
-                        <p class="mb-1">Telah menginput data intervensi.</p>
-                        <small>Addzifi Mochamad Gumelar (25) | 01/01/2023 </small>
-                      </a> 
-                      <a href="" class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                          <h6 class="mb-1">Manager Kasus </h6>
-                          <small>2 hari lalu</small>
-                        </div>
-                        <p class="mb-1">Pelaksanaan intervensi lanjutan. Silahkan input data intervensi.</p>
-                        <small>Addzifi Mochamad Gumelar (25) | 01/01/2023 </small>
-                      </a> 
                     </div>
                   </div>
                   <div class="tab-pane fade" id="notif" role="tabpanel" aria-labelledby="notif-tab">

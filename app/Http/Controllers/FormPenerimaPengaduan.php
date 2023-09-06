@@ -30,26 +30,26 @@ class FormPenerimaPengaduan extends Controller
      */
     public function index()
     {
-        $status_pendidikan =  app('App\Http\Controllers\OpsiController')->api_status_pendidikan();
-        $pendidikan_terakhir =  app('App\Http\Controllers\OpsiController')->api_pendidikan_terakhir();
-        $kelas =  app('App\Http\Controllers\OpsiController')->api_kelas();
-        $agama =  app('App\Http\Controllers\OpsiController')->api_agama();
-        $suku =  app('App\Http\Controllers\OpsiController')->api_suku();
-        $pekerjaan =  app('App\Http\Controllers\OpsiController')->api_pekerjaan();
-        $status_perkawinan =  app('App\Http\Controllers\OpsiController')->api_status_perkawinan();
-        $hubungan_dengan_terlapor =  app('App\Http\Controllers\OpsiController')->api_hubungan_dengan_terlapor();
-        $hubungan_dengan_klien =  app('App\Http\Controllers\OpsiController')->api_hubungan_dengan_klien();
-        $kekhususan =  app('App\Http\Controllers\OpsiController')->api_kekhususan();
-        $difabel_type =  app('App\Http\Controllers\OpsiController')->api_difabel_type();
-        $kategori_kasus =  app('App\Http\Controllers\OpsiController')->api_kategori_kasus();
-        $tindak_kekerasan =  app('App\Http\Controllers\OpsiController')->api_tindak_kekerasan();
-        $pengadilan_negri =  app('App\Http\Controllers\OpsiController')->api_pengadilan_negri();
-        $pasal =  app('App\Http\Controllers\OpsiController')->api_pasal();
-        $media_pengaduan =  app('App\Http\Controllers\OpsiController')->api_media_pengaduan();
-        $sumber_rujukan =  app('App\Http\Controllers\OpsiController')->api_sumber_rujukan();
-        $sumber_informasi =  app('App\Http\Controllers\OpsiController')->api_sumber_infromasi();
-        $program_pemerintah =  app('App\Http\Controllers\OpsiController')->api_program_pemerintah();
-        $tempat_kejadian =  app('App\Http\Controllers\OpsiController')->api_tempat_kejadian();
+        $status_pendidikan =  (new OpsiController)->api_status_pendidikan();
+        $pendidikan_terakhir =  (new OpsiController)->api_pendidikan_terakhir();
+        $kelas =  (new OpsiController)->api_kelas();
+        $agama =  (new OpsiController)->api_agama();
+        $suku =  (new OpsiController)->api_suku();
+        $pekerjaan =  (new OpsiController)->api_pekerjaan();
+        $status_perkawinan =  (new OpsiController)->api_status_perkawinan();
+        $hubungan_dengan_terlapor =  (new OpsiController)->api_hubungan_dengan_terlapor();
+        $hubungan_dengan_klien =  (new OpsiController)->api_hubungan_dengan_klien();
+        $kekhususan =  (new OpsiController)->api_kekhususan();
+        $difabel_type =  (new OpsiController)->api_difabel_type();
+        $kategori_kasus =  (new OpsiController)->api_kategori_kasus();
+        $tindak_kekerasan =  (new OpsiController)->api_tindak_kekerasan();
+        $pengadilan_negri =  (new OpsiController)->api_pengadilan_negri();
+        $pasal =  (new OpsiController)->api_pasal();
+        $media_pengaduan =  (new OpsiController)->api_media_pengaduan();
+        $sumber_rujukan =  (new OpsiController)->api_sumber_rujukan();
+        $sumber_informasi =  (new OpsiController)->api_sumber_infromasi();
+        $program_pemerintah =  (new OpsiController)->api_program_pemerintah();
+        $tempat_kejadian =  (new OpsiController)->api_tempat_kejadian();
         $provinsi = Provinsi::get();
         return view('formpenerimapengaduan')->with('provinsi', $provinsi)
                                             ->with('status_pendidikan', $status_pendidikan)
@@ -238,21 +238,23 @@ class FormPenerimaPengaduan extends Controller
                     }
                 }
 
-
+            // ===========================================================================================
+            //Proses read, push notif & log activity ////////////////////////////////////////////////////
             if (isset(Auth::user()->id)) {
                 if (Auth::user()->jabatan == 'Penerima Pengaduan') {
                     //push notifikasi ///////////////////////////////////////////////////////////////////////////
                     NotifHelper::push_notif(
                         Auth::user()->id , //receiver_id
                         $klien->id, //klien_id
+                        'T2', //type_notif
                         'task', //type_notif
                         $klien->no_klien ? $klien->no_klien : '', //noregis
                         'System', //from
                         'Kasus baru. Silahkan pilih Supervisor & Manajer Kasus', //message
                         $request->nama_klien[$key], //nama korban 
                         isset($request->tanggal_lahir_klien[$key]) ? $request->tanggal_lahir_klien[$key] : NULL, //tanggal lahir korban
-                        url('/kasus/show/'.$klien->uuid), //url
-                        Auth::user()->id //sender_id
+                        url('/kasus/show/'.$klien->uuid.'?tab=kasus-petugas&tambah-petugas=1'), //url
+                        Auth::user()->id //created_by
                     );
                     //write log activity ////////////////////////////////////////////////////////////////////////
                     LogActivityHelper::push_log(
@@ -264,6 +266,7 @@ class FormPenerimaPengaduan extends Controller
                     /////////////////////////////////////////////////////////////////////////////////////////////
                 }
             }
+            /////////////////////////////////////////////////////////////////////////////////////////////
 
             }
 

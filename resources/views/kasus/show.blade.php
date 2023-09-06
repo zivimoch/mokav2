@@ -43,8 +43,8 @@
     .select2-selection__arrow {
         height: 30px !important;
     }
+    
 </style>
-
 <section class="content-header">
 <div class="container-fluid">
 <div class="row mb-2">
@@ -109,7 +109,7 @@
     </div>
     </div>
     
-    <div class="card-body" style="height: 350px; overflow-y:scroll;">
+    <div class="card-body {{ Request::get('catatan-kasus') == 1 ? 'hightlighting' : '' }}" style="height: 350px; overflow-y:scroll;">
     <a href="#">
         <strong>Rudi Hartanto (Advokat)</strong>
         <p class="text-muted">
@@ -201,10 +201,10 @@
         <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="false">Log Activity</a>
         </li>
         <li class="nav-item">
-        <a class="nav-link {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas-tab" data-toggle="pill" href="#kasus-petugas" role="tab" aria-controls="kasus-petugas" aria-selected="false">Petugas <i class="fas fa-exclamation-circle" style="color: red; font-size:20px"></i></a>
+            <a class="nav-link {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas-tab" data-toggle="pill" href="#kasus-petugas" role="tab" aria-controls="kasus-petugas" aria-selected="false">Petugas @if(!($detail['kelengkapan_petugas']))<i class="fas fa-exclamation-circle" style="color: red; font-size:20px"></i>@endif</a>
         </li>
         <li class="nav-item">
-        <a class="nav-link {{ Request::get('tab') == 'kasus-persetujuan' ? 'active' : '' }}" id="kasus-persetujuan-tab" data-toggle="pill" href="#kasus-persetujuan" role="tab" aria-controls="kasus-persetujuan" aria-selected="false">Persetujuan <i class="fas fa-exclamation-circle" style="color: red; font-size:20px"></i></a>
+        <a class="nav-link {{ Request::get('tab') == 'kasus-persetujuan' ? 'active' : '' }}" id="kasus-persetujuan-tab" data-toggle="pill" href="#kasus-persetujuan" role="tab" aria-controls="kasus-persetujuan" aria-selected="false">Persetujuan @if(!($detail['kelengkapan_spp']))<i class="fas fa-exclamation-circle" style="color: red; font-size:20px"></i>@endif</a>
         </li>
         <li class="nav-item">
         <a class="nav-link {{ Request::get('tab') == 'settings' ? 'active' : '' }}" id="kasus-settings-tab" data-toggle="pill" href="#kasus-settings" role="tab" aria-controls="kasus-settings" aria-selected="false">Settings</a>
@@ -213,7 +213,7 @@
         </div>
         <div class="card-body">
         <div class="tab-content" id="custom-tabs-one-tabContent">
-        <div class="tab-pane fade show {{ Request::get('tab') == 'kasus' || Request::get('tab') == ''  ? 'active' : '' }}  {{ Request::get('hightlight') == 'formulir' ? 'hightlighting' : '' }}" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
+        <div class="tab-pane fade show {{ Request::get('tab') == 'kasus' || Request::get('tab') == ''  ? 'active' : '' }}  {{ Request::get('hightlight') == 'formulir' ? 'hightlighting' : '' }}  {{ Request::get('kasus-all') == 1 ? 'hightlighting' : '' }}" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
         <div class="post">
             <div class="card card-danger" style="transition: all 0.15s ease 0s; height: inherit; width: inherit;">
                 <div class="card-header">
@@ -624,7 +624,7 @@
                     (..............................................)
                 </div>
                 <div class="col-md-4 text-center">
-                    <b>Manager Kasus</b>
+                    <b>Manajer Kasus</b>
                     <br>
                     <br>
                     <br>
@@ -648,7 +648,7 @@
         <div class="tab-pane {{ Request::get('tab') == 'kasus-Asesmen' ? 'active' : '' }}" id="kasus-Asesmen" role="tabpanel" aria-labelledby="kasus-Asesmen-tab">
             
             <div class="post clearfix" style="margin: 0px">
-            <b>A. RIWAYAT KEJADIAN</b>
+            <b>RIWAYAT KEJADIAN</b>
             </br>
             </br>
             <div style="overflow-x: scroll">
@@ -662,147 +662,29 @@
                 <tbody></tbody>
             </table>
             </div>
-            <div class="row" style="margin-top: 20px">
+            <br>
+            <div class="row" id="warningAsesmen">
                 <div class="col-md-12">
-                    <div class="form-group">
-                    <label>Upaya yang pernah dilakukan : </label>
-                    {{-- <textarea name="" id="" cols="30" rows="3" class="form-control" style="resize: none;" readonly>lorem ipsum dolor sit amet</textarea> --}}
-                        <div class="input-group">
-                            <textarea class="form-control" aria-label="With textarea" style="resize: none;"></textarea>
-                            <div class="input-group-prepend">
-                                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-check"></i></button>
-                            </div>
-                        </div>    
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                    <label>Faktor pendukung pemecahan masalah : </label>
-                    {{-- <textarea name="" id="" cols="30" rows="3" class="form-control" style="resize: none;" readonly>lorem ipsum dolor sit amet</textarea> --}}
-                        <div class="input-group">
-                            <textarea class="form-control" aria-label="With textarea" style="resize: none;"></textarea>
-                            <div class="input-group-prepend">
-                                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-check"></i></button>
-                            </div>
-                        </div>    
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                    <label>Faktor penghambat pemecahan masalah : </label>
-                    {{-- <textarea name="" id="" cols="30" rows="3" class="form-control" style="resize: none;" readonly>lorem ipsum dolor sit amet</textarea> --}}
-                        <div class="input-group">
-                            <textarea class="form-control" aria-label="With textarea" style="resize: none;"></textarea>
-                            <div class="input-group-prepend">
-                                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-check"></i></button>
-                            </div>
-                        </div>    
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                    <label>Harapan/Kebutuhan klien : </label>
-                    {{-- <textarea name="" id="" cols="30" rows="3" class="form-control" style="resize: none;" readonly>lorem ipsum dolor sit amet</textarea> --}}
-                        <div class="input-group">
-                            <textarea class="form-control" aria-label="With textarea" style="resize: none;"></textarea>
-                            <div class="input-group-prepend">
-                                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-check"></i></button>
-                            </div>
-                        </div>    
+                    <div class="alert alert-danger">
+                    <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+                    Segera inputkan data asesmen pada MOKA.
                     </div>
                 </div>
             </div>
+            <div id="kolomAsesmen"></div>
+            <button type="submit" class="btn btn-block btn-default" data-toggle="modal" data-target="#tambahAsesmenModal"><i class="fas fa-plus"></i> Tambah Asesmen</button>
+            
         </div>
 
-            <div class="post clearfix">
-                <b>B. BIOPSIKOSOSIAL</b>
-                </br>
-                <div class="row">
-
-                <div class="col-md-12">
-                    <div class="form-group">
-                    <label>Biologis (kondisi fisik, catatan kesehatan, pengobatan)</label>
-                    <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                    <label>Psikologis</label>
-                    <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                    <label>Sosial & Spiritual</label>
-                    <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                    <label>Catatan Lainnya</label>
-                    <textarea name="" id="" cols="30" rows="2" class="form-control" style="resize: none;"></textarea>
-                    </div>
-                </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="exampleInputFile">Asesmen tools</label>
-                            <div class="input-group">
-                            <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="exampleInputFile">
-                            <label class="custom-file-label" for="exampleInputFile">Choose file</label>
-                            </div>
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">Upload</button>
-                            </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label for="exampleInputFile">Pic 1</label>
-                            <div class="input-group">
-                            <input type="text" class="form-control" readonly value="oojid.png" onclick="alert('oojid.png')" style="cursor: pointer">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                            </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label for="exampleInputFile">Pic 2</label>
-                            <div class="input-group">
-                            <input type="text" class="form-control" readonly value="oojid.png" onclick="alert('oojid.png')" style="cursor: pointer">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                            </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label for="exampleInputFile">Pic 3</label>
-                            <div class="input-group">
-                            <input type="text" class="form-control" readonly value="oojid.png" onclick="alert('oojid.png')" style="cursor: pointer">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                            </div>
-                            </div>
-                        </div>
-                    </div>
-                
-                <button type="button" class="btn btn-block btn-primary">Simpan</button>
-                </div>
-            </div>
     </div>
     
     <div class="tab-pane {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan" role="tabpanel" aria-labelledby="kasus-layanan-tab">
         <div class="post clearfix" style="margin: 0px">
-            @if($status['jumlah_layanan']>0)
+            @if($detail['jumlah_layanan']>0)
             <h4>Progres Layanan</h4>
             <div class="progress" style="height: 25px;">
                 @php
-                    $progres_layanan = number_format(($status['jumlah_layanan_selesai'] / $status['jumlah_layanan']) * 100, 2);
+                    $progres_layanan = number_format(($detail['jumlah_layanan_selesai'] / $detail['jumlah_layanan']) * 100, 2);
                 @endphp
                 <div class="progress-bar bg-success" role="progressbar" style="width: {{ $progres_layanan }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px">{{ $progres_layanan }}%</span></div>
             </div>
@@ -919,15 +801,17 @@
             </div>
         </div>
         <div class="tab-pane {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas" role="tabpanel" aria-labelledby="kasus-petugas-tab">
+            @if(!($detail['kelengkapan_petugas']))
             <div class="row">
                 <div class="col-md-12">
                     <div class="alert alert-danger">
                     <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
-                    Minimal harus ada 1 Supervisor, 1 Manager Kasus dan 1 Petugas Penerima Pengaduan.
+                    Minimal harus ada 1 Supervisor, 1 Manajer Kasus dan 1 Petugas Penerima Pengaduan.
                     </div>
                 </div>
             </div>
-            <div class="card-body p-0 {{ Request::get('tab') == 'kasus-petugas' ? 'hightlighting' : '' }}" style="overflow-x:scroll">
+            @endif
+            <div class="card-body p-0 {{ Request::get('tabel-petugas') == 1 ? 'hightlighting' : '' }}" style="overflow-x:scroll">
             <table class="table table-striped projects">
                 <thead>
                 <tr>
@@ -957,9 +841,16 @@
             </table>
             </div>
             <br>
+            @if ((Auth::user()->jabatan == 'Manajer Kasus') || (Auth::user()->jabatan == 'Penerima Pengaduan'))
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+                Input data asesmen terlebih dahulu sebelum menambahkan petugas.
+                </div>
+            </div>
             <form action="{{ route('petugas.store', $klien->uuid) }}" method="POST">
                 @csrf
-                <div class="row">
+                <div class="row {{ Request::get('tambah-petugas') == 1 ? 'hightlighting' : '' }}" style="padding : 15px">
                     <div class="col-md-9">
                         <select name="user_id" class="select2bs4" style="width: 100%;">
                             <option>Silahkan pilih petugas</option>
@@ -973,17 +864,20 @@
                     </div>
                 </div>
             </form>
+            @endif
         </div>
         <div class="tab-pane {{ Request::get('tab') == 'kasus-persetujuan' ? 'active' : '' }}" id="kasus-persetujuan" role="tabpanel" aria-labelledby="kasus-persetujuan-tab">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="alert alert-danger">
-                    <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
-                    Surat Persetujuan Pelayanan belum dibuat. Silahkan buat link Surat Persetujuan Pelayanan.
+            @if(!($detail['kelengkapan_spp']))
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger">
+                        <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+                        Surat Persetujuan Pelayanan belum dibuat. Silahkan buat link Surat Persetujuan Pelayanan.
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-body p-0 {{ Request::get('tab') == 'kasus-persetujuan' ? 'hightlighting' : '' }}" style="overflow-x:scroll">
+            @endif
+            <div class="card-body p-0 {{ Request::get('tabel-persetujuan') == 1 ? 'hightlighting' : '' }}" style="overflow-x:scroll">
                 <table class="table table-striped projects">
                     <thead>
                     <tr>
@@ -1018,7 +912,7 @@
                 <br>
                 <form action="{{ route('persetujuan.create', $klien->uuid) }}" method="POST">
                     @csrf
-                    <div class="row">
+                    <div class="row {{ Request::get('tambah-persetujuan') == 1 ? 'hightlighting' : '' }}"  style="padding : 15px">
                         <div class="col-md-9">
                             <select name="persetujuan_template_uuid" class="select2bs4" style="width: 100%;">
                                 <option>Silahkan pilih surat persetujuan</option>
@@ -1034,37 +928,64 @@
                 </form>
         </div>
         <div class="tab-pane {{ Request::get('tab') == 'settings' ? 'active' : '' }}" id="kasus-settings" role="tabpanel" aria-labelledby="kasus-settings-tab">
-            <div class="row">
-                <div class="col-md-12 {{ Request::get('hightlight') == 'inputsupervisor' ? 'hightlighting' : '' }}">
-                    <div class="form-group">
-                    <label>Supervisor</label>
-                    <select class="form-control select2" style="width: 100%;">
-                    <option selected="selected">Silahkan Pilih</option>
-                    <option>Satpel Jakarta Pusat</option>
-                    <option>Satpel Jakarta Utara & Kep. 1000</option>
-                    <option>Satpel Jakarta Barat</option>
-                    <option>Satpel Jakarta Selatan</option>
-                    <option>Satpel Jakarta Timur</option>
-                    </select>
-                    </div>
-                </div>
+        1. Identifikasi (Penerimaan Pengaduan, Tanda Tangan SPP, Persetujuan Supervisor) <br>
+        2. Asesmen <br>
+        3. Perencanaan Intervensi  <br>
+        4. Pelaksanaan Intervensi  <br>
+        5. Monitoring  <br>
+        6. Terminasi <br>
+            @if(Auth::user()->jabatan == 'Supervisor Kasus')
+            <div class="row {{ Request::get('persetujuan-supervisor') == 1 ? 'hightlighting' : '' }}">
                 <div class="col-md-12 {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'hightlighting' : '' }}">
-                    <div class="form-group">
-                    <label>Setujui Kasus?</label>
-                    <select class="form-control" style="width: 100%;" name="persetujuankasus" id="persetujuankasus">
-                    <option selected="selected">silahkan pilih</option>
-                    <option value="ya">Ya</option>
-                    <option value="tidak">Tidak</option>
-                    </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Catatan Supervisor Kasus</label>
-                        <textarea name="catatan_spv_kss" class="form-control" id=""></textarea>
+                    <label>Apakah anda ingin menyetujui kasus ini?</label>
+                </div>
+                @if(!($detail['kelengkapan_petugas']))
+                <div class="col-md-12">
+                    <div class="alert alert-danger">
+                    <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+                    Petugas Penerima Pengaduan belum melengkapi kelengkapan kasus. Minimal harus ada 1 Supervisor, 1 Manajer Kasus dan 1 Petugas Penerima Pengaduan.
                     </div>
                 </div>
-                <button type="button" class="btn btn-block btn-primary">Simpan</button>
+                @else
+                <div class="col-md-6">
+                    <form action="{{ route('kasus.approval', $klien->uuid) }}" method="POST">
+                    @csrf
+                    <input type="hidden" name='approval' value="1">
+                    <button type="submit" class="btn btn-block btn-success"><i class="fas fa-check"></i> Ya dan buat nomor regis klien</button>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <form action="{{ route('kasus.approval', $klien->uuid) }}" method="POST">
+                    @csrf
+                    <input type="hidden" name='approval' value="0">
+                    <button type="submit" class="btn btn-block btn-danger"><i class="fas fa-times"></i> Tidak dan kirim notif ke MK untuk terminasi</button>
+                    </form>
+                </div>
+                @endif
             </div>
+            @endif
+            @if(Auth::user()->jabatan == 'Manajer Kasus')
+            <div class="row {{ Request::get('kolom-terminasi') == 1 ? 'hightlighting' : '' }}">
+                <div class="col-md-12 {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'hightlighting' : '' }}">
+                    <form action="{{ route('kasus.approval', $klien->uuid) }}" method="POST">
+                    @csrf
+                    <input type="hidden" name='approval' value="0">
+                    <button type="submit" class="btn btn-block btn-danger"><i class="fas fa-times"></i> Terminasi Kasus</button>
+                    </form>
+                </div>
+            </div>
+            @endif
+            @if(Auth::user()->jabatan == 'Penerima Pengaduan')
+            <div class="row {{ Request::get('kolom-terminasi') == 1 ? 'hightlighting' : '' }}">
+                <div class="col-md-12 {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'hightlighting' : '' }}">
+                    <form action="{{ route('kasus.approval', $klien->uuid) }}" method="POST">
+                    @csrf
+                    <input type="hidden" name='approval' value="0">
+                    <button type="submit" class="btn btn-block btn-warning"><i class="fas fa-times"></i> Arsipkan</button>
+                    </form>
+                </div>
+            </div>
+            @endif
         </div>
         </div>
         </div>
@@ -1103,12 +1024,12 @@
             Data berhasil disimpan.
         </div>
         <div class="modal-body">
-        <input type="hidden" name="uuid" id="uuid">
+        <input type="hidden" name="uuid" id="uuid_riwayat">
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                 <label><span class="text-danger">*</span>Tanggal</label>
-                <input type="date" class="form-control" id="tanggal">
+                <input type="date" class="form-control required-field-riwayat" id="tanggal">
                 <div class="invalid-feedback" id="valid-tanggal_mulai">
                     Tanggal Kejadian wajib diisi.
                 </div>
@@ -1117,21 +1038,165 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label><span class="text-danger">*</span>Jam</label>
-                    <input type="time" class="form-control" id="jam">
+                    <input type="time" class="form-control required-field-riwayat" id="jam">
                     <div class="invalid-feedback" id="valid-jam_mulai">
-                    Jam Kejadian wajib diisi.
+                        Jam Kejadian wajib diisi.
                     </div>
                 </div>
             </div>
         </div>
         <div class="form-group">
             <label>Keterangan</label>
-            <textarea name="" class="form-control required-field" id="keterangan" cols="30" rows="5"></textarea>
+            <textarea name="" class="form-control required-field-riwayat" id="keterangan" cols="30" rows="5"></textarea>
         </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-success btn-block" id="submitRiwayatKejadian"><i class="fa fa-check"></i> Simpan</button>
             <button type="button" class="btn btn-danger btn-block" id="deleteRiwayatKejadian"><i class="fa fa-trash"></i> Hapus</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah Asesmen-->
+<div class="modal fade" id="tambahAsesmenModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+        <div id="overlay" class="overlay dark">
+            <div class="cv-spinner">
+            <span class="spinner"></span>
+            </div>
+        </div>
+        
+        <div class="modal-header">
+            <h5 class="modal-title" id="modelHeadingAsesmen">Asesmen</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message-asesmen">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
+            <span id="message-asesmen"></span>
+        </div>
+        <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message-asesmen">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-check"></i> Success!</h4>
+            Data berhasil disimpan.
+        </div>
+        <div class="modal-body">
+        <input type="hidden" name="uuid" id="uuid_asesmen">
+        <b>A. UPAYA PEMECAHAN MASALAH</b>
+        </br>
+        <div class="col-md-12">
+            <div class="form-group">
+            <label>Upaya yang pernah dilakukan : </label>
+                <textarea class="form-control required-field-asesmen" id="asesmen_upaya" aria-label="With textarea" style="resize: none;" ></textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+            <label>Faktor pendukung pemecahan masalah : </label>
+                <textarea class="form-control required-field-asesmen" id="asesmen_pendukung" aria-label="With textarea" style="resize: none;"></textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+            <label>Faktor penghambat pemecahan masalah : </label>
+                <textarea class="form-control required-field-asesmen" id="asesmen_hambatan" aria-label="With textarea" style="resize: none;"></textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+            <label>Harapan/Kebutuhan klien : </label>
+                <textarea class="form-control required-field-asesmen" id="asesmen_harapan" aria-label="With textarea" style="resize: none;"></textarea>
+            </div>
+        </div>
+        <div class="post clearfix"></div>
+        <b>B. BIOPSIKOSOSIAL</b>
+        </br>
+        <div class="col-md-12">
+            <div class="form-group">
+            <label>Biologis (kondisi fisik, catatan kesehatan, pengobatan)</label>
+            <textarea id="asesmen_fisik" cols="30" rows="2" class="form-control required-field-asesmen" style="resize: none;"></textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+            <label>Psikologis</label>
+            <textarea id="asesmen_psikologis" cols="30" rows="2" class="form-control required-field-asesmen" style="resize: none;"></textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+            <label>Sosial & Spiritual</label>
+            <textarea id="asesmen_sosial" cols="30" rows="2" class="form-control required-field-asesmen" style="resize: none;"></textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+            <label>Hukum</label>
+            <textarea id="asesmen_hukum" cols="30" rows="2" class="form-control required-field-asesmen" style="resize: none;"></textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+            <label>Catatan Lainnya</label>
+            <textarea id="asesmen_lainnya" cols="30" rows="2" class="form-control required-field-asesmen" style="resize: none;"></textarea>
+            </div>
+        </div>
+    {{-- <div class="col-md-6">
+            <div class="form-group">
+                <label for="exampleInputFile">Asesmen tools</label>
+                <div class="input-group">
+                <div class="custom-file">
+                <input type="file" class="custom-file-input" id="exampleInputFile">
+                <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                </div>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button">Upload</button>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="exampleInputFile">Pic 1</label>
+                <div class="input-group">
+                <input type="text" class="form-control" readonly value="oojid.png" onclick="alert('oojid.png')" style="cursor: pointer">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="exampleInputFile">Pic 2</label>
+                <div class="input-group">
+                <input type="text" class="form-control" readonly value="oojid.png" onclick="alert('oojid.png')" style="cursor: pointer">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="exampleInputFile">Pic 3</label>
+                <div class="input-group">
+                <input type="text" class="form-control" readonly value="oojid.png" onclick="alert('oojid.png')" style="cursor: pointer">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                </div>
+                </div>
+            </div>
+        </div> --}}
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-success btn-block" id="submitAsesmen"><i class="fa fa-check"></i> Simpan</button>
+            <button type="button" class="btn btn-danger btn-block" id="deleteAsesmen"><i class="fa fa-trash"></i> Hapus</button>
         </div>
         </div>
     </div>
@@ -1177,8 +1242,7 @@
     </div>
 </div>
 
-
- <!-- Modal -->
+ <!-- Modal Agenda Layanan-->
  <div class="modal fade" id="ajaxModel" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1209,7 +1273,7 @@
         <input type="hidden" name="uuid" id="uuid">
         <div class="form-group">
             <label><span class="text-danger">*</span>Judul kegiatan</label>
-            <input type="text" class="form-control required-field" id="judul_kegiatan">
+            <input type="text" class="form-control required-field-agenda" id="judul_kegiatan">
             <div class="invalid-feedback" id="valid-judul_kegiatan">
               Judul Kegiatan wajib diisi.
             </div>
@@ -1218,7 +1282,7 @@
           <div class="col-md-6">
               <div class="form-group">
                 <label><span class="text-danger">*</span>Tanggal</label>
-                <input type="date" class="form-control required-field" id="tanggal_mulai">
+                <input type="date" class="form-control required-field-agenda" id="tanggal_mulai">
                 <div class="invalid-feedback" id="valid-tanggal_mulai">
                   Tanggal Mulai wajib diisi.
                 </div>
@@ -1227,7 +1291,7 @@
           <div class="col-md-6">
               <div class="form-group">
                   <label><span class="text-danger">*</span>Jam mulai</label>
-                  <input type="time" class="form-control required-field" id="jam_mulai">
+                  <input type="time" class="form-control required-field-agenda" id="jam_mulai">
                   <div class="invalid-feedback" id="valid-jam_mulai">
                     Jam Mulai wajib diisi.
                   </div>
@@ -1349,6 +1413,7 @@
         getkotkab('pelapor');
         getkotkab('klien');
         hightlighting();
+        loadAsesmen();
 
         //Initialize Select2 Elements
         $('.select2').select2();
@@ -1548,7 +1613,7 @@
             $('#riwayatModal').modal('show');
             $('#deleteRiwayatKejadian').show();
 
-            $('#uuid').val(data.uuid);
+            $('#uuid_riwayat').val(data.uuid);
             $('#tanggal').val(data.tanggal);
             $('#jam').val(data.jam);
             $('#keterangan').val(data.keterangan);
@@ -1618,14 +1683,14 @@
     }; 
 
     $('#submitRiwayatKejadian').click(function() {
-        if(validateForm()){
+        if(validateForm('riwayat')){
             let token   = $("meta[name='csrf-token']").attr("content");
             $.ajax({
             url: `/riwayatkejadian/store/`,
             type: "POST",
             cache: false,
             data: {
-                uuid: $('#uuid').val(),
+                uuid: $('#uuid_riwayat').val(),
                 uuid_klien: '{{ $klien->uuid }}',
                 tanggal: $("#tanggal").val(),
                 jam: $("#jam").val(),
@@ -1671,36 +1736,126 @@
             $("#success-message").hide();
             $("#error-message").show();
         }
-    })
+    });
 
     $('#deleteRiwayatKejadian').click(function() {
-        if(validateForm()){
+        let token   = $("meta[name='csrf-token']").attr("content");
+        uuid = $('#uuid').val();
+        $.ajax({
+        url: `/riwayatkejadian/destroy/`+uuid,
+        type: "DELETE",
+        cache: false,
+        data: {
+            _token: token
+        },
+        success: function (response){
+            if (response.success != true) {
+                console.log(response);
+                $('#message').html(JSON.stringify(response));
+                $("#success-message").hide();
+                $("#error-message").show();
+            }else{
+                $('#riwayatModal').modal('hide');
+                $("#success-message").hide();
+                $("#error-message").hide();
+
+                $('#example2').DataTable().ajax.reload();
+
+                // hapus semua inputan
+                $('#tanggal').val('');
+                $('#jam').val('');
+                $('#keterangan').val('');
+            }
+        },
+        error: function (response){
+            setTimeout(function(){
+            $("#overlay").fadeOut(300);
+            },500);
+            console.log(response);
+
+            $('#message').html(JSON.stringify(response));
+            $("#success-message").hide();
+            $("#error-message").show();
+        }
+        }).done(function() { //loading submit form
+            setTimeout(function(){
+            $("#overlay").fadeOut(300);
+            },500);
+        });
+    });
+
+    function loadAsesmen() {
+        $('#deleteAsesmen').hide();
+        $.ajax({
+            url: `/asesmen/index?uuid={{ $klien->uuid }}`,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                $('#kolomAsesmen').html('');
+                
+                data = response.data;
+                //jika asesmen tidak tersedia maka munculkan warning
+                if (data.length > 0) {
+                    $('#warningAsesmen').hide();
+                } else {
+                    $('#warningAsesmen').show();
+                }
+                i=1;
+                data.forEach(e => {
+                    $('#kolomAsesmen').prepend('<div class=\"card collapsed-card target\"> <div class=\"card-header\" data-card-widget=\"collapse\" style=\"cursor: pointer;\"> <h3 class=\"card-title\"><b>Asesmen ke-'+i+' oleh '+e.petugas+' ('+e.jabatan+')</b></h3> <div class=\"card-tools\"> <button type=\"button\" class=\"btn btn-tool\"><i class=\"fa fa-chevron-down\"></i> </button> </div> </div> <div class=\"card-body\"> <b>A. UPAYA PEMECAHAN MASALAH</b> </br> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Upaya yang pernah dilakukan : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\" >'+e.upaya+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Faktor pendukung pemecahan masalah : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.pendukung+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Faktor penghambat pemecahan masalah : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.hambatan+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Harapan/Kebutuhan klien : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.harapan+'</textarea> </div> </div> <div class=\"post clearfix\"></div> <b>B. BIOPSIKOSOSIAL</b> </br> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Biologis (kondisi fisik, catatan kesehatan, pengobatan)</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.fisik+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Psikologis</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.psikologis+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Sosial & Spiritual</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.sosial+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Hukum</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.hukum+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Catatan Lainnya</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.lainnya+'</textarea> </div> </div> </div> </div>');
+                    i++;
+                });
+            },
+            error: function (response){
+                console.log(response);
+            }
+            });
+    }
+
+    $('#submitAsesmen').click(function() {
+        if(validateForm('asesmen')){
             let token   = $("meta[name='csrf-token']").attr("content");
-            uuid = $('#uuid').val();
             $.ajax({
-            url: `/riwayatkejadian/destroy/`+uuid,
-            type: "DELETE",
+            url: `/asesmen/store/`,
+            type: "POST",
             cache: false,
             data: {
+                uuid: $('#uuid_asesmen').val(),
+                uuid_klien: '{{ $klien->uuid }}',
+                upaya: $("#asesmen_upaya").val(),
+                pendukung: $("#asesmen_pendukung").val(),
+                hambatan: $("#asesmen_hambatan").val(),
+                harapan: $("#asesmen_harapan").val(),
+                fisik: $("#asesmen_fisik").val(),
+                sosial: $("#asesmen_sosial").val(),
+                psikologis: $("#asesmen_psikologis").val(),
+                hukum: $("#asesmen_hukum").val(),
+                lainnya: $("#asesmen_lainnya").val(),
                 _token: token
             },
             success: function (response){
                 if (response.success != true) {
-                    console.log(response);
-                    $('#message').html(JSON.stringify(response));
-                    $("#success-message").hide();
-                    $("#error-message").show();
+                    $('#message-asesmen').html(JSON.stringify(response));
+                    $("#success-message-asesmen").hide();
+                    $("#error-message-asesmen").show();
                 }else{
-                    $('#riwayatModal').modal('hide');
-                    $("#success-message").hide();
-                    $("#error-message").hide();
-
-                    $('#example2').DataTable().ajax.reload();
+                    $('#message-asesmen').html(response.message);
+                    $("#success-message-asesmen").show();
+                    $("#error-message-asesmen").hide();
+                    loadAsesmen();
 
                     // hapus semua inputan
-                    $('#tanggal').val('');
-                    $('#jam').val('');
-                    $('#keterangan').val('');
+                    $('#uuid_asesmen').val('');
+                    $("#asesmen_upaya").val('');
+                    $("#asesmen_pendukung").val('');
+                    $("#asesmen_hambatan").val('');
+                    $("#asesmen_harapan").val('');
+                    $("#asesmen_fisik").val('');
+                    $("#asesmen_sosial").val('');
+                    $("#asesmen_psikologis").val('');
+                    $("#asesmen_hukum").val('');
+                    $("#asesmen_lainnya").val('')
+                    $('#tambahAsesmenModal').scrollTop(0);
                 }
             },
             error: function (response){
@@ -1709,9 +1864,9 @@
                 },500);
                 console.log(response);
 
-                $('#message').html(JSON.stringify(response));
-                $("#success-message").hide();
-                $("#error-message").show();
+                $('#message-asesmen').html(JSON.stringify(response));
+                $("#success-message-asesmen").hide();
+                $("#error-message-asesmen").show();
             }
             }).done(function() { //loading submit form
                 setTimeout(function(){
@@ -1719,11 +1874,11 @@
                 },500);
             });
         }else{
-            $('#message').html('Mohon cek ulang data yang wajib diinput.');
-            $("#success-message").hide();
-            $("#error-message").show();
+            $('#message-asesmen').html('Mohon cek ulang data yang wajib diinput.');
+            $("#success-message-asesmen").hide();
+            $("#error-message-asesmen").show();
         }
-    })
+    });
 
     function hightlighting() {
         var inputValue = $('#perubahan').val();

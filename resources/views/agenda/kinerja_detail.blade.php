@@ -110,7 +110,7 @@
       <input type="hidden" name="uuid" id="uuid">
       <div class="form-group">
           <label><span class="text-danger">*</span>Judul kegiatan</label>
-          <input type="text" class="form-control required-field" id="judul_kegiatan">
+          <input type="text" class="form-control required-field-agenda" id="judul_kegiatan">
           <div class="invalid-feedback" id="valid-judul_kegiatan">
             Judul Kegiatan wajib diisi.
           </div>
@@ -119,7 +119,7 @@
         <div class="col-md-6">
             <div class="form-group">
               <label><span class="text-danger">*</span>Tanggal</label>
-              <input type="date" class="form-control required-field" id="tanggal_mulai">
+              <input type="date" class="form-control required-field-agenda" id="tanggal_mulai">
               <div class="invalid-feedback" id="valid-tanggal_mulai">
                 Tanggal Mulai wajib diisi.
               </div>
@@ -128,7 +128,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label><span class="text-danger">*</span>Jam mulai</label>
-                <input type="time" class="form-control required-field" id="jam_mulai">
+                <input type="time" class="form-control required-field-agenda" id="jam_mulai">
                 <div class="invalid-feedback" id="valid-jam_mulai">
                   Jam Mulai wajib diisi.
                 </div>
@@ -462,7 +462,7 @@ function display_ct() {
  }
 
 $('#submit').click(function() {
-  if(validateForm()){
+  if(validateForm('agenda')){
     let token   = $("meta[name='csrf-token']").attr("content");
     $.ajax({
       url: `/agenda/store/`,

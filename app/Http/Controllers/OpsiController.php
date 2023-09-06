@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Petugas;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OpsiController extends Controller
 {
@@ -821,7 +822,11 @@ class OpsiController extends Controller
 
     public function api_petugas()
     {
-        $data = User::get();
-        return $data;
+        $data = User::whereNull('deleted_at');
+        if (Auth::user()->jabatan == 'Penerima Pengaduan') {
+            $data->where('jabatan', 'Manajer Kasus');
+            $data->orWhere('jabatan', 'Supervisor Kasus');
+        }
+        return $data->get();
     }
 }

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Agenda;
+use App\Models\Asesmen;
 use App\Models\DifabelType;
 use App\Models\Dokumen;
 use App\Models\DokumenKeyword;
@@ -436,7 +437,7 @@ class DatabaseSeeder extends Seeder
                 "no_klien" => NULL,
                 "status" => 'Pelengkapan Data',
                 "nik" => NULL,
-                "nama" => 'Caca Marica Hey Hye',
+                "nama" => 'Caca Marica Hey Hey',
                 "tempat_lahir" => 'Bandung',
                 "tanggal_lahir" => '1993-01-03',
                 "provinsi_id" => 31,
@@ -846,14 +847,6 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 "klien_id" => 3,
-                "user_id" => 1,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()->subDays(5),
-                "deleted_at" => NULL
-            ],
-            [
-                "klien_id" => 4,
                 "user_id" => 1,
                 "created_by" => 1,
                 "created_at" => Carbon::now(),
@@ -1295,7 +1288,6 @@ class DatabaseSeeder extends Seeder
         ];
         TindakLanjut::insert($tindak_lanjut);
 
-
         //data tindak lanjut
         $riwayat_kejadian = [
             [
@@ -1356,6 +1348,25 @@ class DatabaseSeeder extends Seeder
             ]
         ];
         RiwayatKejadian::insert($riwayat_kejadian);
+
+        //data asesmen
+        $asesmen = [
+            [
+                "uuid" => '2a81d123-3a16-41f8-aee1-ca22a262fc62',
+                "klien_id" => 1,
+                "fisik" => 'lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet',
+                "sosial" => 'lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet',
+                "psikologis" => 'lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet',
+                "hukum" => 'lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet',
+                "lainnya" => 'lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet',
+                "upaya" => 'lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet',
+                "pendukung" => 'lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet',
+                "hambatan" => 'lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet',
+                "harapan" => 'lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet',
+                "created_by" => 1
+            ]
+        ];
+        Asesmen::insert($asesmen);
 
         //data template
         $template = [
@@ -1487,40 +1498,35 @@ class DatabaseSeeder extends Seeder
                 "uuid" => '8bf11224-1018-411d-97c0-342ab598c2cf',
                 "klien_id" => 2,
                 "receiver_id" => 1,
+                "kode" => 'T2',
                 "type_notif" => 'task',
                 "no_reg" => NULL,
                 "from" => 'System',
                 "message" => 'Kasus baru. Silahkan pilih Supervisor & Manajer Kasus',
                 "kasus" => 'Ziboy (5)',
-                "url" => 'http://127.0.0.1:8000/kasus/show/678905eb-66b9-4170-a632-f81eb8fc1a8b',
+                "url" => 'http://127.0.0.1:8000/kasus/show/35dbs9e8-551a-4a8f-91d1-e8ea392q5515?tab=kasus-petugas&tambah-petugas=1',
                 "read" => 0,
-                "created_by" => 1
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now(),
+                "deleted_at" => NULL
             ],
             [
                 "uuid" => '5f585c2c-852d-4823-995a-6f9b2b16f07d',
                 "klien_id" => 3,
                 "receiver_id" => 1,
+                "kode" => 'T2',
                 "type_notif" => 'task',
                 "no_reg" => NULL,
                 "from" => 'System',
                 "message" => 'Kasus baru. Silahkan pilih Supervisor & Manajer Kasus',
                 "kasus" => 'Caca Marica Hey Hey (27)',
-                "url" => 'http://127.0.0.1:8000/kasus/show/83d099c2-dbf2-4060-9aaf-5d6dd889a57f',
+                "url" => 'http://127.0.0.1:8000/kasus/show/35dbsbe8-556a-4a8f-91d1-e8ea392q5515?tab=kasus-petugas&tambah-petugas=1',
                 "read" => 0,
-                "created_by" => 1
-            ],
-            [
-                "uuid" => '70c89f97-b5d8-4c8b-bc1e-1f50d7de7f18',
-                "klien_id" => 4,
-                "receiver_id" => 1,
-                "type_notif" => 'task',
-                "no_reg" => NULL,
-                "from" => 'System',
-                "message" => 'Kasus baru. Silahkan pilih Supervisor & Manajer Kasus',
-                "kasus" => 'Anak Gembala (2)',
-                "url" => 'http://127.0.0.1:8000/kasus/show/a9fe65da-a0f9-4f82-a0c1-2968deba2252',
-                "read" => 0,
-                "created_by" => 1
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now(),
+                "deleted_at" => NULL
             ]
         ];
         Notifikasi::insert($notifikasi);

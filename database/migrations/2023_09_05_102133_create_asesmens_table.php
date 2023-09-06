@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNotifikasisTable extends Migration
+class CreateAsesmensTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,19 @@ class CreateNotifikasisTable extends Migration
      */
     public function up()
     {
-        Schema::create('notifikasi', function (Blueprint $table) {
+        Schema::create('asesmen', function (Blueprint $table) {
             $table->id();
             $table->string('uuid');
             $table->integer('klien_id')->nullable();
-            $table->integer('receiver_id');
-            $table->string('kode')->nullable();
-            $table->enum('type_notif',['task', 'notif'])->default('task');
-            $table->char('no_reg')->nullable();
-            $table->string('from')->nullable();
-            $table->text('message');
-            $table->string('kasus')->nullable();
-            $table->string('url')->nullable();
-            $table->boolean('read')->default(0);
+            $table->string('fisik')->nullable();
+            $table->string('sosial')->nullable();
+            $table->string('psikologis')->nullable();
+            $table->string('hukum')->nullable();
+            $table->string('lainnya')->nullable();
+            $table->string('upaya')->nullable();
+            $table->string('pendukung')->nullable();
+            $table->string('hambatan')->nullable();
+            $table->string('harapan')->nullable();
             $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();
@@ -39,6 +39,6 @@ class CreateNotifikasisTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('notifikasi');
+        Schema::dropIfExists('asesmen');
     }
 }

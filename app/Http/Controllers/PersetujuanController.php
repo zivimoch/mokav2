@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\LogActivityHelper;
+use App\Helpers\NotifHelper;
 use App\Models\Klien;
 use App\Models\PersetujuanIsi;
 use App\Models\PersetujuanItem;
@@ -57,6 +59,28 @@ class PersetujuanController extends Controller
                     'persetujuan_template_id' => $persetujuan_template->id, 
                     'created_by'   => Auth::user()->id
                 ]);
+            
+            // ===========================================================================================
+            //Proses read, push notif & log activity ////////////////////////////////////////////////////
+            $check_kelengkapan_spp = (new KasusController)->check_kelengkapan_spp($klien->id);
+            if ($check_kelengkapan_spp) {
+                // jika MK sudah mengenerate SPP maka tasknya (T6) selesai
+                NotifHelper::read_notif(
+                    Auth::user()->id, // receiver_id
+                    $klien->id, // klien_id
+                    'T6', // kode
+                    'task' // type_notif
+                );
+            }
+            //write log activity ////////////////////////////////////////////////////////////////////////
+            LogActivityHelper::push_log(
+                //message
+                Auth::user()->name.' membuat Surat Pernyataan Persetujuan', 
+                //klien_id
+                $klien->id 
+            );
+            /////////////////////////////////////////////////////////////////////////////////////////////
+
 
             //return response
             $response =  response()->json([
@@ -66,7 +90,7 @@ class PersetujuanController extends Controller
                 'data'    => $proses  
             ]);
             
-            return redirect()->route('kasus.show', ['uuid' => $uuid, 'tab' => 'kasus-persetujuan'])
+            return redirect()->route('kasus.show', ['uuid' => $uuid, 'tab' => 'kasus-persetujuan', 'tabel-persetujuan' => 1])
             ->with('success', true)
             ->with('response', $response);
         } catch (Exception $e){

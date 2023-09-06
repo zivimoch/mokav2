@@ -39,7 +39,7 @@ class TemplateController extends Controller
      */
     public function create()
     {
-        $jabatan =  app('App\Http\Controllers\OpsiController')->api_jabatan();
+        $jabatan =  (new OpsiController)->api_jabatan();
         $keyword = TemplateKeyword::select('keyword')->groupBy('keyword')->get();
 
         return view('template.create')

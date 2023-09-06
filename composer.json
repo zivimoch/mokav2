@@ -13,6 +13,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravolt/indonesia": "^0.34.0",
+        "nesbot/carbon": "^2.69",
         "ramsey/uuid": "^4.2",
         "yajra/laravel-datatables": "^1.5"
     },

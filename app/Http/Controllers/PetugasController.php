@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\LogActivityHelper;
+use App\Helpers\NotifHelper;
 use App\Models\Klien;
+use App\Models\PersetujuanIsi;
 use App\Models\Petugas;
+use App\Models\User;
 use Exception;
 use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PetugasController extends Controller
 {
@@ -39,6 +44,60 @@ class PetugasController extends Controller
                     $proses = false;
                 }
 
+            // ===========================================================================================
+            //Proses read, push notif & log activity ////////////////////////////////////////////////////
+            $check_kelengkapan_petugas = (new KasusController)->check_kelengkapan_petugas($klien->id);
+            if ($check_kelengkapan_petugas) {
+                // jika Petugas Penerima Pengaduan sudah mendaftarkan SPV & MK maka tasknya (T2) selesai
+                NotifHelper::read_notif(
+                    Auth::user()->id, // receiver_id
+                    $klien->id, // klien_id
+                    'T2', // kode
+                    'task' // type_notif
+                );
+            }
+            $receiver = User::where('id', $request->user_id)->first();
+            $check_kelengkapan_spp = (new KasusController)->check_kelengkapan_spp($klien->id);
+            if ($receiver->jabatan == 'Supervisor Kasus') {
+                // jika yang ditambahkan adalah Supervisor Kasus
+                $message = 'Kasus baru. Meminta persetujuan Supervisor';
+                $kode = 'T3';
+                $url =  url('/kasus/show/'.$klien->uuid.'?tab=settings&persetujuan-supervisor=1');
+            } else if ($receiver->jabatan == 'Manajer Kasus' && !($check_kelengkapan_spp)) {
+                // jika yang ditambahkan adalah MK & belum ada sorat persetujuan 
+                $message = 'Kasus baru. Silahkan buat Surat Persetujuan Pelayanan';
+                $kode = 'T6';
+                $url =  url('/kasus/show/'.$klien->uuid.'?tab=kasus-persetujuan&tambah-persetujuan=1');
+            }else{
+                // jika yang ditambahkan adalah Petugas lain atau MK yang SPP sudah ada maka
+                $message = Auth::user()->name.' menambahkan anda pada kasus. Silahkan lihat / riview kasus dan atau menambahkan informasi kasus dan atau membuat agenda layanan';
+                $kode = 'T11';
+                $url =  url('/kasus/show/'.$klien->uuid.'?tab=kasus&kasus-all=1&kode=T11&tipe=task');
+            }
+             
+             //push notifikasi ///////////////////////////////////////////////////////////////////////////
+             NotifHelper::push_notif(
+                $request->user_id , //receiver_id
+                $klien->id, //klien_id
+                $kode, //kode
+                'task', //type_notif
+                $klien->no_klien ? $klien->no_klien : '', //noregis
+                Auth::user()->name, //from
+                $message, //message
+                $klien->nama, //nama korban 
+                isset($klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
+                $url, //url
+                Auth::user()->id //created_by
+            );
+            //write log activity ////////////////////////////////////////////////////////////////////////
+            LogActivityHelper::push_log(
+                //message
+                Auth::user()->name.' menambahkan '.$receiver->name.' pada kasus', 
+                //klien_id
+                $klien->id 
+            );
+            /////////////////////////////////////////////////////////////////////////////////////////////
+
             //return response
             $response =  response()->json([
                 'success' => true,
@@ -47,7 +106,7 @@ class PetugasController extends Controller
                 'data'    => $proses  
             ]);
             
-            return redirect()->route('kasus.show', ['uuid' => $uuid, 'tab' => 'kasus-petugas'])
+            return redirect()->route('kasus.show', ['uuid' => $uuid, 'tab' => 'kasus-petugas', 'tabel-petugas' => 1])
             ->with('success', true)
             ->with('response', $response);
         } catch (Exception $e){

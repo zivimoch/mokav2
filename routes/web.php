@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\AgendaController;
-use App\Http\Controllers\AsesmenConntroller;
+use App\Http\Controllers\AsesmenController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\FormPenerimaPengaduan;
 use App\Http\Controllers\KasusController;
+use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PersetujuanController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\RiwayatKejadianController;
@@ -37,6 +38,7 @@ Route::middleware('auth')->group(function () {
     // kasus
     Route::get('kasus', [KasusController::class, 'index'])->name('kasus');
     Route::get('kasus/show/{uuid}', [KasusController::class, 'show'])->name('kasus.show');
+    Route::post('kasus/approval/{uuid}', [KasusController::class, 'approval'])->name('kasus.approval');
     // Route::view('kasus/detail/','/kasus/detail')->name('kasus.detail');
     // persetujuan
     Route::post('persetujuan/create/{uuid}', [PersetujuanController::class, 'create'])->name('persetujuan.create');
@@ -48,8 +50,12 @@ Route::middleware('auth')->group(function () {
     Route::post('riwayatkejadian/store/', [RiwayatKejadianController::class, 'store'])->name('riwayatkejadian.store');
     Route::get('riwayatkejadian/edit/{id}', [RiwayatKejadianController::class, 'edit'])->name('riwayatkejadian.edit');
     Route::delete('riwayatkejadian/destroy/{id}', [RiwayatKejadianController::class, 'destroy'])->name('riwayatkejadian.destroy');
-    
+    // asesmen
+    Route::get('asesmen/index/', [AsesmenController::class, 'index'])->name('asesmen');
+    Route::post('asesmen/store/', [AsesmenController::class, 'store'])->name('asesmen.store');
+    //notifikasi
     Route::view('notifikasi','/notifikasi')->name('notifikasi');
+    Route::get('/Notifikasi/pull_notif', [NotifikasiController::class, 'pull_notif'])->name('notifikasi.pull_notif');
     // dokumen
     Route::get('dokumen',[DokumenController::class, 'index'])->name('dokumen');
     Route::get('dokumen/add',[DokumenController::class, 'add'])->name('dokumen.add');
@@ -71,9 +77,6 @@ Route::middleware('auth')->group(function () {
     Route::get('kinerja', [AgendaController::class, 'kinerja'])->name('kinerja');
     Route::get('kinerja/detail', [AgendaController::class, 'kinerja_detail'])->name('kinerja.detail');
     Route::get('kinerja/ajax', [AgendaController::class, 'ajax'])->name('ajax');
-
-    Route::get('userdatatable', [DashboardController::class, 'userdatatable'])->name('userdatatable');
-    Route::get('dashboard-datatables', [DashboardController::class, 'datatable'])->name('dashboard.datatables');
 
     Route::view('monitoring','monitoring/index')->name('monitoring');
 });

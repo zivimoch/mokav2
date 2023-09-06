@@ -90,8 +90,8 @@
                   <img class="img-circle elevation-2" src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" alt="User Avatar">
                 </div>
                 <!-- /.widget-user-image -->
-                <h3 class="widget-user-username">Addzifi Mochamad Gumelear</h3>
-                <h5 class="widget-user-desc">Lead Developer</h5>
+                <h3 class="widget-user-username">{{ Auth::user()->name }}</h3>
+                <h5 class="widget-user-desc">{{ Auth::user()->jabatan }}</h5>
               </div>
               <div class="card-footer p-0">
                 <ul class="nav flex-column">
@@ -179,7 +179,7 @@
       <input type="hidden" name="uuid" id="uuid">
       <div class="form-group">
           <label><span class="text-danger">*</span>Judul kegiatan</label>
-          <input type="text" class="form-control required-field" id="judul_kegiatan">
+          <input type="text" class="form-control required-field-agenda" id="judul_kegiatan">
           <div class="invalid-feedback" id="valid-judul_kegiatan">
             Judul Kegiatan wajib diisi.
           </div>
@@ -188,7 +188,7 @@
         <div class="col-md-6">
             <div class="form-group">
               <label><span class="text-danger">*</span>Tanggal</label>
-              <input type="date" class="form-control required-field" id="tanggal_mulai">
+              <input type="date" class="form-control required-field-agenda" id="tanggal_mulai">
               <div class="invalid-feedback" id="valid-tanggal_mulai">
                 Tanggal Mulai wajib diisi.
               </div>
@@ -197,7 +197,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label><span class="text-danger">*</span>Jam mulai</label>
-                <input type="time" class="form-control required-field" id="jam_mulai">
+                <input type="time" class="form-control required-field-agenda" id="jam_mulai">
                 <div class="invalid-feedback" id="valid-jam_mulai">
                   Jam Mulai wajib diisi.
                 </div>
@@ -372,7 +372,7 @@
       });
 
       $('#submit').click(function() {
-        if(validateForm()){
+        if(validateForm('agenda')){
           let token   = $("meta[name='csrf-token']").attr("content");
           $.ajax({
             url: `/agenda/store/`,
