@@ -254,6 +254,7 @@ class FormPenerimaPengaduan extends Controller
                         $request->nama_klien[$key], //nama korban 
                         isset($request->tanggal_lahir_klien[$key]) ? $request->tanggal_lahir_klien[$key] : NULL, //tanggal lahir korban
                         url('/kasus/show/'.$klien->uuid.'?tab=kasus-petugas&tambah-petugas=1'), //url
+                        1, //kirim ke diri sendiri 0 / 1
                         Auth::user()->id //created_by
                     );
                     //write log activity ////////////////////////////////////////////////////////////////////////

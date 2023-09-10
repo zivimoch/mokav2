@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\LogActivityHelper;
+use App\Helpers\NotifHelper;
 use App\Models\Asesmen;
 use App\Models\Klien;
 use Illuminate\Http\Request;
@@ -85,6 +87,24 @@ class AsesmenController extends Controller
                     'harapan'   => $request->harapan, 
                     'created_by'   => Auth::user()->id
                 ]);
+
+            // ===========================================================================================
+            //Proses read, push notif & log activity ////////////////////////////////////////////////////
+            // jika petugas sudah membuat asesmen maka tasknya (T6) selesai
+            NotifHelper::read_notif(
+                0, // receiver_id
+                $klien->id, // klien_id
+                'T6', // kode
+                'task' // type_notif
+            );
+            //write log activity ////////////////////////////////////////////////////////////////////////
+            LogActivityHelper::push_log(
+                //message
+                Auth::user()->name.' menambahkan {{user_name}} pada kasus', 
+                //klien_id
+                $klien->id 
+            );
+            /////////////////////////////////////////////////////////////////////////////////////////////
 
             //return response
             return response()->json([

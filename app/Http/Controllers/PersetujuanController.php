@@ -11,6 +11,7 @@ use App\Models\PersetujuanTemplate;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Validator;
 
 class PersetujuanController extends Controller
@@ -62,16 +63,7 @@ class PersetujuanController extends Controller
             
             // ===========================================================================================
             //Proses read, push notif & log activity ////////////////////////////////////////////////////
-            $check_kelengkapan_spp = (new KasusController)->check_kelengkapan_spp($klien->id);
-            if ($check_kelengkapan_spp) {
-                // jika MK sudah mengenerate SPP maka tasknya (T6) selesai
-                NotifHelper::read_notif(
-                    Auth::user()->id, // receiver_id
-                    $klien->id, // klien_id
-                    'T6', // kode
-                    'task' // type_notif
-                );
-            }
+            
             //write log activity ////////////////////////////////////////////////////////////////////////
             LogActivityHelper::push_log(
                 //message
@@ -148,6 +140,18 @@ class PersetujuanController extends Controller
             ];
     
             $proses = PersetujuanIsi::updateOrCreate(['uuid' => $request->uuid], $data);
+            
+            // ===========================================================================================
+            //Proses read, push notif & log activity ////////////////////////////////////////////////////
+            
+            //write log activity ////////////////////////////////////////////////////////////////////////
+            LogActivityHelper::push_log(
+                //message
+                'Klien mengisi Surat Pernyataan Persetujuan', 
+                //klien_id
+                $klien->id 
+            );
+            /////////////////////////////////////////////////////////////////////////////////////////////
 
             //return response
             $response =  response()->json([
@@ -174,6 +178,7 @@ class PersetujuanController extends Controller
                             ->get();
 
         $klien = Klien::where('id', $persetujuan_isi->klien_id)->first();
+
         return view('persetujuan.donepelayanan')
                 ->with('persetujuan_isi', $persetujuan_isi)
                 ->with('persetujuan_item', $persetujuan_item)

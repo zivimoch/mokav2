@@ -48,9 +48,9 @@ class PetugasController extends Controller
             //Proses read, push notif & log activity ////////////////////////////////////////////////////
             $check_kelengkapan_petugas = (new KasusController)->check_kelengkapan_petugas($klien->id);
             if ($check_kelengkapan_petugas) {
-                // jika Petugas Penerima Pengaduan sudah mendaftarkan SPV & MK maka tasknya (T2) selesai
+                // jika Petugas Penerima Pengaduan / MK sudah mendaftarkan SPV & MK maka tasknya (T2) selesai
                 NotifHelper::read_notif(
-                    Auth::user()->id, // receiver_id
+                    0, // receiver_id
                     $klien->id, // klien_id
                     'T2', // kode
                     'task' // type_notif
@@ -58,25 +58,26 @@ class PetugasController extends Controller
             }
             $receiver = User::where('id', $request->user_id)->first();
             $check_kelengkapan_spp = (new KasusController)->check_kelengkapan_spp($klien->id);
+            $check_kelengkapan_asesmen = (new KasusController)->check_kelengkapan_asesmen($klien->id);
             if ($receiver->jabatan == 'Supervisor Kasus') {
                 // jika yang ditambahkan adalah Supervisor Kasus
                 $message = 'Kasus baru. Meminta persetujuan Supervisor';
                 $kode = 'T3';
                 $url =  url('/kasus/show/'.$klien->uuid.'?tab=settings&persetujuan-supervisor=1');
-            } else if ($receiver->jabatan == 'Manajer Kasus' && !($check_kelengkapan_spp)) {
-                // jika yang ditambahkan adalah MK & belum ada sorat persetujuan 
-                $message = 'Kasus baru. Silahkan buat Surat Persetujuan Pelayanan';
+            } else if ($receiver->jabatan == 'Manajer Kasus' && !($check_kelengkapan_asesmen)) {
+                // jika yang ditambahkan adalah MK dan asesmen belum ada
+                $message = 'Kasus baru. Silahkan periksa kelengkapan kasus (Data Kasus, SPP, dll) & Segera inputkan asesmen BPSS';
                 $kode = 'T6';
-                $url =  url('/kasus/show/'.$klien->uuid.'?tab=kasus-persetujuan&tambah-persetujuan=1');
+                $url =  url('/kasus/show/'.$klien->uuid.'?tab=kasus-asesmen&tambah-asesmen=1&kolom-kelengkapan=1');
             }else{
                 // jika yang ditambahkan adalah Petugas lain atau MK yang SPP sudah ada maka
                 $message = Auth::user()->name.' menambahkan anda pada kasus. Silahkan lihat / riview kasus dan atau menambahkan informasi kasus dan atau membuat agenda layanan';
-                $kode = 'T11';
-                $url =  url('/kasus/show/'.$klien->uuid.'?tab=kasus&kasus-all=1&kode=T11&tipe=task');
+                $kode = 'T8';
+                $url =  url('/kasus/show/'.$klien->uuid.'?tab=kasus&kasus-all=1&kode='.$kode.'&tipe=task');
             }
              
-             //push notifikasi ///////////////////////////////////////////////////////////////////////////
-             NotifHelper::push_notif(
+            //push notifikasi ///////////////////////////////////////////////////////////////////////////
+            NotifHelper::push_notif(
                 $request->user_id , //receiver_id
                 $klien->id, //klien_id
                 $kode, //kode
@@ -87,6 +88,7 @@ class PetugasController extends Controller
                 $klien->nama, //nama korban 
                 isset($klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
                 $url, //url
+                1, //kirim ke diri sendiri 0 / 1
                 Auth::user()->id //created_by
             );
             //write log activity ////////////////////////////////////////////////////////////////////////

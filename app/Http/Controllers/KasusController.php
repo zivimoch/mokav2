@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\LogActivityHelper;
 use App\Helpers\NotifHelper;
+use App\Models\Asesmen;
 use App\Models\Kasus;
 use App\Models\Klien;
 use App\Models\Pelapor;
@@ -150,6 +151,8 @@ class KasusController extends Controller
        $kelengkapan_petugas = $this->check_kelengkapan_petugas($klien->id);
        // 2. Apakah terdapat minimal 1 SPP
        $kelengkapan_spp = $this->check_kelengkapan_spp($klien->id);
+       // 3. Apakah terdapat minimal 1 asemen
+       $kelengkapan_asesmen = $this->check_kelengkapan_asesmen($klien->id);
 
        // ===========================================================================================
         //Proses read, push notif & log activity ////////////////////////////////////////////////////
@@ -157,13 +160,14 @@ class KasusController extends Controller
         NotifHelper::read_notif(
             Auth::user()->id, // receiver_id
             $klien->id, // klien_id
-            $request->kode, // kode
+            $request->kode, // kode ini request dari link 
             $request->tipe // type_notif
         );
         /////////////////////////////////////////////////////////////////////////////////////////////
 
        $detail['kelengkapan_petugas'] = $kelengkapan_petugas;
        $detail['kelengkapan_spp'] = $kelengkapan_spp;
+       $detail['kelengkapan_asesmen'] = $kelengkapan_asesmen;
        return view('kasus.show')
                 ->with('klien', $klien)
                 ->with('pelapor', $pelapor)
@@ -218,12 +222,12 @@ class KasusController extends Controller
                     $message_notif = Auth::user()->name.' menyetujui kasus. Nomor regis berhasil dibuat. Silahkan lihat catatan supervisor';
                     $message_log = Auth::user()->name.' menyetujui kasus. Nomor regis berhasil dibuat';
                     $kode = 'T4';
-                    $url =  url('/kasus/show/'.$klien->uuid.'?tab=kasus&catatan-kasus=1&kode=T4&tipe=task');
+                    $url = url('/kasus/show/'.$klien->uuid.'?tab=kasus&catatan-kasus=1&kode=T4&tipe=task');
                 }else{
                     $message_notif = Auth::user()->name.' tidak menyetujui kasus. Silahkan lakukan terminasi sepihak / kasus ditutup';
                     $message_log = Auth::user()->name.' {tidak menyetujui kasus. Proses terminasi';
                     $kode = 'T5';
-                    $url =  url('/kasus/show/'.$klien->uuid.'?tab=settings&kolom-terminasi=1');
+                    $url = url('/kasus/show/'.$klien->uuid.'?tab=settings&kolom-terminasi=1');
                 }
             // ===========================================================================================
             //Proses read, push notif & log activity ////////////////////////////////////////////////////
@@ -240,6 +244,8 @@ class KasusController extends Controller
                     ->leftJoin('users as b', 'a.user_id', 'b.id')
                     ->where('b.jabatan', 'Manajer Kasus')
                     ->where('a.klien_id', $klien->id)
+                    ->whereNull('a.deleted_at')
+                    ->whereNull('b.deleted_at')
                     ->pluck('b.id');
             foreach ($mk as $key => $value) {
                 NotifHelper::push_notif(
@@ -253,6 +259,7 @@ class KasusController extends Controller
                     $klien->nama, //nama korban 
                     isset($klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
                     $url, //url
+                    1, //kirim ke diri sendiri 0 / 1
                     Auth::user()->id //created_by
                 );
             }
@@ -294,6 +301,7 @@ class KasusController extends Controller
                         ->where('a.klien_id', $klien_id)
                         ->where('b.jabatan', 'Manajer Kasus')
                         ->whereNull('a.deleted_at')
+                        ->whereNull('b.deleted_at')
                         ->count();
         if (($supervisor > 0) && ($mk > 0)) {
             return true;
@@ -314,17 +322,14 @@ class KasusController extends Controller
         } else {
             return false;
         }
-        
     }
 
-    public function check_asesmen($klien_id)
+    public function check_kelengkapan_asesmen($klien_id)
     {
-        $persetujuan_template = PersetujuanTemplate::where('kategori', 'persetujuan pelayanan')->pluck('id');
-        $persetujuan_isi = PersetujuanIsi::whereIn('persetujuan_template_id', [$persetujuan_template])
-                                        ->where('klien_id', $klien_id)
-                                        ->whereNull('deleted_at')
-                                        ->count();
-        if ($persetujuan_isi > 0) {
+        $asesmen = Asesmen::where('klien_id', $klien_id)
+                            ->whereNull('deleted_at')
+                            ->count();
+        if ($asesmen > 0) {
             return true;
         } else {
             return false;

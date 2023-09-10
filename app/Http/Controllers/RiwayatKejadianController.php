@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\LogActivityHelper;
+use App\Helpers\NotifHelper;
 use App\Models\Klien;
 use App\Models\RiwayatKejadian;
 use Exception;
@@ -26,6 +28,7 @@ class RiwayatKejadianController extends Controller
                     ->where('a.klien_id', $klien->id)
                     ->orderBy('a.tanggal')
                     ->orderBy('a.jam')
+                    ->whereNull('a.deleted_at')
                     ->get(['a.*', 'b.name as petugas']);
         return DataTables::of($data)->make(true);
     }
@@ -57,6 +60,53 @@ class RiwayatKejadianController extends Controller
                     'keterangan'   => $request->keterangan,
                     'created_by'   => Auth::user()->id
                 ]);
+
+            // ===========================================================================================
+            //Proses read, push notif & log activity ////////////////////////////////////////////////////
+            //push notifikasi ///////////////////////////////////////////////////////////////////////////
+            // jika ada request uuid berarti edit jika tidak ada berarti tambah
+            if (isset($request->uuid)) {
+                $kode = 'N3';
+                $message_notif = Auth::user()->name.' telah merubah riwayat kejadian. Silahkan periksa riwayat kejadian';
+                $message_log = Auth::user()->name.' telah merubah riwayat kejadian';
+            } else {
+                $kode = 'N2';
+                $message_notif = Auth::user()->name.' telah menambahkan riwayat kejadian. Silahkan periksa riwayat kejadian';
+                $message_log = Auth::user()->name.' telah menambahkan riwayat kejadian';
+            }
+            
+            //kirim notifikasi ke MK, MK bisa jadi lebih dari 1
+            $mk = DB::table('petugas as a')
+                    ->leftJoin('users as b', 'a.user_id', 'b.id')
+                    ->where('b.jabatan', 'Manajer Kasus')
+                    ->where('a.klien_id', $klien->id)
+                    ->whereNull('a.deleted_at')
+                    ->whereNull('b.deleted_at')
+                    ->pluck('b.id');
+            foreach ($mk as $key => $value) {
+                NotifHelper::push_notif(
+                    $value , //receiver_id
+                    $klien->id, //klien_id
+                    $kode, //kode
+                    'notif', //type_notif
+                    $klien->no_klien ? $klien->no_klien : '', //noregis
+                    Auth::user()->name, //from
+                    $message_notif, //message
+                    $klien->nama, //nama korban 
+                    isset($klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
+                    url('/kasus/show/'.$klien->uuid.'?tab=kasus-asesmen&row-riwayat='.$proses->uuid.'&kode='.$kode.'&tipe=notif'), //url
+                    0, //kirim ke diri sendiri 0 / 1
+                    Auth::user()->id //created_by
+                );
+            }
+            //write log activity ////////////////////////////////////////////////////////////////////////
+            LogActivityHelper::push_log(
+                //message
+                $message_log,
+                //klien_id
+                $klien->id 
+            );
+            /////////////////////////////////////////////////////////////////////////////////////////////
 
             //return response
             return response()->json([
@@ -119,13 +169,51 @@ class RiwayatKejadianController extends Controller
     public function destroy($uuid)
     {
         try {
-            $proses = DB::table('riwayat_kejadian as a')
-                        ->where('a.uuid', $uuid)
-                        ->delete();
+            // ===========================================================================================
+            //Proses read, push notif & log activity ////////////////////////////////////////////////////
+            //push notifikasi ///////////////////////////////////////////////////////////////////////////
+            $riwayat = RiwayatKejadian::where('uuid', $uuid)->first();
+            $klien = Klien::where('id', $riwayat->klien_id)->first();
+            //kirim notifikasi ke MK, MK bisa jadi lebih dari 1
+            $mk = DB::table('petugas as a')
+                    ->leftJoin('users as b', 'a.user_id', 'b.id')
+                    ->where('b.jabatan', 'Manajer Kasus')
+                    ->where('a.klien_id', $klien->id)
+                    ->whereNull('a.deleted_at')
+                    ->whereNull('b.deleted_at')
+                    ->pluck('b.id');
+            foreach ($mk as $key => $value) {
+                NotifHelper::push_notif(
+                    $value , //receiver_id
+                    $klien->id, //klien_id
+                    'N4', //kode
+                    'notif', //type_notif
+                    $klien->no_klien ? $klien->no_klien : '', //noregis
+                    Auth::user()->name, //from
+                    Auth::user()->name.' telah menghapus riwayat kejadian. Silahkan periksa riwayat kejadian', //message
+                    $klien->nama, //nama korban 
+                    isset($klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
+                    url('/kasus/show/'.$klien->uuid.'?tab=kasus-asesmen&kode=N4&tipe=notif'), //url
+                    0, //kirim ke diri sendiri 0 / 1
+                    Auth::user()->id //created_by
+                );
+            }
+            //write log activity ////////////////////////////////////////////////////////////////////////
+            LogActivityHelper::push_log(
+                //message
+                Auth::user()->name.' telah menghapus riwayat kejadian',
+                //klien_id
+                $klien->id 
+            );
+            /////////////////////////////////////////////////////////////////////////////////////////////
+
+            $proses = RiwayatKejadian::where('uuid', $uuid)
+                                        ->delete();
 
             if (!$proses) {
                 throw new Exception($proses);
             }
+            
             //return response
             return response()->json([
                 'success' => true,

@@ -85,17 +85,68 @@
 <p class="text-center">{{ $klien->no_klien }}</p>
 <ul class="list-group list-group-unbordered mb-3">
 <h5><span class="float-right badge bg-danger btn-block">Pelengkapan Data</span></h5>
-<li class="list-group-item">
-<b>Layanan</b> <a class="float-right">5</a>
-</li>
-<li class="list-group-item">
-<b>Intervensi</b> <a class="float-right">10</a>
-</li>
-<li class="list-group-item">
-<b>Petugas</b> <a class="float-right">6</a>
-</li>
 </ul>
 </div>
+<div class="card {{ Request::get('kolom-kelengkapan') == 1 ? 'hightlighting' : '' }}" style="margin-top:-30px; margin-bottom:0px">
+    <div class="card-header" data-card-widget="collapse" style="cursor: pointer;">
+      <span class="card-title">
+        <b>Kelengkapan Kasus (6/6)</b>
+      </span>
+      <div class="card-tools">
+        <button type="button" class="btn btn-tool">
+          <i class="fa fa-chevron-down"></i>
+        </button>
+      </div>
+    </div>
+    <div class="card-body collapse {{ Request::get('kolom-kelengkapan') == 1 ? 'show' : '' }}">
+        <ol style="padding:15px; margin :-25px 0px -20px 0px">
+            <li>
+                Identifikasi <i class="fa fa-check"></i>
+                <ul style="margin-left: -25px">
+                    <li>
+                        Data Kasus (60%)
+                        <div class="progress progress-xs">
+                            <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        Persetujuan Supervisor <i class="far fa-check-circle"></i>
+                    </li>
+                    <li>
+                        Tanda Tangan SPP <i class="far fa-check-circle"></i>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                Asesmen <i class="fa fa-check"></i>
+            </li>
+            <li>
+                Perencanaan Layanan <i class="fa fa-check"></i>
+            </li>
+            <li>
+                @php
+                    if ($detail['jumlah_layanan']>0) {
+                        $progres_layanan = number_format(($detail['jumlah_layanan_selesai'] / $detail['jumlah_layanan']) * 100, 2);
+                    }else{
+                        $progres_layanan = 0;
+                    }
+                @endphp
+                Pelaksanaan Layanan ({{ $progres_layanan }}%)
+                <div class="progress progress-xs">
+                    <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{ $progres_layanan }}%">
+                    </div>
+                </div>
+            </li>
+            <li>
+                Monitoring <i class="fa fa-check"></i>
+            </li>
+            <li>
+                Terminasi <i class="fa fa-check"></i>
+            </li>
+        </ol>
+    </div>
+  </div>
 </div>
 
 <div class="card card-warning">
@@ -192,7 +243,7 @@
         <a class="nav-link {{ Request::get('tab') == 'kasus' || Request::get('tab') == '' ? 'active' : '' }}" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">Kasus</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ Request::get('tab') == 'kasus-Asesmen' ? 'active' : '' }}" id="kasus-Asesmen-tab" data-toggle="pill" href="#kasus-Asesmen" role="tab" aria-controls="kasus-Asesmen" aria-selected="false">Asesmen</a>
+            <a class="nav-link {{ Request::get('tab') == 'kasus-asesmen' ? 'active' : '' }}" id="kasus-asesmen-tab" data-toggle="pill" href="#kasus-asesmen" role="tab" aria-controls="kasus-asesmen" aria-selected="false">Asesmen <i class="fas fa-exclamation-circle warningAsesmen" style="color: red; font-size:20px"></i></a>
         </li>
         <li class="nav-item">
         <a class="nav-link {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan-tab" data-toggle="pill" href="#kasus-layanan" role="tab" aria-controls="kasus-layanan" aria-selected="false">Layanan</a>
@@ -645,13 +696,14 @@
         <br>
         <button type="button" class="btn btn-block btn-primary">Print</button>
         </div>
-        <div class="tab-pane {{ Request::get('tab') == 'kasus-Asesmen' ? 'active' : '' }}" id="kasus-Asesmen" role="tabpanel" aria-labelledby="kasus-Asesmen-tab">
+        <div class="tab-pane {{ Request::get('tab') == 'kasus-asesmen' ? 'active' : '' }}" id="kasus-asesmen" role="tabpanel" aria-labelledby="kasus-asesmen-tab">
             
             <div class="post clearfix" style="margin: 0px">
             <b>RIWAYAT KEJADIAN</b>
             </br>
             </br>
             <div style="overflow-x: scroll">
+            <input type="hidden" id="uuid_riwayat_hightlight" value="{{ Request::get('row-riwayat') }}">
             <table id="example2" class="table table-sm table-bordered  table-hover" style="cursor:pointer; color:black">
                 <thead>
                 <tr>
@@ -663,33 +715,34 @@
             </table>
             </div>
             <br>
-            <div class="row" id="warningAsesmen">
-                <div class="col-md-12">
-                    <div class="alert alert-danger">
-                    <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
-                    Segera inputkan data asesmen pada MOKA.
-                    </div>
+            @if(!($detail['kelengkapan_spp']))
+            <div class="col-md-12 warningAsesmen">
+                <div class="alert alert-danger">
+                <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+                Silahkan buat surat persetujuan perjanjian terlebih dahulu untuk menambahkan asesmen.
+                </div>
+            </div>
+            @else
+            <div class="col-md-12 warningAsesmen">
+                <div class="alert alert-danger">
+                <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+                Segera inputkan data asesmen pada MOKA.
                 </div>
             </div>
             <div id="kolomAsesmen"></div>
-            <button type="submit" class="btn btn-block btn-default" data-toggle="modal" data-target="#tambahAsesmenModal"><i class="fas fa-plus"></i> Tambah Asesmen</button>
-            
+            <button type="submit" class="btn btn-block btn-default {{ Request::get('tambah-asesmen') == 1 ? 'hightlighting' : '' }}" data-toggle="modal" data-target="#tambahAsesmenModal"><i class="fas fa-plus"></i> Tambah Asesmen</button>
+            @endif
         </div>
 
     </div>
     
     <div class="tab-pane {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan" role="tabpanel" aria-labelledby="kasus-layanan-tab">
         <div class="post clearfix" style="margin: 0px">
-            @if($detail['jumlah_layanan']>0)
-            <h4>Progres Layanan</h4>
-            <div class="progress" style="height: 25px;">
-                @php
-                    $progres_layanan = number_format(($detail['jumlah_layanan_selesai'] / $detail['jumlah_layanan']) * 100, 2);
-                @endphp
-                <div class="progress-bar bg-success" role="progressbar" style="width: {{ $progres_layanan }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px">{{ $progres_layanan }}%</span></div>
-            </div>
-            <br>
-            @endif
+        <h4>Progres Layanan</h4>
+        <div class="progress" style="height: 25px;">
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{ $progres_layanan }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px">{{ $progres_layanan }}%</span></div>
+        </div>
+        <br>
         <div style="overflow-x: scroll">
             <table id="example1" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
                 <thead>
@@ -842,12 +895,12 @@
             </div>
             <br>
             @if ((Auth::user()->jabatan == 'Manajer Kasus') || (Auth::user()->jabatan == 'Penerima Pengaduan'))
-            <div class="col-md-12">
+            {{-- <div class="col-md-12">
                 <div class="alert alert-danger">
                 <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
                 Input data asesmen terlebih dahulu sebelum menambahkan petugas.
                 </div>
-            </div>
+            </div> --}}
             <form action="{{ route('petugas.store', $klien->uuid) }}" method="POST">
                 @csrf
                 <div class="row {{ Request::get('tambah-petugas') == 1 ? 'hightlighting' : '' }}" style="padding : 15px">
@@ -886,7 +939,7 @@
                     </thead>
                     <tbody>
                         @foreach ($persetujuan as $item)
-                            <tr>
+                            <tr class="{{ Request::get('row-persetujuan') == $item->uuid ? 'hightlighting' : '' }}">
                                 <td>
                                     <a href="#" onclick="showPersetujuan('{{ $item->uuid }}')"><i class="nav-icon fas fa-file-alt"></i> {{ $item->judul }}</a>
                                 </td>
@@ -1563,6 +1616,10 @@
       "ajax": "/riwayatkejadian/index?uuid={{ $klien->uuid }}",
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
+          riwayatHightlight = $('#uuid_riwayat_hightlight').val();
+          if (data.uuid == riwayatHightlight) {
+            $(row).attr('class', 'hightlighting');
+          }
       },
       "columns": [
         {
@@ -1579,7 +1636,7 @@
             }
         }
       ],
-      "pageLength": 5,
+      "pageLength": 10,
       "lengthMenu": [
           [10, 25, 50, 100, -1],
           ['10 rows', '25 rows', '50 rows', '100 rows','All'],
@@ -1597,6 +1654,8 @@
                     $('#modelHeading').html("Tambah Riwayat Kejadian");
                     $('#riwayatModal').modal('show'); 
                     $("#overlay").hide();
+                    //reset uuid riwayat
+                    $('#uuid_riwayat').val('');
                   }
               }]
       }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
@@ -1714,6 +1773,9 @@
                     $('#tanggal').val('');
                     $('#jam').val('');
                     $('#keterangan').val('');
+                    // untuk hightlight row yang baru
+                    data = response.data;
+                    $('#uuid_riwayat_hightlight').val(data.uuid);
                 }
             },
             error: function (response){
@@ -1740,7 +1802,7 @@
 
     $('#deleteRiwayatKejadian').click(function() {
         let token   = $("meta[name='csrf-token']").attr("content");
-        uuid = $('#uuid').val();
+        uuid = $('#uuid_riwayat').val();
         $.ajax({
         url: `/riwayatkejadian/destroy/`+uuid,
         type: "DELETE",
@@ -1796,9 +1858,9 @@
                 data = response.data;
                 //jika asesmen tidak tersedia maka munculkan warning
                 if (data.length > 0) {
-                    $('#warningAsesmen').hide();
+                    $('.warningAsesmen').hide();
                 } else {
-                    $('#warningAsesmen').show();
+                    $('.warningAsesmen').show();
                 }
                 i=1;
                 data.forEach(e => {
@@ -1856,6 +1918,7 @@
                     $("#asesmen_hukum").val('');
                     $("#asesmen_lainnya").val('')
                     $('#tambahAsesmenModal').scrollTop(0);
+                    loadNotif(0);
                 }
             },
             error: function (response){
@@ -1903,6 +1966,17 @@
 
     function showPersetujuan(uuid){
         $('#sppModal').modal('show');
+        //untuk update notif task untuk melihat SPP
+        //nanti diupdate lagi saja biar shownya serverside
+        $.ajax({
+          url:'{{ route("persetujuan.done",'') }}/'+uuid,
+          type:'GET',
+          dataType: 'json',
+          success: function( response ) {
+            loadNotif(0);
+            //tampilkan surat perjanjian serverside
+            }
+        });
     }
 
     function showModal(tanggal_mulai, agenda_id) {

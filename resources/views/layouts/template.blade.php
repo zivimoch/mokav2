@@ -164,7 +164,7 @@
               }else{
                 no_reg = '';
               }
-              $('#notif_list').prepend('<a href=\"'+e.url+'\" class=\"list-group-item list-group-item-action flex-column align-items-start\"> <div class=\"d-flex w-100 justify-content-between\"> <h6 class=\"mb-1\">'+e.from+'</h6> <small>'+e.formattedDate+' lalu</small> </div> <p class=\"mb-1\">'+e.message+'</p> <small> '+kasus+' '+no_reg+' </small> </a>')
+              $('#notif_list').prepend('<a href=\"'+e.url+'\" class=\"list-group-item list-group-item-action flex-column align-items-start\"> <div class=\"d-flex w-100 justify-content-between\"> <h6 class=\"mb-1\"><b>'+e.from+'</b></h6> <small>'+e.formattedDate+' lalu</small> </div> <p class=\"mb-1\">'+e.message+'</p> <small> '+kasus+' '+no_reg+' </small> </a>')
             });
         }
     });
