@@ -3,6 +3,8 @@
         overflow-y:auto;
     }
 </style>
+<style id="styleremove"></style>
+
 <!-- Modal Agenda-->
 <div class="modal fade" id="ajaxModel" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -75,7 +77,6 @@
           <select class="select2" data-placeholder="Pilih nama" style="width: 100%;" id="klien_id_select" onchange="load_select2_petugas()"></select>
         </div>
         <div class="form-group">
-          <div id="styleremove"></div>
           <label>Tag<span class="text-danger">*</span></label>
           <select multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id_select"></select>
           <div class="invalid-feedback" id="valid-user_id_select">
@@ -135,7 +136,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-success btn-block" id="submit"><i class="fa fa-check"></i> Simpan</button>
+          <button type="button" class="btn btn-success btn-block" id="submitAgenda"><i class="fa fa-check"></i> Simpan</button>
         </div>
       </div>
     </div>
@@ -164,7 +165,7 @@
          }
      });
   
-        $('#submit').click(function() {
+        $('#submitAgenda').click(function() {
           console.log($("#user_id_select").val());
           if(validateForm('agenda')){
             let token   = $("meta[name='csrf-token']").attr("content");
@@ -195,13 +196,20 @@
                   $('#message').html(response.message);
                   $("#success-message").show();
                   $("#error-message").hide();
-                  //fullcalendar
+                  //fullcalendar dashboard
                   if($("#calendar").length > 0) {
                     calendar.fullCalendar('refetchEvents');
                     calendar.fullCalendar('unselect');
                     today = new Date();
                     today = today.toISOString().split('T')[0];
                     loadAgenda(today,2);
+                  }
+                  //datatable kinerja
+                  if($("#tabelAgenda").length > 0) {
+                    $('#tabelAgenda').DataTable().ajax.reload();
+                    // hightlight tabel agenda
+                    data = response.data;
+                    $('#uuid_agenda_hightlight').val(data.uuid);
                   }
   
                   // hapus semua inputan
@@ -351,6 +359,7 @@
    function showModalAgenda(tanggal_mulai, agenda_id) {
   
     $('#user_id_select').empty();
+    $('#user_id_select').html('');
     $('#user_id_select').append('<option value="{{ Auth::user()->id }}" selected>{{ Auth::user()->name }}</option>');
     $('#dokumen_id_select').empty();
     $("#collapseOne").removeClass("show");
@@ -383,7 +392,7 @@
               $("#user_id_select").append('<option value="'+e.id+'" selected>'+e.name+'</option>');
               if (e.id != "{{ Auth::user()->id }}") {
                 // mencegah menghapus orang lain selain dirinya
-                $('#styleremove').append('<style>.select2-selection__choice[title="'+e.name+'"] .select2-selection__choice__remove {display: none;}</style>')
+                $('#styleremove').append('.select2-selection__choice[title="'+e.name+'"] .select2-selection__choice__remove {display: none;}.select2-results__option[aria-selected=true] {display: none;}');
               }
             });
           }
@@ -411,7 +420,6 @@
     $('#lokasi').val('');
     $('#jam_selesai').val('');
     $('#catatan').val('');
-    
     $('#tanggal_mulai').val(tanggal_mulai); 
     $('#modelHeading').html('Tambah Agenda'); 
     $('#ajaxModel').modal('show'); 

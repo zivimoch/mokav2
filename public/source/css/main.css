@@ -43,3 +43,36 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+.hightlighting {
+    background-color: none !important;
+    -webkit-animation-name: animate1; /* Chrome, Safari, Opera */
+    -webkit-animation-duration: 7s; /* Chrome, Safari, Opera */
+    animation-name: animate1;
+    animation-duration: 7s;
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes animate1 {
+    0% {
+        background-color: #ffff00;
+    }
+    50% {
+        background-color: #ffffd1;
+    }
+    100% {
+        background-color: #ffffff;
+    }
+}
+
+/* Standard syntax */
+@keyframes animate1 {
+    0% {
+        background-color: #ffff00;
+    }
+    50% {
+        background-color: #ffffd1;
+    }
+    100% {
+        background-color: #ffffff;
+    }
+}

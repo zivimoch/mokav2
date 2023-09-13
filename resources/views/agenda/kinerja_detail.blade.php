@@ -6,7 +6,6 @@
     cursor:not-allowed;
   }
 </style>
-<style id="style-select2"></style>
     {{-- DataTable --}}
      <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -35,7 +34,8 @@
             </div> --}}
             
             <div class="card-body" style="overflow-x: scroll">
-              <table id="example1" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
+            <input type="hidden" id="uuid_agenda_hightlight" value="{{ Request::get('row-riwayat') }}">
+              <table id="tabelAgenda" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
         
                 <thead>
                   <tr>
@@ -79,156 +79,6 @@
       </div><!-- /.container-fluid -->
     </section>
 
-<!-- Modal -->
-<div class="modal fade" id="ajaxModel" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-
-      <div id="overlay" class="overlay dark">
-        <div class="cv-spinner">
-          <span class="spinner"></span>
-        </div>
-      </div>
-      
-      <div class="modal-header">
-        <h5 class="modal-title" id="modelHeading"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
-        <span id="message"></span>
-      </div>
-      <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h4><i class="icon fa fa-check"></i> Success!</h4>
-        Data berhasil disimpan.
-      </div>
-      <div class="modal-body">
-      <input type="hidden" name="uuid" id="uuid">
-      <div class="form-group">
-          <label><span class="text-danger">*</span>Judul kegiatan</label>
-          <input type="text" class="form-control required-field-agenda" id="judul_kegiatan">
-          <div class="invalid-feedback" id="valid-judul_kegiatan">
-            Judul Kegiatan wajib diisi.
-          </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-              <label><span class="text-danger">*</span>Tanggal</label>
-              <input type="date" class="form-control required-field-agenda" id="tanggal_mulai">
-              <div class="invalid-feedback" id="valid-tanggal_mulai">
-                Tanggal Mulai wajib diisi.
-              </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label><span class="text-danger">*</span>Jam mulai</label>
-                <input type="time" class="form-control required-field-agenda" id="jam_mulai">
-                <div class="invalid-feedback" id="valid-jam_mulai">
-                  Jam Mulai wajib diisi.
-                </div>
-            </div>
-        </div>
-      </div>
-      <div class="form-group">
-          <label>Keterangan</label>
-          <textarea name="" class="form-control" id="keterangan" cols="30" rows="2"></textarea>
-      </div>
-      <div class="form-group">
-          <label>Penjadwalan Layanan</label>
-          <select name="" class="form-control" id="penjadwalan_layanan" onchange="penjadwalan_layanan()">
-            <option value="0">Tidak</option>
-            <option value="1">Ya</option>
-          </select>
-      </div>
-      <div class="form-group" id="klien_id">
-        <label>Pilih Klien</label>
-        <select class="form-control select2" style="width: 100%;" id="klien_id">
-          <option>silahkan pilih</option>
-          <option value="1">Tini</option>
-          <option value="2">Tina</option>
-          <option value="3">Toni</option>
-          <option value="4">Tono</option>
-          <option value="5">Tino</option>
-          <option value="6">Tanos</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label><span class="text-danger">*</span>Tag</label>
-        <select class="" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id">
-        <option value="{{ Auth::user()->id }}" selected>{{ Auth::user()->name }}</option>
-        <option value="22">Alexander Graham Bell</option>
-        <option value="23">Thomas Alfa Edison</option>
-        <option value="24">Tony Stark</option>
-        <option value="25">Rudy Tabootie</option>
-        </select>
-        <div class="invalid-feedback" id="valid-user_id">
-          Minimal tag 1 orang.
-        </div>
-      </div>
-        <div class="col-12" id="accordion" style="padding:0px !important">
-            <div class="card card-primary card-outline">
-            <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
-            <div class="card-header">
-            <h4 class="card-title w-100">
-            Tindak Lanjut
-            </h4>
-            </div>
-            </a>
-            <div id="collapseOne" class="collapse show" data-parent="#accordion">
-              <div class="alert alert-warning alert-dismissible">
-                <i class="icon fas fa-exclamation-triangle"></i> Data <b>Tindak Lanjut</b> hanya tercatat pada akun anda
-              </div>
-            <div class="card-body">
-              {{-- <div class="form-group">
-                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                <input type="checkbox" class="custom-control-input" id="customSwitch3">
-                <label class="custom-control-label" for="customSwitch3">Terlaksana</label>
-                </div>
-              </div> --}}
-                <div class="form-group">
-                  <label>Lokasi Kegiatan</label>
-                  <input type="text" class="form-control" id="lokasi">
-                </div>
-                <div class="form-group">
-                    <label>Jam selesai</label>
-                    <?php
-                      date_default_timezone_set("asia/jakarta");
-                      $jam_selesai = date("h:i");
-                    ?>
-                    <input type="time" class="form-control" id="jam_selesai" value="">
-                </div>
-                <div class="form-group">
-                <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}" target="_blank">disini</a>)<br>*Laporan Hasil Pelayanan</span></label>
-                <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="dokumen_pendukung">
-                <option value="31"><i class="fas fa-file-alt"></i> Dokumen konsultasi hukum kasus Eliza Thornberry</option>
-                <option value="32"><i class="fas fa-file-alt"></i> Dokumen Pendampingan pengadilan kasus eliza thornberry</option>
-                <option value="33"><i class="fas fa-file-alt"></i> Pendampingan pengadilan kasus tom delounge</option>
-                <option value="34"><i class="fas fa-file-alt"></i> Mediasi kasus tom delounge</option>
-                </select>
-                </div>
-                <div class="form-group">
-                    <label>Catatan</label>
-                    <textarea name="" class="form-control" id="catatan" cols="30" rows="2"></textarea>
-                </div>
-                <span style="font-size: 14px">*Laporan Tindak Lanjut tersimpan pada tanggal : <span id='ct' ></span></span>
-              </div>
-            </div>
-            </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success btn-block" id="submit"><i class="fa fa-check"></i> Simpan</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -260,38 +110,22 @@
   // toastr.success('Berhasil update data', 'Event');
   alert(id);
  }
-
-function penjadwalan_layanan() {
-    if ($('#penjadwalan_layanan').val() == 0) {
-      $("#klien_id").hide();
-    } else {
-      $("#klien_id").show();
-    }
- }
-  $(function () {
-    display_ct();
-    $("#klien_id").hide();
-    //Initialize Select2 Elements
-    $('.select2').select2()
-    $('#user_id').select2();
-
-    //Initialize Select2 Elements
-    $('.select2bs4').select2({
-      theme: 'bootstrap4'
-    })
-    });
     
-    $('#example1').DataTable({
+    $('#tabelAgenda').DataTable({
       "ordering": false,
       "processing": true,
       "serverSide": true,
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
-      "ajax": "/agenda/api_index?tahun=2023&bulan=7&user_id=2",
+      "ajax": "/agenda/api_index?tahun={{ request()->get('tahun') }}&bulan={{ request()->get('bulan') }}&user_id={{ Auth::user()->id }}",
       "rowsGroup": [0],
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
+          rowHightlight = $('#uuid_agenda_hightlight').val();
+          if (data.uuid == rowHightlight) {
+            $(row).attr('class', 'hightlighting');
+          }
       },
       "columns": [
         {"data": "tanggal_mulai", "width":"10%"},
@@ -372,159 +206,20 @@ function penjadwalan_layanan() {
           text: 'Tambah',
             action: function ( ) {
               $('#style-select2').html('.select2-selection__choice[title="{{ Auth::user()->name }}"] .select2-selection__choice__remove {display: none;}.select2-results__option[aria-selected=true] {display: none;}');
-
-              $("#success-message").hide();
-              $("#error-message").hide();
-              $("#overlay").hide();
-
-              $('#modelHeading').html("Tambah Agenda");
-              $('#ajaxModel').modal('show'); 
-
-              // hapus semua inputan
-              $('#uuid').val('');
-              $('#judul_kegiatan').val('');
-              $('#tanggal_mulai').val('');
-              $('#jam_mulai').val('');
-              $('#keterangan').val('');
-              $('#klien_id').val('');
-              $('#lokasi').val('');
-              $('#jam_selesai').val('');
-              $('#catatan').val('');
-              $('#dokumen_pendukung').select2().val('');
-            }
-        },
-        {
-          className: "btn-info",
-          text: 'Lihat agenda',
-            action: function ( ) {
-              window.location.assign('{{ route("agenda") }}')
+              showModalAgenda("{{ date('Y-m-d') }}",0);
             }
         }]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+      }).buttons().container().appendTo('#tabelAgenda_wrapper .col-md-6:eq(0)');
 
 
-       $('#example1 tbody').on( 'click', 'tr', function (evt) {
-        $('#style-select2').html('.select2-selection__choice[title="{{ Auth::user()->name }}"] .select2-selection__choice__remove {display: block;}.select2-results__option[aria-selected=true] {display: none;}');
-
+       $('#tabelAgenda tbody').on( 'click', 'tr', function (evt) {
         $("#success-message").hide();
         $("#error-message").hide();
-
-          $.get(`/agenda/edit/`+this.id, function (data) {
-              $("#overlay").hide();
-              $('#modelHeading').html("Edit Agenda");
-
-              var $cell=$(evt.target).closest('td');
-              if($cell.index()<3){
-                $('#ajaxModel').modal('show');
-
-                $('#uuid').val(data.uuid);
-                $('#judul_kegiatan').val(data.judul_kegiatan);
-                $('#tanggal_mulai').val(data.tanggal_mulai);
-                $('#jam_mulai').val(data.jam_mulai);
-                $('#keterangan').val(data.keterangan);
-                $('#klien_id').val(data.klien_id);
-                $('#lokasi').val(data.lokasi);
-                $('#jam_selesai').val(data.jam_selesai);
-                $('#catatan').val(data.catatan);
-                $('#dokumen_pendukung').val(data.dokumen_pendukung);
-
-                if (data.klien_id != null) {
-                  $('#penjadwalan_layanan').val(1);
-                  $("#klien_id").select2("val", data.klien_id);
-                }else{
-                  $('#penjadwalan_layanan').val(0);
-                  $("#klien_id").select2("val", "null");
-                }
-                penjadwalan_layanan();
-              
-                $("#user_id").val(data.user_id);
-                $('#user_id').select2();
-
-                $("#dokumen_pendukung").val(data.dokumen_pendukung);
-                $('#dokumen_pendukung').select2();
-              }
-          });
+        showModalAgenda('',this.id);
         });
 
-    $('#example1_filter').css({'float':'right','display':'inline-block'});
-  
-function display_c(){
-  var refresh=1000; // Refresh rate in milli seconds
-  mytime=setTimeout('display_ct()',refresh)
-}
-
-function display_ct() {
-  var x = new Date()
-  var x1=x.getDate() + "-" + x.getMonth() + 1+ "-" +  x.getFullYear(); 
-  x1 = x1 + " " +  x.getHours( )+ ":" +  x.getMinutes() + ":" +  x.getSeconds();
-  document.getElementById('ct').innerHTML = x1;
-  display_c();
- }
-
-$('#submit').click(function() {
-  if(validateForm('agenda')){
-    let token   = $("meta[name='csrf-token']").attr("content");
-    $.ajax({
-      url: `/agenda/store/`,
-      type: "POST",
-      cache: false,
-      data: {
-        uuid: $('#uuid').val(),
-        judul_kegiatan: $('#judul_kegiatan').val(),
-        tanggal_mulai: $("#tanggal_mulai").val(),
-        jam_mulai: $("#jam_mulai").val(),
-        keterangan: $("#keterangan").val(),
-        klien_id: $("#klien_id").val(),
-        user_id: $("#user_id").val(),
-        lokasi: $("#lokasi").val(),
-        jam_selesai: $("#jam_selesai").val(),
-        catatan: $("#catatan").val(),
-        dokumen_pendukung: $("#dokumen_pendukung").val(),
-        _token: token
-      },
-      success: function (response){
-        if (response.success != true) {
-          $('#message').html(JSON.stringify(response));
-          $("#success-message").hide();
-          $("#error-message").show();
-        }else{
-          $('#message').html(response.message);
-          $("#success-message").show();
-          $("#error-message").hide();
-
-          $('#example1').DataTable().ajax.reload();
-
-          // hapus semua inputan
-          $('#judul_kegiatan').val('');
-          $('#tanggal_mulai').val('');
-          $('#jam_mulai').val('');
-          $('#keterangan').val('');
-          $('#klien_id').val('');
-          $('#lokasi').val('');
-          $('#jam_selesai').val('');
-          $('#catatan').val('');
-          $('#dokumen_pendukung').val('');
-        }
-      },
-      error: function (response){
-        setTimeout(function(){
-          $("#overlay").fadeOut(300);
-        },500);
-
-        $('#message').html(JSON.stringify(response));
-        $("#success-message").hide();
-        $("#error-message").show();
-      }
-    }).done(function() { //loading submit form
-        setTimeout(function(){
-          $("#overlay").fadeOut(300);
-        },500);
-      });
-  }else{
-    $('#message').html('Mohon cek ulang data yang wajib diinput.');
-    $("#success-message").hide();
-    $("#error-message").show();
-  }
- })
+    $('#tabelAgenda_filter').css({'float':'right','display':'inline-block'});
 </script>
+{{-- include modal agenda --}}
+@include('agenda.modal')
 @endsection

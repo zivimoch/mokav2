@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\NotifHelper;
 use App\Models\Agenda;
 use App\Models\DokumenTl;
 use App\Models\Klien;
@@ -64,6 +65,8 @@ class AgendaController extends Controller
                     {
                     $join->on('z.tindak_lanjut_id', '=', 'b.id');
                     })
+                    ->whereNull('a.deleted_at')
+                    ->whereNull('b.deleted_at')
                     ->orderBy('a.tanggal_mulai')
                     ->orderBy('a.jam_mulai')
                     ->select(DB::raw('b.uuid, a.tanggal_mulai, a.jam_mulai, a.klien_id, b.tanggal_selesai, 
@@ -184,6 +187,42 @@ class AgendaController extends Controller
                 if ($hapus_user) {
                     TindakLanjut::where('created_by', Auth::user()->id)->where('agenda_id', $proses->id)->delete();
                 }
+
+             // ===========================================================================================
+            //Proses read, push notif & log activity ////////////////////////////////////////////////////
+            //push notifikasi ///////////////////////////////////////////////////////////////////////////
+            // $klien = Klien::where('id', $request->klien_id)->whereNull('deleted_at')->first();
+            // //kirim ke seluruh user yang ada di agenda
+            // foreach ($request->user_id as $value) {
+            //     if ($value == Auth::user()->id) {
+            //         $message = 'Anda telah membuat agenda. Silahkan buat laporan tindak lanjutnya';
+            //     }else{
+            //         $message = Auth::user()->name.' membuat agenda untuk anda. Silahkan buat laporan tindak lanjutnya';
+            //     }
+            //     NotifHelper::push_notif(
+            //         $value , //receiver_id
+            //         $klien->id ? $klien->id : '', //klien_id
+            //         'T9', //kode
+            //         'task', //type_notif
+            //         $klien->no_klien ? $klien->no_klien : '', //noregis
+            //         Auth::user()->name, //from
+            //         $message, //message
+            //         $klien->nama ? $klien->nama : '',  //nama korban 
+            //         isset($klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
+            //         url('/kinerja/detail/'.$klien->uuid.'?tab=settings&kolom-terminasi=1'), //url
+            //         1, //kirim ke diri sendiri 0 / 1
+            //         Auth::user()->id //created_by
+            //     );
+            // }
+            // //write log activity ////////////////////////////////////////////////////////////////////////
+            // LogActivityHelper::push_log(
+            //     //message
+            //     $message_log,
+            //     //klien_id
+            //     $klien->id 
+            // );
+            /////////////////////////////////////////////////////////////////////////////////////////////
+
             //return response
             return response()->json([
                 'success' => true,

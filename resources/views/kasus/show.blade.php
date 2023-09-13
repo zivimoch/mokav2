@@ -6,28 +6,6 @@
         display: none;
     }
 
-    .hightlighting {
-    background-color: none !important; 
-    -webkit-animation-name: animate1; /* Chrome, Safari, Opera */
-    -webkit-animation-duration: 7s; /* Chrome, Safari, Opera */
-    animation-name: animate1;
-    animation-duration: 7s;
-    }
-
-    /* Chrome, Safari, Opera */
-    @-webkit-keyframes animate1 {
-    0%   { background-color: #ffff00; }
-    50%  { background-color: #ffffd1; }
-    100%  { background-color: #FFFFFF; }
-    }
-
-    /* Standard syntax */
-    @keyframes animate1 {
-    0%   { background-color: #ffff00; }
-    50%  { background-color: #ffffd1; }
-    100%  { background-color: #FFFFFF; }
-    }
-
     .input_pelapor, #tombol_save_pelapor, .input_klien, #tombol_save_klien, .input_kasus, #tombol_save_kasus, .input_terlapor, #tombol_save_terlapor {
         display: none;
     }
@@ -1610,8 +1588,8 @@
       "ajax": "/riwayatkejadian/index?uuid={{ $klien->uuid }}",
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
-          riwayatHightlight = $('#uuid_riwayat_hightlight').val();
-          if (data.uuid == riwayatHightlight) {
+          rowHightlight = $('#uuid_riwayat_hightlight').val();
+          if (data.uuid == rowHightlight) {
             $(row).attr('class', 'hightlighting');
           }
       },

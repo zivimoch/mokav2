@@ -120,7 +120,7 @@
                   Agenda hari ini, {{ date('d M Y') }}
                 </h3>
                 <div class="card-tools">
-                    <a href="{{ route('kinerja.detail') }}?bulan=2" class="btn btn-tool"><i class="fas fa-tasks"></i> Laporan Kinerja</a>
+                    <a href="{{ route('kinerja.detail') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}&user_id={{ Auth::user()->id }}" class="btn btn-tool"><i class="fas fa-tasks"></i> Laporan Kinerja</a>
                     <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
                     </button>
                 </div>
