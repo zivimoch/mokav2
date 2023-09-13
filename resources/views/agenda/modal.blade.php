@@ -3,7 +3,7 @@
         overflow-y:auto;
     }
 </style>
-  <!-- Modal Agenda-->
+<!-- Modal Agenda-->
 <div class="modal fade" id="ajaxModel" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -141,11 +141,12 @@
     </div>
   </div>
 
-<script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
-<script src="{{ asset('/source/js/validation.js') }}"></script>
-<script src="{{ asset('adminlte') }}/plugins/moment/moment.min.js"></script> 
-<script src="{{ asset('source') }}/js/jquery-clock-timepicker.min.js"></script>
-
+  <script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
+  <script src="{{ asset('/source/js/validation.js') }}"></script>
+  
+  <script src="{{ asset('adminlte') }}/plugins/moment/moment.min.js"></script> 
+  <script src="{{ asset('source') }}/js/jquery-clock-timepicker.min.js"></script>
+  
 <script>
     $(document).ready(function () {
     $('.time-picker').clockTimePicker();
@@ -164,6 +165,7 @@
      });
   
         $('#submit').click(function() {
+          console.log($("#user_id_select").val());
           if(validateForm('agenda')){
             let token   = $("meta[name='csrf-token']").attr("content");
             $.ajax({
@@ -193,8 +195,8 @@
                   $('#message').html(response.message);
                   $("#success-message").show();
                   $("#error-message").hide();
-                  if($("#calendar").length == 0) {
-                    //action untuk fullcalendar
+                  //fullcalendar
+                  if($("#calendar").length > 0) {
                     calendar.fullCalendar('refetchEvents');
                     calendar.fullCalendar('unselect');
                     today = new Date();
@@ -211,6 +213,8 @@
                   $('#lokasi').val('');
                   $('#jam_selesai').val('');
                   $('#catatan').val('');
+                  $('#user_id_select').empty();
+                  $('#dokumen_id_select').empty();
                 }
               },
               error: function (response){
@@ -232,6 +236,7 @@
             $("#success-message").hide();
             $("#error-message").show();
           }
+          $('#ajaxModel').scrollTop(0);
         });
       
      });
@@ -289,7 +294,6 @@
            },
            cache: false
          }
-  
       });
     }
   
@@ -345,13 +349,13 @@
    }
    
    function showModalAgenda(tanggal_mulai, agenda_id) {
+  
     $('#user_id_select').empty();
     $('#user_id_select').append('<option value="{{ Auth::user()->id }}" selected>{{ Auth::user()->name }}</option>');
     $('#dokumen_id_select').empty();
     $("#collapseOne").removeClass("show");
     
     if (agenda_id != 0) {
-    // jika tidak ada agenda_id != 0 maka edit
     $('#user_id_select').empty();
       $.get(`/agenda/edit/`+agenda_id, function (data) {
           $('#modelHeading').html("Edit Agenda");
@@ -377,6 +381,10 @@
             petugas = data.user_id;
             petugas.forEach(e => {
               $("#user_id_select").append('<option value="'+e.id+'" selected>'+e.name+'</option>');
+              if (e.id != "{{ Auth::user()->id }}") {
+                // mencegah menghapus orang lain selain dirinya
+                $('#styleremove').append('<style>.select2-selection__choice[title="'+e.name+'"] .select2-selection__choice__remove {display: none;}</style>')
+              }
             });
           }
           $('#dokumen_id_select').val([]).change();
@@ -410,4 +418,4 @@
     $('#ajaxModelDetail').modal('hide'); 
     
    }
-  </script>
+</script>
