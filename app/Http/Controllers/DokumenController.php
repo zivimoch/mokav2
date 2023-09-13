@@ -27,7 +27,7 @@ class DokumenController extends Controller
     {
         if($request->ajax()) {
             $data = DB::table('dokumen as a')
-                        ->select(DB::raw('a.*, z.keyword, b.id as status, d.tanggal_mulai, d.jam_mulai, c.tanggal_selesai, c.jam_selesai, f.name'))
+                        ->select(DB::raw('a.*, z.keyword, b.id as status, d.tanggal_mulai, d.jam_mulai, c.tanggal_selesai, c.jam_selesai, f.name, e.nama as nama_klien'))
                         ->leftJoin('dokumen_tl as b', 'a.id', 'b.dokumen_id')
                         ->leftJoin(DB::raw('(
                             SELECT dokumen_id, GROUP_CONCAT(CONCAT(" "), keyword) AS keyword FROM dokumen_keyword GROUP BY dokumen_id) z'), 
@@ -51,6 +51,35 @@ class DokumenController extends Controller
        }
 
        return view('dokumen.index');
+    }
+
+    //untuk select2 list dokumen, dia methodnya POST
+    public function get_dokumen(Request $request)
+    {
+        $search = $request->search;
+        if($search == ''){
+            $data = Dokumen::where('created_by', Auth::user()->id)
+                            ->whereNull('deleted_at')
+                            ->orderBy('updated_at')
+                            ->select('id','judul')
+                            ->limit(10)->get();
+        }else{
+            $data = Dokumen::where('created_by', Auth::user()->id)
+                        ->whereNull('deleted_at')
+                        ->orderBy('updated_at')
+                        ->where('judul', 'like', '%' .$search . '%')
+                        ->select('id','judul')
+                        ->limit(10)->get();
+        }
+  
+        $response = array();
+        foreach($data as $value){
+            $response[] = array(
+                 "id"=>$value->id,
+                 "text"=>$value->judul
+            );
+         }
+        return response()->json($response); 
     }
 
     public function add(Request $request)

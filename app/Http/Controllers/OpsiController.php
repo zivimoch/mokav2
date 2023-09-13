@@ -824,8 +824,12 @@ class OpsiController extends Controller
     {
         $data = User::whereNull('deleted_at');
         if (Auth::user()->jabatan == 'Penerima Pengaduan') {
-            $data->where('jabatan', 'Manajer Kasus');
-            $data->orWhere('jabatan', 'Supervisor Kasus');
+            $data->where('jabatan', 'Manajer Kasus')
+                ->orWhere('jabatan', 'Supervisor Kasus')
+                ->orWhere('jabatan', 'Pendamping Kasus')
+                ->orWhere('jabatan', 'Unit Reaksi Cepat')
+                ->orWhere('jabatan', 'Konselor')
+                ->orWhere('jabatan', 'Paralegal');
         }
         return $data->get();
     }

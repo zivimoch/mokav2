@@ -30,6 +30,7 @@ Route::post('formpenerimapengaduan', [FormPenerimaPengaduan::class, 'store'])->n
 Route::get('persetujuan/persetujuan_pelayanan/{uuid}', [PersetujuanController::class, 'persetujuan_pelayanan'])->name('persetujuan.persetujuan_pelayanan');
 Route::post('persetujuan', [PersetujuanController::class, 'store'])->name('persetujuan.store');
 Route::get('persetujuan/donepelayanan/{uuid}', [PersetujuanController::class, 'donepelayanan'])->name('persetujuan.done');
+Route::get('blankpage', [DashboardController::class, 'blankpage'])->name('blankpage');
 
 Route::middleware('auth')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -39,10 +40,13 @@ Route::middleware('auth')->group(function () {
     Route::get('kasus', [KasusController::class, 'index'])->name('kasus');
     Route::get('kasus/show/{uuid}', [KasusController::class, 'show'])->name('kasus.show');
     Route::post('kasus/approval/{uuid}', [KasusController::class, 'approval'])->name('kasus.approval');
+    Route::post('/get_klien', [KasusController::class, 'get_klien'])->name('get_klien');
     // Route::view('kasus/detail/','/kasus/detail')->name('kasus.detail');
     // persetujuan
     Route::post('persetujuan/create/{uuid}', [PersetujuanController::class, 'create'])->name('persetujuan.create');
     // persetujuan_pelayanan
+    Route::get('petugas/index/', [PetugasController::class, 'index'])->name(('petugas'));
+    Route::post('/get_petugas', [PetugasController::class, 'get_petugas'])->name('get_petugas');
     Route::post('petugas/store/{uuid}', [PetugasController::class, 'store'])->name(('petugas.store'));
     Route::delete('petugas/destroy/{id}', [PetugasController::class, 'destroy'])->name(('petugas.destroy'));
     // riwayat kejadian
@@ -58,6 +62,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/Notifikasi/pull_notif', [NotifikasiController::class, 'pull_notif'])->name('notifikasi.pull_notif');
     // dokumen
     Route::get('dokumen',[DokumenController::class, 'index'])->name('dokumen');
+    Route::post('/get_dokumen', [DokumenController::class, 'get_dokumen'])->name('get_dokumen');
     Route::get('dokumen/add',[DokumenController::class, 'add'])->name('dokumen.add');
     Route::get('dokumen/create',[DokumenController::class, 'create'])->name('dokumen.create');
     Route::post('dokumen/store',[DokumenController::class, 'store'])->name('dokumen.store');

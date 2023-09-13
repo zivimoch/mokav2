@@ -11,6 +11,7 @@ use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Jenssegers\Agent\Agent;
 use PhpParser\Node\Expr\New_;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -26,14 +27,18 @@ class AgendaController extends Controller
     {
         if($request->ajax()) {
        
-            $data = DB::table('agenda as a')
-                        ->select(DB::raw('CONCAT(COUNT(*), " agenda") as title, a.tanggal_mulai as start'))
-                        ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
-                        ->whereDate('a.tanggal_mulai', '>=', $request->start)
-                        ->whereDate('b.tanggal_selesai', '<=', $request->end)
-                        ->groupBy('a.tanggal_mulai')
-                        ->get();
- 
+            // $data = DB::table('agenda as a')
+            //             ->select(DB::raw('CONCAT(COUNT(a.id), " agenda") as title, a.tanggal_mulai as start'))
+            //             ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
+            //             ->whereDate('a.tanggal_mulai', '>=', $request->start)
+            //             ->whereDate('a.tanggal_mulai', '<=', $request->end)
+            //             ->groupBy('a.tanggal_mulai')
+            //             ->get();
+            $data = Agenda::select(DB::raw('CONCAT(COUNT(*), " agenda") as title, tanggal_mulai as start'))
+                            ->whereDate('tanggal_mulai', '>=', $request->start)
+                            ->whereDate('tanggal_mulai', '<=', $request->end)
+                            ->groupBy('tanggal_mulai')
+                            ->get();
             return response()->json($data);
        }
  
@@ -102,6 +107,7 @@ class AgendaController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
         try {
             $validator = Validator::make($request->all(), [
                 'judul_kegiatan' => 'required',
@@ -129,8 +135,10 @@ class AgendaController extends Controller
 
                 $hapus_user = 1;
                 if (!empty($request->user_id)) {
+                    // input tindak_lanjut
                     foreach ($request->user_id as $value) {
-                        if (!isset($request->uuid)) { //jika tidak ada maka tambah
+                        if (!isset($request->uuid)) { 
+                            //jika tidak ada maka tambah
                             TindakLanjut::create([
                                 'agenda_id' => $proses->id,
                                 'created_by' => $value
@@ -151,6 +159,7 @@ class AgendaController extends Controller
                         }
 
                         if ($value == Auth::user()->id) {
+                            // jika edit dan id usernya adalah dirinya sendiri meka edit 
                             TindakLanjut::where('created_by', $value)->where('agenda_id', $proses->id)->update([
                                 'lokasi' => $request->lokasi,
                                 'tanggal_selesai' => $request->tanggal_mulai, //tanggal selesai = tanggal mulai, karna kita main jadwanya per tanggal
@@ -170,8 +179,8 @@ class AgendaController extends Controller
                         }
                     }
                 }
-
-                //jika tidak ada user_id sesuai dengan yg login, berarti hapus user_id yg login pada tabel tindak lanjut
+                // jika tidak ada user_id sesuai dengan yg login, berarti hapus user_id yg login pada tabel tindak lanjut
+                // tidak bisa hapus agenda orang lain
                 if ($hapus_user) {
                     TindakLanjut::where('created_by', Auth::user()->id)->where('agenda_id', $proses->id)->delete();
                 }
@@ -225,6 +234,8 @@ class AgendaController extends Controller
                             ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id') 
                             ->leftJoin('klien as c', 'c.id', 'a.klien_id')
                             ->where('a.tanggal_mulai', $date)
+                            ->whereNull('a.deleted_at')
+                            ->whereNull('b.deleted_at')
                             ->orderBy('a.jam_mulai')
                             ->groupBy('a.id')
                             ->get();
@@ -235,6 +246,8 @@ class AgendaController extends Controller
                             ->leftJoin('klien as c', 'c.id', 'a.klien_id')
                             ->where('a.tanggal_mulai', $date)
                             ->where('b.created_by', Auth::user()->id)
+                            ->whereNull('a.deleted_at')
+                            ->whereNull('b.deleted_at')
                             ->orderBy('a.jam_mulai')
                             ->get();
             $agenda = array('agenda_semua' => $agenda_semua, 
@@ -263,13 +276,25 @@ class AgendaController extends Controller
         $data = DB::table('agenda as a')
                     ->leftJoin('tindak_lanjut as b', 'b.agenda_id', 'a.id')
                     ->leftJoin('users as c', 'c.id', 'b.validated_by')
+                    ->leftJoin('klien as d', 'a.klien_id', 'd.id')
                     ->where('b.created_by', Auth::user()->id)
                     ->where('a.uuid', $uuid)
-                    ->select('a.id', 'a.tanggal_mulai', 'a.jam_mulai', 'a.klien_id', 'a.uuid', 'b.tanggal_selesai', 'b.jam_selesai', 'a.judul_kegiatan', 'a.keterangan', 'b.lokasi', 'b.catatan', 'c.name', 'b.created_by')
+                    ->whereNull('b.deleted_at')
+                    ->select(DB::raw('a.id, b.id as tindak_lanjut_id, a.tanggal_mulai, a.jam_mulai, a.klien_id, d.nama, a.uuid, b.tanggal_selesai, b.jam_selesai, a.judul_kegiatan, a.keterangan, b.lokasi, b.catatan, c.name, b.created_by'))
                     ->first();
-        $agenda_id = TindakLanjut::where('agenda_id', $data->id)->where('created_by', Auth::user()->id)->pluck('agenda_id');
-        $user_id = TindakLanjut::where('agenda_id', $agenda_id[0])->pluck('created_by');
+        $user_id = DB::table('tindak_lanjut as a')
+                        ->leftJoin('users as b', 'a.created_by','b.id')
+                        ->where('a.agenda_id', $data->id)
+                        ->select('b.id', 'b.name')
+                        ->whereNull('a.deleted_at')
+                        ->get();
         $data->user_id = $user_id;
+        $dokumen_id = DB::table('dokumen_tl as a')
+                    ->leftJoin('dokumen as b', 'a.dokumen_id','b.id')
+                    ->where('a.tindak_lanjut_id', $data->tindak_lanjut_id)
+                    ->select('b.id', 'b.judul')
+                    ->get();
+        $data->dokumen_id = $dokumen_id;
         
         return response()->json($data);
     }

@@ -859,7 +859,7 @@
                 <div class="col-md-12">
                     <div class="alert alert-danger">
                     <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
-                    Minimal harus ada 1 Supervisor, 1 Manajer Kasus dan 1 Petugas Penerima Pengaduan.
+                    Minimal harus ada 1 Supervisor, 1 Manajer Kasus dan 1 Petugas Penerima Pengaduan untuk meregistrasi kasus.
                     </div>
                 </div>
             </div>
@@ -981,12 +981,6 @@
                 </form>
         </div>
         <div class="tab-pane {{ Request::get('tab') == 'settings' ? 'active' : '' }}" id="kasus-settings" role="tabpanel" aria-labelledby="kasus-settings-tab">
-        1. Identifikasi (Penerimaan Pengaduan, Tanda Tangan SPP, Persetujuan Supervisor) <br>
-        2. Asesmen <br>
-        3. Perencanaan Intervensi  <br>
-        4. Pelaksanaan Intervensi  <br>
-        5. Monitoring  <br>
-        6. Terminasi <br>
             @if(Auth::user()->jabatan == 'Supervisor Kasus')
             <div class="row {{ Request::get('persetujuan-supervisor') == 1 ? 'hightlighting' : '' }}">
                 <div class="col-md-12 {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'hightlighting' : '' }}">

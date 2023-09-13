@@ -19,6 +19,12 @@ class DashboardController extends Controller
         return view('dashboard');
     }
 
+    public function blankpage()
+    {
+     // Load index view
+     return view('blankpage');
+    }
+
     public function userdatatable()
     {
         return view('userdatatable');

@@ -16,6 +16,52 @@ use Illuminate\Support\Facades\DB;
 
 class PetugasController extends Controller
 {
+
+    public function index(Request $request)
+    {
+        if($request->ajax()) {
+       }
+    }
+
+    //untuk select2 list petugas, dia methodnya POST
+    public function get_petugas(Request $request)
+    {
+        $search = $request->search;
+        if($search == ''){
+            $data = DB::table('petugas as a')
+                         ->leftJoin('users as b', 'a.user_id', 'b.id')
+                         ->whereNull('a.deleted_at')
+                         ->whereNull('b.deleted_at')
+                         ->orderby('a.created_at','asc')
+                         ->select('b.id','b.name');
+             if ($request->klien_id != null) {
+                 $data = $data->where('a.klien_id', $request->klien_id);
+             }
+             $data = $data->limit(10)->get();
+        }else{
+           $data = DB::table('petugas as a')
+                        ->leftJoin('users as b', 'a.user_id', 'b.id')
+                        ->whereNull('a.deleted_at')
+                        ->whereNull('b.deleted_at')
+                        ->orderby('a.created_at','asc')
+                        ->select('b.id','b.name')
+                        ->where('b.name', 'like', '%' .$search . '%');
+            if ($request->klien_id != null) {
+                $data = $data->where('a.klien_id', $request->klien_id);
+            }
+            $data = $data->limit(10)->get();
+        }
+  
+        $response = array();
+        foreach($data as $value){
+            $response[] = array(
+                 "id"=>$value->id,
+                 "text"=>$value->name
+            );
+         }
+        return response()->json($response); 
+    }
+
     public function store($uuid, Request $request)
     {
         try {

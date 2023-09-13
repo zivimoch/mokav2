@@ -129,9 +129,9 @@
             $('#count_task').html(task.length);
             $('#count_notif').html(notif.length);
             if (add == 1) {
-                notif_count = parseInt(task.length + notif.length + add);
+                notif_count = parseInt(task.length + add);
             }else{
-                notif_count = parseInt(task.length + notif.length);
+                notif_count = parseInt(task.length);
             }
             if (notif_count>0) {
                 $('#notif_count').html('<span class="badge-notif badge-notif-danger">'+notif_count+'</span>');   

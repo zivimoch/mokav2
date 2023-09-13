@@ -39,6 +39,43 @@ class KasusController extends Controller
        return view('kasus.index');
     }
 
+    //untuk select2 list klien, dia methodnya POST
+    public function get_klien(Request $request)
+    {
+        $search = $request->search;
+
+        if($search == ''){
+           $data = DB::table('petugas as a')
+                            ->leftJoin('klien as b', 'b.id','a.klien_id')
+                            ->where('user_id', Auth::user()->id)
+                            ->whereNull('a.deleted_at')
+                            ->whereNull('b.deleted_at')
+                            ->orderby('a.created_at','asc')
+                            ->select('b.id','b.nama')
+                            ->limit(10)->get();
+        }else{
+            $data = DB::table('petugas as a')
+                             ->leftJoin('klien as b', 'b.id','a.klien_id')
+                             ->where('user_id', Auth::user()->id)
+                             ->whereNull('a.deleted_at')
+                             ->whereNull('b.deleted_at')
+                             ->where('b.nama', 'like', '%' .$search . '%')
+                             ->orderby('a.created_at','asc')
+                             ->select('b.id','b.nama')
+                             ->limit(10)->get();
+        }
+  
+        $response = array();
+        foreach($data as $value){
+           $response[] = array(
+                "id"=>$value->id,
+                "text"=>$value->nama
+           );
+        }
+        return response()->json($response); 
+        
+    }
+
     public function show(Request $request, $uuid)
     {
         if($request->ajax()) { //dipakai di datatable
