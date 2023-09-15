@@ -89,14 +89,15 @@ class RiwayatKejadianController extends Controller
                     $klien->id, //klien_id
                     $kode, //kode
                     'notif', //type_notif
-                    $klien->no_klien ? $klien->no_klien : '', //noregis
+                    $klien->no_klien ? $klien->no_klien : NULL, //noregis
                     Auth::user()->name, //from
                     $message_notif, //message
                     $klien->nama, //nama korban 
                     isset($klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
                     url('/kasus/show/'.$klien->uuid.'?tab=kasus-asesmen&row-riwayat='.$proses->uuid.'&kode='.$kode.'&tipe=notif'), //url
                     0, //kirim ke diri sendiri 0 / 1
-                    Auth::user()->id //created_by
+                    Auth::user()->id, // created_by
+                    NULL // agenda_id
                 );
             }
             //write log activity ////////////////////////////////////////////////////////////////////////
@@ -188,14 +189,15 @@ class RiwayatKejadianController extends Controller
                     $klien->id, //klien_id
                     'N4', //kode
                     'notif', //type_notif
-                    $klien->no_klien ? $klien->no_klien : '', //noregis
+                    $klien->no_klien ? $klien->no_klien : NULL, //noregis
                     Auth::user()->name, //from
                     Auth::user()->name.' telah menghapus riwayat kejadian. Silahkan periksa riwayat kejadian', //message
                     $klien->nama, //nama korban 
                     isset($klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
                     url('/kasus/show/'.$klien->uuid.'?tab=kasus-asesmen&kode=N4&tipe=notif'), //url
                     0, //kirim ke diri sendiri 0 / 1
-                    Auth::user()->id //created_by
+                    Auth::user()->id, // created_by
+                    NULL // agenda_id
                 );
             }
             //write log activity ////////////////////////////////////////////////////////////////////////

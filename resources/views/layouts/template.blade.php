@@ -145,7 +145,7 @@
               }
 
               if (e.no_reg != null) {
-                no_reg = e.no_reg;
+                no_reg = '| '+e.no_reg;
               }else{
                 no_reg = '';
               }
@@ -160,7 +160,7 @@
               }
 
               if (e.no_reg != null) {
-                no_reg = e.no_reg;
+                no_reg = '| '+e.no_reg;
               }else{
                 no_reg = '';
               }

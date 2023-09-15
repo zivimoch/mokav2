@@ -196,7 +196,7 @@
                   $('#message').html(response.message);
                   $("#success-message").show();
                   $("#error-message").hide();
-                  //fullcalendar dashboard
+                  // fullcalendar dashboard
                   if($("#calendar").length > 0) {
                     calendar.fullCalendar('refetchEvents');
                     calendar.fullCalendar('unselect');
@@ -204,14 +204,21 @@
                     today = today.toISOString().split('T')[0];
                     loadAgenda(today,2);
                   }
-                  //datatable kinerja
+                  // datatable kinerja
                   if($("#tabelAgenda").length > 0) {
                     $('#tabelAgenda').DataTable().ajax.reload();
                     // hightlight tabel agenda
                     data = response.data;
                     $('#uuid_agenda_hightlight').val(data.uuid);
                   }
-  
+                  // datatable layanan di detail kasus
+                  if($("#tabelLayanan").length > 0) {
+                    $('#tabelLayanan').DataTable().ajax.reload();
+                    // hightlight tabel layanan
+                    data = response.data;
+                    $('#uuid_layanan_hightlight').val(data.uuid);
+                  }
+
                   // hapus semua inputan
                   $('#judul_kegiatan').val('');
                   $('#tanggal_mulai').val('');
@@ -351,12 +358,15 @@
     function penjadwalan_layanan() {
       if ($('#penjadwalan_layanan').val() == 0) {
         $("#list_klien").hide();
+        $('#klien_id_select').val('');
       } else {
         $("#list_klien").show();
       }
    }
    
    function showModalAgenda(tanggal_mulai, agenda_id) {
+    //reset uuid
+    $('#uuid').val('');
   
     $('#user_id_select').empty();
     $('#user_id_select').html('');

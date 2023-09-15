@@ -28,28 +28,28 @@ class PetugasController extends Controller
     {
         $search = $request->search;
         if($search == ''){
-            $data = DB::table('petugas as a')
-                         ->leftJoin('users as b', 'a.user_id', 'b.id')
+            $data = DB::table('users as a')
+                         ->leftJoin('petugas as b', 'b.user_id', 'a.id')
                          ->whereNull('a.deleted_at')
                          ->whereNull('b.deleted_at')
-                         ->orderby('a.created_at','asc')
-                         ->select('b.id','b.name');
+                         ->orderby('b.created_at','asc')
+                         ->select('a.id','a.name');
              if ($request->klien_id != null) {
-                 $data = $data->where('a.klien_id', $request->klien_id);
+                 $data = $data->where('b.klien_id', $request->klien_id);
              }
-             $data = $data->limit(10)->get();
+             $data = $data->limit(100)->get();
         }else{
-           $data = DB::table('petugas as a')
-                        ->leftJoin('users as b', 'a.user_id', 'b.id')
+           $data = DB::table('users as a')
+                        ->leftJoin('petugas as b', 'b.user_id', 'a.id')
                         ->whereNull('a.deleted_at')
                         ->whereNull('b.deleted_at')
-                        ->orderby('a.created_at','asc')
-                        ->select('b.id','b.name')
-                        ->where('b.name', 'like', '%' .$search . '%');
+                        ->orderby('b.created_at','asc')
+                        ->select('a.id','a.name')
+                        ->where('a.name', 'like', '%' .$search . '%');
             if ($request->klien_id != null) {
-                $data = $data->where('a.klien_id', $request->klien_id);
+                $data = $data->where('b.klien_id', $request->klien_id);
             }
-            $data = $data->limit(10)->get();
+            $data = $data->limit(100)->get();
         }
   
         $response = array();
@@ -128,14 +128,15 @@ class PetugasController extends Controller
                 $klien->id, //klien_id
                 $kode, //kode
                 'task', //type_notif
-                $klien->no_klien ? $klien->no_klien : '', //noregis
+                $klien->no_klien ? $klien->no_klien : NULL, //noregis
                 Auth::user()->name, //from
                 $message, //message
                 $klien->nama, //nama korban 
                 isset($klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
                 $url, //url
                 1, //kirim ke diri sendiri 0 / 1
-                Auth::user()->id //created_by
+                Auth::user()->id, // created_by
+                NULL // agenda_id
             );
             //write log activity ////////////////////////////////////////////////////////////////////////
             LogActivityHelper::push_log(

@@ -248,14 +248,15 @@ class FormPenerimaPengaduan extends Controller
                         $klien->id, //klien_id
                         'T2', //type_notif
                         'task', //type_notif
-                        $klien->no_klien ? $klien->no_klien : '', //noregis
+                        $klien->no_klien ? $klien->no_klien : NULL, //noregis
                         'System', //from
                         'Kasus baru. Silahkan pilih Supervisor & Manajer Kasus', //message
                         $request->nama_klien[$key], //nama korban 
                         isset($request->tanggal_lahir_klien[$key]) ? $request->tanggal_lahir_klien[$key] : NULL, //tanggal lahir korban
                         url('/kasus/show/'.$klien->uuid.'?tab=kasus-petugas&tambah-petugas=1'), //url
                         1, //kirim ke diri sendiri 0 / 1
-                        Auth::user()->id //created_by
+                        Auth::user()->id, // created_by
+                        NULL // agenda_id
                     );
                     //write log activity ////////////////////////////////////////////////////////////////////////
                     LogActivityHelper::push_log(

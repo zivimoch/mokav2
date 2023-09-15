@@ -8,15 +8,19 @@ use Illuminate\Support\Facades\Auth;
 class NotifHelper
 {
     
-    public static function push_notif($receiver_id, $klien_id, $kode, $type_notif, $no_reg, $from, $message, $korban_nama, $tgl_lahir, $url, $kirim_ke_diri, $created_by = NULL)
+    public static function push_notif($receiver_id, $klien_id, $kode, $type_notif, $no_reg, $from, $message, $korban_nama, $tgl_lahir, $url, $kirim_ke_diri, $created_by = NULL, $agenda_id = NULL)
     {
         if (($kirim_ke_diri == 0 && Auth::user()->id != $receiver_id) || $kirim_ke_diri == 1) {
 
-            $korban_umur = $tgl_lahir ? Carbon::parse($tgl_lahir)->age : '';
-            $kasus_data = $korban_nama.' ('.$korban_umur.')';
+            $korban_umur = $tgl_lahir ? Carbon::parse($tgl_lahir)->age : NULL;
+            if ($korban_umur) {
+                $korban_umur =  ' ('.$korban_umur.')';
+            }
+            $kasus_data = $korban_nama.$korban_umur;
             $data_notif = [
                 'receiver_id' => $receiver_id,
                 'klien_id' => $klien_id,
+                'agenda_id' => $agenda_id,  
                 'kode' => $kode,
                 'type_notif' => $type_notif,
                 'no_reg' => $no_reg,
@@ -37,15 +41,19 @@ class NotifHelper
     //     return Notifikasi::where('receiver_id', Auth::user()->id)->orderBy('notifikasi.id','DESC');
     // }
 
-    public static function read_notif($receiver_id, $klien_id, $kode, $type_notif)
+    public static function read_notif($receiver_id, $klien_id, $kode, $type_notif, $agenda_id = NULL)
     {
-        $update = Notifikasi::where('klien_id',$klien_id)
-                            ->where('read',0)
+        $update = Notifikasi::where('read',0)
                             ->where('kode', $kode)
-                            ->where('type_notif', $type_notif);
+                            ->where('type_notif', $type_notif)
+                            ->where('agenda_id', $agenda_id);
         if ($receiver_id != 0) {
             // jika sama dengan 0 maka semua notifikasi dengan kode dan tipe notif yang ditentukan akan hilang tidak peduli receivernya siapa
             $update->where('receiver_id',$receiver_id);
+        }
+        if ($klien_id) {
+            // jika ada $klien_id nya maka klien_id menjadi penting untuk dicari
+            $update->where('klien_id',$klien_id);
         }
         return $update->update(['read' => 1, 'updated_at' => date("Y-m-d H:i:s")]);
     }

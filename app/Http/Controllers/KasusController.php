@@ -198,7 +198,8 @@ class KasusController extends Controller
             Auth::user()->id, // receiver_id
             $klien->id, // klien_id
             $request->kode, // kode ini request dari link 
-            $request->tipe // type_notif
+            $request->tipe, // type_notif
+            $request->agenda_id // agenda_id
         );
         /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -290,14 +291,15 @@ class KasusController extends Controller
                     $klien->id, //klien_id
                     $kode, //kode
                     'task', //type_notif
-                    $klien->no_klien ? $klien->no_klien : '', //noregis
+                    $klien->no_klien ? $klien->no_klien : NULL, //noregis
                     Auth::user()->name, //from
                     $message_notif, //message
                     $klien->nama, //nama korban 
                     isset($klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
                     $url, //url
                     1, //kirim ke diri sendiri 0 / 1
-                    Auth::user()->id //created_by
+                    Auth::user()->id, // created_by
+                    NULL // agenda_id
                 );
             }
             //write log activity ////////////////////////////////////////////////////////////////////////

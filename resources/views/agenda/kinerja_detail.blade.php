@@ -34,7 +34,7 @@
             </div> --}}
             
             <div class="card-body" style="overflow-x: scroll">
-            <input type="hidden" id="uuid_agenda_hightlight" value="{{ Request::get('row-riwayat') }}">
+            <input type="hidden" id="uuid_agenda_hightlight" value="{{ Request::get('row-agenda') }}">
               <table id="tabelAgenda" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
         
                 <thead>
@@ -123,6 +123,7 @@
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
           rowHightlight = $('#uuid_agenda_hightlight').val();
+          console.log(rowHightlight);
           if (data.uuid == rowHightlight) {
             $(row).attr('class', 'hightlighting');
           }

@@ -18,6 +18,7 @@ class CreateNotifikasisTable extends Migration
             $table->string('uuid');
             $table->integer('klien_id')->nullable();
             $table->integer('receiver_id');
+            $table->integer('agenda_id')->nullable()->default(NULL);
             $table->string('kode')->nullable();
             $table->enum('type_notif',['task', 'notif'])->default('task');
             $table->char('no_reg')->nullable();

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class NotifikasiController extends Controller
 {
     public static function pull_notif()
-    {      
+    {   
         //tasks  
         $tasks =  Notifikasi::where('type_notif', 'task')
                             ->where('receiver_id', Auth::user()->id)

@@ -682,7 +682,7 @@
             </br>
             <div style="overflow-x: scroll">
             <input type="hidden" id="uuid_riwayat_hightlight" value="{{ Request::get('row-riwayat') }}">
-            <table id="example2" class="table table-sm table-bordered  table-hover" style="cursor:pointer; color:black">
+            <table id="tabelRiwayat" class="table table-sm table-bordered  table-hover" style="cursor:pointer; color:black">
                 <thead>
                 <tr>
                 <th>Waktu Kejadian</th>
@@ -722,7 +722,8 @@
         </div>
         <br>
         <div style="overflow-x: scroll">
-            <table id="example1" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
+            <input type="hidden" id="uuid_layanan_hightlight" value="{{ Request::get('row-layanan') }}">
+            <table id="tabelLayanan" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
                 <thead>
                 <tr>
                 <th>Waktu Kegiatan</th>
@@ -1454,7 +1455,7 @@
     $('.input_pelapor').next(".select2-container").hide();
     $('.input_klien').next(".select2-container").hide();
 
-    $('#example1').DataTable({
+    $('#tabelLayanan').DataTable({
       "ordering": true,
       "processing": true,
       "serverSide": true,
@@ -1464,6 +1465,11 @@
       "ajax": "/agenda/api_index?uuid={{ $klien->uuid }}",
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
+
+          rowHightlight = $('#uuid_layanan_hightlight').val();
+          if (data.uuid == rowHightlight) {
+            $(row).attr('class', 'hightlighting');
+          }
       },
       "columns": [
         {
@@ -1553,12 +1559,12 @@
                     }
                   }
               }]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+      }).buttons().container().appendTo('#tabelLayanan_wrapper .col-md-6:eq(0)');
 
-      $('#example1_filter').css({'float':'right','display':'inline-block; background-color:black'});
+      $('#tabelLayanan_filter').css({'float':'right','display':'inline-block; background-color:black'});
     });
 
-    $('#example1 tbody').on('click', 'tr', function () {
+    $('#tabelLayanan tbody').on('click', 'tr', function () {
       $("#success-message").hide();
       $("#error-message").hide();
       
@@ -1578,7 +1584,7 @@
 
     $(function () {
 
-    $('#example2').DataTable({
+    $('#tabelRiwayat').DataTable({
       "ordering": true,
       "processing": true,
       "serverSide": true,
@@ -1588,6 +1594,7 @@
       "ajax": "/riwayatkejadian/index?uuid={{ $klien->uuid }}",
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
+
           rowHightlight = $('#uuid_riwayat_hightlight').val();
           if (data.uuid == rowHightlight) {
             $(row).attr('class', 'hightlighting');
@@ -1630,12 +1637,12 @@
                     $('#uuid_riwayat').val('');
                   }
               }]
-      }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+      }).buttons().container().appendTo('#tabelRiwayat_wrapper .col-md-6:eq(0)');
 
-      $('#example2_filter').css({'float':'right','display':'inline-block; background-color:black'});
+      $('#tabelRiwayat_filter').css({'float':'right','display':'inline-block; background-color:black'});
     });
 
-    $('#example2 tbody').on('click', 'tr', function () {
+    $('#tabelRiwayat tbody').on('click', 'tr', function () {
         $("#success-message").hide();
         $("#error-message").hide();
         $.get(`/riwayatkejadian/edit/`+this.id, function (data) {
@@ -1739,7 +1746,7 @@
                     $("#success-message").show();
                     $("#error-message").hide();
 
-                    $('#example2').DataTable().ajax.reload();
+                    $('#tabelRiwayat').DataTable().ajax.reload();
 
                     // hapus semua inputan
                     $('#tanggal').val('');
@@ -1793,7 +1800,7 @@
                 $("#success-message").hide();
                 $("#error-message").hide();
 
-                $('#example2').DataTable().ajax.reload();
+                $('#tabelRiwayat').DataTable().ajax.reload();
 
                 // hapus semua inputan
                 $('#tanggal').val('');

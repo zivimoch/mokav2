@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\LogActivityHelper;
 use App\Helpers\NotifHelper;
 use App\Models\Agenda;
 use App\Models\DokumenTl;
 use App\Models\Klien;
 use App\Models\TindakLanjut;
+use App\Models\User;
 use Exception;
 use Validator;
 use Illuminate\Http\Request;
@@ -99,6 +101,21 @@ class AgendaController extends Controller
             return redirect('kinerja');
         }
 
+        // ===========================================================================================
+        // Proses read, push notif & log activity ////////////////////////////////////////////////////
+        // Jika sudah melihat halaman agenda maka tasknya (T10, N5, N7) selesai
+        if (in_array($request->kode, ['T10','N5','N7'])) {
+            NotifHelper::read_notif(
+                Auth::user()->id, // receiver_id
+                NULL, // klien_id
+                $request->kode, // kode
+                $request->type_notif, // type_notif
+                $request->agenda_id // agenda_id
+            );
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////
+
+
         return view('agenda.kinerja_detail');
     }
 
@@ -110,8 +127,7 @@ class AgendaController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
-        try {
+        // try {
             $validator = Validator::make($request->all(), [
                 'judul_kegiatan' => 'required',
                 'tanggal_mulai' => 'required',
@@ -121,6 +137,11 @@ class AgendaController extends Controller
                 {
                     throw new Exception($validator->errors());
                 }
+
+                // untuk kebutuhan notifikasi
+                $klien = Klien::where('id', $request->klien_id)->first();
+                $tahun = date('Y', strtotime($request->tanggal_mulai));
+                $bulan = date('m', strtotime($request->tanggal_mulai));
 
                 //simpan data agenda
                 $proses = Agenda::updateOrCreate(['uuid' => $request->uuid],[
@@ -132,12 +153,52 @@ class AgendaController extends Controller
                     'created_by'   => Auth::user()->id
                 ]);
 
+                $perubahan = array_keys($proses->getChanges());
+                $variabel_agenda = ['klien_id', 'judul_kegiatan', 'tanggal_mulai', 'jam_mulai', 'keterangan'];
+                if (count(array_intersect($perubahan, $variabel_agenda)) > 0) {
+                    // jika ada perubahan (selain created_by, updated_at) maka kirim notif
+                    // ===========================================================================================
+                    //Proses read, push notif & log activity ////////////////////////////////////////////////////
+                    //push notifikasi ///////////////////////////////////////////////////////////////////////////
+                    //kirim ke seluruh user yang ada di agenda
+                    foreach ($request->user_id as $value) {
+                        NotifHelper::push_notif(
+                            $value , //receiver_id
+                            ($klien && $klien->id) ? $klien->id : NULL, //klien_id
+                            'T10', //kode
+                            'task', //type_notif
+                            ($klien && $klien->no_klien) ? $klien->no_klien : NULL, //noregis
+                            Auth::user()->name, //from
+                            Auth::user()->name.' telah merubah agenda yang berkaitan dengan anda', //message
+                            ($klien && $klien->nama) ? $klien->nama : NULL,  //nama korban 
+                            ($klien && $klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
+                            url('/kinerja/detail?tahun='.$tahun.'&bulan='.$bulan.'&user_id='.$value.'&row-agenda='.$proses->uuid.'&kode=T10&type_notif=task&agenda_id='.$proses->id), //url
+                            0, //kirim ke diri sendiri 0 / 1
+                            Auth::user()->id, // created_by
+                            $proses->id // agenda_id
+                        );
+                        //write log activity ////////////////////////////////////////////////////////////////////////
+                        $petugas = User::where('id', $value)->first();
+                        LogActivityHelper::push_log(
+                            //message
+                            Auth::user()->name.' merubah agenda '.$request->judul_kegiatan,
+                            //klien_id
+                            ($klien && $klien->id)? $klien->id : NULL
+                        );
+                    }
+                    /////////////////////////////////////////////////////////////////////////////////////////////
+
+                }
+
                 $jumlah_agenda = Agenda::where('tanggal_mulai', $request->tanggal_mulai)
                                         ->count();
                 $proses->jumlah_agenda = $jumlah_agenda." Agenda"; //untuk fullcalendar
 
                 $hapus_user = 1;
                 if (!empty($request->user_id)) {
+                    $petugas_lama = TindakLanjut::where('agenda_id', $proses->id)->pluck('created_by')->toArray();
+                    $petugas_baru = array_diff($request->user_id, $petugas_lama);
+                    $petugas_baru = array_values($petugas_baru);
                     // input tindak_lanjut
                     foreach ($request->user_id as $value) {
                         if (!isset($request->uuid)) { 
@@ -163,12 +224,13 @@ class AgendaController extends Controller
 
                         if ($value == Auth::user()->id) {
                             // jika edit dan id usernya adalah dirinya sendiri meka edit 
-                            TindakLanjut::where('created_by', $value)->where('agenda_id', $proses->id)->update([
-                                'lokasi' => $request->lokasi,
-                                'tanggal_selesai' => $request->tanggal_mulai, //tanggal selesai = tanggal mulai, karna kita main jadwanya per tanggal
-                                'jam_selesai' => $request->jam_selesai,
-                                'catatan' => $request->catatan
-                            ]);
+                            $perubahan_tl = TindakLanjut::where('created_by', $value)->where('agenda_id', $proses->id)
+                                                        ->update([
+                                                            'lokasi' => $request->lokasi,
+                                                            'tanggal_selesai' => $request->tanggal_mulai, //tanggal selesai = tanggal mulai, karna kita main jadwanya per tanggal
+                                                            'jam_selesai' => $request->jam_selesai,
+                                                            'catatan' => $request->catatan
+                                                        ]);
 
                             if (isset($request->dokumen_pendukung)) {
                                 foreach ($request->dokumen_pendukung as $value_dokumen) {
@@ -181,6 +243,21 @@ class AgendaController extends Controller
                             $hapus_user = 0;
                         }
                     }
+                }else{
+                    // jika tidak ada orang sama sekali maka hapus agenda, tindak lanjut dan buat semua notif read
+                    $agenda = Agenda::where('uuid', $request->uuid)->first();
+                    // hapus TL
+                    TindakLanjut::where('agenda_id', $agenda->id)->delete();
+                    // hapus agenda 
+                    $agenda->delete();
+                    // read all notif
+                    NotifHelper::read_notif(
+                        0, // receiver_id
+                        NULL, // klien_id
+                        'T9', // kode ini request dari link 
+                        'task', // type_notif
+                        $proses->id // agenda_id. ini bisa dikosongkan karna defaultnya NULL
+                    );
                 }
                 // jika tidak ada user_id sesuai dengan yg login, berarti hapus user_id yg login pada tabel tindak lanjut
                 // tidak bisa hapus agenda orang lain
@@ -191,38 +268,104 @@ class AgendaController extends Controller
              // ===========================================================================================
             //Proses read, push notif & log activity ////////////////////////////////////////////////////
             //push notifikasi ///////////////////////////////////////////////////////////////////////////
-            // $klien = Klien::where('id', $request->klien_id)->whereNull('deleted_at')->first();
-            // //kirim ke seluruh user yang ada di agenda
-            // foreach ($request->user_id as $value) {
-            //     if ($value == Auth::user()->id) {
-            //         $message = 'Anda telah membuat agenda. Silahkan buat laporan tindak lanjutnya';
-            //     }else{
-            //         $message = Auth::user()->name.' membuat agenda untuk anda. Silahkan buat laporan tindak lanjutnya';
-            //     }
-            //     NotifHelper::push_notif(
-            //         $value , //receiver_id
-            //         $klien->id ? $klien->id : '', //klien_id
-            //         'T9', //kode
-            //         'task', //type_notif
-            //         $klien->no_klien ? $klien->no_klien : '', //noregis
-            //         Auth::user()->name, //from
-            //         $message, //message
-            //         $klien->nama ? $klien->nama : '',  //nama korban 
-            //         isset($klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
-            //         url('/kinerja/detail/'.$klien->uuid.'?tab=settings&kolom-terminasi=1'), //url
-            //         1, //kirim ke diri sendiri 0 / 1
-            //         Auth::user()->id //created_by
-            //     );
-            // }
-            // //write log activity ////////////////////////////////////////////////////////////////////////
-            // LogActivityHelper::push_log(
-            //     //message
-            //     $message_log,
-            //     //klien_id
-            //     $klien->id 
-            // );
-            /////////////////////////////////////////////////////////////////////////////////////////////
+            //kirim ke seluruh user yang ada di agenda
+            $send_notif = 1;
+            $send_log = 1;
+            if (!empty($request->user_id)) {
+                foreach ($request->user_id as $value) {
+                    $petugas = User::where('id', $value)->whereNull('deleted_at')->first();
+                    if ($hapus_user) {
+                    // jika hapus sama dengan 1 
+                        $message_notif = Auth::user()->name.' telah menghapus dirinya dari agenda "'.$request->judul_kegiatan.'" tanggal '.$request->tanggal_mulai;
+                        $kode = 'N7';
+                        $type_notif = 'notif';
+                        $url = url('/kinerja/detail?tahun='.$tahun.'&bulan='.$bulan.'&user_id='.$value.'&row-agenda='.$proses->uuid.'&kode='.$kode.'&type_notif='.$type_notif.'&agenda_id='.$proses->id);
+                        $kirim_ke_diri = 0;
 
+                        $message_log = Auth::user()->name.' menghapus dirinya dari agenda "'.$request->judul_kegiatan.'" tanggal '.$request->tanggal_mulai;
+                    }else if (!$request->uuid || ($request->uuid && !empty($petugas_baru))){
+                        // jika tidak ada uuidnya berarti tambah, atau kalaupun edit jika ada $petugas barunya maka kirim notif ini
+                        if ($value == Auth::user()->id) {
+                            $message_notif = 'Anda telah membuat agenda untuk diri anda. Silahkan buat laporan tindak lanjutnya';
+                        } else {
+                            $message_notif = Auth::user()->name.' telah membuat agenda untuk anda. Silahkan buat laporan tindak lanjutnya';
+                        }
+
+                        $kode = 'T9';
+                        $type_notif = 'task';
+                        $url = url('/kinerja/detail?tahun='.$tahun.'&bulan='.$bulan.'&user_id='.$value.'&row-agenda='.$proses->uuid.'&kode='.$kode.'&type_notif='.$type_notif.'&agenda_id='.$proses->id);
+                        $kirim_ke_diri = 1;
+                        $message_log = Auth::user()->name.' membuat agenda untuk '.$petugas->name;
+                        if (!(in_array($value, $petugas_baru))) {
+                            // jika id petugas yang sedang dilooping tidak ada di array petugas baru maka jangan kirim notif
+                            $send_notif = 0;
+                            $send_log = 0;
+                        }
+                    }else if($request->jam_selesai && $request->klien_id){
+                        // jika ada jam selesainya maka menginputkan kinerja maka kirim ke MK (untuk kasus penjadawalan layanan)
+                        $message_notif = Auth::user()->name.' telah mengupdate laporan tindak lanjut. Silahkan lihat isinya untuk update informasi kasus.';
+                        $kode = 'N5';
+                        $type_notif = 'notif';
+                        $url = url('/kasus/show/'.$klien->uuid.'?tab=kasus-layanan&row-layanan='.$proses->uuid.'&kode='.$kode.'&type_notif='.$type_notif.'&agenda_id='.$proses->id);
+                        $kirim_ke_diri = 0;
+
+                        if ($petugas->jabatan != 'Manajer Kasus') {
+                            // jika jabatannya bukan MK maka tidak kirim notif, hanya kirim ke MK saja
+                            // $kirim_ke_diri bukan untuk ini
+                            $send_notif = 0;
+                        }
+
+                        $message_log = Auth::user()->name.' membuat laporan tindak lanjut';
+                    }else{
+                        // jika hanya klik simpan tanpa melakukan apapun.
+                        // menambahkan petugas di agenda yg sudah ada itu sudah di handle di atas
+                        $send_notif = 0;
+                        $send_log = 0;
+                    }
+                    if ($send_notif) {
+                        // jika perlu kirim notif maka kirim
+                        NotifHelper::push_notif(
+                            $value , //receiver_id
+                            ($klien && $klien->id) ? $klien->id : NULL, //klien_id
+                            $kode, //kode
+                            $type_notif, //type_notif
+                            ($klien && $klien->no_klien) ? $klien->no_klien : NULL, //noregis
+                            Auth::user()->name, //from
+                            $message_notif, //message
+                            ($klien && $klien->nama) ? $klien->nama : NULL,  //nama korban 
+                            ($klien && $klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
+                            $url, //url
+                            $kirim_ke_diri, // kirim ke diri sendiri 0 / 1
+                            Auth::user()->id, // created_by
+                            $proses->id // agenda_id
+                        );
+                    }
+                    //write log activity ////////////////////////////////////////////////////////////////////////
+                    if ($send_log) {
+                        LogActivityHelper::push_log(
+                            //message
+                            $message_log,
+                            //klien_id
+                            ($klien && $klien->id)? $klien->id : NULL
+                        );
+                    }
+
+                    // reset flag lagi
+                    $send_notif = 1;
+                    $send_log = 1;
+                }
+            }
+            if ($request->jam_selesai) {
+                // jika petugas sudah membuat tindak lanjut maka tasknya (T9) selesai
+                NotifHelper::read_notif(
+                    Auth::user()->id, // receiver_id
+                    NULL, // klien_id
+                    'T9', // kode ini request dari link 
+                    'task', // type_notif
+                    $proses->id // agenda_id. ini bisa dikosongkan karna defaultnya NULL
+                );
+            }
+            /////////////////////////////////////////////////////////////////////////////////////////////
             //return response
             return response()->json([
                 'success' => true,
@@ -230,10 +373,10 @@ class AgendaController extends Controller
                 'message' => 'Data Berhasil Disimpan!',
                 'data'    => $proses  
             ]);
-        } catch (Exception $e){
-            return response()->json(['msg' => $e->getMessage()]);
-            die();
-        }
+        // } catch (Exception $e){
+        //     return response()->json(['msg' => $e->getMessage()]);
+        //     die();
+        // }
     }
 
     /**
