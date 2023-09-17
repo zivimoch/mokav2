@@ -141,7 +141,7 @@
           $(row).attr('id', data.uuid);
       },
       "columns": [
-        {"data": "tanggal_pelaporan"},
+        {"data": "tanggal_pelaporan_formatted"},
         {"data": "no_klien"},
         {"data": "nama"},
         {

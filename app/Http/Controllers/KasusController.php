@@ -7,6 +7,7 @@ use App\Helpers\NotifHelper;
 use App\Models\Asesmen;
 use App\Models\Kasus;
 use App\Models\Klien;
+use App\Models\Monitoring;
 use App\Models\Pelapor;
 use App\Models\PersetujuanIsi;
 use App\Models\PersetujuanTemplate;
@@ -18,6 +19,7 @@ use Laravolt\Indonesia\Models\Province;
 use Yajra\DataTables\Facades\DataTables;
 use Validator;
 use Exception;
+use Illuminate\Support\Facades\Schema;
 
 class KasusController extends Controller
 {
@@ -33,7 +35,11 @@ class KasusController extends Controller
             if (Auth::user()->supervisor_id != 0) { // petugas penerima pengaduan tidak masalah bisa melihat semua kasus
                 $data->where('c.user_id', Auth::user()->id);
             }
-            return DataTables::of($data->get())->make(true);
+            $datas = $data->get();
+            foreach ($datas as $datas2) {
+                $datas2->tanggal_pelaporan_formatted = date('d M Y', strtotime($datas2->tanggal_pelaporan));
+            }
+            return DataTables::of($datas)->make(true);
        }
 
        return view('kasus.index');
@@ -174,15 +180,17 @@ class KasusController extends Controller
                                         ->where('a.klien_id', $klien->id)
                                         ->whereNull('a.deleted_at')
                                         ->whereNull('b.deleted_at')
+                                        ->whereNotNull('b.id')
                                         ->count();
         $detail['jumlah_layanan_selesai'] = DB::table(('agenda as a'))
                                         ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
                                         ->where('a.klien_id', $klien->id)
                                         ->whereNull('a.deleted_at')
                                         ->whereNull('b.deleted_at')
-                                        ->whereNotNull('b.tanggal_selesai')
+                                        ->whereNotNull('b.jam_selesai')
+                                        ->whereNotNull('b.id')
                                         ->count();
-
+// dd($detail);
        //Cek kelengkapan kasus
        // 1. Apakah kasus terdiri dari minimal 1 Petugas Penerima Pengaduan, 1 Supervisor & 1 MK
        $kelengkapan_petugas = $this->check_kelengkapan_petugas($klien->id);
@@ -198,7 +206,7 @@ class KasusController extends Controller
             Auth::user()->id, // receiver_id
             $klien->id, // klien_id
             $request->kode, // kode ini request dari link 
-            $request->tipe, // type_notif
+            $request->type_notif, // type_notif
             $request->agenda_id // agenda_id
         );
         /////////////////////////////////////////////////////////////////////////////////////////////
@@ -327,6 +335,52 @@ class KasusController extends Controller
         }
     }
 
+    public function check_kelengkapan_data($klien_id)
+    {
+        // kelengkapan klien 
+        $klien = Klien::where('id', $klien_id)->first();
+        $nullKlien = [];
+        $atribut_klien = $klien->getAttributes();
+        foreach ($atribut_klien as $key => $value) {
+            if ($value === null) {
+                $nullKlien[] = $key;
+            }
+        }
+        $removeKlien = ["desil", "kelas", "pekerjaan", "penghasilan", "status_kawin", "anak_ke", "jumlah_anak", "nama_ibu", "tempat_lahir_ibu", "tanggal_lahir_ibu", "nama_ayah", "tempat_lahir_ayah", "tanggal_lahir_ayah", "created_by", "created_at", "updated_at", "deleted_at"];
+        $nullKlien = array_values(array_diff($nullKlien, $removeKlien));
+        $kolomKlien = count(Schema::getColumnListing('klien'));
+
+        // kelengkapan kasus
+        $kasus = Kasus::where('id', $klien->kasus_id)->first();
+        $nullKasus = [];
+        $atribut_kasus = $kasus->getAttributes();
+        foreach ($atribut_kasus as $key => $value) {
+            if ($value === null) {
+                $nullKasus[] = $key;
+            }
+        }
+        $removeKasus = ["created_by", "created_at", "updated_at", "deleted_at"];
+        $nullKasus = array_values(array_diff($nullKlien, $removeKasus));
+        $kolomKasus = count(Schema::getColumnListing('kasus'));
+
+        // kelengkapan pelapor
+        $pelapor = Pelapor::where('kasus_id', $klien->kasus_id)->first();
+        $nullPelapor = [];
+        $atribut_pelapor = $pelapor->getAttributes();
+        foreach ($atribut_pelapor as $key => $value) {
+            if ($value === null) {
+                $nullPelapor[] = $key;
+            }
+        }
+        $removePelapor = ["desil", "created_by", "created_at", "updated_at", "deleted_at"];
+        $nullPelapor = array_values(array_diff($nullPelapor, $removePelapor));
+        $kolomPelapor = count(Schema::getColumnListing('pelapor'));
+
+        $data = array('nullKlien' => $nullKlien, 'kolomKlien' => $kolomKlien, 'nullKasus' => $nullKasus, 'kolomKasus' => $kolomKasus, 'nullPelapor' => $nullPelapor, 'kolomPelapor' => $kolomPelapor);
+
+        return $data;
+    }
+
     public function check_kelengkapan_petugas($klien_id)
     {
         $supervisor = DB::table('petugas as a')
@@ -349,14 +403,11 @@ class KasusController extends Controller
         }
     }
 
-    public function check_kelengkapan_spp($klien_id)
+    public function check_kelengkapan_persetujuan_spv($klien_id)
     {
-        $persetujuan_template = PersetujuanTemplate::where('kategori', 'persetujuan pelayanan')->pluck('id');
-        $persetujuan_isi = PersetujuanIsi::whereIn('persetujuan_template_id', [$persetujuan_template])
-                                        ->where('klien_id', $klien_id)
-                                        ->whereNull('deleted_at')
-                                        ->count();
-        if ($persetujuan_isi > 0) {
+        // jika pada klien ada no klien artinya sudah di approve
+        $klien = Klien::where('id', $klien_id)->first();
+        if ($klien->no_klien != NULL) {
             return true;
         } else {
             return false;
@@ -373,6 +424,57 @@ class KasusController extends Controller
         } else {
             return false;
         }
+    }
+
+    public function check_kelengkapan_spp($klien_id)
+    {
+        $persetujuan_template = PersetujuanTemplate::where('kategori', 'persetujuan pelayanan')->pluck('id');
+        $persetujuan_isi = PersetujuanIsi::whereIn('persetujuan_template_id', [$persetujuan_template])
+                                        ->where('klien_id', $klien_id)
+                                        ->whereNull('deleted_at')
+                                        ->count();
+        if ($persetujuan_isi > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function check_kelengkapan_perencanaan($klien_id)
+    {
+        // perencanaan intervensi
+        $perencanaan = DB::table(('agenda as a'))
+                            ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
+                            ->where('a.klien_id', $klien_id)
+                            ->whereNull('a.deleted_at')
+                            ->whereNull('b.deleted_at')
+                            ->whereNotNull('b.id')
+                            ->count();
+        // return jumlah perencanaan untuk menghitung persentase
+        return $perencanaan;
+    }
+
+    public function check_kelengkapan_pelaksanaan($klien_id)
+    {
+        // pelaksanaan intervensi
+        $pelaksanaan = DB::table(('agenda as a'))
+                        ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
+                        ->where('a.klien_id', $klien_id)
+                        ->whereNull('a.deleted_at')
+                        ->whereNull('b.deleted_at')
+                        ->whereNotNull('b.jam_selesai')
+                        ->whereNotNull('b.id')
+                        ->count();
+        // return jumlah pelaksanaan untuk menghitung persentase
+        return $pelaksanaan;
+    }
+
+    public function check_kelengkapan_monitoring($klien_id)
+    {
+        // pelaksanaan monitoring
+        $monitoring = Monitoring::where('klien_id', $klien_id)->count();
+        // return jumlah monitoring
+        return $monitoring;
     }
 
     public function generate_noreg()

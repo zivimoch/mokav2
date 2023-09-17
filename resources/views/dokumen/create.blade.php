@@ -157,19 +157,15 @@
                         </div>
                         <div class="form-card">
                             <label>Agenda Terkait </label>
-                            <span style="font-size:13px">(Belum membuat agenda? <a href="#" type="button" data-toggle="modal" data-target="#ajaxModal">klik disini</a>)</span>
+                            <span style="font-size:13px">(Belum membuat agenda? <a href="#" type="button" onclick="showModalAgenda('{{ date('Y-m-d') }}',0)">klik disini</a>)</span>
                             <select name="uuid_tindak_lanjut" class="form-control select2bs4" id="uuid_tindak_lanjut" style="width:100%">
-                                <option value="" selected>Tidak ada agenda terkait yang dipilih</option>
-                                @foreach ($agenda as $item)
-                                    <option value="{{ $item->uuid_tindak_lanjut }}" >[ {{ $item->tanggal_mulai ? date('d M Y', strtotime($item->tanggal_mulai)) : '' }} | {{ $item->jam_mulai }} ] {{ $item->judul_kegiatan }}</option>
-                                @endforeach
                             </select>
                         </div>
                         </br>
                         <div id="tindak_lanjut" style="display: none">
                             <div class="form-group">
                                 <label>Detail Agenda</label>
-                            <span style="font-size:13px">(<a href="">edit agenda</a>)</span>
+                            {{-- <span style="font-size:13px">(<a href="{{ url('/kinerja/detail?tahun='.$tahun.'&bulan='.$bulan.'&user_id='.$value.'&row-agenda='.$proses->uuid.'&kode=T10&type_notif=task&agenda_id='.$proses->id) }}">edit agenda</a>)</span> --}}
                             <div class="col-md-12" style="background-color:aliceblue; padding:10px">
                                     <table>
                                         <tr>
@@ -177,28 +173,28 @@
                                                 Judul Agenda
                                             </td>
                                             <td> : </td>
-                                            <td id="judul_kegiatan"></td>
+                                            <td id="judul_kegiatan_dokumen"></td>
                                         </tr>
                                         <tr>
                                             <td>
                                                 Tanggal Mulai
                                             </td>
                                             <td> : </td>
-                                            <td id="tanggal_mulai"></td>
+                                            <td id="tanggal_mulai_dokumen"></td>
                                         </tr>
                                         <tr>
                                             <td>
                                                 Jam Mulai
                                             </td>
                                             <td> : </td>
-                                            <td id="jam_mulai"></td>
+                                            <td id="jam_mulai_dokumen"></td>
                                         </tr>
                                         <tr>
                                             <td>
                                                 Keterangan
                                             </td>
                                             <td> : </td>
-                                            <td id="keterangan"></td>
+                                            <td id="keterangan_dokumen"></td>
                                         </tr>
                                         <tr>
                                             <td>
@@ -214,23 +210,23 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Lokasi Kegiatan</label>
-                                        <input type="text" name="lokasi" class="form-control" id="lokasi">
+                                        <input type="text" name="lokasi" class="form-control" id="lokasi_dokumen">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Jam selesai</label>
+                                        <label style="width: 100%">Jam selesai</label>
                                         <?php
                                         date_default_timezone_set("asia/jakarta");
                                         $jam_selesai = date("h:i");
                                         ?>
-                                        <input type="time" name="jam_selesai" class="form-control" id="jam_selesai" value="{{ $jam_selesai }}">
+                                        <input type="text" name="jam_selesai" class="form-control time-picker" id="jam_selesai_dokumen" data-precision="5" value="{{ $jam_selesai }}" style="width:100%">
                                     </div>
                                 </div>
                             </div>
                           <div class="form-group">
                               <label>Catatan</label>
-                              <textarea name="catatan" class="form-control" id="catatan" cols="30" rows="2"></textarea>
+                              <textarea name="catatan" class="form-control" id="catatan_dokumen" cols="30" rows="2"></textarea>
                           </div>
                           <span style="font-size: 14px">*Laporan Tindak Lanjut tersimpan pada tanggal : <span id='ct' ></span></span>
                         </br>
@@ -315,106 +311,6 @@
     </div>
     <!-- /.card -->
 </div>
-
-<!-- Modal -->
-<div class="modal fade" id="ajaxModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-  
-        <div id="overlay" class="overlay dark">
-          <div class="cv-spinner">
-            <span class="spinner"></span>
-          </div>
-        </div>
-        
-        <div class="modal-header">
-          <h5 class="modal-title" id="modelHeading">Tambah Agenda</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-          <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
-          <span id="message"></span>
-        </div>
-        <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-          <h4><i class="icon fa fa-check"></i> Success!</h4>
-          Data berhasil disimpan.
-        </div>
-        <div class="modal-body">
-        <input type="hidden" name="uuid" id="uuid">
-        <div class="form-group">
-            <label><span class="text-danger">*</span>Judul kegiatan</label>
-            <input type="text" class="form-control required-field-agenda" id="judul_kegiatan_add">
-            <div class="invalid-feedback" id="valid-judul_kegiatan">
-              Judul Kegiatan wajib diisi.
-            </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-              <div class="form-group">
-                <label><span class="text-danger">*</span>Tanggal</label>
-                <input type="date" class="form-control required-field-agenda" id="tanggal_mulai_add">
-                <div class="invalid-feedback" id="valid-tanggal_mulai">
-                  Tanggal Mulai wajib diisi.
-                </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-              <div class="form-group">
-                  <label><span class="text-danger">*</span>Jam mulai</label>
-                  <input type="time" class="form-control required-field-agenda" id="jam_mulai_add">
-                  <div class="invalid-feedback" id="valid-jam_mulai">
-                    Jam Mulai wajib diisi.
-                  </div>
-              </div>
-          </div>
-        </div>
-        <div class="form-group">
-            <label>Keterangan</label>
-            <textarea name="" class="form-control" id="keterangan_add" cols="30" rows="2"></textarea>
-        </div>
-        <div class="form-group">
-            <label>Penjadwalan Layanan</label>
-            <select name="" class="form-control select2bs4" id="penjadwalan_layanan" onchange="penjadwalan_layanan()">
-              <option value="0">Tidak</option>
-              <option value="1">Ya</option>
-            </select>
-        </div>
-        <div class="form-group" id="klien_id">
-          <label>Pilih Klien</label>
-          <select class="form-control select2bs4" style="width: 100%;" id="klien_id_add">
-            <option>silahkan pilih</option>
-            <option value="1">Tini</option>
-            <option value="2">Tina</option>
-            <option value="3">Toni</option>
-            <option value="4">Tono</option>
-            <option value="5">Tino</option>
-            <option value="6">Tanos</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label><span class="text-danger">*</span>Tag</label>
-          <select class="select2bs4" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id_add">
-          <option value="{{ Auth::user()->id }}" selected>{{ Auth::user()->name }}</option>
-          <option value="22">Alexander Graham Bell</option>
-          <option value="23">Thomas Alfa Edison</option>
-          <option value="24">Tony Stark</option>
-          <option value="25">Rudy Tabootie</option>
-          </select>
-          <div class="invalid-feedback" id="valid-user_id">
-            Minimal tag 1 orang.
-          </div>
-        </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success btn-block" id="submit2"><i class="fa fa-check"></i> Simpan</button>
-        </div>
-      </div>
-    </div>
-  </div>
 <script src="{{ asset('source') }}/js/wizard.js"></script>
 <script src="{{ asset('source') }}/js/main.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
@@ -423,10 +319,9 @@
 <script src="{{ asset('/source/js/validation.js') }}"></script>
 
 <script>
-    $(function () {
-        display_ct();
-    });
-      //Initialize Select2 Elements
+
+$(document).ready(function () {
+    //Initialize Select2 Elements
   $('.select2bs4').select2({
       theme: 'bootstrap4'
       });
@@ -434,6 +329,10 @@
     tags: true,
     theme: 'bootstrap4'
   });  
+
+  $('#accordion-tindaklanjut').hide();
+  load_select2_agenda();
+});
 
   $('#uuid_tindak_lanjut').on('change', function() {
     uuid_tindak_lanjut = $('#uuid_tindak_lanjut').val();
@@ -449,14 +348,14 @@
           
             if (response.success) {
                 agenda = response.data;
-                $('#lokasi').val(agenda.lokasi);
-                $('#jam_selesai').val(agenda.jam_selesai);
-                $('#catatan').val(agenda.catatan);
+                $('#lokasi_dokumen').val(agenda.lokasi);
+                $('#jam_selesai_dokumen').val(agenda.jam_selesai);
+                $('#catatan_dokumen').val(agenda.catatan);
                 
-                $('#judul_kegiatan').html(agenda.judul_kegiatan);
-                $('#tanggal_mulai').html(agenda.tanggal_mulai);
-                $('#jam_mulai').html(agenda.jam_mulai);
-                $('#keterangan').html(agenda.keterangan);
+                $('#judul_kegiatan_dokumen').html(agenda.judul_kegiatan);
+                $('#tanggal_mulai_dokumen').html(agenda.tanggal_mulai);
+                $('#jam_mulai_dokumen').html(agenda.jam_mulai);
+                $('#keterangan_dokumen').html(agenda.keterangan);
                 if (agenda.nama == null) {
                     nama_klien = "<span style='color:red'>AGENDA INI BUKAN PENJADWALAN LAYANAN, TIDAK AKAN MASUK REKAPAN PELAYANAN KASUS.</span>";
                 }else{
@@ -473,83 +372,33 @@
     }
   })
 
-  function display_c(){
-        var refresh=1000; // Refresh rate in milli seconds
-        mytime=setTimeout('display_ct()',refresh)
-    }
-
-    function display_ct() {
-        var x = new Date()
-        var x1=x.getDate() + "-" + x.getMonth() + 1+ "-" +  x.getFullYear(); 
-        x1 = x1 + " " +  x.getHours( )+ ":" +  x.getMinutes() + ":" +  x.getSeconds();
-        document.getElementById('ct').innerHTML = x1;
-        display_c();
-    }
-
-
-$('#submit2').click(function() {
-  if(validateForm('agenda')){
-    let token   = $("meta[name='csrf-token']").attr("content");
-    $.ajax({
-      url: `/agenda/store/`,
-      type: "POST",
-      cache: false,
-      data: {
-        uuid: $('#uuid').val(),
-        judul_kegiatan: $('#judul_kegiatan_add').val(),
-        tanggal_mulai: $("#tanggal_mulai_add").val(),
-        jam_mulai: $("#jam_mulai_add").val(),
-        keterangan: $("#keterangan_add").val(),
-        klien_id: $("#klien_id_add").val(),
-        user_id: $("#user_id_add").val(),
-        _token: token
-      },
-      success: function (response){
-        if (response.success != true) {
-          $('#message').html(JSON.stringify(response));
-          $("#success-message").hide();
-          $("#error-message").show();
-        }else{
-          $('#message').html(response.message);
-          $("#success-message").show();
-          $("#error-message").hide();
-          location.reload();
-
-          // hapus semua inputan
-          $('#judul_kegiatan_add').val('');
-          $('#tanggal_mulai_add').val('');
-          $('#jam_mulai_add').val('');
-          $('#keterangan_add').val('');
-          $('#klien_id_add').val('');
-        }
-      },
-      error: function (response){
-        setTimeout(function(){
-          $("#overlay").fadeOut(300);
-        },500);
-
-        $('#message').html(JSON.stringify(response));
-        $("#success-message").hide();
-        $("#error-message").show();
-      }
-    }).done(function() { //loading submit form
-        setTimeout(function(){
-          $("#overlay").fadeOut(300);
-        },500);
+  function load_select2_agenda() {
+      let token   = $("meta[name='csrf-token']").attr("content");
+      $( "#uuid_tindak_lanjut" ).select2({
+         ajax: { 
+           url: "{{route('get_agenda')}}",
+           type: "post",
+           dataType: 'json',
+           delay: 250,
+           data: function (params) {
+             return {
+                _token: token,
+                search: params.term // search term
+             };
+           },
+           processResults: function (response) {
+            $("#overlay").hide();
+             return {
+               results: response
+             };
+           },
+           cache: false
+         }
+  
       });
-  }else{
-    $('#message').html('Mohon cek ulang data yang wajib diinput.');
-    $("#success-message").hide();
-    $("#error-message").show();
-  }
- });
-
- function penjadwalan_layanan() {
-    if ($('#penjadwalan_layanan').val() == 0) {
-      $("#klien_id").hide();
-    } else {
-      $("#klien_id").show();
     }
- }
+
 </script>
+    {{-- include modal agenda --}}
+@include('agenda.modal')
 @endsection

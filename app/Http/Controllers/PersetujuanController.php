@@ -140,6 +140,8 @@ class PersetujuanController extends Controller
             ];
     
             $proses = PersetujuanIsi::updateOrCreate(['uuid' => $request->uuid], $data);
+
+            $persetujuan_isi = PersetujuanIsi::where('uuid', $request->uuid)->first();
             
             // ===========================================================================================
             //Proses read, push notif & log activity ////////////////////////////////////////////////////
@@ -149,7 +151,7 @@ class PersetujuanController extends Controller
                 //message
                 'Klien mengisi Surat Pernyataan Persetujuan', 
                 //klien_id
-                $klien->id 
+                $persetujuan_isi->klien_id 
             );
             /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -179,7 +181,7 @@ class PersetujuanController extends Controller
 
         $klien = Klien::where('id', $persetujuan_isi->klien_id)->first();
 
-        return view('persetujuan.donepelayanan')
+        return view('persetujuan.donepelayanan',)
                 ->with('persetujuan_isi', $persetujuan_isi)
                 ->with('persetujuan_item', $persetujuan_item)
                 ->with('klien', $klien);

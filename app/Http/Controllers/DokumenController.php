@@ -106,16 +106,8 @@ class DokumenController extends Controller
                         ->groupBy('a.id')
                         ->first();
 
-        $agenda = DB::table('agenda as a')
-                        ->select(DB::raw('a.*, b.uuid as uuid_tindak_lanjut'))
-                        ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
-                        ->where('b.created_by', Auth::user()->id)
-                        ->orderBy('a.tanggal_mulai', 'DESC')
-                        ->orderBy('a.jam_mulai', 'DESC')
-                        ->get();
         return view('dokumen.create')
-                        ->with('agenda', $agenda)
-                        ->with('template', $template);
+                    ->with('template', $template);
     }
 
     /**

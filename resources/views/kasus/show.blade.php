@@ -65,64 +65,67 @@
 <h5><span class="float-right badge bg-danger btn-block">Pelengkapan Data</span></h5>
 </ul>
 </div>
-<div class="card {{ Request::get('kolom-kelengkapan') == 1 ? 'hightlighting' : '' }}" style="margin-top:-30px; margin-bottom:0px">
-    <div class="card-header" data-card-widget="collapse" style="cursor: pointer;">
-      <span class="card-title">
-        <b>Kelengkapan Kasus (6/6)</b>
-      </span>
-      <div class="card-tools">
-        <button type="button" class="btn btn-tool">
-          <i class="fa fa-chevron-down"></i>
-        </button>
-      </div>
-    </div>
-    <div class="card-body collapse {{ Request::get('kolom-kelengkapan') == 1 ? 'show' : '' }}">
-        <ol style="padding:15px; margin :-25px 0px -20px 0px">
-            <li>
-                Identifikasi <i class="fa fa-check"></i>
-                <ul style="margin-left: -25px">
-                    <li>
-                        Data Kasus (60%)
-                        <div class="progress progress-xs">
-                            <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+<div class="card" style="margin-top:-30px; margin-bottom:0px">
+    <div id="accordionKelengkapan" style="margin-bottom:-15px">
+        <div class="card card-light">
+        <div class="card-header {{ Request::get('kolom-kelengkapan') == 1 ? 'hightlighting' : '' }}">
+        <h4 class="card-title w-100">
+        <a class="d-block w-100" data-toggle="collapse" href="#collapseKelengkapan">
+        <b>Kelengkapan Kasus (6/6) <i class="fa fa-chevron-down"></i></b>
+        </a>
+        </h4>
+        </div>
+        <div id="collapseKelengkapan" class="collapse {{ Request::get('kolom-kelengkapan') == 1 ? 'show' : '' }} {{ Request::get('kolom-kelengkapan') == 1 ? 'hightlighting' : '' }}" data-parent="#accordionKelengkapan">
+        <div class="card-body">
+            <ol style="padding:15px; margin :-25px 0px -20px 0px">
+                <li>
+                    Identifikasi <i class="fa fa-check"></i>
+                    <ul style="margin-left: -25px">
+                        <li>
+                            Data Kasus (60%)
+                            <div class="progress progress-xs">
+                                <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                                </div>
                             </div>
+                        </li>
+                        <li>
+                            Persetujuan Supervisor <i class="far fa-check-circle"></i>
+                        </li>
+                        <li>
+                            Tanda Tangan SPP <i class="far fa-check-circle"></i>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    Asesmen <i class="fa fa-check"></i>
+                </li>
+                <li>
+                    Perencanaan Layanan <i class="fa fa-check"></i>
+                </li>
+                <li>
+                    @php
+                        if ($detail['jumlah_layanan']>0) {
+                            $progres_layanan = number_format(($detail['jumlah_layanan_selesai'] / $detail['jumlah_layanan']) * 100, 2);
+                        }else{
+                            $progres_layanan = 0;
+                        }
+                    @endphp
+                    Pelaksanaan Layanan ({{ $progres_layanan }}%)
+                    <div class="progress progress-xs">
+                        <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{ $progres_layanan }}%">
                         </div>
-                    </li>
-                    <li>
-                        Persetujuan Supervisor <i class="far fa-check-circle"></i>
-                    </li>
-                    <li>
-                        Tanda Tangan SPP <i class="far fa-check-circle"></i>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                Asesmen <i class="fa fa-check"></i>
-            </li>
-            <li>
-                Perencanaan Layanan <i class="fa fa-check"></i>
-            </li>
-            <li>
-                @php
-                    if ($detail['jumlah_layanan']>0) {
-                        $progres_layanan = number_format(($detail['jumlah_layanan_selesai'] / $detail['jumlah_layanan']) * 100, 2);
-                    }else{
-                        $progres_layanan = 0;
-                    }
-                @endphp
-                Pelaksanaan Layanan ({{ $progres_layanan }}%)
-                <div class="progress progress-xs">
-                    <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{ $progres_layanan }}%">
                     </div>
-                </div>
-            </li>
-            <li>
-                Monitoring <i class="fa fa-check"></i>
-            </li>
-            <li>
-                Terminasi <i class="fa fa-check"></i>
-            </li>
-        </ol>
+                </li>
+                <li>
+                    Monitoring <i class="fa fa-check"></i>
+                </li>
+                <li>
+                    Terminasi <i class="fa fa-check"></i>
+                </li>
+            </ol>
+        </div>
+        </div>
+        </div>
     </div>
   </div>
 </div>
@@ -676,13 +679,13 @@
         </div>
         <div class="tab-pane {{ Request::get('tab') == 'kasus-asesmen' ? 'active' : '' }}" id="kasus-asesmen" role="tabpanel" aria-labelledby="kasus-asesmen-tab">
             
-            <div class="post clearfix" style="margin: 0px">
+        <div class="post clearfix" style="margin: 0px">
             <b>RIWAYAT KEJADIAN</b>
             </br>
             </br>
             <div style="overflow-x: scroll">
             <input type="hidden" id="uuid_riwayat_hightlight" value="{{ Request::get('row-riwayat') }}">
-            <table id="tabelRiwayat" class="table table-sm table-bordered  table-hover" style="cursor:pointer; color:black">
+            <table id="tabelRiwayat" class="table table-sm table-bordered table-hover" style="cursor:pointer; color:black">
                 <thead>
                 <tr>
                 <th>Waktu Kejadian</th>
@@ -723,7 +726,7 @@
         <br>
         <div style="overflow-x: scroll">
             <input type="hidden" id="uuid_layanan_hightlight" value="{{ Request::get('row-layanan') }}">
-            <table id="tabelLayanan" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
+            <table id="tabelLayanan" class="table table-sm table-bordered  table-hover" style="cursor:pointer; color:black">
                 <thead>
                 <tr>
                 <th>Waktu Kegiatan</th>
@@ -743,6 +746,11 @@
                 </tfoot>
             </table>
         </div>
+        <br>
+        @if (Auth::user()->jabatan == 'Manajer Kasus')
+        <div id="kolomMonitoring"></div>
+        <button type="submit" class="btn btn-block btn-default" data-toggle="modal" data-target="#tambahMonitoringModal"><i class="fas fa-plus"></i> Tambah Laporan Monitoring</button>
+        @endif
     </div>
     </div>
 
@@ -960,58 +968,100 @@
                 </form>
         </div>
         <div class="tab-pane {{ Request::get('tab') == 'settings' ? 'active' : '' }}" id="kasus-settings" role="tabpanel" aria-labelledby="kasus-settings-tab">
-            @if(Auth::user()->jabatan == 'Supervisor Kasus')
-            <div class="row {{ Request::get('persetujuan-supervisor') == 1 ? 'hightlighting' : '' }}">
-                <div class="col-md-12 {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'hightlighting' : '' }}">
-                    <label>Apakah anda ingin menyetujui kasus ini?</label>
-                </div>
-                @if(!($detail['kelengkapan_petugas']))
-                <div class="col-md-12">
-                    <div class="alert alert-danger">
-                    <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
-                    Petugas Penerima Pengaduan belum melengkapi kelengkapan kasus. Minimal harus ada 1 Supervisor, 1 Manajer Kasus dan 1 Petugas Penerima Pengaduan.
-                    </div>
-                </div>
-                @else
-                <div class="col-md-6">
-                    <form action="{{ route('kasus.approval', $klien->uuid) }}" method="POST">
-                    @csrf
-                    <input type="hidden" name='approval' value="1">
-                    <button type="submit" class="btn btn-block btn-success"><i class="fas fa-check"></i> Ya dan buat nomor regis klien</button>
-                    </form>
-                </div>
-                <div class="col-md-6">
-                    <form action="{{ route('kasus.approval', $klien->uuid) }}" method="POST">
-                    @csrf
-                    <input type="hidden" name='approval' value="0">
-                    <button type="submit" class="btn btn-block btn-danger"><i class="fas fa-times"></i> Tidak dan kirim notif ke MK untuk terminasi</button>
-                    </form>
-                </div>
-                @endif
-            </div>
-            @endif
-            @if(Auth::user()->jabatan == 'Manajer Kasus')
-            <div class="row {{ Request::get('kolom-terminasi') == 1 ? 'hightlighting' : '' }}">
-                <div class="col-md-12 {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'hightlighting' : '' }}">
-                    <form action="{{ route('kasus.approval', $klien->uuid) }}" method="POST">
-                    @csrf
-                    <input type="hidden" name='approval' value="0">
-                    <button type="submit" class="btn btn-block btn-danger"><i class="fas fa-times"></i> Terminasi Kasus</button>
-                    </form>
-                </div>
-            </div>
-            @endif
-            @if(Auth::user()->jabatan == 'Penerima Pengaduan')
-            <div class="row {{ Request::get('kolom-terminasi') == 1 ? 'hightlighting' : '' }}">
-                <div class="col-md-12 {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'hightlighting' : '' }}">
-                    <form action="{{ route('kasus.approval', $klien->uuid) }}" method="POST">
-                    @csrf
-                    <input type="hidden" name='approval' value="0">
-                    <button type="submit" class="btn btn-block btn-warning"><i class="fas fa-times"></i> Arsipkan</button>
-                    </form>
-                </div>
-            </div>
-            @endif
+            <table class="table table-bottom table-sm">
+                <tr>
+                    <td style="width: 200px"><b>Arsipkan Kasus<b></td>
+                    <td>
+                        @if(Auth::user()->jabatan == 'Penerima Pengaduan')
+                            <input type="checkbox" name="arsipkan" class="btn-sm" 
+                            checked 
+                            data-bootstrap-switch 
+                            data-on-text="Aktif"
+                            data-off-text="Diarsipkan"
+                            data-off-color="danger" 
+                            data-on-color="success">
+                            <br>
+                        @endif
+                        <span>*status kasus saat ini sedang aktif, akan muncul di pencarian kasus</span>
+                    </td>
+                </tr>
+                <tr class="{{ Request::get('persetujuan-supervisor') == 1 ? 'hightlighting' : '' }}">
+                    <td style="width: 200px"><b>Approval<b></td>
+                    <td>
+                        <div class="row">
+                            <div class="col-md-12 {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'hightlighting' : '' }}">
+                                <label>Apakah anda ingin menyetujui kasus ini?</label>
+                            </div>
+                            @if(Auth::user()->jabatan == 'Supervisor Kasus')
+                                @if(!($detail['kelengkapan_petugas']))
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger">
+                                    Petugas Penerima Pengaduan belum melengkapi kelengkapan kasus. Minimal harus ada 1 Supervisor, 1 Manajer Kasus dan 1 Petugas Penerima Pengaduan.
+                                    </div>
+                                </div>
+                                @else
+                                <div class="col-md-6">
+                                    <form action="{{ route('kasus.approval', $klien->uuid) }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name='approval' value="1">
+                                    <button type="submit" class="btn btn-block btn-success btn-sm"><i class="fas fa-check"></i> Ya dan buat nomor regis klien</button>
+                                    </form>
+                                </div>
+                                <div class="col-md-6">
+                                    <form action="{{ route('kasus.approval', $klien->uuid) }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name='approval' value="0">
+                                    <button type="submit" class="btn btn-block btn-danger btn-sm"><i class="fas fa-times"></i> Tidak dan minta MK untuk terminasi</button>
+                                    </form>
+                                </div>
+                                @endif
+                            @endif
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 200px"><b>Terminasi Kasus<b></td>
+                    <td>
+                        <div id="accordionTerminasi">
+                            <div class="card card-danger">
+                            <div class="card-header">
+                            <h4 class="card-title w-100">
+                            <a class="d-block w-100" data-toggle="collapse" href="#collapseTerminasi">
+                            Ajukan Terminasi
+                            </a>
+                            </h4>
+                            </div>
+                            <div id="collapseTerminasi" class="collapse" data-parent="#accordionTerminasi" style="">
+                            <div class="card-body">
+                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
+                            3
+                            wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt
+                            laborum
+                            eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee
+                            nulla
+                            assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
+                            nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft
+                            beer
+                            farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
+                            labore sustainable VHS.
+                            @if(Auth::user()->jabatan == 'Manajer Kasus')
+                            <div class="row {{ Request::get('kolom-terminasi') == 1 ? 'hightlighting' : '' }}">
+                                <div class="col-md-12 {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'hightlighting' : '' }}">
+                                    <form action="{{ route('kasus.approval', $klien->uuid) }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name='approval' value="0">
+                                    <button type="submit" class="btn btn-block btn-danger"><i class="fas fa-times"></i> Terminasi Kasus</button>
+                                    </form>
+                                </div>
+                            </div>
+                            @endif
+                            </div>
+                            </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </div>
         </div>
         </div>
@@ -1112,7 +1162,7 @@
             Data berhasil disimpan.
         </div>
         <div class="modal-body">
-        <input type="hidden" name="uuid" id="uuid_asesmen">
+        <input type="hidden" id="uuid_asesmen">
         <b>A. UPAYA PEMECAHAN MASALAH</b>
         </br>
         <div class="col-md-12">
@@ -1228,6 +1278,62 @@
     </div>
 </div>
 
+<!-- Modal Tambah Monitoring-->
+<div class="modal fade" id="tambahMonitoringModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+        <div id="overlay" class="overlay dark">
+            <div class="cv-spinner">
+            <span class="spinner"></span>
+            </div>
+        </div>
+        
+        <div class="modal-header">
+            <h5 class="modal-title" id="modelHeadingMonitoring">Monitoring</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message-monitoring">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
+            <span id="message-monitoring"></span>
+        </div>
+        <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message-monitoring">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-check"></i> Success!</h4>
+            Data berhasil disimpan.
+        </div>
+        <div class="modal-body">
+        <input type="hidden" id="uuid_monitoring">
+        <div class="col-md-12">
+            <div class="form-group">
+            <label>Kemajuan yang Dicapai / Kondisi Klien Saat Monitoring : </label>
+                <textarea class="form-control required-field-monitoring" id="monitoring_kemajuan" aria-label="With textarea" style="resize: none;" ></textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+            <label>Tujuan yang Belum Tercapai : </label>
+                <textarea class="form-control required-field-monitoring" id="monitoring_tujuan" aria-label="With textarea" style="resize: none;"></textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+            <label>Rencana Tindak Lanjut : </label>
+                <textarea class="form-control required-field-monitoring" id="monitoring_rencana" aria-label="With textarea" style="resize: none;"></textarea>
+            </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-success btn-block" id="submitMonitoring"><i class="fa fa-check"></i> Simpan</button>
+            <button type="button" class="btn btn-danger btn-block" id="deleteMonitoring"><i class="fa fa-trash"></i> Hapus</button>
+        </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Surat Persetujuan-->
 <div class="modal fade" id="sppModal">
     <div class="modal-dialog modal-xl">
@@ -1238,7 +1344,7 @@
             </div>
         </div>
         <div class="modal-header">
-            <h4 class="modal-title">Default Modal</h4>
+            <h4 class="modal-title">Persetujuan</h4>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="maximize">
                     <i class="fas fa-expand"></i>
@@ -1255,7 +1361,7 @@
                   <div id="mytoolbar" style="width: 1000px"></div>
                   <main>
                     <div class="centered">
-                      <iframe class="embed-responsive-item" src="http://127.0.0.1:8000/persetujuan/donepelayanan/343ff690-cfd6-41e4-b9f3-6c41cfe8e9e8" style="width: 100%; height:1000px"></iframe>
+                      <iframe class="embed-responsive-item" id="showPersetujuan" src="about:blank" style="width: 100%; height:1000px"></iframe>
                     </div>
                   </main>
                 </body>
@@ -1267,156 +1373,6 @@
         </div>
     </div>
 </div>
-
- <!-- Modal Agenda Layanan-->
- <div class="modal fade" id="ajaxModel" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-  
-        <div id="overlay" class="overlay dark">
-          <div class="cv-spinner">
-            <span class="spinner"></span>
-          </div>
-        </div>
-        
-        <div class="modal-header">
-          <h5 class="modal-title" id="modelHeading"></h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-          <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
-          <span id="message"></span>
-        </div>
-        <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-          <h4><i class="icon fa fa-check"></i> Success!</h4>
-          Data berhasil disimpan.
-        </div>
-        <div class="modal-body">
-        <input type="hidden" name="uuid" id="uuid">
-        <div class="form-group">
-            <label><span class="text-danger">*</span>Judul kegiatan</label>
-            <input type="text" class="form-control required-field-agenda" id="judul_kegiatan">
-            <div class="invalid-feedback" id="valid-judul_kegiatan">
-              Judul Kegiatan wajib diisi.
-            </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-              <div class="form-group">
-                <label><span class="text-danger">*</span>Tanggal</label>
-                <input type="date" class="form-control required-field-agenda" id="tanggal_mulai">
-                <div class="invalid-feedback" id="valid-tanggal_mulai">
-                  Tanggal Mulai wajib diisi.
-                </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-              <div class="form-group">
-                  <label><span class="text-danger">*</span>Jam mulai</label>
-                  <input type="time" class="form-control required-field-agenda" id="jam_mulai">
-                  <div class="invalid-feedback" id="valid-jam_mulai">
-                    Jam Mulai wajib diisi.
-                  </div>
-              </div>
-          </div>
-        </div>
-        <div class="form-group">
-            <label>Keterangan</label>
-            <textarea name="" class="form-control" id="keterangan" cols="30" rows="2"></textarea>
-        </div>
-        <div class="form-group">
-            <label>Penjadwalan Layanan</label>
-            <select name="" class="form-control" id="penjadwalan_layanan" onchange="penjadwalan_layanan()">
-              <option value="0">Tidak</option>
-              <option value="1">Ya</option>
-            </select>
-        </div>
-        <div class="form-group" id="klien_id">
-          <label>Pilih Klien</label>
-          <select class="form-control select2" style="width: 100%;" id="klien_id">
-            <option>silahkan pilih</option>
-            <option value="1">Tini</option>
-            <option value="2">Tina</option>
-            <option value="3">Toni</option>
-            <option value="4">Tono</option>
-            <option value="5">Tino</option>
-            <option value="6">Tanos</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label><span class="text-danger">*</span>Tag</label>
-          <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id">
-          <option value="{{ Auth::user()->id }}" selected>{{ Auth::user()->name }}</option>
-          <option value="22">Alexander Graham Bell</option>
-          <option value="23">Thomas Alfa Edison</option>
-          <option value="24">Tony Stark</option>
-          <option value="25">Rudy Tabootie</option>
-          </select>
-          <div class="invalid-feedback" id="valid-user_id">
-            Minimal tag 1 orang.
-          </div>
-        </div>
-          <div class="col-12" id="accordion" style="padding:0px !important">
-              <div class="card card-primary card-outline">
-              <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
-              <div class="card-header">
-              <h4 class="card-title w-100">
-              Tindak Lanjut
-              </h4>
-              </div>
-              </a>
-              <div id="collapseOne" class="collapse" data-parent="#accordion">
-                <div class="alert alert-warning alert-dismissible">
-                  <i class="icon fas fa-exclamation-triangle"></i> Data <b>Tindak Lanjut</b> hanya tercatat pada akun anda
-                </div>
-              <div class="card-body">
-                {{-- <div class="form-group">
-                  <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                  <input type="checkbox" class="custom-control-input" id="customSwitch3">
-                  <label class="custom-control-label" for="customSwitch3">Terlaksana</label>
-                  </div>
-                </div> --}}
-                  <div class="form-group">
-                    <label>Lokasi Kegiatan</label>
-                    <input type="text" class="form-control" id="lokasi">
-                  </div>
-                  <div class="form-group">
-                      <label>Jam selesai</label>
-                      <?php
-                        date_default_timezone_set("asia/jakarta");
-                        $jam_selesai = date("h:i");
-                      ?>
-                      <input type="time" class="form-control" id="jam_selesai" value="">
-                  </div>
-                  <div class="form-group">
-                  <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}" target="_blank">disini</a>)<br>*Laporan Hasil Pelayanan</span></label>
-                  <select class="select2" multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="dokumen_pendukung">
-                  <option value="31"><i class="fas fa-file-alt"></i> Dokumen konsultasi hukum kasus Eliza Thornberry</option>
-                  <option value="32"><i class="fas fa-file-alt"></i> Dokumen Pendampingan pengadilan kasus eliza thornberry</option>
-                  <option value="33"><i class="fas fa-file-alt"></i> Pendampingan pengadilan kasus tom delounge</option>
-                  <option value="34"><i class="fas fa-file-alt"></i> Mediasi kasus tom delounge</option>
-                  </select>
-                  </div>
-                  <div class="form-group">
-                      <label>Catatan</label>
-                      <textarea name="" class="form-control" id="catatan" cols="30" rows="2"></textarea>
-                  </div>
-                  <span style="font-size: 14px">*Laporan Tindak Lanjut tersimpan pada tanggal : <span id='ct' ></span></span>
-                </div>
-              </div>
-              </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success btn-block" id="submit"><i class="fa fa-check"></i> Simpan</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
 <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
@@ -1430,16 +1386,18 @@
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-<!-- Bootstrap -->
-<script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
-<script src="{{ asset('/source/js/validation.js') }}"></script>
-
+<script src="https://cdn.rawgit.com/ashl1/datatables-rowsgroup/fbd569b8768155c7a9a62568e66a64115887d7d0/dataTables.rowsGroup.js"></script>
+<script src="{{ asset('adminlte') }}/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
 <script>
     $(document).ready(function () {
         getkotkab('pelapor');
         getkotkab('klien');
         hightlighting();
         loadAsesmen();
+        loadMonitoring();
+        $("input[data-bootstrap-switch]").each(function(){
+        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+        })
 
         //Initialize Select2 Elements
         $('.select2').select2();
@@ -1456,13 +1414,14 @@
     $('.input_klien').next(".select2-container").hide();
 
     $('#tabelLayanan').DataTable({
-      "ordering": true,
+      "ordering": false,
       "processing": true,
       "serverSide": true,
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
       "ajax": "/agenda/api_index?uuid={{ $klien->uuid }}",
+      "rowsGroup": [1],
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
 
@@ -1480,7 +1439,7 @@
                 }else{
                     jam_mulai =  row.jam_mulai;
                 }
-                return row.tanggal_mulai+"<br><span style='font-size:13px'>"+jam_mulai+"</span>";
+                return row.tanggal_mulai_formatted+"<br><span style='font-size:13px'>"+jam_mulai+"</span>";
             }
         },
         {
@@ -1521,7 +1480,7 @@
                 }else{
                     dokumens = '';
                 }
-                return catatan+lokasi+'<br>'+dokumens;
+                return 'Petugas : '+row.petugas+' ('+row.jabatan+')<br>'+lokasi+'<br>'+catatan+dokumens;
             }
         },
         {
@@ -1538,7 +1497,11 @@
                     disabled = 'disabled';
                     selesaiLayanan = 'layananSelesai';
                 }
-                return '<div  class="icheck-primary d-inline ml-2"><input class="checkboxSelesai '+selesaiLayanan+'" type="checkbox" value="" id="todoCheck'+row.uuid+'" '+checked+' '+disabled+' onclick="showModal(`'+row.tanggal_mulai+'`,`'+row.uuid+'`)"><label for="todoCheck'+row.uuid+'"></label></div>';
+                if (row.created_by == {{ Auth::user()->id }}) {
+                    return '<div  class="icheck-primary d-inline ml-2"><input class="checkboxSelesai '+selesaiLayanan+'" type="checkbox" value="" id="todoCheck'+row.uuid+'" '+checked+' '+disabled+' onclick="showModalAgenda(`'+row.tanggal_mulai+'`,`'+row.uuid+'`)"><label for="todoCheck'+row.uuid+'"></label></div>';
+                } else {
+                    return '<div  class="icheck-primary d-inline ml-2" onclick="alert(`Anda tidak memiliki hak akses untuk menginputkan laproan tindak lanjut untuk agenda ini. Minta seseorang yang ada di agenda untuk mentag/menambahkan anda.`)"><input type="checkbox" value=""><label for="todoCheck'+row.uuid+'"></label></div>';
+                }
             }
         }
       ],
@@ -1554,9 +1517,7 @@
                 className: "btn-info",
                 text: 'Tambah',
                   action: function ( ) {
-                    if (confirm('modal input agenda') == true) {
-                        window.location.assign('{{ route("dokumen") }}');
-                    }
+                    showModalAgenda("{{ date('Y-m-d') }}",0);
                   }
               }]
       }).buttons().container().appendTo('#tabelLayanan_wrapper .col-md-6:eq(0)');
@@ -1605,7 +1566,7 @@
             "mData": "tanggal",
             "width": "10%",
             "mRender": function (data, type, row) {
-                return row.tanggal+"<br><span style='font-size:13px'>"+row.jam+"</span>";
+                return row.tanggal_formatted+"<br><span style='font-size:13px'>"+row.jam+"</span>";
             }
         },
         {
@@ -1922,6 +1883,91 @@
         }
     });
 
+    function loadMonitoring() {
+        $('#deleteMonitoring').hide();
+        $.ajax({
+            url: `/monitoring/index?uuid={{ $klien->uuid }}`,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                $('#kolomMonitoring').html('');
+                
+                data = response.data;
+                //jika asesmen tidak tersedia maka munculkan warning
+                if (data.length > 0) {
+                    $('.warningAsesmen').hide();
+                } else {
+                    $('.warningAsesmen').show();
+                }
+                i=1;
+                data.forEach(e => {
+                    $('#kolomMonitoring').prepend('<div class=\"card collapsed-card target\"> <div class=\"card-header\" data-card-widget=\"collapse\" style=\"cursor: pointer;\"> <h3 class=\"card-title\"><b>Monitoring tanggal '+e.created_at_formatted+' oleh '+e.petugas+' ('+e.jabatan+')</b></h3> <div class=\"card-tools\"> <button type=\"button\" class=\"btn btn-tool\"><i class=\"fa fa-chevron-down\"></i> </button> </div> </div> <div class=\"card-body\"> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Kemajuan yang Dicapai / Kondisi Klien Saat Monitoring : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\" >'+e.kemajuan+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Tujuan yang Belum Tercapai : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.tujuan+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Rencana Tindak Lanjut : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.rencana+'</textarea> </div> </div> </div> </div>');
+                    i++;
+                });
+            },
+            error: function (response){
+                console.log(response);
+            }
+            });
+    }
+
+    $('#submitMonitoring').click(function() {
+        if(validateForm('monitoring')){
+            let token   = $("meta[name='csrf-token']").attr("content");
+            $.ajax({
+            url: `/monitoring/store/`,
+            type: "POST",
+            cache: false,
+            data: {
+                uuid: $('#uuid_monitoring').val(),
+                uuid_klien: '{{ $klien->uuid }}',
+                kemajuan: $("#monitoring_kemajuan").val(),
+                tujuan: $("#monitoring_tujuan").val(),
+                rencana: $("#monitoring_rencana").val(),
+                _token: token
+            },
+            success: function (response){
+                if (response.success != true) {
+                    $('#message-monitoring').html(JSON.stringify(response));
+                    $("#success-message-monitoring").hide();
+                    $("#error-message-monitoring").show();
+                }else{
+                    $('#message-monitoring').html(response.message);
+                    $("#success-message-monitoring").show();
+                    $("#error-message-monitoring").hide();
+                    loadMonitoring();
+
+                    // hapus semua inputan
+                    $('#uuid_monitoring').val('');
+                    $("#monitoring_kemajuan").val('');
+                    $("#monitoring_tujuan").val('');
+                    $("#monitoring_rencana").val('');
+                    $('#tambahMonitoringModal').scrollTop(0);
+                    loadNotif(0);
+                }
+            },
+            error: function (response){
+                setTimeout(function(){
+                $("#overlay").fadeOut(300);
+                },500);
+                console.log(response);
+
+                $('#message-monitoring').html(JSON.stringify(response));
+                $("#success-message-monitoring").hide();
+                $("#error-message-monitoring").show();
+            }
+            }).done(function() { //loading submit form
+                setTimeout(function(){
+                $("#overlay").fadeOut(300);
+                },500);
+            });
+        }else{
+            $('#message-monitoring').html('Mohon cek ulang data yang wajib diinput.');
+            $("#success-message-monitoring").hide();
+            $("#error-message-monitoring").show();
+        }
+    });
+
     function hightlighting() {
         var inputValue = $('#perubahan').val();
 
@@ -1944,73 +1990,10 @@
     }
 
     function showPersetujuan(uuid){
+        //tampilkan surat perjanjian serverside
+        url = '{{ route("persetujuan.done", "") }}/'+uuid;
+        $('#showPersetujuan').attr('src', url);
         $('#sppModal').modal('show');
-        //untuk update notif task untuk melihat SPP
-        //nanti diupdate lagi saja biar shownya serverside
-        $.ajax({
-          url:'{{ route("persetujuan.done",'') }}/'+uuid,
-          type:'GET',
-          dataType: 'json',
-          success: function( response ) {
-            loadNotif(0);
-            //tampilkan surat perjanjian serverside
-            }
-        });
-    }
-
-    function showModal(tanggal_mulai, agenda_id) {
-    if (agenda_id != 0) {
-        $.get(`/agenda/edit/`+agenda_id, function (data) {
-            $('#modelHeading').html("Edit Agenda");
-
-            $('#uuid').val(data.uuid);
-            $('#judul_kegiatan').val(data.judul_kegiatan);
-            $('#tanggal_mulai').val(data.tanggal_mulai);
-            $('#jam_mulai').val(data.jam_mulai);
-            $('#keterangan').val(data.keterangan);
-            $('#klien_id').val(data.klien_id);
-            $('#lokasi').val(data.lokasi);
-            $('#jam_selesai').val(data.jam_selesai);
-            $('#catatan').val(data.catatan);
-            $('#dokumen_pendukung').val(data.dokumen_pendukung);
-
-            if (data.klien_id != null) {
-            $('#penjadwalan_layanan').val(1);
-            $("#klien_id").select2("val", data.klien_id);
-            }else{
-            $('#penjadwalan_layanan').val(0);
-            $("#klien_id").select2("val", "null");
-            }
-            penjadwalan_layanan();
-            $("#collapseOne").addClass("show");
-        
-            $("#user_id").val(data.user_id);
-            $('#user_id').select2();
-
-            $("#dokumen_pendukung").val(data.dokumen_pendukung);
-            $('#dokumen_pendukung').select2();
-        });
-    }
-
-    $("#success-message").hide();
-    $("#error-message").hide();
-    $("#overlay").hide();
-    
-    // hapus semua inputan
-    $('#judul_kegiatan').val('');
-    $('#jam_mulai').val('');
-    $('#keterangan').val('');
-    $('#klien_id').val('');
-    $('#lokasi').val('');
-    $('#jam_selesai').val('');
-    $('#catatan').val('');
-    $('#dokumen_pendukung').val('');
-
-    $("#klien_id").hide();
-
-    $('#tanggal_mulai').val(tanggal_mulai); 
-    $('#modelHeading').html('Tambah Agenda'); 
-    $('#ajaxModel').modal('show'); 
     }
 
     function penjadwalan_layanan() {
@@ -2021,4 +2004,6 @@
         }
     }
 </script>
+{{-- include modal agenda --}}
+@include('agenda.modal')
 @endsection

@@ -17,17 +17,17 @@
         </div>
         
         <div class="modal-header">
-          <h5 class="modal-title" id="modelHeading"></h5>
+          <h5 class="modal-title" id="modelHeadingAgenda"></h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message">
+        <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message-agenda">
           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
           <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
-          <span id="message"></span>
+          <span id="message-agenda"></span>
         </div>
-        <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message">
+        <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message-agenda">
           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
           <h4><i class="icon fa fa-check"></i> Success!</h4>
           Data berhasil disimpan.
@@ -63,7 +63,7 @@
         </div>
         <div class="form-group">
             <label>Keterangan</label>
-            <textarea name="" class="form-control" id="keterangan" cols="30" rows="2"></textarea>
+            <textarea name="" class="form-control" id="keterangan-agenda" cols="30" rows="2"></textarea>
         </div>
         <div class="form-group">
             <label>Penjadwalan Layanan</label>
@@ -83,7 +83,7 @@
             Minimal tag 1 orang.
           </div>
         </div>
-          <div class="col-12" id="accordion" style="padding:0px !important">
+          <div class="col-12" id="accordion-tindaklanjut" style="padding:0px !important">
               <div class="card card-primary card-outline">
               <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
               <div class="card-header">
@@ -92,7 +92,7 @@
               </h4>
               </div>
               </a>
-              <div id="collapseOne" class="collapse" data-parent="#accordion">
+              <div id="collapseOne" class="collapse" data-parent="#accordion-tindaklanjut">
                 <div class="alert alert-warning alert-dismissible">
                   <i class="icon fas fa-exclamation-triangle"></i> Data <b>Tindak Lanjut</b> hanya tercatat pada akun anda
                 </div>
@@ -178,7 +178,7 @@
                 judul_kegiatan: $('#judul_kegiatan').val(),
                 tanggal_mulai: $("#tanggal_mulai").val(),
                 jam_mulai: $("#jam_mulai").val(),
-                keterangan: $("#keterangan").val(),
+                keterangan: $("#keterangan-agenda").val(),
                 klien_id: $("#klien_id_select").val(),
                 user_id: $("#user_id_select").val(),
                 lokasi: $("#lokasi").val(),
@@ -189,13 +189,13 @@
               },
               success: function (response){
                 if (response.success != true) {
-                  $('#message').html(JSON.stringify(response));
-                  $("#success-message").hide();
-                  $("#error-message").show();
+                  $('#message-agenda').html(JSON.stringify(response));
+                  $("#success-message-agenda").hide();
+                  $("#error-message-agenda").show();
                 }else{
-                  $('#message').html(response.message);
-                  $("#success-message").show();
-                  $("#error-message").hide();
+                  $('#message-agenda').html(response.message);
+                  $("#success-message-agenda").show();
+                  $("#error-message-agenda").hide();
                   // fullcalendar dashboard
                   if($("#calendar").length > 0) {
                     calendar.fullCalendar('refetchEvents');
@@ -218,12 +218,16 @@
                     data = response.data;
                     $('#uuid_layanan_hightlight').val(data.uuid);
                   }
+                  // opsi di create dokumen
+                  if($("#uuid_tindak_lanjut").length > 0) {
+                    load_select2_agenda();
+                  }
 
                   // hapus semua inputan
                   $('#judul_kegiatan').val('');
                   $('#tanggal_mulai').val('');
                   $('#jam_mulai').val('');
-                  $('#keterangan').val('');
+                  $('#keterangan-agenda').val('');
                   $('#klien_id_select').val('');
                   $('#lokasi').val('');
                   $('#jam_selesai').val('');
@@ -237,9 +241,9 @@
                   $("#overlay").fadeOut(300);
                 },500);
   
-                $('#message').html(JSON.stringify(response));
-                $("#success-message").hide();
-                $("#error-message").show();
+                $('#message-agenda').html(JSON.stringify(response));
+                $("#success-message-agenda").hide();
+                $("#error-message-agenda").show();
               }
             }).done(function() { //loading submit form
                 setTimeout(function(){
@@ -247,9 +251,9 @@
                 },500);
               });
           }else{
-            $('#message').html('Mohon cek ulang data yang wajib diinput.');
-            $("#success-message").hide();
-            $("#error-message").show();
+            $('#message-agenda').html('Mohon cek ulang data yang wajib diinput.');
+            $("#success-message-agenda").hide();
+            $("#error-message-agenda").show();
           }
           $('#ajaxModel').scrollTop(0);
         });
@@ -377,13 +381,13 @@
     if (agenda_id != 0) {
     $('#user_id_select').empty();
       $.get(`/agenda/edit/`+agenda_id, function (data) {
-          $('#modelHeading').html("Edit Agenda");
+          $('#modelHeadingAgenda').html("Edit Agenda");
   
           $('#uuid').val(data.uuid);
           $('#judul_kegiatan').val(data.judul_kegiatan);
           $('#tanggal_mulai').val(data.tanggal_mulai);
           $('#jam_mulai').val(data.jam_mulai);
-          $('#keterangan').val(data.keterangan);
+          $('#keterangan-agenda').val(data.keterangan);
           $('#klien_id_select').val(data.klien_id);
           $('#lokasi').val(data.lokasi);
           $('#jam_selesai').val(data.jam_selesai);
@@ -416,14 +420,14 @@
       });
     }
     
-    $("#success-message").hide();
-    $("#error-message").hide();
+    $("#success-message-agenda").hide();
+    $("#error-message-agenda").hide();
     $("#overlay").hide();
     
     // hapus semua inputan
     $('#judul_kegiatan').val('');
     $('#jam_mulai').val('');
-    $('#keterangan').val('');
+    $('#keterangan-agenda').val('');
     $('#penjadwalan_layanan').val(0);
     $('#list_klien').hide(); 
     $('#klien_id_select').val('');
@@ -431,7 +435,7 @@
     $('#jam_selesai').val('');
     $('#catatan').val('');
     $('#tanggal_mulai').val(tanggal_mulai); 
-    $('#modelHeading').html('Tambah Agenda'); 
+    $('#modelHeadingAgenda').html('Tambah Agenda'); 
     $('#ajaxModel').modal('show'); 
     $('#ajaxModelDetail').modal('hide'); 
     

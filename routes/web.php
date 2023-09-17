@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\FormPenerimaPengaduan;
 use App\Http\Controllers\KasusController;
+use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PersetujuanController;
 use App\Http\Controllers\PetugasController;
@@ -40,8 +41,10 @@ Route::middleware('auth')->group(function () {
     Route::get('kasus', [KasusController::class, 'index'])->name('kasus');
     Route::get('kasus/show/{uuid}', [KasusController::class, 'show'])->name('kasus.show');
     Route::post('kasus/approval/{uuid}', [KasusController::class, 'approval'])->name('kasus.approval');
-    Route::post('/get_klien', [KasusController::class, 'get_klien'])->name('get_klien');
+    Route::get('/check_kelengkapan_data/{id}', [KasusController::class, 'check_kelengkapan_data'])->name('check_kelengkapan_data');
     // Route::view('kasus/detail/','/kasus/detail')->name('kasus.detail');
+    // check kelengkapan
+    Route::post('/get_klien', [KasusController::class, 'get_klien'])->name('get_klien');
     // persetujuan
     Route::post('persetujuan/create/{uuid}', [PersetujuanController::class, 'create'])->name('persetujuan.create');
     // persetujuan_pelayanan
@@ -57,6 +60,9 @@ Route::middleware('auth')->group(function () {
     // asesmen
     Route::get('asesmen/index/', [AsesmenController::class, 'index'])->name('asesmen');
     Route::post('asesmen/store/', [AsesmenController::class, 'store'])->name('asesmen.store');
+    // monitoring
+    Route::get('monitoring/index/', [MonitoringController::class, 'index'])->name('monitoring');
+    Route::post('monitoring/store/', [MonitoringController::class, 'store'])->name('monitoring.store');
     //notifikasi
     Route::view('notifikasi','/notifikasi')->name('notifikasi');
     Route::get('/Notifikasi/pull_notif', [NotifikasiController::class, 'pull_notif'])->name('notifikasi.pull_notif');
@@ -82,6 +88,7 @@ Route::middleware('auth')->group(function () {
     Route::get('kinerja', [AgendaController::class, 'kinerja'])->name('kinerja');
     Route::get('kinerja/detail', [AgendaController::class, 'kinerja_detail'])->name('kinerja.detail');
     Route::get('kinerja/ajax', [AgendaController::class, 'ajax'])->name('ajax');
+    Route::post('/get_agenda', [AgendaController::class, 'get_agenda'])->name('get_agenda');
 
     Route::view('monitoring','monitoring/index')->name('monitoring');
 });

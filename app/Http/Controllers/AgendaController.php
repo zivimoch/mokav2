@@ -9,6 +9,7 @@ use App\Models\DokumenTl;
 use App\Models\Klien;
 use App\Models\TindakLanjut;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Validator;
 use Illuminate\Http\Request;
@@ -48,6 +49,43 @@ class AgendaController extends Controller
        return view('agenda.index');
     }
 
+    //untuk select2 list agenda, dia methodnya POST
+    public function get_agenda(Request $request)
+    {
+        $search = $request->search;
+
+        if($search == ''){
+            $data = DB::table('agenda as a')
+                        ->select(DB::raw('a.*, b.uuid as uuid_tindak_lanjut'))
+                        ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
+                        ->where('b.created_by', Auth::user()->id)
+                        ->whereNull('b.deleted_at')
+                        ->orderBy('a.tanggal_mulai', 'DESC')
+                        ->orderBy('a.jam_mulai', 'DESC')
+                        ->limit(10)->get();
+        }else{
+            $data = DB::table('agenda as a')
+                             ->select(DB::raw('a.*, b.uuid as uuid_tindak_lanjut'))
+                             ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
+                             ->where('b.created_by', Auth::user()->id)
+                             ->where('a.judul_kegiatan', 'like', '%' .$search . '%')
+                             ->whereNull('b.deleted_at')
+                             ->orderBy('a.tanggal_mulai', 'DESC')
+                             ->orderBy('a.jam_mulai', 'DESC')
+                             ->limit(10)->get();
+        }
+  
+        $response = array();
+        foreach($data as $value){
+           $response[] = array(
+                "id"=>$value->uuid_tindak_lanjut,
+                "text"=>$value->judul_kegiatan." (Tanggal ".date('d M Y', strtotime($value->tanggal_mulai)).", Pukul ".$value->jam_mulai.")"
+           );
+        }
+        return response()->json($response); 
+        
+    }
+
     public function api_index(Request $request)
     { // nanti benerin lagi, buat lebih sederhana masukin ke function show
         if (isset($request->user_id)) {
@@ -58,6 +96,7 @@ class AgendaController extends Controller
         $data = DB::table('agenda as a')
                     ->leftJoin('tindak_lanjut as b', 'b.agenda_id', 'a.id')
                     ->leftJoin('users as c', 'c.id', 'b.validated_by')
+                    ->leftJoin('users as d','d.id','b.created_by')
                     ->leftJoin(DB::raw('(
                         SELECT 
                         a.tindak_lanjut_id, GROUP_CONCAT(CONCAT(",|"),b.judul) AS judul
@@ -69,10 +108,11 @@ class AgendaController extends Controller
                     })
                     ->whereNull('a.deleted_at')
                     ->whereNull('b.deleted_at')
+                    ->whereNotNull('b.id')
                     ->orderBy('a.tanggal_mulai')
                     ->orderBy('a.jam_mulai')
                     ->select(DB::raw('b.uuid, a.tanggal_mulai, a.jam_mulai, a.klien_id, b.tanggal_selesai, 
-                    b.jam_selesai, a.judul_kegiatan, a.keterangan, a.uuid, b.lokasi, b.catatan, c.name, b.created_by, z.judul'));
+                    b.jam_selesai, a.judul_kegiatan, a.keterangan, a.uuid, b.lokasi, b.catatan, c.name, b.created_by, z.judul, d.name as petugas, d.jabatan'));
 
                     if ($request->uuid) { //ini untuk di halaman map klien digital
                         $klien = Klien::where('uuid', $request->uuid)->first();
@@ -82,7 +122,12 @@ class AgendaController extends Controller
                             ->whereYear('a.tanggal_mulai', $request->tahun)
                             ->whereMonth('a.tanggal_mulai', $request->bulan);
                     }
-        return DataTables::of($data->get())->make(true);
+
+        $datas = $data->get();
+        foreach ($datas as $datas2) {
+            $datas2->tanggal_mulai_formatted = date('d M Y', strtotime($datas2->tanggal_mulai));
+        }
+        return DataTables::of($datas)->make(true);
     }
 
     public function kinerja(Request $request)
@@ -127,7 +172,7 @@ class AgendaController extends Controller
      */
     public function store(Request $request)
     {
-        // try {
+        try {
             $validator = Validator::make($request->all(), [
                 'judul_kegiatan' => 'required',
                 'tanggal_mulai' => 'required',
@@ -373,10 +418,10 @@ class AgendaController extends Controller
                 'message' => 'Data Berhasil Disimpan!',
                 'data'    => $proses  
             ]);
-        // } catch (Exception $e){
-        //     return response()->json(['msg' => $e->getMessage()]);
-        //     die();
-        // }
+        } catch (Exception $e){
+            return response()->json(['msg' => $e->getMessage()]);
+            die();
+        }
     }
 
     /**

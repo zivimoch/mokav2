@@ -30,6 +30,9 @@ class RiwayatKejadianController extends Controller
                     ->orderBy('a.jam')
                     ->whereNull('a.deleted_at')
                     ->get(['a.*', 'b.name as petugas']);
+        foreach ($data as $datas) {
+            $datas->tanggal_formatted = date('d M Y', strtotime($datas->tanggal));
+        }
         return DataTables::of($data)->make(true);
     }
 
