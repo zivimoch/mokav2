@@ -12,6 +12,7 @@ use App\Http\Controllers\PersetujuanController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\RiwayatKejadianController;
 use App\Http\Controllers\TemplateController;
+use App\Http\Controllers\TerminasiController;
 use App\Models\Agenda;
 use Illuminate\Support\Facades\Route;
 
@@ -89,8 +90,11 @@ Route::middleware('auth')->group(function () {
     Route::get('kinerja/detail', [AgendaController::class, 'kinerja_detail'])->name('kinerja.detail');
     Route::get('kinerja/ajax', [AgendaController::class, 'ajax'])->name('ajax');
     Route::post('/get_agenda', [AgendaController::class, 'get_agenda'])->name('get_agenda');
-
+    // monitoring untuk statistik
     Route::view('monitoring','monitoring/index')->name('monitoring');
+    // terminasi
+    Route::get('terminasi/index/', [TerminasiController::class, 'index'])->name('terminasi');
+    Route::post('terminasi/store/', [TerminasiController::class, 'store'])->name('terminasi.store');
 });
 
 require __DIR__.'/auth.php';

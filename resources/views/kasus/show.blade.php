@@ -982,7 +982,7 @@
                             data-on-color="success">
                             <br>
                         @endif
-                        <span>*status kasus saat ini sedang aktif, akan muncul di pencarian kasus</span>
+                        <span>Status kasus saat ini sedang aktif, akan muncul di pencarian kasus</span>
                     </td>
                 </tr>
                 <tr class="{{ Request::get('persetujuan-supervisor') == 1 ? 'hightlighting' : '' }}">
@@ -990,7 +990,7 @@
                     <td>
                         <div class="row">
                             <div class="col-md-12 {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'hightlighting' : '' }}">
-                                <label>Apakah anda ingin menyetujui kasus ini?</label>
+                                Apakah anda ingin menyetujui kasus ini?
                             </div>
                             @if(Auth::user()->jabatan == 'Supervisor Kasus')
                                 @if(!($detail['kelengkapan_petugas']))
@@ -1019,9 +1019,10 @@
                         </div>
                     </td>
                 </tr>
-                <tr>
+                <tr class="{{ Request::get('kolom-terminasi') == 1 ? 'hightlighting' : '' }}">
                     <td style="width: 200px"><b>Terminasi Kasus<b></td>
                     <td>
+                        <div id="kolomTerminasi"></div>
                         <div id="accordionTerminasi">
                             <div class="card card-danger">
                             <div class="card-header">
@@ -1031,30 +1032,41 @@
                             </a>
                             </h4>
                             </div>
-                            <div id="collapseTerminasi" class="collapse" data-parent="#accordionTerminasi" style="">
+                            <div id="collapseTerminasi" class="collapse {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'show' : '' }}" data-parent="#accordionTerminasi" style="">
                             <div class="card-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
-                            3
-                            wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt
-                            laborum
-                            eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee
-                            nulla
-                            assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
-                            nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft
-                            beer
-                            farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
-                            labore sustainable VHS.
-                            @if(Auth::user()->jabatan == 'Manajer Kasus')
-                            <div class="row {{ Request::get('kolom-terminasi') == 1 ? 'hightlighting' : '' }}">
-                                <div class="col-md-12 {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'hightlighting' : '' }}">
-                                    <form action="{{ route('kasus.approval', $klien->uuid) }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name='approval' value="0">
-                                    <button type="submit" class="btn btn-block btn-danger"><i class="fas fa-times"></i> Terminasi Kasus</button>
-                                    </form>
+                                <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message-terminasi">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
+                                    <span id="message-terminasi"></span>
+                                </div>
+                                <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message-terminasi">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    <h4><i class="icon fa fa-check"></i> Success!</h4>
+                                    Data berhasil disimpan.
+                                </div>
+                                <div class="form-group clearfix">
+                                    <div class="icheck-primary d-inline" style="margin-right:15px">
+                                    <input type="radio" id="radioPrimary1" name="jenis_terminasi" checked value="selesai">
+                                    <label for="radioPrimary1">
+                                        Terminasi Kasus Selesai
+                                    </label>
+                                    </div>
+                                    <div class="icheck-primary d-inline">
+                                    <input type="radio" id="radioPrimary2" name="jenis_terminasi" value="ditutup">
+                                    <label for="radioPrimary2">
+                                        Terminasi Kasus Ditutup
+                                    </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Alasan Terminasi </label>
+                                    <textarea class="form-control required-field-terminasi" id="terminasi_alasan" aria-label="With textarea" style="resize: none;" rows="5"></textarea>
+                                </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-block btn-danger" id="submitTerminasi"><i class="fas fa-times"></i> Terminasi Kasus</button>
                                 </div>
                             </div>
-                            @endif
                             </div>
                             </div>
                             </div>
@@ -1395,6 +1407,8 @@
         hightlighting();
         loadAsesmen();
         loadMonitoring();
+        loadTerminasi();
+
         $("input[data-bootstrap-switch]").each(function(){
         $(this).bootstrapSwitch('state', $(this).prop('checked'));
         })
@@ -1965,6 +1979,87 @@
             $('#message-monitoring').html('Mohon cek ulang data yang wajib diinput.');
             $("#success-message-monitoring").hide();
             $("#error-message-monitoring").show();
+        }
+    });
+
+    function loadTerminasi() {
+        $('#deleteTerminasi').hide();
+        $.ajax({
+            url: `/terminasi/index?uuid={{ $klien->uuid }}`,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                $('#kolomTerminasi').html('');
+                
+                data = response.data;
+                //jika asesmen tidak tersedia maka munculkan warning
+                if (data.length > 0) {
+                    $('.warningTerminasi').hide();
+                } else {
+                    $('.warningTerminasi').show();
+                }
+                i=1;
+                data.forEach(e => {
+                    $('#kolomTerminasi').prepend('<div class=\"card collapsed-card target\"> <div class=\"card-header\" data-card-widget=\"collapse\" style=\"cursor: pointer;\"> <h3 class=\"card-title\"><b>Pengajuan Terminasi tanggal '+e.created_at_formatted+' oleh '+e.petugas+' ('+e.jabatan+')</b></h3> </div> <div class=\"card-body\"> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Jenis Terminasi : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\" rows=\"1\"">'+e.jenis_terminasi+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Alasan Terminasi : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.alasan+'</textarea> </div> </div> <div class=\"row\"><div class=\"col-md-6\"> <button type=\"button\" class=\"btn btn-block btn-success btn-sm\"><i class=\"fas fa-check\"></i> Ya setuju terminasi</button> </div> <div class=\"col-md-6\"> <button type=\"button\" class=\"btn btn-block btn-danger btn-sm\"><i class=\"fas fa-times\"></i> Tidak setuju terminasi</button> </div></div> </div> </div>');
+                    i++;
+                });
+            },
+            error: function (response){
+                console.log(response);
+            }
+            });
+    }
+
+    $('#submitTerminasi').click(function() {
+        if(validateForm('terminasi')){
+            let token   = $("meta[name='csrf-token']").attr("content");
+            $.ajax({
+            url: `/terminasi/store/`,
+            type: "POST",
+            cache: false,
+            data: {
+                uuid: $('#uuid_terminasi').val(),
+                uuid_klien: '{{ $klien->uuid }}',
+                jenis_terminasi: $("input[name=jenis_terminasi]:checked").val(),
+                alasan: $("#terminasi_alasan").val(),
+                _token: token
+            },
+            success: function (response){
+                if (response.success != true) {
+                    $('#message-terminasi').html(JSON.stringify(response));
+                    $("#success-message-terminasi").hide();
+                    $("#error-message-terminasi").show();
+                }else{
+                    $('#message-terminasi').html(response.message);
+                    $("#success-message-terminasi").show();
+                    $("#error-message-terminasi").hide();
+                    loadTerminasi();
+
+                    // hapus semua inputan
+                    $('#uuid_terminasi').val('');
+                    $("#terminasi_alasan").val('');
+                    loadNotif(0);
+                }
+            },
+            error: function (response){
+                setTimeout(function(){
+                $("#overlay").fadeOut(300);
+                },500);
+                console.log(response);
+
+                $('#message-terminasi').html(JSON.stringify(response));
+                $("#success-message-terminasi").hide();
+                $("#error-message-terminasi").show();
+            }
+            }).done(function() { //loading submit form
+                setTimeout(function(){
+                $("#overlay").fadeOut(300);
+                },500);
+            });
+        }else{
+            $('#message-terminasi').html('Mohon cek ulang data yang wajib diinput.');
+            $("#success-message-terminasi").hide();
+            $("#error-message-terminasi").show();
         }
     });
 
