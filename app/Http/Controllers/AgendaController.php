@@ -174,6 +174,7 @@ class AgendaController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
+                'user_id' => 'required',
                 'judul_kegiatan' => 'required',
                 'tanggal_mulai' => 'required',
                 'jam_mulai' => 'required'

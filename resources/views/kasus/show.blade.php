@@ -21,7 +21,10 @@
     .select2-selection__arrow {
         height: 30px !important;
     }
-    
+
+    #check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_monitoring, #check_terminasi {
+        display: none;
+    }
 </style>
 <section class="content-header">
 <div class="container-fluid">
@@ -71,7 +74,7 @@
         <div class="card-header {{ Request::get('kolom-kelengkapan') == 1 ? 'hightlighting' : '' }}">
         <h4 class="card-title w-100">
         <a class="d-block w-100" data-toggle="collapse" href="#collapseKelengkapan">
-        <b>Kelengkapan Kasus (6/6) <i class="fa fa-chevron-down"></i></b>
+        <b>Kelengkapan Kasus (<span id="kelengkapan_kasus"></span>/6) <i class="fa fa-chevron-down"></i></b>
         </a>
         </h4>
         </div>
@@ -79,48 +82,43 @@
         <div class="card-body">
             <ol style="padding:15px; margin :-25px 0px -20px 0px">
                 <li>
-                    Identifikasi <i class="fa fa-check"></i>
+                    Identifikasi <i class="fa fa-check" id="check_identifikasi"></i>
                     <ul style="margin-left: -25px">
                         <li>
-                            Data Kasus (60%)
+                            Data Kasus (<span id="persen_title_data"></span>%)
                             <div class="progress progress-xs">
-                                <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                                <div class="progress-bar bg-success progress-bar-striped" id="persen_data" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 </div>
                             </div>
                         </li>
                         <li>
-                            Persetujuan Supervisor <i class="far fa-check-circle"></i>
+                            Persetujuan Supervisor <i class="far fa-check-circle" id="check_persetujuan_spv"></i>
                         </li>
                         <li>
-                            Tanda Tangan SPP <i class="far fa-check-circle"></i>
+                            Tanda Tangan SPP <i class="far fa-check-circle" id="check_ttd_spp"></i>
                         </li>
                     </ul>
                 </li>
                 <li>
-                    Asesmen <i class="fa fa-check"></i>
+                    Asesmen <i class="fa fa-check" id="check_asesmen"></i>
                 </li>
                 <li>
-                    Perencanaan Layanan <i class="fa fa-check"></i>
+                    Perencanaan Layanan <i class="fa fa-check" id="check_perencanaan"></i>
                 </li>
                 <li>
-                    @php
-                        if ($detail['jumlah_layanan']>0) {
-                            $progres_layanan = number_format(($detail['jumlah_layanan_selesai'] / $detail['jumlah_layanan']) * 100, 2);
-                        }else{
-                            $progres_layanan = 0;
-                        }
-                    @endphp
-                    Pelaksanaan Layanan ({{ $progres_layanan }}%)
+                    Pelaksanaan Layanan  <i class="fa fa-check" id="check_pelaksanaan"></i>
+                    <br>
+                    (<span class="persen_title_layanan"></span>%)
                     <div class="progress progress-xs">
-                        <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{ $progres_layanan }}%">
+                        <div class="progress-bar bg-success progress-bar-striped persen_layanan" role="progressbar" aria-valuemin="0">
                         </div>
                     </div>
                 </li>
                 <li>
-                    Monitoring <i class="fa fa-check"></i>
+                    Monitoring <i class="fa fa-check" id="check_monitoring"></i>
                 </li>
                 <li>
-                    Terminasi <i class="fa fa-check"></i>
+                    Terminasi <i class="fa fa-check" id="check_terminasi"></i>
                 </li>
             </ol>
         </div>
@@ -696,14 +694,12 @@
             </table>
             </div>
             <br>
-            @if(!($detail['kelengkapan_spp']))
-            <div class="col-md-12 warningAsesmen">
+            <div class="col-md-12 warningSPP">
                 <div class="alert alert-danger">
                 <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
-                Silahkan buat surat persetujuan perjanjian terlebih dahulu untuk menambahkan asesmen.
+                Surat Persetujuan Pelayanan perlu ditanda tangani terlebih dahulu sebelum menambahkan asesmen.
                 </div>
             </div>
-            @else
             <div class="col-md-12 warningAsesmen">
                 <div class="alert alert-danger">
                 <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
@@ -711,8 +707,7 @@
                 </div>
             </div>
             <div id="kolomAsesmen"></div>
-            <button type="submit" class="btn btn-block btn-default {{ Request::get('tambah-asesmen') == 1 ? 'hightlighting' : '' }}" data-toggle="modal" data-target="#tambahAsesmenModal"><i class="fas fa-plus"></i> Tambah Asesmen</button>
-            @endif
+            <button type="buttons" class="btn btn-block btn-default {{ Request::get('tambah-asesmen') == 1 ? 'hightlighting' : '' }}" id="modalAsesmen" data-toggle="modal" data-target="#tambahAsesmenModal"><i class="fas fa-plus"></i> Tambah Asesmen</button>
         </div>
 
     </div>
@@ -721,7 +716,7 @@
         <div class="post clearfix" style="margin: 0px">
         <h4>Progres Layanan</h4>
         <div class="progress" style="height: 25px;">
-            <div class="progress-bar bg-success" role="progressbar" style="width: {{ $progres_layanan }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px">{{ $progres_layanan }}%</span></div>
+            <div class="progress-bar bg-success persen_layanan" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px" class="persen_title_layanan">100%</span></div>
         </div>
         <br>
         <div style="overflow-x: scroll">
@@ -1408,6 +1403,15 @@
         loadAsesmen();
         loadMonitoring();
         loadTerminasi();
+        check_kelengkapan_data();
+        check_kelengkapan_persetujuan_spv();
+        check_kelengkapan_spp();
+        check_kelengkapan_asesmen();
+        check_kelengkapan_perencanaan();
+        check_kelengkapan_monitoring();
+        kelengkapan_kasus = 0;
+        kelengkapan_identifikasi = 0;
+        $('#kelengkapan_kasus').html(kelengkapan_kasus);
 
         $("input[data-bootstrap-switch]").each(function(){
         $(this).bootstrapSwitch('state', $(this).prop('checked'));
@@ -1807,15 +1811,8 @@
             type: "GET",
             cache: false,
             success: function (response){
-                $('#kolomAsesmen').html('');
-                
                 data = response.data;
-                //jika asesmen tidak tersedia maka munculkan warning
-                if (data.length > 0) {
-                    $('.warningAsesmen').hide();
-                } else {
-                    $('.warningAsesmen').show();
-                }
+                $('#kolomAsesmen').html('');
                 i=1;
                 data.forEach(e => {
                     $('#kolomAsesmen').prepend('<div class=\"card collapsed-card target\"> <div class=\"card-header\" data-card-widget=\"collapse\" style=\"cursor: pointer;\"> <h3 class=\"card-title\"><b>Asesmen ke-'+i+' oleh '+e.petugas+' ('+e.jabatan+')</b></h3> <div class=\"card-tools\"> <button type=\"button\" class=\"btn btn-tool\"><i class=\"fa fa-chevron-down\"></i> </button> </div> </div> <div class=\"card-body\"> <b>A. UPAYA PEMECAHAN MASALAH</b> </br> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Upaya yang pernah dilakukan : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\" >'+e.upaya+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Faktor pendukung pemecahan masalah : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.pendukung+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Faktor penghambat pemecahan masalah : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.hambatan+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Harapan/Kebutuhan klien : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.harapan+'</textarea> </div> </div> <div class=\"post clearfix\"></div> <b>B. BIOPSIKOSOSIAL</b> </br> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Biologis (kondisi fisik, catatan kesehatan, pengobatan)</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.fisik+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Psikologis</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.psikologis+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Sosial & Spiritual</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.sosial+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Hukum</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.hukum+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Catatan Lainnya</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.lainnya+'</textarea> </div> </div> </div> </div>');
@@ -1859,6 +1856,7 @@
                     $("#success-message-asesmen").show();
                     $("#error-message-asesmen").hide();
                     loadAsesmen();
+                    check_kelengkapan_asesmen();
 
                     // hapus semua inputan
                     $('#uuid_asesmen').val('');
@@ -1907,12 +1905,6 @@
                 $('#kolomMonitoring').html('');
                 
                 data = response.data;
-                //jika asesmen tidak tersedia maka munculkan warning
-                if (data.length > 0) {
-                    $('.warningAsesmen').hide();
-                } else {
-                    $('.warningAsesmen').show();
-                }
                 i=1;
                 data.forEach(e => {
                     $('#kolomMonitoring').prepend('<div class=\"card collapsed-card target\"> <div class=\"card-header\" data-card-widget=\"collapse\" style=\"cursor: pointer;\"> <h3 class=\"card-title\"><b>Monitoring tanggal '+e.created_at_formatted+' oleh '+e.petugas+' ('+e.jabatan+')</b></h3> <div class=\"card-tools\"> <button type=\"button\" class=\"btn btn-tool\"><i class=\"fa fa-chevron-down\"></i> </button> </div> </div> <div class=\"card-body\"> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Kemajuan yang Dicapai / Kondisi Klien Saat Monitoring : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\" >'+e.kemajuan+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Tujuan yang Belum Tercapai : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.tujuan+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Rencana Tindak Lanjut : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.rencana+'</textarea> </div> </div> </div> </div>');
@@ -2000,7 +1992,17 @@
                 }
                 i=1;
                 data.forEach(e => {
-                    $('#kolomTerminasi').prepend('<div class=\"card collapsed-card target\"> <div class=\"card-header\" data-card-widget=\"collapse\" style=\"cursor: pointer;\"> <h3 class=\"card-title\"><b>Pengajuan Terminasi tanggal '+e.created_at_formatted+' oleh '+e.petugas+' ('+e.jabatan+')</b></h3> </div> <div class=\"card-body\"> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Jenis Terminasi : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\" rows=\"1\"">'+e.jenis_terminasi+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Alasan Terminasi : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.alasan+'</textarea> </div> </div> <div class=\"row\"><div class=\"col-md-6\"> <button type=\"button\" class=\"btn btn-block btn-success btn-sm\"><i class=\"fas fa-check\"></i> Ya setuju terminasi</button> </div> <div class=\"col-md-6\"> <button type=\"button\" class=\"btn btn-block btn-danger btn-sm\"><i class=\"fas fa-times\"></i> Tidak setuju terminasi</button> </div></div> </div> </div>');
+                    if (!e.validated_by && !e.alasan_approve) {
+                        // jika validated_by & alasan_approve kosong maka tombol approval
+                        kolomapproval = '<div class=\"row\"> <div class=\"col-md-6\"> <button type=\"button\" class=\"btn btn-block btn-success btn-sm\" onclick=\"approveTerminasi(`'+e.uuid+'`,1)\"><i class=\"fas fa-check\"></i> Ya setuju terminasi</button> </div> <div class=\"col-md-6\"> <button type=\"button\" class=\"btn btn-block btn-danger btn-sm\" onclick=\"approveTerminasi(`'+e.uuid+'`,0)\"><i class=\"fas fa-times\"></i> Tidak setuju terminasi</button> </div></div>';
+                    } else if (e.validated_by) {
+                        // jika adavalidasinya berarti sudah diapprove
+                        kolomapproval = '<div class=\"col-md-12\"> <div class=\"form-group\"> <label>Catatan : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">Kasus disetujui untuk terminasi</textarea> </div> </div> ';
+                    } else {
+                        // else ditolak
+                        kolomapproval = '<div class=\"col-md-12\"> <div class=\"form-group\"> <label>Catatan : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.alasan_approve+'</textarea> </div> </div> ';
+                    }
+                    $('#kolomTerminasi').prepend('<div class=\"card collapsed-card target\"> <div class=\"card-header\" data-card-widget=\"collapse\" style=\"cursor: pointer;\"> <h3 class=\"card-title\"><b>Pengajuan Terminasi tanggal '+e.created_at_formatted+' oleh '+e.petugas+' ('+e.jabatan+')</b></h3> </div> <div class=\"card-body\"> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Jenis Terminasi : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\" rows=\"1\"">'+e.jenis_terminasi+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Alasan Terminasi : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.alasan+'</textarea> </div> </div>'+kolomapproval+' </div> </div>');
                     i++;
                 });
             },
@@ -2038,7 +2040,6 @@
                     // hapus semua inputan
                     $('#uuid_terminasi').val('');
                     $("#terminasi_alasan").val('');
-                    loadNotif(0);
                 }
             },
             error: function (response){
@@ -2062,6 +2063,42 @@
             $("#error-message-terminasi").show();
         }
     });
+    
+    function approveTerminasi(uuid, approval) {
+        alasan_approve = null;
+        if (approval == '0') {
+            alasan_approve = prompt("Masukan alasan tidak menerima pengajuan terminasi : ");
+        }
+        
+        if (alasan_approve || approval == 1) {
+            let token = $("meta[name='csrf-token']").attr("content");
+            $.ajax({
+            url: `/terminasi/store/`,
+            type: "POST",
+            cache: false,
+            data: {
+                uuid: uuid,
+                uuid_klien: '{{ $klien->uuid }}',
+                alasan_approve: alasan_approve,
+                _token: token
+            },
+            success: function (response){
+                loadTerminasi();
+            },
+            error: function (response){
+                setTimeout(function(){
+                $("#overlay").fadeOut(300);
+                },500);
+                console.log(response);
+            }
+            }).done(function() { //loading submit form
+                setTimeout(function(){
+                $("#overlay").fadeOut(300);
+                },500);
+            });
+            
+        }
+    }
 
     function hightlighting() {
         var inputValue = $('#perubahan').val();
@@ -2097,6 +2134,182 @@
         } else {
             $("#klien_id").show();
         }
+    }
+
+    function check_kelengkapan_data() {
+        $.ajax({
+            url: `/check_kelengkapan_data/{{ $klien->id }}`,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                jml_null_kasus = response.nullKasus;
+                jml_null_klien = response.nullKlien;
+                jml_null_pelapor = response.nullPelapor;
+                total_null = jml_null_kasus.length + jml_null_klien.length + jml_null_pelapor.length;
+                total_all = parseInt(response.kolomKasus) + parseInt(response.kolomKlien) + parseInt(response.kolomPelapor);
+                total_isi = total_all - total_null;
+                persentase = (total_isi / total_all) * 100;
+                persentase = persentase.toFixed(2);
+                $('#persen_title_data').html(persentase);
+                $('#persen_data').css('width', persentase+'%');
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+    
+    function check_kelengkapan_persetujuan_spv() {
+        $.ajax({
+            url: `/check_kelengkapan_persetujuan_spv/{{ $klien->id }}`,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response) {
+                    $('#check_persetujuan_spv').show();
+                    kelengkapan_identifikasi = kelengkapan_identifikasi + 1;
+                    if (kelengkapan_identifikasi > 1) {
+                        $('#check_identifikasi').show();
+                        kelengkapan_kasus = kelengkapan_kasus + 1;
+                        $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                    }
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_spp() {
+        $.ajax({
+            url: `/check_kelengkapan_spp/{{ $klien->id }}`,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response) {
+                    $('#check_ttd_spp').show();
+                    kelengkapan_identifikasi = kelengkapan_identifikasi + 1;
+                    if (kelengkapan_identifikasi > 1) {
+                        $('#check_identifikasi').show();
+                        kelengkapan_kasus = kelengkapan_kasus + 1;
+                        $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                    }
+                }else{
+                    $('.warningSPP').show();
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_asesmen() {
+        $.ajax({
+            url: `/check_kelengkapan_asesmen/{{ $klien->id }}`,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response) {
+                    $('#check_asesmen').show();
+                    kelengkapan_kasus = kelengkapan_kasus + 1;
+                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                    $('.warningAsesmen').hide();
+                }else{
+                    $('.warningAsesmen').show();
+                    $('#modalAsesmen').show();
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_perencanaan() {
+        $.ajax({
+            url: `/check_kelengkapan_perencanaan/{{ $klien->id }}`,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response > 0) {
+                    $('#check_perencanaan').show();
+                    kelengkapan_kasus = kelengkapan_kasus + 1;
+                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                }
+                check_kelengkapan_pelaksanaan(response);
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_pelaksanaan(jml_perencanaan) {
+        $.ajax({
+            url: `/check_kelengkapan_pelaksanaan/{{ $klien->id }}`,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                persentase = (response / jml_perencanaan) * 100
+                persentase = persentase.toFixed(2);
+                $('.persen_title_layanan').html(persentase);
+                $('.persen_layanan').css('width', persentase+'%');
+                if (persentase == 100) {
+                    $('#check_pelaksanaan').show();
+                    kelengkapan_kasus = kelengkapan_kasus + 1;
+                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_monitoring() {
+        $.ajax({
+            url: `/check_kelengkapan_monitoring/{{ $klien->id }}`,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response > 0) {
+                    $('#check_monitoring').show();
+                    kelengkapan_kasus = kelengkapan_kasus + 1;
+                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_terminasi() {
+        $.ajax({
+            url: `/check_kelengkapan_terminasi/{{ $klien->id }}`,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response > 0) {
+                    $('#check_terminasi').show();
+                    kelengkapan_kasus = kelengkapan_kasus + 1;
+                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
     }
 </script>
 {{-- include modal agenda --}}

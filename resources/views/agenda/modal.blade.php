@@ -222,6 +222,10 @@
                   if($("#uuid_tindak_lanjut").length > 0) {
                     load_select2_agenda();
                   }
+                  // untuk load progress layanan di detail kasus 
+                  if ($(".persen_title_layanan").length > 0) {
+                    check_kelengkapan_perencanaan();
+                  }
 
                   // hapus semua inputan
                   $('#judul_kegiatan').val('');

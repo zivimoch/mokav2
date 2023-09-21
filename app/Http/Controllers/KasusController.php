@@ -12,6 +12,7 @@ use App\Models\Pelapor;
 use App\Models\PersetujuanIsi;
 use App\Models\PersetujuanTemplate;
 use App\Models\Petugas;
+use App\Models\Terminasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -256,15 +257,13 @@ class KasusController extends Controller
                 {
                     throw new Exception($validator->errors());
                 }
-
                 $klien = Klien::where('uuid', $uuid)->first();
                 // jika kasus diapprove maka generate no regis klien
                 if ($request->approval) {
                     //buat & simpan no regis
                     $no_klien = $this->generate_noreg();
                     $klien->no_klien = $no_klien;
-                    $klien->save;
-
+                    $klien->save();
                     $message_notif = Auth::user()->name.' menyetujui kasus. Nomor regis berhasil dibuat. Silahkan lihat catatan supervisor';
                     $message_log = Auth::user()->name.' menyetujui kasus. Nomor regis berhasil dibuat';
                     $kode = 'T4';
@@ -335,6 +334,28 @@ class KasusController extends Controller
         }
     }
 
+    public function check_kelengkapan_petugas($klien_id)
+    {
+        $supervisor = DB::table('petugas as a')
+                            ->leftJoin('users as b', 'a.user_id', '=', 'b.id')
+                            ->where('a.klien_id', $klien_id)
+                            ->where('b.jabatan', 'Supervisor Kasus')
+                            ->whereNull('a.deleted_at')
+                            ->count();
+        $mk = DB::table('petugas as a')
+                        ->leftJoin('users as b', 'a.user_id', '=', 'b.id')
+                        ->where('a.klien_id', $klien_id)
+                        ->where('b.jabatan', 'Manajer Kasus')
+                        ->whereNull('a.deleted_at')
+                        ->whereNull('b.deleted_at')
+                        ->count();
+        if (($supervisor > 0) && ($mk > 0)) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public function check_kelengkapan_data($klien_id)
     {
         // kelengkapan klien 
@@ -360,7 +381,7 @@ class KasusController extends Controller
             }
         }
         $removeKasus = ["created_by", "created_at", "updated_at", "deleted_at"];
-        $nullKasus = array_values(array_diff($nullKlien, $removeKasus));
+        $nullKasus = array_values(array_diff($nullKasus, $removeKasus));
         $kolomKasus = count(Schema::getColumnListing('kasus'));
 
         // kelengkapan pelapor
@@ -381,33 +402,26 @@ class KasusController extends Controller
         return $data;
     }
 
-    public function check_kelengkapan_petugas($klien_id)
-    {
-        $supervisor = DB::table('petugas as a')
-                            ->leftJoin('users as b', 'a.user_id', '=', 'b.id')
-                            ->where('a.klien_id', $klien_id)
-                            ->where('b.jabatan', 'Supervisor Kasus')
-                            ->whereNull('a.deleted_at')
-                            ->count();
-        $mk = DB::table('petugas as a')
-                        ->leftJoin('users as b', 'a.user_id', '=', 'b.id')
-                        ->where('a.klien_id', $klien_id)
-                        ->where('b.jabatan', 'Manajer Kasus')
-                        ->whereNull('a.deleted_at')
-                        ->whereNull('b.deleted_at')
-                        ->count();
-        if (($supervisor > 0) && ($mk > 0)) {
-            return true;
-        }else{
-            return false;
-        }
-    }
-
     public function check_kelengkapan_persetujuan_spv($klien_id)
     {
         // jika pada klien ada no klien artinya sudah di approve
         $klien = Klien::where('id', $klien_id)->first();
         if ($klien->no_klien != NULL) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function check_kelengkapan_spp($klien_id)
+    {
+        $persetujuan_template = PersetujuanTemplate::where('kategori', 'persetujuan pelayanan')->pluck('id');
+        $persetujuan_isi = PersetujuanIsi::whereIn('persetujuan_template_id', [$persetujuan_template])
+                                        ->where('klien_id', $klien_id)
+                                        ->whereNotNull('tandatangan')
+                                        ->whereNull('deleted_at')
+                                        ->count();
+        if ($persetujuan_isi > 0) {
             return true;
         } else {
             return false;
@@ -420,20 +434,6 @@ class KasusController extends Controller
                             ->whereNull('deleted_at')
                             ->count();
         if ($asesmen > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public function check_kelengkapan_spp($klien_id)
-    {
-        $persetujuan_template = PersetujuanTemplate::where('kategori', 'persetujuan pelayanan')->pluck('id');
-        $persetujuan_isi = PersetujuanIsi::whereIn('persetujuan_template_id', [$persetujuan_template])
-                                        ->where('klien_id', $klien_id)
-                                        ->whereNull('deleted_at')
-                                        ->count();
-        if ($persetujuan_isi > 0) {
             return true;
         } else {
             return false;
@@ -475,6 +475,14 @@ class KasusController extends Controller
         $monitoring = Monitoring::where('klien_id', $klien_id)->count();
         // return jumlah monitoring
         return $monitoring;
+    }
+
+    public function check_kelengkapan_terminasi($klien_id)
+    {
+        // pelaksanaan terminasi
+        $terminasi = Terminasi::where('klien_id', $klien_id)->count();
+        // return jumlah terminasi
+        return $terminasi;
     }
 
     public function generate_noreg()

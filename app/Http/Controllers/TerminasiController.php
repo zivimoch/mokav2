@@ -49,26 +49,30 @@ class TerminasiController extends Controller
     public function store(Request $request)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'uuid_klien' => 'required',
-                'jenis_terminasi' => 'required',
-                'alasan' => 'required'
-                ]);
+            $validator = Validator::make($request->all(), []);
                 if ($validator->fails())
                 {
                     throw new Exception($validator->errors());
                 }
 
                 $klien = Klien::where('uuid', $request->uuid_klien)->first();
-
-                //create post
-                $proses = Terminasi::updateOrCreate(['uuid' => $request->uuid],[
-                    'klien_id'   => $klien->id, 
+                
+                if (!$request->uuid) {
+                    // jika tidak ada uuid berarti tambah
+                    $data_request = array('klien_id'   => $klien->id, 
                     'jenis_terminasi' => $request->jenis_terminasi, 
                     'alasan' => $request->alasan,
-                    'validated_by' => $request->validated_by,
-                    'created_by' => Auth::user()->id
-                ]);
+                    'created_by' => Auth::user()->id);
+                }else if($request->alasan_approve){
+                    // jika ada uuid & ada alasan_approve berarti edit tidak setuju terminasi
+                    $data_request = array('alasan_approve' => $request->alasan_approve);
+                }else{
+                    // jika ada uuid & ada alasan_approve berarti edit setuju terminasi
+                    $data_request = array('validated_by' => Auth::user()->id);
+                }
+
+                //create post
+                $proses = Terminasi::updateOrCreate(['uuid' => $request->uuid], $data_request);
 
             // ===========================================================================================
             //Proses read, push notif & log activity ////////////////////////////////////////////////////

@@ -20,6 +20,7 @@ class CreateTerminasisTable extends Migration
             $table->enum('jenis_terminasi', ['selesai', 'ditutup']);
             $table->text('alasan')->nullable();
             $table->integer('validated_by')->nullable();
+            $table->text('alasan_approve')->nullable();
             $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();

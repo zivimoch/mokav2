@@ -44,7 +44,6 @@ Route::middleware('auth')->group(function () {
     Route::post('kasus/approval/{uuid}', [KasusController::class, 'approval'])->name('kasus.approval');
     Route::get('/check_kelengkapan_data/{id}', [KasusController::class, 'check_kelengkapan_data'])->name('check_kelengkapan_data');
     // Route::view('kasus/detail/','/kasus/detail')->name('kasus.detail');
-    // check kelengkapan
     Route::post('/get_klien', [KasusController::class, 'get_klien'])->name('get_klien');
     // persetujuan
     Route::post('persetujuan/create/{uuid}', [PersetujuanController::class, 'create'])->name('persetujuan.create');
@@ -95,6 +94,15 @@ Route::middleware('auth')->group(function () {
     // terminasi
     Route::get('terminasi/index/', [TerminasiController::class, 'index'])->name('terminasi');
     Route::post('terminasi/store/', [TerminasiController::class, 'store'])->name('terminasi.store');
+    // check kelengkapan
+    Route::get('/check_kelengkapan_data/{id}', [KasusController::class, 'check_kelengkapan_data'])->name('check_kelengkapan_data');
+    Route::get('/check_kelengkapan_persetujuan_spv/{id}', [KasusController::class, 'check_kelengkapan_persetujuan_spv'])->name('check_kelengkapan_persetujuan_spv');
+    Route::get('/check_kelengkapan_spp/{id}', [KasusController::class, 'check_kelengkapan_spp'])->name('check_kelengkapan_spp');
+    Route::get('/check_kelengkapan_asesmen/{id}', [KasusController::class, 'check_kelengkapan_asesmen'])->name('check_kelengkapan_asesmen');
+    Route::get('/check_kelengkapan_perencanaan/{id}', [KasusController::class, 'check_kelengkapan_perencanaan'])->name('check_kelengkapan_perencanaan');
+    Route::get('/check_kelengkapan_pelaksanaan/{id}', [KasusController::class, 'check_kelengkapan_pelaksanaan'])->name('check_kelengkapan_pelaksanaan');
+    Route::get('/check_kelengkapan_monitoring/{id}', [KasusController::class, 'check_kelengkapan_monitoring'])->name('check_kelengkapan_monitoring');
+    Route::get('/check_kelengkapan_terminasi/{id}', [KasusController::class, 'check_kelengkapan_terminasi'])->name('check_kelengkapan_terminasi');
 });
 
 require __DIR__.'/auth.php';
