@@ -28,7 +28,6 @@ class CreatePelaporsTable extends Migration
             $table->text('alamat')->nullable();
             $table->char('no_telp')->nullable();
             $table->string('hubungan_pelapor')->nullable();
-            $table->string('file_ttd')->nullable();
             $table->integer('desil')->nullable();
             $table->integer('created_by')->nullable();
             $table->timestamps();

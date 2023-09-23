@@ -172,39 +172,32 @@
         <h5 class="text-muted">Detail Kasus</h5>
         <ul class="list-unstyled">
         <li>
-        <a href="" class="btn-link text-secondary"><i class="far fa-fw fa-file"></i>No Kasus : K0001/01/2023</a>
+        <a href="" class="btn-link text-secondary"><i class="far fa-fw fa-file"></i>No Kasus : {{ $kasus_terkait->no_reg }}</a>
         </li>
         <li>
-        <a href="" class="btn-link text-secondary"><i class="fa fa-user-secret"></i> Terlapor : Jhon F Kennedy, Frredy Mercury, Thompson n Tomphoson</a>
+        <a href="" class="btn-link text-secondary"><i class="fa fa-user-secret"></i> Terlapor :
+            @php
+                $no_terlapor = 1;
+            @endphp
+            @foreach ($kasus_terkait->terlapor as $item)
+                {{ $no_terlapor }}. {{ $item }}
+                @php $no_terlapor++ @endphp
+            @endforeach 
+        </a>
         </li>
         </ul>
     <hr>
+    @foreach ($kasus_terkait as $item)
     <a href="#">
-        <strong>0001/01/2023</strong>
+        <strong>{{ $item->no_klien }}</strong>
         <p class="text-muted">
-            Alexander Grahambel (15)
+            {{ $item->nama }} ({{ $item->tanggal_lahir ? Carbon\Carbon::parse($item->tanggal_lahir)->age : '' }})
             <br>
             (anak laki-laki)
         </p>
     </a>
     <hr>
-    <a href="#">
-        <strong>0002/01/2023</strong>
-        <p class="text-muted">
-            Thomas Alfa Edison (13)
-            <br>
-            (anak laki-laki)
-        </p>
-    </a>
-    <hr>
-    <a href="#">
-        <strong>0003/01/2023</strong>
-        <p class="text-muted">
-            Christoper Colombus (11)
-            <br>
-            (anak laki-laki)
-        </p>
-    </a>
+    @endforeach
     </div>
 </div>
 
@@ -234,7 +227,7 @@
             <a class="nav-link {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas-tab" data-toggle="pill" href="#kasus-petugas" role="tab" aria-controls="kasus-petugas" aria-selected="false">Petugas @if(!($detail['kelengkapan_petugas']))<i class="fas fa-exclamation-circle" style="color: red; font-size:20px"></i>@endif</a>
         </li>
         <li class="nav-item">
-        <a class="nav-link {{ Request::get('tab') == 'kasus-persetujuan' ? 'active' : '' }}" id="kasus-persetujuan-tab" data-toggle="pill" href="#kasus-persetujuan" role="tab" aria-controls="kasus-persetujuan" aria-selected="false">Persetujuan @if(!($detail['kelengkapan_spp']))<i class="fas fa-exclamation-circle" style="color: red; font-size:20px"></i>@endif</a>
+        <a class="nav-link {{ Request::get('tab') == 'kasus-persetujuan' ? 'active' : '' }}" id="kasus-persetujuan-tab" data-toggle="pill" href="#kasus-persetujuan" role="tab" aria-controls="kasus-persetujuan" aria-selected="false">Persetujuan <i class="fas fa-exclamation-circle warningSPP" style="color: red; font-size:20px"></i></a>
         </li>
         <li class="nav-item">
         <a class="nav-link {{ Request::get('tab') == 'settings' ? 'active' : '' }}" id="kasus-settings-tab" data-toggle="pill" href="#kasus-settings" role="tab" aria-controls="kasus-settings" aria-selected="false">Settings</a>
@@ -902,16 +895,14 @@
             @endif
         </div>
         <div class="tab-pane {{ Request::get('tab') == 'kasus-persetujuan' ? 'active' : '' }}" id="kasus-persetujuan" role="tabpanel" aria-labelledby="kasus-persetujuan-tab">
-            @if(!($detail['kelengkapan_spp']))
-                <div class="row">
+                <div class="row warningSPP">
                     <div class="col-md-12">
                         <div class="alert alert-danger">
                         <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
-                        Surat Persetujuan Pelayanan belum dibuat. Silahkan buat link Surat Persetujuan Pelayanan.
+                        Belum ada tanda tangan pada Surat Persetujuan Pelayanan. Silahkan buat link dan berikan pada klien / wali.
                         </div>
                     </div>
                 </div>
-            @endif
             <div class="card-body p-0 {{ Request::get('tabel-persetujuan') == 1 ? 'hightlighting' : '' }}" style="overflow-x:scroll">
                 <table class="table table-striped projects">
                     <thead>
@@ -1409,6 +1400,7 @@
         check_kelengkapan_asesmen();
         check_kelengkapan_perencanaan();
         check_kelengkapan_monitoring();
+        check_kelengkapan_terminasi();
         kelengkapan_kasus = 0;
         kelengkapan_identifikasi = 0;
         $('#kelengkapan_kasus').html(kelengkapan_kasus);
@@ -2084,6 +2076,7 @@
             },
             success: function (response){
                 loadTerminasi();
+                check_kelengkapan_terminasi();
             },
             error: function (response){
                 setTimeout(function(){
@@ -2197,6 +2190,7 @@
                         kelengkapan_kasus = kelengkapan_kasus + 1;
                         $('#kelengkapan_kasus').html(kelengkapan_kasus);
                     }
+                    $('#modalAsesmen').show();
                 }else{
                     $('.warningSPP').show();
                 }
@@ -2221,7 +2215,6 @@
                     $('.warningAsesmen').hide();
                 }else{
                     $('.warningAsesmen').show();
-                    $('#modalAsesmen').show();
                 }
             },
             error: function (response){

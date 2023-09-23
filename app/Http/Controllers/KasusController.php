@@ -12,6 +12,7 @@ use App\Models\Pelapor;
 use App\Models\PersetujuanIsi;
 use App\Models\PersetujuanTemplate;
 use App\Models\Petugas;
+use App\Models\Terlapor;
 use App\Models\Terminasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -175,31 +176,10 @@ class KasusController extends Controller
                     ->get();
         //data surat template persetujuan 
         $persetujuan_template = PersetujuanTemplate::whereNULL('deleted_at')->get();
-
-        $detail['jumlah_layanan'] = DB::table(('agenda as a'))
-                                        ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
-                                        ->where('a.klien_id', $klien->id)
-                                        ->whereNull('a.deleted_at')
-                                        ->whereNull('b.deleted_at')
-                                        ->whereNotNull('b.id')
-                                        ->count();
-        $detail['jumlah_layanan_selesai'] = DB::table(('agenda as a'))
-                                        ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
-                                        ->where('a.klien_id', $klien->id)
-                                        ->whereNull('a.deleted_at')
-                                        ->whereNull('b.deleted_at')
-                                        ->whereNotNull('b.jam_selesai')
-                                        ->whereNotNull('b.id')
-                                        ->count();
-// dd($detail);
-       //Cek kelengkapan kasus
-       // 1. Apakah kasus terdiri dari minimal 1 Petugas Penerima Pengaduan, 1 Supervisor & 1 MK
+       //Cek apakah kasus terdiri dari minimal 1 Petugas Penerima Pengaduan, 1 Supervisor & 1 MK
        $kelengkapan_petugas = $this->check_kelengkapan_petugas($klien->id);
-       // 2. Apakah terdapat minimal 1 SPP
-       $kelengkapan_spp = $this->check_kelengkapan_spp($klien->id);
-       // 3. Apakah terdapat minimal 1 asemen
-       $kelengkapan_asesmen = $this->check_kelengkapan_asesmen($klien->id);
-
+       
+       $kasus_terkait = $this->kasus_terkait($klien->kasus_id, $klien->id);
        // ===========================================================================================
         //Proses read, push notif & log activity ////////////////////////////////////////////////////
         // jika petugas sudah melihat data kasus maka tasknya (T3) selesai
@@ -213,8 +193,6 @@ class KasusController extends Controller
         /////////////////////////////////////////////////////////////////////////////////////////////
 
        $detail['kelengkapan_petugas'] = $kelengkapan_petugas;
-       $detail['kelengkapan_spp'] = $kelengkapan_spp;
-       $detail['kelengkapan_asesmen'] = $kelengkapan_asesmen;
        return view('kasus.show')
                 ->with('klien', $klien)
                 ->with('pelapor', $pelapor)
@@ -244,7 +222,8 @@ class KasusController extends Controller
                 ->with('petugas',$petugas)
                 ->with('persetujuan',$persetujuan)
                 ->with('persetujuan_template',$persetujuan_template)
-                ->with('detail', $detail);
+                ->with('detail', $detail)
+                ->with('kasus_terkait', $kasus_terkait);
     }
 
     public function approval($uuid, Request $request)
@@ -480,9 +459,24 @@ class KasusController extends Controller
     public function check_kelengkapan_terminasi($klien_id)
     {
         // pelaksanaan terminasi
-        $terminasi = Terminasi::where('klien_id', $klien_id)->count();
+        $terminasi = Terminasi::where('klien_id', $klien_id)
+                            ->whereNotNull('validated_by')
+                            ->count();
         // return jumlah terminasi
         return $terminasi;
+    }
+
+    public function kasus_terkait($kasus_id, $klien_id)
+    {
+        $data = Klien::where('kasus_id', $kasus_id)
+                        ->where('uuid', '!=', $klien_id)
+                        ->whereNull('deleted_at')
+                        ->get();
+        $kasus = Kasus::where('id', $kasus_id)->pluck('no_reg');
+        $terlapor = Terlapor::where('kasus_id', $kasus_id)->pluck('nama');
+        $data->no_reg = $kasus[0];
+        $data->terlapor = $terlapor;
+        return $data;
     }
 
     public function generate_noreg()
