@@ -33,6 +33,7 @@ class KasusController extends Controller
                         ->leftJoin('kasus as b', 'b.id', 'a.kasus_id')
                         ->leftJoin('petugas as c', 'a.id', 'c.klien_id')
                         ->leftJoin('users as d', 'd.id', 'a.created_by')
+                        ->whereNull('a.deleted_at')
                         ->groupBy('a.id');
             if (Auth::user()->supervisor_id != 0) { // petugas penerima pengaduan tidak masalah bisa melihat semua kasus
                 $data->where('c.user_id', Auth::user()->id);
@@ -93,7 +94,7 @@ class KasusController extends Controller
                         ->leftJoin('users as d', 'd.id', 'a.created_by')
                         ->leftJoin('terlapor as e', 'b.id', 'e.kasus_id')
                         ->where('a.uuid', $request->uuid)
-                        ->first(['b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 
+                        ->first(['a.id', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 
                         'a.jenis_kelamin', 'a.tanggal_lahir', 'a.jenis_kelamin', 
                         'a.status', 'a.uuid', 'd.name as petugas']);
             return $data;
@@ -182,7 +183,7 @@ class KasusController extends Controller
        $kasus_terkait = $this->kasus_terkait($klien->kasus_id, $klien->id);
        // ===========================================================================================
         //Proses read, push notif & log activity ////////////////////////////////////////////////////
-        // jika petugas sudah melihat data kasus maka tasknya (T3) selesai
+        // jika petugas sudah melihat data kasus maka tasknya (T3, T6) selesai
         NotifHelper::read_notif(
             Auth::user()->id, // receiver_id
             $klien->id, // klien_id
@@ -461,7 +462,7 @@ class KasusController extends Controller
         // pelaksanaan terminasi
         $terminasi = Terminasi::where('klien_id', $klien_id)
                             ->whereNotNull('validated_by')
-                            ->count();
+                            ->first();
         // return jumlah terminasi
         return $terminasi;
     }
@@ -501,5 +502,28 @@ class KasusController extends Controller
         $no_klien = $urutan_regis.'/'.date('m').'/'.date('Y');
 
         return $no_klien;
+    }
+
+    public function destroy($uuid)
+    {
+        try {
+            $proses = Klien::where('uuid', $uuid)->delete();
+
+            if (!$proses) {
+                throw new Exception($proses);
+            }
+            
+            //return response
+            return response()->json([
+                'success' => true,
+                'code'    => 200,
+                'message' => 'Data Berhasil Dihapus!',
+                'data'    => $proses  
+            ]);
+
+        } catch (Exception $e){
+            return response()->json(['message' => $e->getMessage()]);
+            die();
+        }
     }
 }

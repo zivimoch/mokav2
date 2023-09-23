@@ -1,5 +1,4 @@
 @extends('layouts.template')
-
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -28,7 +27,7 @@
             </div> --}}
             
             <div class="card-body" style="overflow-x: scroll">
-            <table id="example1" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
+            <table id="tabelKasus" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
             <thead>
             <tr>
             <th>Tgl Pelaporan</th>
@@ -63,47 +62,91 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
-      <div id="overlay" class="overlay dark">
+      {{-- <div id="overlay" class="overlay dark">
         <div class="cv-spinner">
           <span class="spinner"></span>
         </div>
-      </div>
+      </div> --}}
       
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
-        <span id="message"></span>
-      </div>
-      <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h4><i class="icon fa fa-check"></i> Success!</h4>
-        Data berhasil disimpan.
-      </div>
       <div class="modal-body">
-        <div class="box-profile">
-          <div class="text-center">
-          <img class="profile-user-img img-fluid img-circle" src="http://127.0.0.1:8000/adminlte/dist/img/user4-128x128.jpg" alt="User profile picture">
+      <div class="ribbon-wrapper ribbon-xl">
+          <div class="ribbon bg-danger text-xl warningTerminasi">
+          CLOSED
           </div>
-          <h3 class="profile-username text-center" id="nama"></h3>
-          <p class="text-muted text-center">(<span id="usia"></span>) <span id="jenis_kelamin"></span></p>
-          <p class="text-center" id="no_klien"></p>
-          <ul class="list-group list-group-unbordered mb-3">
-          <h5><span class="float-right badge bg-danger btn-block" id="status"></span></h5>
-          <li class="list-group-item">
-          <b>Layanan</b> <a class="float-right">5</a>
-          </li>
-          <li class="list-group-item">
-          <b>Intervensi</b> <a class="float-right">10</a>
-          </li>
-          <li class="list-group-item">
-          <b>Petugas</b> <a class="float-right">6</a>
-          </li>
-          </ul>
+      </div>
+      <div class="card-body box-profile">
+      <div class="text-center">
+      <img class="profile-user-img img-fluid img-circle" src="{{ asset('adminlte') }}/dist/img/user4-128x128.jpg" alt="User profile picture">
+      </div>
+      <h3 class="profile-username text-center" id="nama"></h3>
+      <p class="text-muted text-center"> (<span id="usia"></span>) <span id="jenis_kelamin"></span></p>
+      <p class="text-center" id="no_klien"></p>
+      <ul class="list-group list-group-unbordered mb-3">
+      <h5><span class="float-right badge bg-danger btn-block" id="status"></span></h5>
+      </ul>
+      </div>
+      <div class="card" style="margin-top:-30px; margin-bottom:0px">
+          <div id="accordionKelengkapan" style="margin-bottom:-15px">
+              <div class="card card-light">
+              <div class="card-header">
+              <h4 class="card-title w-100">
+              <a class="d-block w-100" data-toggle="collapse" href="#collapseKelengkapan">
+              <b>Kelengkapan Kasus (<span id="kelengkapan_kasus"></span>/6) </b>
+              </a>
+              </h4>
+              </div>
+              <div id="collapseKelengkapan" class="collapse show" data-parent="#accordionKelengkapan">
+              <div class="card-body">
+                  <ol style="padding:15px; margin :-25px 0px -20px 0px">
+                      <li>
+                          Identifikasi <i class="fa fa-check" id="check_identifikasi"></i>
+                          <ul style="margin-left: -25px">
+                              <li>
+                                  Data Kasus (<span id="persen_title_data"></span>%)
+                                  <div class="progress progress-xs">
+                                      <div class="progress-bar bg-success progress-bar-striped" id="persen_data" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                      </div>
+                                  </div>
+                              </li>
+                              <li>
+                                  Persetujuan Supervisor <i class="far fa-check-circle" id="check_persetujuan_spv"></i>
+                              </li>
+                              <li>
+                                  Tanda Tangan SPP <i class="far fa-check-circle" id="check_ttd_spp"></i>
+                              </li>
+                          </ul>
+                      </li>
+                      <li>
+                          Asesmen <i class="fa fa-check" id="check_asesmen"></i>
+                      </li>
+                      <li>
+                          Perencanaan Layanan <i class="fa fa-check" id="check_perencanaan"></i>
+                      </li>
+                      <li>
+                          Pelaksanaan Layanan  <i class="fa fa-check" id="check_pelaksanaan"></i>
+                          <br>
+                          (<span class="persen_title_layanan"></span>%)
+                          <div class="progress progress-xs">
+                              <div class="progress-bar bg-success progress-bar-striped persen_layanan" role="progressbar" aria-valuemin="0">
+                              </div>
+                          </div>
+                      </li>
+                      <li>
+                          Monitoring <i class="fa fa-check" id="check_monitoring"></i>
+                      </li>
+                      <li>
+                          Terminasi <i class="fa fa-check" id="check_terminasi"></i>
+                      </li>
+                  </ol>
+              </div>
+              </div>
+              </div>
+          </div>
         </div>
       </div>
       <div class="modal-footer" id="buttons">
@@ -129,7 +172,7 @@
 
 <script>
     $(function () {
-    $('#example1').DataTable({
+    $('#tabelKasus').DataTable({
       "ordering": true,
       "processing": true,
       "serverSide": true,
@@ -175,27 +218,37 @@
       ],
       "dom": 'Blfrtip', // Blfrtip or Bfrtip
       "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print"]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+      }).buttons().container().appendTo('#tabelKasus_wrapper .col-md-6:eq(0)');
 
-      $('#example1_filter').css({'float':'right','display':'inline-block; background-color:black'});
+      $('#tabelKasus_filter').css({'float':'right','display':'inline-block; background-color:black'});
     });
 
-    $('#example1 tbody').on('click', 'tr', function () {
-      $("#success-message").hide();
-      $("#error-message").hide();
-      
+    $('#tabelKasus tbody').on('click', 'tr', function () {
       $.get(`/kasus/show/`+this.id, function (data) {
           dob = new Date(data.tanggal_lahir);
           var today = new Date();
           var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
 
-          $("#overlay").hide();
           $('#nama').html(data.nama);
           $('#usia').html(age);
           $('#jenis_kelamin').html(data.jenis_kelamin);
           $('#no_klien').html(data.no_klien);
           $('#status').html(data.status);
           $('#ajaxModal').modal('show');
+
+          $('#check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_monitoring, #check_terminasi, .warningTerminasi').hide();
+          
+          check_kelengkapan_data(data.id);
+          check_kelengkapan_persetujuan_spv(data.id);
+          check_kelengkapan_spp(data.id);
+          check_kelengkapan_asesmen(data.id);
+          check_kelengkapan_perencanaan(data.id);
+          check_kelengkapan_monitoring(data.id);
+          check_kelengkapan_terminasi(data.id);
+          kelengkapan_kasus = 0;
+          kelengkapan_identifikasi = 0;
+          $('#kelengkapan_kasus').html(kelengkapan_kasus);
+          
           //munculkan tombol
           $('#buttons').html('');
           if (data.petugas == null && '{{ Auth::user()->jabatan }}' == 'Penerima Pengaduan') {
@@ -203,7 +256,9 @@
           }else{
             $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="window.location.assign(`'+"{{route('kasus.show', '')}}"+"/"+data.uuid+'`)"><i class="fa fa-info-circle"></i> Detail Kasus</button>');
           }
-          $('#buttons').append('<button type="button" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
+          $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
+          
+          $("#overlay").hide();
         });
     });
 
@@ -221,11 +276,220 @@
             success: function( response ) {
               $("#overlay").hide();
               $('#ajaxModal').modal('hide');
-              $('#example1').DataTable().ajax.reload();
+              $('#tabelKasus').DataTable().ajax.reload();
             }
         });
     }
 
+    function check_kelengkapan_data(klien_id) {
+        $.ajax({
+            url: `/check_kelengkapan_data/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                jml_null_kasus = response.nullKasus;
+                jml_null_klien = response.nullKlien;
+                jml_null_pelapor = response.nullPelapor;
+                total_null = jml_null_kasus.length + jml_null_klien.length + jml_null_pelapor.length;
+                total_all = parseInt(response.kolomKasus) + parseInt(response.kolomKlien) + parseInt(response.kolomPelapor);
+                total_isi = total_all - total_null;
+                persentase = (total_isi / total_all) * 100;
+                persentase = persentase.toFixed(2);
+                $('#persen_title_data').html(persentase);
+                $('#persen_data').css('width', persentase+'%');
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_persetujuan_spv(klien_id) {
+        $.ajax({
+            url: `/check_kelengkapan_persetujuan_spv/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response) {
+                    $('#check_persetujuan_spv').show();
+                    kelengkapan_identifikasi = kelengkapan_identifikasi + 1;
+                    if (kelengkapan_identifikasi > 1) {
+                        $('#check_identifikasi').show();
+                        kelengkapan_kasus = kelengkapan_kasus + 1;
+                        $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                    }
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_spp(klien_id) {
+        $.ajax({
+            url: `/check_kelengkapan_spp/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response) {
+                    $('#check_ttd_spp').show();
+                    kelengkapan_identifikasi = kelengkapan_identifikasi + 1;
+                    if (kelengkapan_identifikasi > 1) {
+                        $('#check_identifikasi').show();
+                        kelengkapan_kasus = kelengkapan_kasus + 1;
+                        $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                    }
+                    $('#modalAsesmen').show();
+                }else{
+                    $('.warningSPP').show();
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_asesmen(klien_id) {
+        $.ajax({
+            url: `/check_kelengkapan_asesmen/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response) {
+                    $('#check_asesmen').show();
+                    kelengkapan_kasus = kelengkapan_kasus + 1;
+                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                    $('.warningAsesmen').hide();
+                }else{
+                    $('.warningAsesmen').show();
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_perencanaan(klien_id) {
+        $.ajax({
+            url: `/check_kelengkapan_perencanaan/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response > 0) {
+                    $('#check_perencanaan').show();
+                    kelengkapan_kasus = kelengkapan_kasus + 1;
+                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                }
+                check_kelengkapan_pelaksanaan(response, klien_id);
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_pelaksanaan(jml_perencanaan, klien_id) {
+        $.ajax({
+            url: `/check_kelengkapan_pelaksanaan/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                persentase = (response / jml_perencanaan) * 100
+                persentase = persentase.toFixed(2);
+                $('.persen_title_layanan').html(persentase);
+                $('.persen_layanan').css('width', persentase+'%');
+                if (persentase == 100) {
+                    $('#check_pelaksanaan').show();
+                    kelengkapan_kasus = kelengkapan_kasus + 1;
+                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_monitoring(klien_id) {
+        $.ajax({
+            url: `/check_kelengkapan_monitoring/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response > 0) {
+                    $('#check_monitoring').show();
+                    kelengkapan_kasus = kelengkapan_kasus + 1;
+                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_terminasi(klien_id) {
+        $.ajax({
+            url: `/check_kelengkapan_terminasi/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response!='') {
+                    $('#check_terminasi').show();
+                    kelengkapan_kasus = kelengkapan_kasus + 1;
+                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                    $('.warningTerminasi').show();
+                    $('#alasan_terminasi').html(response.alasan);
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function hapus(uuid) {
+      if (confirm("Apakah anda yakin ingin menghapus kasus ini?") == true) {
+        let token   = $("meta[name='csrf-token']").attr("content");
+        $.ajax({
+        url: `/kasus/destroy/`+uuid,
+        type: "DELETE",
+        cache: false,
+        data: {
+            _token: token
+        },
+        success: function (response){
+            if (response.success != true) {
+                console.log(response);
+            }else{
+                $('#tabelKasus').DataTable().ajax.reload();
+                $('#ajaxModal').modal('hide');
+            }
+        },
+        error: function (response){
+            setTimeout(function(){
+            $("#overlay").fadeOut(300);
+            },500);
+            console.log(response);
+        }
+        }).done(function() { //loading submit form
+            setTimeout(function(){
+            $("#overlay").fadeOut(300);
+            },500);
+        });
+      }
+    }
   </script>
 {{-- 
 // alert('redirect ke : '+this.id);

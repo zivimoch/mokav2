@@ -39,7 +39,7 @@
             </div> --}}
             
             <div class="card-body" style="overflow-x: scroll">
-            <table id="example1" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
+            <table id="tabelDokumen" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
             <thead>
             <tr>
             <th>Judul Dokumen</th>
@@ -123,7 +123,7 @@
 
 <script>
     $(function () {
-    $('#example1').DataTable({
+    $('#tabelDokumen').DataTable({
       "ordering": true,
       "processing": true,
       "serverSide": true,
@@ -176,15 +176,12 @@
                     window.location.assign('{{ route("dokumen.add") }}')
                   }
               }]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+      }).buttons().container().appendTo('#tabelDokumen_wrapper .col-md-6:eq(0)');
 
-      $('#example1_filter').css({'float':'right','display':'inline-block; background-color:black'});
+      $('#tabelDokumen_filter').css({'float':'right','display':'inline-block; background-color:black'});
     });
 
-    $('#example1 tbody').on('click', 'tr', function () {
-      $("#success-message").hide();
-      $("#error-message").hide();
-      
+    $('#tabelDokumen tbody').on('click', 'tr', function () {
       $.get(`/dokumen/show/`+this.id, function (data) {
           $("#overlay").hide();
           console.log(data);
@@ -193,8 +190,8 @@
           //munculkan tombol
           $('#buttons').html('');
           $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="saveAndPrint()"><i class="fas fa-print"></i> Print Dokumen</button>');
-          $('#buttons').append('<button type="button" class="btn btn-warning btn-block" id="terima"><i class="fas fa-edit"></i> Edit Dokumen</button>');
-          $('#buttons').append('<button type="button" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Dokumen</button>');
+          // $('#buttons').append('<button type="button" onclick="window.location.assign(`'+"{{route('dokumen.edit', '')}}"+"/"+data.uuid+'`)" class="btn btn-warning btn-block" id="terima"><i class="fas fa-edit"></i> Edit Dokumen</button>');
+          $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Dokumen</button>');
         });
     });
 
@@ -246,8 +243,41 @@
             input.click();
         }
     });
+
     function saveAndPrint() {
         tinymce.activeEditor.execCommand('mcePrint');
+    }
+
+    function hapus(uuid) {
+      if (confirm("Apakah anda yakin ingin menghapus dokumen ini?\nDokumen yang terhapus tidak akan muncul di daftar dokumen dan di agenda") == true) {
+        let token   = $("meta[name='csrf-token']").attr("content");
+        $.ajax({
+        url: `/dokumen/destroy/`+uuid,
+        type: "DELETE",
+        cache: false,
+        data: {
+            _token: token
+        },
+        success: function (response){
+            if (response.success != true) {
+                console.log(response);
+            }else{
+                $('#tabelDokumen').DataTable().ajax.reload();
+                $('#ajaxModal').modal('hide');
+            }
+        },
+        error: function (response){
+            setTimeout(function(){
+            $("#overlay").fadeOut(300);
+            },500);
+            console.log(response);
+        }
+        }).done(function() { //loading submit form
+            setTimeout(function(){
+            $("#overlay").fadeOut(300);
+            },500);
+        });
+      }
     }
   </script>
 {{-- 

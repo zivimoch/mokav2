@@ -227,9 +227,8 @@
    function displayMessage(message) {
        toastr.success(message, 'Event');
    } 
-today = new Date();
-today = today.toISOString().split('T')[0];
-loadAgenda(today,2);
+   
+loadAgenda('{{  date("Y-m-d") }}',2);
 function loadAgenda(tanggal_mulai, id) {
   var SITEURL = "{{ url('/') }}";
   $.ajax({

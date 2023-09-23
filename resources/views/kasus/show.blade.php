@@ -22,7 +22,7 @@
         height: 30px !important;
     }
 
-    #check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_monitoring, #check_terminasi {
+    #check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_monitoring, #check_terminasi, .warningTerminasi {
         display: none;
     }
 </style>
@@ -53,7 +53,7 @@
 <div class="card card-primary card-outline">
 
     <div class="ribbon-wrapper ribbon-xl">
-        <div class="ribbon bg-danger text-xl">
+        <div class="ribbon bg-danger text-xl warningTerminasi">
         CLOSED
         </div>
     </div>
@@ -191,9 +191,22 @@
     <a href="#">
         <strong>{{ $item->no_klien }}</strong>
         <p class="text-muted">
-            {{ $item->nama }} ({{ $item->tanggal_lahir ? Carbon\Carbon::parse($item->tanggal_lahir)->age : '' }})
+            @php
+            if($item->tanggal_lahir){
+                $tanggal_lahir = Carbon\Carbon::parse($item->tanggal_lahir)->age;
+            }else{
+                $tanggal_lahir = 0;
+            }
+            @endphp
+            {{ $item->nama }} ({{ $tanggal_lahir }})
             <br>
-            (anak laki-laki)
+            @if ($item->jenis_kelamin == 'laki-laki')
+                (Anak Laki-laki) 
+            @elseif($tanggal_lahir >= 18)
+                (Dewasa)
+            @else
+                (Anak Perempuan)
+            @endif
         </p>
     </a>
     <hr>
@@ -237,7 +250,7 @@
         <div class="card-body">
         <div class="tab-content" id="custom-tabs-one-tabContent">
         <div class="tab-pane fade show {{ Request::get('tab') == 'kasus' || Request::get('tab') == ''  ? 'active' : '' }}  {{ Request::get('hightlight') == 'formulir' ? 'hightlighting' : '' }}  {{ Request::get('kasus-all') == 1 ? 'hightlighting' : '' }}" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
-        <div class="post">
+        <div class="post warningTerminasi">
             <div class="card card-danger" style="transition: all 0.15s ease 0s; height: inherit; width: inherit;">
                 <div class="card-header">
                 <h3 class="card-title">Kasus Terminasi</h3>
@@ -246,10 +259,7 @@
                 </button>
                 </div>
                 </div>
-                <div class="card-body">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur maxime est asperiores aut perferendis officia consectetur in illo explicabo possimus. Veniam omnis id optio velit explicabo sapiente quaerat repellat officiis?
-                Dicta facere ducimus eligendi, dolore consequatur exercitationem dolorum eum evus, cupiditate, natus molestias ratione et vel iure sequi modi maxime architecto fugit aliquid! Fugiat?
-                </div>
+                <div class="card-body" id="alasan_terminasi"></div>
             </div>
         </div>
             
@@ -1394,13 +1404,13 @@
         loadAsesmen();
         loadMonitoring();
         loadTerminasi();
-        check_kelengkapan_data();
-        check_kelengkapan_persetujuan_spv();
-        check_kelengkapan_spp();
-        check_kelengkapan_asesmen();
-        check_kelengkapan_perencanaan();
-        check_kelengkapan_monitoring();
-        check_kelengkapan_terminasi();
+        check_kelengkapan_data('{{ $klien->id }}');
+        check_kelengkapan_persetujuan_spv('{{ $klien->id }}');
+        check_kelengkapan_spp('{{ $klien->id }}');
+        check_kelengkapan_asesmen('{{ $klien->id }}');
+        check_kelengkapan_perencanaan('{{ $klien->id }}');
+        check_kelengkapan_monitoring('{{ $klien->id }}');
+        check_kelengkapan_terminasi('{{ $klien->id }}');
         kelengkapan_kasus = 0;
         kelengkapan_identifikasi = 0;
         $('#kelengkapan_kasus').html(kelengkapan_kasus);
@@ -1751,6 +1761,7 @@
     });
 
     $('#deleteRiwayatKejadian').click(function() {
+      if (confirm("Apakah anda yakin ingin menghapus riwayat kejadian ini?") == true) {
         let token   = $("meta[name='csrf-token']").attr("content");
         uuid = $('#uuid_riwayat').val();
         $.ajax({
@@ -1794,6 +1805,7 @@
             $("#overlay").fadeOut(300);
             },500);
         });
+    }
     });
 
     function loadAsesmen() {
@@ -1848,7 +1860,7 @@
                     $("#success-message-asesmen").show();
                     $("#error-message-asesmen").hide();
                     loadAsesmen();
-                    check_kelengkapan_asesmen();
+                    check_kelengkapan_asesmen('{{ $klien->id }}');
 
                     // hapus semua inputan
                     $('#uuid_asesmen').val('');
@@ -1976,12 +1988,6 @@
                 $('#kolomTerminasi').html('');
                 
                 data = response.data;
-                //jika asesmen tidak tersedia maka munculkan warning
-                if (data.length > 0) {
-                    $('.warningTerminasi').hide();
-                } else {
-                    $('.warningTerminasi').show();
-                }
                 i=1;
                 data.forEach(e => {
                     if (!e.validated_by && !e.alasan_approve) {
@@ -2076,7 +2082,7 @@
             },
             success: function (response){
                 loadTerminasi();
-                check_kelengkapan_terminasi();
+                check_kelengkapan_terminasi('{{ $klien->id }}');
             },
             error: function (response){
                 setTimeout(function(){
@@ -2129,181 +2135,183 @@
         }
     }
 
-    function check_kelengkapan_data() {
-        $.ajax({
-            url: `/check_kelengkapan_data/{{ $klien->id }}`,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                jml_null_kasus = response.nullKasus;
-                jml_null_klien = response.nullKlien;
-                jml_null_pelapor = response.nullPelapor;
-                total_null = jml_null_kasus.length + jml_null_klien.length + jml_null_pelapor.length;
-                total_all = parseInt(response.kolomKasus) + parseInt(response.kolomKlien) + parseInt(response.kolomPelapor);
-                total_isi = total_all - total_null;
-                persentase = (total_isi / total_all) * 100;
-                persentase = persentase.toFixed(2);
-                $('#persen_title_data').html(persentase);
-                $('#persen_data').css('width', persentase+'%');
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
-            }
-            });
-    }
-    
-    function check_kelengkapan_persetujuan_spv() {
-        $.ajax({
-            url: `/check_kelengkapan_persetujuan_spv/{{ $klien->id }}`,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                if (response) {
-                    $('#check_persetujuan_spv').show();
-                    kelengkapan_identifikasi = kelengkapan_identifikasi + 1;
-                    if (kelengkapan_identifikasi > 1) {
-                        $('#check_identifikasi').show();
-                        kelengkapan_kasus = kelengkapan_kasus + 1;
-                        $('#kelengkapan_kasus').html(kelengkapan_kasus);
-                    }
-                }
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
-            }
-            });
-    }
+    function check_kelengkapan_data(klien_id) {
+    $.ajax({
+        url: `/check_kelengkapan_data/`+klien_id,
+        type: "GET",
+        cache: false,
+        success: function (response){
+            jml_null_kasus = response.nullKasus;
+            jml_null_klien = response.nullKlien;
+            jml_null_pelapor = response.nullPelapor;
+            total_null = jml_null_kasus.length + jml_null_klien.length + jml_null_pelapor.length;
+            total_all = parseInt(response.kolomKasus) + parseInt(response.kolomKlien) + parseInt(response.kolomPelapor);
+            total_isi = total_all - total_null;
+            persentase = (total_isi / total_all) * 100;
+            persentase = persentase.toFixed(2);
+            $('#persen_title_data').html(persentase);
+            $('#persen_data').css('width', persentase+'%');
+        },
+        error: function (response){
+            alert("Error");
+            console.log(response);
+        }
+        });
+}
 
-    function check_kelengkapan_spp() {
-        $.ajax({
-            url: `/check_kelengkapan_spp/{{ $klien->id }}`,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                if (response) {
-                    $('#check_ttd_spp').show();
-                    kelengkapan_identifikasi = kelengkapan_identifikasi + 1;
-                    if (kelengkapan_identifikasi > 1) {
-                        $('#check_identifikasi').show();
-                        kelengkapan_kasus = kelengkapan_kasus + 1;
-                        $('#kelengkapan_kasus').html(kelengkapan_kasus);
-                    }
-                    $('#modalAsesmen').show();
-                }else{
-                    $('.warningSPP').show();
-                }
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
-            }
-            });
-    }
-
-    function check_kelengkapan_asesmen() {
-        $.ajax({
-            url: `/check_kelengkapan_asesmen/{{ $klien->id }}`,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                if (response) {
-                    $('#check_asesmen').show();
-                    kelengkapan_kasus = kelengkapan_kasus + 1;
-                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
-                    $('.warningAsesmen').hide();
-                }else{
-                    $('.warningAsesmen').show();
-                }
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
-            }
-            });
-    }
-
-    function check_kelengkapan_perencanaan() {
-        $.ajax({
-            url: `/check_kelengkapan_perencanaan/{{ $klien->id }}`,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                if (response > 0) {
-                    $('#check_perencanaan').show();
+function check_kelengkapan_persetujuan_spv(klien_id) {
+    $.ajax({
+        url: `/check_kelengkapan_persetujuan_spv/`+klien_id,
+        type: "GET",
+        cache: false,
+        success: function (response){
+            if (response) {
+                $('#check_persetujuan_spv').show();
+                kelengkapan_identifikasi = kelengkapan_identifikasi + 1;
+                if (kelengkapan_identifikasi > 1) {
+                    $('#check_identifikasi').show();
                     kelengkapan_kasus = kelengkapan_kasus + 1;
                     $('#kelengkapan_kasus').html(kelengkapan_kasus);
                 }
-                check_kelengkapan_pelaksanaan(response);
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
             }
-            });
-    }
+        },
+        error: function (response){
+            alert("Error");
+            console.log(response);
+        }
+        });
+}
 
-    function check_kelengkapan_pelaksanaan(jml_perencanaan) {
-        $.ajax({
-            url: `/check_kelengkapan_pelaksanaan/{{ $klien->id }}`,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                persentase = (response / jml_perencanaan) * 100
-                persentase = persentase.toFixed(2);
-                $('.persen_title_layanan').html(persentase);
-                $('.persen_layanan').css('width', persentase+'%');
-                if (persentase == 100) {
-                    $('#check_pelaksanaan').show();
+function check_kelengkapan_spp(klien_id) {
+    $.ajax({
+        url: `/check_kelengkapan_spp/`+klien_id,
+        type: "GET",
+        cache: false,
+        success: function (response){
+            if (response) {
+                $('#check_ttd_spp').show();
+                kelengkapan_identifikasi = kelengkapan_identifikasi + 1;
+                if (kelengkapan_identifikasi > 1) {
+                    $('#check_identifikasi').show();
                     kelengkapan_kasus = kelengkapan_kasus + 1;
                     $('#kelengkapan_kasus').html(kelengkapan_kasus);
                 }
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
+                $('#modalAsesmen').show();
+            }else{
+                $('.warningSPP').show();
             }
-            });
-    }
+        },
+        error: function (response){
+            alert("Error");
+            console.log(response);
+        }
+        });
+}
 
-    function check_kelengkapan_monitoring() {
-        $.ajax({
-            url: `/check_kelengkapan_monitoring/{{ $klien->id }}`,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                if (response > 0) {
-                    $('#check_monitoring').show();
-                    kelengkapan_kasus = kelengkapan_kasus + 1;
-                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
-                }
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
+function check_kelengkapan_asesmen(klien_id) {
+    $.ajax({
+        url: `/check_kelengkapan_asesmen/`+klien_id,
+        type: "GET",
+        cache: false,
+        success: function (response){
+            if (response) {
+                $('#check_asesmen').show();
+                kelengkapan_kasus = kelengkapan_kasus + 1;
+                $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                $('.warningAsesmen').hide();
+            }else{
+                $('.warningAsesmen').show();
             }
-            });
-    }
+        },
+        error: function (response){
+            alert("Error");
+            console.log(response);
+        }
+        });
+}
 
-    function check_kelengkapan_terminasi() {
-        $.ajax({
-            url: `/check_kelengkapan_terminasi/{{ $klien->id }}`,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                if (response > 0) {
-                    $('#check_terminasi').show();
-                    kelengkapan_kasus = kelengkapan_kasus + 1;
-                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
-                }
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
+function check_kelengkapan_perencanaan(klien_id) {
+    $.ajax({
+        url: `/check_kelengkapan_perencanaan/`+klien_id,
+        type: "GET",
+        cache: false,
+        success: function (response){
+            if (response > 0) {
+                $('#check_perencanaan').show();
+                kelengkapan_kasus = kelengkapan_kasus + 1;
+                $('#kelengkapan_kasus').html(kelengkapan_kasus);
             }
-            });
-    }
+            check_kelengkapan_pelaksanaan(response, '{{ $klien->id }}');
+        },
+        error: function (response){
+            alert("Error");
+            console.log(response);
+        }
+        });
+}
+
+function check_kelengkapan_pelaksanaan(jml_perencanaan, klien_id) {
+    $.ajax({
+        url: `/check_kelengkapan_pelaksanaan/`+klien_id,
+        type: "GET",
+        cache: false,
+        success: function (response){
+            persentase = (response / jml_perencanaan) * 100
+            persentase = persentase.toFixed(2);
+            $('.persen_title_layanan').html(persentase);
+            $('.persen_layanan').css('width', persentase+'%');
+            if (persentase == 100) {
+                $('#check_pelaksanaan').show();
+                kelengkapan_kasus = kelengkapan_kasus + 1;
+                $('#kelengkapan_kasus').html(kelengkapan_kasus);
+            }
+        },
+        error: function (response){
+            alert("Error");
+            console.log(response);
+        }
+        });
+}
+
+function check_kelengkapan_monitoring(klien_id) {
+    $.ajax({
+        url: `/check_kelengkapan_monitoring/`+klien_id,
+        type: "GET",
+        cache: false,
+        success: function (response){
+            if (response > 0) {
+                $('#check_monitoring').show();
+                kelengkapan_kasus = kelengkapan_kasus + 1;
+                $('#kelengkapan_kasus').html(kelengkapan_kasus);
+            }
+        },
+        error: function (response){
+            alert("Error");
+            console.log(response);
+        }
+        });
+}
+
+function check_kelengkapan_terminasi(klien_id) {
+    $.ajax({
+        url: `/check_kelengkapan_terminasi/`+klien_id,
+        type: "GET",
+        cache: false,
+        success: function (response){
+            if (response!='') {
+                $('#check_terminasi').show();
+                kelengkapan_kasus = kelengkapan_kasus + 1;
+                $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                $('.warningTerminasi').show();
+                $('#alasan_terminasi').html(response.alasan);
+            }
+        },
+        error: function (response){
+            alert("Error");
+            console.log(response);
+        }
+        });
+}
 </script>
 {{-- include modal agenda --}}
 @include('agenda.modal')

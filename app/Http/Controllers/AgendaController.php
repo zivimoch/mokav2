@@ -101,6 +101,7 @@ class AgendaController extends Controller
                         SELECT 
                         a.tindak_lanjut_id, GROUP_CONCAT(CONCAT(",|"),b.judul) AS judul
                         FROM dokumen_tl a LEFT JOIN dokumen b ON a.dokumen_id = b.id
+                        WHERE b.deleted_at IS NULL
                         GROUP BY a.tindak_lanjut_id) z'), 
                     function($join)
                     {
@@ -520,6 +521,7 @@ class AgendaController extends Controller
         $dokumen_id = DB::table('dokumen_tl as a')
                     ->leftJoin('dokumen as b', 'a.dokumen_id','b.id')
                     ->where('a.tindak_lanjut_id', $data->tindak_lanjut_id)
+                    ->whereNull('b.deleted_at')
                     ->select('b.id', 'b.judul')
                     ->get();
         $data->dokumen_id = $dokumen_id;

@@ -26,8 +26,9 @@ class DokumenController extends Controller
     public function index(Request $request)
     {
         if($request->ajax()) {
+            // ditampilkan di index dokumen
             $data = DB::table('dokumen as a')
-                        ->select(DB::raw('a.*, z.keyword, b.id as status, d.tanggal_mulai, d.jam_mulai, c.tanggal_selesai, c.jam_selesai, f.name, e.nama as nama_klien'))
+                        ->select(DB::raw('a.*, z.keyword, group_concat(b.id) as status, group_concat(d.tanggal_mulai) as tanggal_mulai, group_concat(d.jam_mulai) as jam_mulai, group_concat(c.tanggal_selesai) as tanggal_selesai, group_concat(c.jam_selesai) as jam_selesai, group_concat(f.name) as name, group_concat(e.nama) as nama_klien'))
                         ->leftJoin('dokumen_tl as b', 'a.id', 'b.dokumen_id')
                         ->leftJoin(DB::raw('(
                             SELECT dokumen_id, GROUP_CONCAT(CONCAT(" "), keyword) AS keyword FROM dokumen_keyword GROUP BY dokumen_id) z'), 
@@ -39,6 +40,8 @@ class DokumenController extends Controller
                         ->leftJoin('agenda as d', 'd.id', 'c.agenda_id')
                         ->leftJoin('klien as e', 'e.id', 'd.klien_id')
                         ->leftJoin('users as f', 'f.id', 'c.created_by')
+                        ->whereNull('a.deleted_at')
+                        ->groupBy('a.id')
                         ->orderBy('a.created_at', 'DESC');
 
             if ($request->uuid) { //jika data ini untuk di halaman map klien digital
@@ -209,9 +212,20 @@ class DokumenController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($uuid)
     {
-        //
+        $data = Dokumen::where('uuid',$uuid)->first();
+        $template = DB::table('template as a')
+                        ->select(DB::raw('a.*, b.name, GROUP_CONCAT(c.keyword) as keyword'))
+                        ->leftJoin('users as b', 'a.created_by', 'b.id')
+                        ->leftJoin('template_keyword as c', 'a.id', 'c.template_id')
+                        ->where('a.id', $data->template_id)
+                        ->groupBy('a.id')
+                        ->first();
+
+        return view('dokumen.edit')
+                    ->with('data', $data)
+                    ->with('template', $template);
     }
 
     /**
@@ -232,8 +246,26 @@ class DokumenController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($uuid)
     {
-        //
+        try {
+            $proses = Dokumen::where('uuid', $uuid)->delete();
+
+            if (!$proses) {
+                throw new Exception($proses);
+            }
+            
+            //return response
+            return response()->json([
+                'success' => true,
+                'code'    => 200,
+                'message' => 'Data Berhasil Dihapus!',
+                'data'    => $proses  
+            ]);
+
+        } catch (Exception $e){
+            return response()->json(['message' => $e->getMessage()]);
+            die();
+        }
     }
 }

@@ -45,6 +45,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/check_kelengkapan_data/{id}', [KasusController::class, 'check_kelengkapan_data'])->name('check_kelengkapan_data');
     // Route::view('kasus/detail/','/kasus/detail')->name('kasus.detail');
     Route::post('/get_klien', [KasusController::class, 'get_klien'])->name('get_klien');
+    // hapus klien dari kasus
+    Route::delete('kasus/destroy/{id}', [KasusController::class, 'destroy'])->name('kasus.destroy');
     // persetujuan
     Route::post('persetujuan/create/{uuid}', [PersetujuanController::class, 'create'])->name('persetujuan.create');
     // persetujuan_pelayanan
@@ -71,8 +73,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/get_dokumen', [DokumenController::class, 'get_dokumen'])->name('get_dokumen');
     Route::get('dokumen/add',[DokumenController::class, 'add'])->name('dokumen.add');
     Route::get('dokumen/create',[DokumenController::class, 'create'])->name('dokumen.create');
+    Route::get('dokumen/edit/{uuid}',[DokumenController::class, 'edit'])->name('dokumen.edit');
     Route::post('dokumen/store',[DokumenController::class, 'store'])->name('dokumen.store');
     Route::get('dokumen/show/{uuid}',[DokumenController::class, 'show'])->name('dokumen.show');
+    Route::delete('dokumen/destroy/{id}', [DokumenController::class, 'destroy'])->name('dokumen.destroy');
     // template
     Route::get('template', [TemplateController::class, 'index'])->name('template');
     Route::get('template/create', [TemplateController::class, 'create'])->name('template.create');
