@@ -197,7 +197,8 @@ class DokumenController extends Controller
      */
     public function show(Request $request, $uuid)
     {
-        if($request->ajax()) { //dipakai di datatable
+        if($request->ajax()) { 
+            //dipakai di datatable di index & di agenda (kinerja & detail kasus)
             $data = DB::table('dokumen as a')
                         ->leftJoin('dokumen_keyword as b', 'a.id', 'b.dokumen_id')
                         ->where('a.uuid', $request->uuid)

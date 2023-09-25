@@ -65,8 +65,8 @@
       </div><!-- /.container-fluid -->
     </section>
 
-<!-- Modal -->
-<div class="modal fade" id="ajaxModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal Dokumen -->
+<div class="modal fade" id="dokumenModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
 
@@ -99,13 +99,13 @@
           </div>
         </div>
       </div>
-      <div class="modal-footer" id="buttons">
+      <div class="modal-footer" id="buttonsDokumen">
       </div>
     </div>
   </div>
 </div>
 
-    {{-- DataTable --}}
+{{-- DataTable --}}
 
 <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
@@ -186,12 +186,12 @@
           $("#overlay").hide();
           console.log(data);
           tinymce.activeEditor.setContent(JSON.parse(data.konten));
-          $('#ajaxModal').modal('show');
+          $('#dokumenModal').modal('show');
           //munculkan tombol
-          $('#buttons').html('');
-          $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="saveAndPrint()"><i class="fas fa-print"></i> Print Dokumen</button>');
+          $('#buttonsDokumen').html('');
+          $('#buttonsDokumen').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="saveAndPrint()"><i class="fas fa-print"></i> Print Dokumen</button>');
           // $('#buttons').append('<button type="button" onclick="window.location.assign(`'+"{{route('dokumen.edit', '')}}"+"/"+data.uuid+'`)" class="btn btn-warning btn-block" id="terima"><i class="fas fa-edit"></i> Edit Dokumen</button>');
-          $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Dokumen</button>');
+          $('#buttonsDokumen').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Dokumen</button>');
         });
     });
 
@@ -263,7 +263,7 @@
                 console.log(response);
             }else{
                 $('#tabelDokumen').DataTable().ajax.reload();
-                $('#ajaxModal').modal('hide');
+                $('#dokumenModal').modal('hide');
             }
         },
         error: function (response){

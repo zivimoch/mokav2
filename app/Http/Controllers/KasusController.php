@@ -34,6 +34,8 @@ class KasusController extends Controller
                         ->leftJoin('petugas as c', 'a.id', 'c.klien_id')
                         ->leftJoin('users as d', 'd.id', 'a.created_by')
                         ->whereNull('a.deleted_at')
+                        ->whereNull('b.deleted_at')
+                        ->whereNull('c.deleted_at')
                         ->groupBy('a.id');
             if (Auth::user()->supervisor_id != 0) { // petugas penerima pengaduan tidak masalah bisa melihat semua kasus
                 $data->where('c.user_id', Auth::user()->id);
@@ -44,6 +46,19 @@ class KasusController extends Controller
             }
             return DataTables::of($datas)->make(true);
        }
+
+       // ===========================================================================================
+        //Proses read, push notif & log activity ////////////////////////////////////////////////////
+        // jika petugas sudah melihat data kasus maka tasknya (T3, T6) selesai
+        NotifHelper::read_notif(
+            Auth::user()->id, // receiver_id
+            $request->klien_id, // klien_id
+            $request->kode, // kode ini request dari link 
+            $request->type_notif, // type_notif
+            $request->agenda_id // agenda_id
+        );
+        /////////////////////////////////////////////////////////////////////////////////////////////
+
 
        return view('kasus.index');
     }
@@ -150,6 +165,7 @@ class KasusController extends Controller
                     ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
                     ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
                     ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
+                    ->where('a.kasus_id', $klien->kasus_id)
                     ->first();
         //data terlapor
         $terlapor = DB::table('terlapor as a')
@@ -249,6 +265,9 @@ class KasusController extends Controller
                     $kode = 'T4';
                     $url = url('/kasus/show/'.$klien->uuid.'?tab=kasus&catatan-kasus=1&kode=T4&tipe=task');
                 }else{
+                    $no_klien = '[REJECTED]';
+                    $klien->no_klien = $no_klien;
+                    $klien->save();
                     $message_notif = Auth::user()->name.' tidak menyetujui kasus. Silahkan lakukan terminasi sepihak / kasus ditutup';
                     $message_log = Auth::user()->name.' {tidak menyetujui kasus. Proses terminasi';
                     $kode = 'T5';

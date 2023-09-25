@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\AsesmenController;
+use App\Http\Controllers\CatatanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\FormPenerimaPengaduan;
@@ -98,6 +99,10 @@ Route::middleware('auth')->group(function () {
     // terminasi
     Route::get('terminasi/index/', [TerminasiController::class, 'index'])->name('terminasi');
     Route::post('terminasi/store/', [TerminasiController::class, 'store'])->name('terminasi.store');
+    // catatan
+    Route::get('catatan/index/', [CatatanController::class, 'index'])->name('catatan');
+    Route::post('catatan/store/', [CatatanController::class, 'store'])->name('catatan.store');
+    Route::get('catatan/edit/{uuid}',[CatatanController::class, 'edit'])->name('catatan.edit');
     // check kelengkapan
     Route::get('/check_kelengkapan_data/{id}', [KasusController::class, 'check_kelengkapan_data'])->name('check_kelengkapan_data');
     Route::get('/check_kelengkapan_persetujuan_spv/{id}', [KasusController::class, 'check_kelengkapan_persetujuan_spv'])->name('check_kelengkapan_persetujuan_spv');

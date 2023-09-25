@@ -121,7 +121,7 @@ class PersetujuanController extends Controller
             }
 
             //simpan tandatangan
-            $folderPath = public_path('img/tandatangan/');
+            $folderPath = public_path('img/tandatangan/ttd_spp/');
             $image_parts = explode(";base64,", $request->tandatangan);
             $image_type_aux = explode("image/", $image_parts[0]);
             $image_type = $image_type_aux[1];

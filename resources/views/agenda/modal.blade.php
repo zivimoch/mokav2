@@ -77,7 +77,7 @@
           <select class="select2" data-placeholder="Pilih nama" style="width: 100%;" id="klien_id_select" onchange="load_select2_petugas()"></select>
         </div>
         <div class="form-group">
-          <label>Tag<span class="text-danger">*</span></label>
+          <label>Tag</label>
           <select multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id_select"></select>
           <div class="invalid-feedback" id="valid-user_id_select">
             Minimal tag 1 orang.
@@ -87,9 +87,18 @@
               <div class="card card-primary card-outline">
               <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
               <div class="card-header">
-              <h4 class="card-title w-100">
+              <h4 class="card-title">
               Tindak Lanjut
               </h4>
+              <div class="card-tools">
+                <input type="checkbox" class="btn-sm" id="terlaksana"
+                        checked 
+                        data-bootstrap-switch 
+                        data-on-text="Terlaksana"
+                        data-off-text="Dibatalkan"
+                        data-off-color="danger" 
+                        data-on-color="success">
+              </div>
               </div>
               </a>
               <div id="collapseOne" class="collapse" data-parent="#accordion-tindaklanjut">
@@ -124,6 +133,9 @@
                   <div class="form-group">
                   <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}" target="_blank">disini</a>)<br>*Laporan Hasil Pelayanan</span></label>
                   <select multiple="multiple" data-placeholder="Pilih judul dokumen" style="width: 100%;" id="dokumen_id_select"></select>
+                    <div class="invalid-feedback" id="valid-dokumen_id_select">
+                      Dokumen pendukung wajib diisi jika menTL Penjadwalan Layanan.
+                    </div>  
                   </div>
                   <div class="form-group">
                       <label>Catatan</label>
@@ -147,6 +159,7 @@
   
   <script src="{{ asset('adminlte') }}/plugins/moment/moment.min.js"></script> 
   <script src="{{ asset('source') }}/js/jquery-clock-timepicker.min.js"></script>
+  <script src="{{ asset('adminlte') }}/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
   
 <script>
     $(document).ready(function () {
@@ -156,6 +169,19 @@
     load_select2_dokumen();
     display_ct();
     $("#list_klien").hide();
+    $('#terlaksana').on('switchChange.bootstrapSwitch', function (event, state) {
+      if (state) {
+        $("#collapseOne").addClass("show");
+        $("#collapseOne").show();
+      } else {
+        $("#collapseOne").removeClass("show");
+        $("#collapseOne").hide();
+      }
+    }); 
+
+    $("input[data-bootstrap-switch]").each(function(){
+        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+      })
   
      var SITEURL = "{{ url('/') }}";
        
@@ -166,7 +192,28 @@
      });
   
         $('#submitAgenda').click(function() {
-          console.log($("#user_id_select").val());
+          if (($("#klien_id_select").val() != '' && $("#klien_id_select").val() != null) && ($("#jam_selesai").val() != '' && $("#jam_selesai").val() != null)) {
+            // jika ada klien dan dia mau bikin TL maka harus ada dokumennya juga
+            $("#dokumen_id_select").addClass("required-field-agenda");
+          }else{
+            $("#dokumen_id_select").removeClass("required-field-agenda");
+          }
+
+          if($('#terlaksana').is(':checked')){
+            terlaksana = 1;
+          }else{
+            // jika tidak terlaksana maka tindak lanjutnya kosong kecuali jam selesai agar dihitung checked
+            terlaksana = 0;
+            $('#lokasi').val('');
+            var dt = new Date();
+            var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+            $('#jam_selesai').val(time);
+            $('#dokumen_id_select').empty();
+            $('#catatan').val('');
+            // hapus required agar bisa save
+            $("#dokumen_id_select").removeClass("required-field-agenda");
+          }
+
           if(validateForm('agenda')){
             let token   = $("meta[name='csrf-token']").attr("content");
             $.ajax({
@@ -185,6 +232,7 @@
                 jam_selesai: $("#jam_selesai").val(),
                 catatan: $("#catatan").val(),
                 dokumen_pendukung: $("#dokumen_id_select").val(),
+                terlaksana: terlaksana,
                 _token: token
               },
               success: function (response){
@@ -223,8 +271,8 @@
                     load_select2_agenda();
                   }
                   // untuk load progress layanan di detail kasus 
-                  if ($(".persen_title_layanan").length > 0) {
-                    check_kelengkapan_perencanaan();
+                  if ($(".persen_title_layanan").length > 0 && $("#klien_id_select").val() != null) {
+                    check_kelengkapan_perencanaan($("#klien_id_select").val());
                   }
 
                   // hapus semua inputan
@@ -232,7 +280,7 @@
                   $('#tanggal_mulai').val('');
                   $('#jam_mulai').val('');
                   $('#keterangan-agenda').val('');
-                  $('#klien_id_select').val('');
+                  $('#klien_id_select').val('').change();
                   $('#lokasi').val('');
                   $('#jam_selesai').val('');
                   $('#catatan').val('');
@@ -366,7 +414,7 @@
     function penjadwalan_layanan() {
       if ($('#penjadwalan_layanan').val() == 0) {
         $("#list_klien").hide();
-        $('#klien_id_select').val('');
+        $('#klien_id_select').val('').change();
       } else {
         $("#list_klien").show();
       }
@@ -401,7 +449,7 @@
             $("#klien_id_select").append('<option value="'+data.klien_id+'" selected>'+data.nama+'</option>');
           }else{
             $('#penjadwalan_layanan').val(0);
-            $("#klien_id_select").val();
+            $("#klien_id_select").val('').change();
           }
           if (data.user_id != null) {
             $('#user_id_select').val([]).change();
@@ -434,7 +482,7 @@
     $('#keterangan-agenda').val('');
     $('#penjadwalan_layanan').val(0);
     $('#list_klien').hide(); 
-    $('#klien_id_select').val('');
+    $('#klien_id_select').val('').change();
     $('#lokasi').val('');
     $('#jam_selesai').val('');
     $('#catatan').val('');

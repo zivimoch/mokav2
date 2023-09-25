@@ -173,7 +173,7 @@
         <div class="col-md-4 align-self-center">
                 <label class="" for="">Tanda Tangan:</label>
                 <div id="sig" >
-                    <img src="{{ asset('img/tandatangan/'.$persetujuan_isi->tandatangan) }}" alt="">
+                    <img src="{{ asset('img/tandatangan/ttd_spp/'.$persetujuan_isi->tandatangan) }}" alt="">
                 </div>
                 <div style="border: none; border-bottom: 2px solid black;">
                     {{ $persetujuan_isi->nama_penandatangan }}

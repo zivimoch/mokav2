@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class OpsiController extends Controller
 {
+    // data kategori lokasi / tempat kejadian
     public function api_tempat_kejadian()
     {
         $data = ['Rumah Tinggal', //Tempat tinggal
@@ -31,7 +32,8 @@ class OpsiController extends Controller
                 'KRL', 
                 'Angkot', 
                 'Kendaraan Pribadi', 
-                'Media Online / Digital' //Online
+                'Media Online / Digital',  //Online
+                'Jalan'
             ];
 
         return $data;

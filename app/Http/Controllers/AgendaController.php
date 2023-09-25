@@ -87,7 +87,9 @@ class AgendaController extends Controller
     }
 
     public function api_index(Request $request)
-    { // nanti benerin lagi, buat lebih sederhana masukin ke function show
+    { 
+        // digunakan di datatable detail kasus & agenda
+        // nanti benerin lagi, buat lebih sederhana masukin ke function show
         if (isset($request->user_id)) {
             $user_id = $request->user_id;
         }else{
@@ -99,7 +101,7 @@ class AgendaController extends Controller
                     ->leftJoin('users as d','d.id','b.created_by')
                     ->leftJoin(DB::raw('(
                         SELECT 
-                        a.tindak_lanjut_id, GROUP_CONCAT(CONCAT(",|"),b.judul) AS judul
+                        a.tindak_lanjut_id, GROUP_CONCAT(CONCAT(",|"),b.judul) AS judul, GROUP_CONCAT(CONCAT(",|"),b.uuid) AS uuid_dokumen
                         FROM dokumen_tl a LEFT JOIN dokumen b ON a.dokumen_id = b.id
                         WHERE b.deleted_at IS NULL
                         GROUP BY a.tindak_lanjut_id) z'), 
@@ -113,7 +115,7 @@ class AgendaController extends Controller
                     ->orderBy('a.tanggal_mulai')
                     ->orderBy('a.jam_mulai')
                     ->select(DB::raw('b.uuid, a.tanggal_mulai, a.jam_mulai, a.klien_id, b.tanggal_selesai, 
-                    b.jam_selesai, a.judul_kegiatan, a.keterangan, a.uuid, b.lokasi, b.catatan, c.name, b.created_by, z.judul, d.name as petugas, d.jabatan'));
+                    b.jam_selesai, a.judul_kegiatan, a.keterangan, a.uuid, b.lokasi, b.catatan, b.terlaksana, c.name, b.created_by, z.judul, z.uuid_dokumen, d.name as petugas, d.jabatan'));
 
                     if ($request->uuid) { //ini untuk di halaman map klien digital
                         $klien = Klien::where('uuid', $request->uuid)->first();
@@ -175,7 +177,6 @@ class AgendaController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'user_id' => 'required',
                 'judul_kegiatan' => 'required',
                 'tanggal_mulai' => 'required',
                 'jam_mulai' => 'required'
@@ -276,16 +277,22 @@ class AgendaController extends Controller
                                                             'lokasi' => $request->lokasi,
                                                             'tanggal_selesai' => $request->tanggal_mulai, //tanggal selesai = tanggal mulai, karna kita main jadwanya per tanggal
                                                             'jam_selesai' => $request->jam_selesai,
-                                                            'catatan' => $request->catatan
+                                                            'catatan' => $request->catatan,
+                                                            'terlaksana' => $request->terlaksana
                                                         ]);
 
                             if (isset($request->dokumen_pendukung)) {
-                                foreach ($request->dokumen_pendukung as $value_dokumen) {
+                            $tindak_lanjut = TindakLanjut::where('created_by', $value)->where('agenda_id', $proses->id)->first();
+                            foreach ($request->dokumen_pendukung as $value_dokumen) {
                                     DokumenTl::create([
-                                        'tindak_lanjut_id' => $value,
+                                        'tindak_lanjut_id' => $tindak_lanjut->id,
                                         'dokumen_id' => $value_dokumen
                                     ]);
                                 }
+                            }else{
+                                $tindak_lanjut = TindakLanjut::where('created_by', $value)->where('agenda_id', $proses->id)->first();
+                                // hapus Dokumen Pendukung 
+                                DokumenTl::where('tindak_lanjut_id', $tindak_lanjut->id)->delete();
                             }
                             $hapus_user = 0;
                         }

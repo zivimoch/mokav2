@@ -79,6 +79,46 @@
       </div><!-- /.container-fluid -->
     </section>
 
+<!-- Modal Dokumen -->
+<div class="modal fade" id="dokumenModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+
+      <div id="overlay" class="overlay dark">
+        <div class="cv-spinner">
+          <span class="spinner"></span>
+        </div>
+      </div>
+      
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-card">
+          <div class="form-group">
+
+            <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
+              <div id="mytoolbar" style="width: 1000px"></div>
+              <main>
+                <div class="centered">
+                  <div class="row-editor">
+                    <textarea name="konten" readonly class="textarea-replace editor textarea-tinymce" id="konten">
+                    </textarea>
+                  </div>
+                </div>
+              </main>
+            </body>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" id="buttonsDokumen">
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -99,6 +139,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="{{ asset('vendor/tinymce4/tinymce.min.js') }}"></script>
 
 <script>
  $("#checkAll").click(function () {
@@ -123,7 +164,6 @@
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
           rowHightlight = $('#uuid_agenda_hightlight').val();
-          console.log(rowHightlight);
           if (data.uuid == rowHightlight) {
             $(row).attr('class', 'hightlighting');
           }
@@ -169,16 +209,26 @@
               }
 
               if(row.judul != null){
+                uuid_dokumen = row.uuid_dokumen;
+                var array2 = uuid_dokumen.split(",|");
+
                 dokumen = row.judul;
                 dokumens = '';
                 var array = dokumen.split(",|");
                 for (i=1;i<array.length;i++){
-                  dokumens += '<a href="https://facebook.com"><span class="badge bg-primary"><i class="nav-icon fas fa-file-alt"></i> '+array[i]+'</span></a> ';
+                string = array2[i];
+                uuid_dokumen = string.replace(/,/g, "");
+                dokumens += '<a href="#" onclick="showModalDokumen(`'+uuid_dokumen+'`)"><span class="badge bg-primary"><i class="nav-icon fas fa-file-alt"></i> '+array[i]+'</span></a> ';
                 };
               }else{
                 dokumens = '';
               }
-              return catatan+lokasi+'<br>'+dokumens;
+
+              if (row.terlaksana) {
+                return lokasi+'<br>'+catatan+dokumens;
+              } else {
+                return '<span class="badge bg-danger">Dibatalkan</span>';
+              }
             }
         },
         {
@@ -214,10 +264,83 @@
 
 
        $('#tabelAgenda tbody').on( 'click', 'tr', function (evt) {
+        if ($(evt.target).closest('td').index() !== 3) {
         $("#success-message").hide();
         $("#error-message").hide();
         showModalAgenda('',this.id);
+        }
         });
+
+      function showModalDokumen(uuid) { 
+        $.ajax({
+          url:'/dokumen/show/'+uuid,
+          type:'GET',
+          dataType: 'json',
+          success: function( response ) {
+            $("#overlay").hide();
+            tinymce.activeEditor.setContent(JSON.parse(response.konten));
+            $('#dokumenModal').modal('show');
+            //munculkan tombol
+            $('#buttonsDokumen').html('');
+            $('#buttonsDokumen').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="saveAndPrint()"><i class="fas fa-print"></i> Print Dokumen</button>');
+            // $('#buttons').append('<button type="button" onclick="window.location.assign(`'+"{{route('dokumen.edit', '')}}"+"/"+data.uuid+'`)" class="btn btn-warning btn-block" id="terima"><i class="fas fa-edit"></i> Edit Dokumen</button>');
+            // $('#buttonsDokumen').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Dokumen</button>');
+            }
+        });
+    };
+
+    tinymce.init({
+        selector: ".textarea-tinymce",
+        toolbar: '#mytoolbar',
+        lineheight_formats: "8pt 9pt 10pt 11pt 12pt 14pt 16pt 18pt 20pt 22pt 24pt 26pt 36pt",
+        // ukuran A4 Potrait
+        height: "500",
+        readonly: 1,
+        menubar: false,
+        toolbar: false,
+        plugins: 'textcolor table paste',
+        plugins: [
+            "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+            "searchreplace wordcount visualblocks visualchars code fullscreen",
+            "insertdatetime nonbreaking save table contextmenu directionality",
+            "emoticons template paste textcolor colorpicker textpattern"
+        ],
+        visual: false,
+        toolbar: "saveandprint",
+        convert_fonts_to_spans: true,
+        paste_word_valid_elements: "b,strong,i,em,h1,h2,u,p,ol,ul,li,a[href],span,color,font-size,font-color,font-family,mark,table,tr,td",
+        paste_retain_style_properties: "all",
+        automatic_uploads: true,
+        image_advtab: true,
+        file_picker_types: 'image',
+        paste_data_images: true,
+        relative_urls: false,
+        remove_script_host: false,
+        file_picker_callback: function(cb, value, meta) {
+            var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.onchange = function() {
+                var file = this.files[0];
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function() {
+                    var id = 'post-image-' + (new Date()).getTime();
+                    var blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                    var blobInfo = blobCache.create(id, file, reader.result);
+                    blobCache.add(blobInfo);
+                    cb(blobInfo.blobUri(), {
+                        title: file.name
+                    });
+                };
+            };
+            input.click();
+        }
+    });
+
+    function saveAndPrint() {
+        tinymce.activeEditor.execCommand('mcePrint');
+    }
 
     $('#tabelAgenda_filter').css({'float':'right','display':'inline-block'});
 </script>

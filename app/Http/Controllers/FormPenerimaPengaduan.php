@@ -138,7 +138,6 @@ class FormPenerimaPengaduan extends Controller
                 'kelurahan' => $request->kelurahan_pelapor,
                 'alamat' => $request->alamat_pelapor,
                 'no_telp' => $request->no_telp_pelapor,
-                'file_ttd' => $request->file_ttd_pelapor,
                 'hubungan_pelapor' => $request->hubungan_pelapor,
                 'desil' => $request->desil_pelapor,
                 'created_by' => $created_by
@@ -148,6 +147,20 @@ class FormPenerimaPengaduan extends Controller
             //Data Klien
             $klien = $request->nama_klien;
             foreach ($klien as $key => $value) {
+                if ($request->tandatangan[$key]) {
+                    //simpan tandatangan
+                    $folderPath = public_path('img/tandatangan/ttd_verif_data/');
+                    $image_parts = explode(";base64,", $request->tandatangan[$key]);
+                    $image_type_aux = explode("image/", $image_parts[0]);
+                    $image_type = $image_type_aux[1];
+                    $image_base64 = base64_decode($image_parts[1]);
+                    $file = uniqid() . '.'.$image_type;
+                    $filepath = $folderPath . $file;
+                    file_put_contents($filepath, $image_base64);
+                } else {
+                    $file = NULL;
+                }
+
                 $klien = Klien::create([
                         'kasus_id' => $kasus->id,
                         'status' => 'Pelengkapan Data',
@@ -183,7 +196,7 @@ class FormPenerimaPengaduan extends Controller
                         'pengadilan_negri' => isset($request->pengadilan_negri[$key]) ? $request->pengadilan_negri[$key]  : NULL,  
                         'isi_putusan' => isset($request->isi_putusan[$key]) ? $request->isi_putusan[$key] : NULL,  
                         'lpsk' => isset($request->lpsk_klien[$key]) ? $request->lpsk_klien[$key] : NULL,  
-                        'file_ttd' => isset($request->file_ttd_klien[$key]) ? $request->file_ttd_klien[$key] : NULL,  
+                        'tandatangan' => $file,  
                         'desil' => isset($request->desil_klien[$key]) ? $request->desil_klien[$key] : NULL,  
                         'created_by' => $created_by  
                     ]);
@@ -297,7 +310,6 @@ class FormPenerimaPengaduan extends Controller
                         'status_kawin' => isset($request->perkawinan_terlapor[$key]) ? $request->perkawinan_terlapor[$key] : NULL,
                         'jumlah_anak' => isset($request->jumlah_anak_terlapor[$key]) ? $request->jumlah_anak_terlapor[$key] : NULL,
                         'hubungan_terlapor' => isset($request->hubungan_terlapor[$key]) ? $request->hubungan_terlapor[$key] : NULL,  
-                        'file_ttd' => isset($request->file_ttd_terlapor[$key]) ? $request->file_ttd_terlapor[$key] : NULL,  
                         'desil' => isset($request->desil_terlapor[$key]) ? $request->desil_terlapor[$key] : NULL,  
                         'created_by' => $created_by
                     ]);

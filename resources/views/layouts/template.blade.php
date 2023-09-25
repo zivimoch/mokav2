@@ -76,7 +76,7 @@
   <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body" style="text-align: center">
-        <h4 style="font-weight:bold; background-color:rgb(174, 149, 114); color:#fff">SESI HABIS, JANGAN BIARKAN MOKA ANDA DINGIN</h4>
+        <h4 style="font-weight:bold; background-color:rgb(174, 149, 114); color:#fff">SESI HABIS, JANGAN TINGGALKAN MOKA ANDA DINGIN</h4>
       </br>
       <center>
         <img src="{{ asset('img/mocha.gif') }}" alt="" class="img-fluid">

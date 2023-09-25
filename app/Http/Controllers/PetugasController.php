@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\LogActivityHelper;
 use App\Helpers\NotifHelper;
 use App\Models\Klien;
+use App\Models\Notifikasi;
 use App\Models\PersetujuanIsi;
 use App\Models\Petugas;
 use App\Models\User;
@@ -167,21 +168,46 @@ class PetugasController extends Controller
     public function destroy($id)
     {
         try {
-            $filter = Petugas::where('id', $id)->first();
-            $klien = Klien::where('id', $filter->klien_id)->first();
-
-            if (isset($filter)) {
+            $petugas = Petugas::where('id', $id)->first();
+            $klien = Klien::where('id', $petugas->klien_id)->first();
+            if (isset($petugas)) {
                 //delete petugas
                 $proses = Petugas::where('id', $id)->delete();
             }else{
                 $proses = false;
             }
 
-
             //hapus task di notifikasi
-            // Notifikasi::where('receiver_id', $filter->user_id)
-                        // ->where('klien_id', $filter->klien_id)
-                        // ->delete();
+            $proses = Notifikasi::where('receiver_id', $petugas->user_id)
+                        ->where('klien_id', $klien->id)
+                        ->update(['read' => 1]);
+            
+            // ===========================================================================================
+            //Proses read, push notif & log activity ////////////////////////////////////////////////////
+            //push notifikasi ///////////////////////////////////////////////////////////////////////////
+            //kirim ke user yang ada di dihapus
+            NotifHelper::push_notif(
+                $petugas->user_id , //receiver_id
+                ($klien && $klien->id) ? $klien->id : NULL, //klien_id
+                'N8', //kode
+                'notif', //type_notif
+                ($klien && $klien->no_klien) ? $klien->no_klien : NULL, //noregis
+                Auth::user()->name, //from
+                Auth::user()->name.' telah menghapus akses anda dari kasus', //message
+                ($klien && $klien->nama) ? $klien->nama : NULL,  //nama korban 
+                ($klien && $klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
+                url('/kasus?klien_id='.$klien->id.'&user_id='.$petugas->user_id.'&kode=N8&type_notif=notif'), //url
+                0, //kirim ke diri sendiri 0 / 1
+                Auth::user()->id, // created_by
+                NULL // agenda_id
+            );
+            //write log activity ////////////////////////////////////////////////////////////////////////
+            LogActivityHelper::push_log(
+                //message
+                Auth::user()->name.' menghapus akses '.$petugas->name.' dari kasus',
+                //klien_id
+                ($klien && $klien->id)? $klien->id : NULL
+            );
 
             //return response
             $response =  response()->json([
@@ -191,7 +217,7 @@ class PetugasController extends Controller
                 'data'    => $proses  
             ]);
             
-            return redirect()->route('kasus.show', ['uuid' => $klien->uuid, 'tab' => 'kasus-petugas'])
+            return redirect()->route('kasus.show', ['uuid' => $klien->uuid, 'tab' => 'kasus-petugas', 'tabel-petugas' => 1])
             ->with('success', true)
             ->with('response', $response);
         } catch (Exception $e){
