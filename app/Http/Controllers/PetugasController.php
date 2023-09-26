@@ -174,7 +174,7 @@ class PetugasController extends Controller
                 //delete petugas
                 $proses = Petugas::where('id', $id)->delete();
             }else{
-                $proses = false;
+                return abort(404);
             }
 
             //hapus task di notifikasi

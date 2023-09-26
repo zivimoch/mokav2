@@ -2,7 +2,7 @@
 
 @section('content')
 <style>
-    .input_pelapor, .input_klien {
+    .input_pelapor, .input_klien, .input_kasus {
         display: none;
     }
 
@@ -246,13 +246,6 @@
             
             
         <div class="post clearfix" style="color:black">
-            {{-- @if (Session::has('success'))
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    {!! Session::get('response') !!}
-                </div>
-            @endif --}}
-
             <b id="anchor_pelaporan">A. IDENTITAS PELAPOR</b>
             <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
                 @csrf
@@ -272,6 +265,11 @@
                         <td style="width: 200px">Nama</td>
                         <td>:</td>
                         <td><span class="data_pelapor">{{ $pelapor->nama }}</span> <input type="text" name="nama" value="{{ $pelapor->nama }}" class="input_pelapor"></td>
+                    </tr>
+                    <tr id="nik_pelapor">
+                        <td style="width: 200px">NIK</td>
+                        <td>:</td>
+                        <td><span class="data_pelapor">{{ $pelapor->nik }}</span> <input type="text" name="nik" value="{{ $pelapor->nik }}" class="input_pelapor"></td>
                     </tr>
                     <tr id="tanggal_lahir_pelapor">
                         <td style="width: 200px">Tempat/Tgl Lahir</td>
@@ -350,6 +348,11 @@
                     <td style="width: 200px">Nama</td>
                     <td>:</td>
                     <td><span class="data_klien">{{ $klien->nama }}</span> <input type="text" name="nama" value="{{ $klien->nama }}" class="input_klien"></td>
+                </tr>
+                <tr id="nik_klien">
+                    <td style="width: 200px">NIK</td>
+                    <td>:</td>
+                    <td><span class="data_klien">{{ $klien->nik }}</span> <input type="text" name="nik" value="{{ $klien->nik }}" class="input_klien"></td>
                 </tr>
                 <tr id="tanggal_lahir_klien">
                     <td style="width: 200px">Tempat/Tgl Lahir</td>
@@ -566,6 +569,11 @@
         </div>
         <div class="post clearfix" style="color:black">
             <b>D. KASUS KLIEN</b>
+            <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
+            @csrf
+            @method('put')
+            <input type="hidden" name="uuid" value="{{ $kasus->uuid }}">
+            <input type="hidden" name="data_update" value="kasus">
             <span style="float:right">
                 <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_kasus" onclick="editdata('kasus')">
                 <i class="fas fa-edit"></i> Edit
@@ -575,57 +583,94 @@
                 </button>
             </span>
             <table class="table table-bottom table-sm">
-                <tr>
+                <tr id="tanggal_kejadian_kasus">
                     <td style="width: 200px">Tanggal Kejadian</td>
                     <td>:</td>
-                    <td>01 Januari 2023</td>
+                    <td>
+                        <span class="data_kasus">
+                            {{ $kasus->tanggal_kejadian ? date('d M Y', strtotime($kasus->tanggal_kejadian)) : '' }}
+                        </span> 
+                        <input type="date" name="tanggal_kejadian" value="{{ $kasus->tanggal_kejadian }}" class="input_kasus">
+                    </td>
                 </tr>
-                <tr>
-                    <td style="width: 200px">Tempat Kejadian</td>
+                <tr id="tempat_kejadian_kasus">
+                    <td style="width: 200px">Kategori Lokasi</td>
                     <td>:</td>
-                    <td><b>Kategori Lokasi : </b> Sekolah</td>
+                    <td>
+                        <span class="data_kasus">{{ $kasus->tempat_kejadian }}</span> 
+                        <select name="tempat_kejadian" class="input_kasus select2bs4" style="width: 100%;">
+                            @foreach ($tempat_kejadian as $item_tempat_kejadian)
+                                <option value="{{ $item_tempat_kejadian }}" {{ $item_tempat_kejadian == $kasus->tempat_kejadian ? 'selected' : '' }}>{{ $item_tempat_kejadian }}</option>
+                            @endforeach
+                        </select>
+                    </td>
                 </tr>
-                <tr>
-                    <td style="width: 200px">Alamat Saat Kejadian</td>
+                <tr id="media_pengaduan_kasus">
+                    <td style="width: 200px">Media Pengaduan</td>
                     <td>:</td>
-                    <td>Jl. Diponogoro Empu Tantular 45 Jaya, <b>Kelurahan</b> Mantap, <b>Kecamatan</b> Harapan, <b>Kota</b> DKI Jakarta</td>
+                    <td>
+                        <span class="data_kasus">{{ $kasus->media_pengaduan }}</span> 
+                        <select name="media_pengaduan" class="input_kasus select2bs4" style="width: 100%;">
+                            @foreach ($media_pengaduan as $item_media_pengaduan)
+                                <option value="{{ $item_media_pengaduan }}" {{ $item_media_pengaduan == $kasus->media_pengaduan ? 'selected' : '' }}>{{ $item_media_pengaduan }}</option>
+                            @endforeach
+                        </select>
+                    </td>
                 </tr>
-                <tr>
-                    <td style="width: 200px">Pendidikan Saat Kejadian</td>
+                <tr id="sumber_rujukan_kasus">
+                    <td style="width: 200px">Sumber Rujukan</td>
                     <td>:</td>
-                    <td><b>Kelas</b> 2, <b>Sekolah</b> SDN 1 Wakanda</td>
+                    <td>
+                        <span class="data_kasus">{{ $kasus->sumber_rujukan }}</span> 
+                        <select name="sumber_rujukan" class="input_kasus select2bs4" style="width: 100%;">
+                            @foreach ($sumber_rujukan as $item_sumber_rujukan)
+                                <option value="{{ $item_sumber_rujukan }}" {{ $item_sumber_rujukan == $kasus->sumber_rujukan ? 'selected' : '' }}>{{ $item_sumber_rujukan }}</option>
+                            @endforeach
+                        </select>
+                    </td>
                 </tr>
-                <tr>
-                    <td style="width: 200px">Pekerjaan Saat Kejadian</td>
+                <tr id="sumber_informasi_kasus">
+                    <td style="width: 200px">Sumber Informasi</td>
                     <td>:</td>
-                    <td>Gamer</td>
+                    <td>
+                        <span class="data_kasus">{{ $kasus->sumber_informasi }}</span> 
+                        <select name="sumber_informasi" class="input_kasus select2bs4" style="width: 100%;">
+                            @foreach ($sumber_informasi as $item_sumber_informasi)
+                                <option value="{{ $item_sumber_informasi }}" {{ $item_sumber_informasi == $kasus->sumber_informasi ? 'selected' : '' }}>{{ $item_sumber_informasi }}</option>
+                            @endforeach
+                        </select>
+                    </td>
                 </tr>
-                <tr>
-                    <td style="width: 200px">Klasifikasi Kasus</td>
+                <tr id="deskripsi_kasus">
+                    <td style="width: 200px">Deskripsi</td>
                     <td>:</td>
-                    <td>Publik, Perundungan</td>
+                    <td><span class="data_kasus">{{ $kasus->deskripsi }}</span> <textarea name="deskripsi" class="input_kasus" style="width:100%" rows="10">{{ $kasus->deskripsi }}</textarea></td>
                 </tr>
-                <tr>
-                    <td style="width: 200px">Nomor LP</td>
+                <tr id="alamat_kasus">
+                    <td style="width: 200px">Alamat</td>
                     <td>:</td>
-                    <td>LP / B/ 2232/IX/2022/SPKT/Polres Metro Jakarta Pusat/Polda metro Jaya</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Pasal</td>
-                    <td>:</td>
-                    <td>1. UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 21 TAHUN 2007 TENTANG PEMBERANTASAN TINDAK PIDANA PERDAGANGAN ORANG</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Putusan</td>
-                    <td>:</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td style="width: 200px">Catatan Kasus</td>
-                    <td>:</td>
-                    <td>Klien LPSK, Persidangan</td>
+                    <td>
+                        <span class="data_kasus">{{ $kasus->alamat }}</span> 
+                        <input type="text" name="alamat" value="{{ $kasus->alamat }}" class="input_kasus">, 
+                        <b>Provinsi</b> <span class="data_kasus">{{ $kasus->provinsi }}</span> 
+                        <select name="provinsi_id" class="input_kasus select2bs4" id="provinsi_id_kasus" onchange="getkotkab('kasus')">
+                            @foreach ($provinsi as $item)
+                                <option value="{{ $item->code }}" {{ $item->code == $kasus->provinsi_id ? 'selected' : '' }}>{{ $item->name }}</option>
+                            @endforeach
+                        </select>,
+                        <b>Kota</b> <span class="data_kasus">{{ $kasus->kota }}</span> 
+                        <select name="kotkab_id" class="input_kasus select2bs4" id="kota_id_kasus" onchange="getkecamatan('kasus')" style="width:100%">
+                        </select>, 
+                        <b>Kecamatan</b> <span class="data_kasus">{{ $kasus->kecamatan }}</span> 
+                        <select name="kecamatan_id" class="input_kasus select2bs4" id="kecamatan_id_kasus" style="width:100%">
+                            <option value="" selected></option>
+                        </select>,
+                        <b>Kelurahan</b> <span class="data_kasus">{{ $kasus->kelurahan }}</span> 
+                        <input type="text" name="kelurahan" value="{{ $kasus->kelurahan }}" class="input_kasus"> 
+                    </td>
                 </tr>
             </table>
+            </form>
         </div>
         <div class="post clearfix" style="color:black">
             <div class="row">
@@ -1488,6 +1533,7 @@
     $(document).ready(function () {
         getkotkab('pelapor');
         getkotkab('klien');
+        getkotkab('kasus');
         hightlighting();
         loadAsesmen();
         loadMonitoring();
@@ -1521,6 +1567,7 @@
 
     $('.input_pelapor').next(".select2-container").hide();
     $('.input_klien').next(".select2-container").hide();
+    $('.input_kasus').next(".select2-container").hide();
 
     $('#tabelLayanan').DataTable({
       "ordering": false,

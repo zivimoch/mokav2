@@ -156,9 +156,13 @@ class KasusController extends Controller
 
        //data kasus (nanti edit lagi)
        $kasus = DB::table('kasus as a')
-                    ->where('a.uuid', $klien->kasus_id)
-                    ->select(DB::raw('a.id'))
+                    ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan'))
+                    ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
+                    ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
+                    ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
+                    ->where('a.id', $klien->kasus_id)
                     ->first();
+
        //data pelapor
        $pelapor = DB::table('pelapor as a')
                     ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan'))
@@ -208,12 +212,12 @@ class KasusController extends Controller
             $request->agenda_id // agenda_id
         );
         /////////////////////////////////////////////////////////////////////////////////////////////
-
        $detail['kelengkapan_petugas'] = $kelengkapan_petugas;
        return view('kasus.show')
                 ->with('klien', $klien)
                 ->with('pelapor', $pelapor)
                 ->with('terlapor', $terlapor)
+                ->with('kasus', $kasus)
                 ->with('provinsi', $provinsi)
                 ->with('status_pendidikan', $status_pendidikan)
                 ->with('pendidikan_terakhir', $pendidikan_terakhir)
@@ -491,6 +495,7 @@ class KasusController extends Controller
         $data = Klien::where('kasus_id', $kasus_id)
                         ->where('uuid', '!=', $klien_id)
                         ->whereNull('deleted_at')
+                        ->where('id', '!=', $klien_id)
                         ->get();
         $kasus = Kasus::where('id', $kasus_id)->pluck('no_reg');
         $terlapor = Terlapor::where('kasus_id', $kasus_id)->pluck('nama');

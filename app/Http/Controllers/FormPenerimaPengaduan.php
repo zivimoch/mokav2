@@ -371,6 +371,10 @@ class FormPenerimaPengaduan extends Controller
                 $request->request->remove('kondisi_khusus');
                 $request->request->remove('difabel_type');
             }
+            if ($data_update == 'kasus') {
+                $data = Kasus::where('uuid', $request->uuid)->first();
+                $kasus_id = $data->id;
+            }
             $klien = Klien::where('id', $kasus_id)->first();
             //hapus value data_update
             $request->request->remove('data_update');
