@@ -35,7 +35,7 @@
             <th>Nama</th>
             <th>Kategori Klien</th>
             <th>Pengaduan</th>
-            <th>Status</th>
+            <th>Status Terkahir</th>
             </tr>
             </thead>
             <tbody>
@@ -87,7 +87,7 @@
       <p class="text-muted text-center"> (<span id="usia"></span>) <span id="jenis_kelamin"></span></p>
       <p class="text-center" id="no_klien"></p>
       <ul class="list-group list-group-unbordered mb-3">
-      <h5><span class="float-right badge bg-danger btn-block" id="status"></span></h5>
+      <h5><span class="float-right badge bg-primary btn-block" id="status"></span></h5>
       </ul>
       </div>
       <div class="card" style="margin-top:-30px; margin-bottom:0px">
@@ -207,7 +207,7 @@
         {
             "mData": "jenis_kelamin",
             "mRender": function (data, type, row) {
-              return '<span class="badge bg-danger">'+row.status+'</span>';
+              return '<span class="badge bg-primary">'+row.status+'</span>';
             }
         }
       ],

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\LogActivityHelper;
 use App\Helpers\NotifHelper;
+use App\Helpers\StatusHelper;
 use App\Models\Agenda;
 use App\Models\DokumenTl;
 use App\Models\Klien;
@@ -419,6 +420,8 @@ class AgendaController extends Controller
                     $proses->id // agenda_id. ini bisa dikosongkan karna defaultnya NULL
                 );
             }
+            // update status klien //////////////////////////////////////////////////////////////////////
+            StatusHelper::push_status($klien->id, 'Pelaksanaan intervensi');
             /////////////////////////////////////////////////////////////////////////////////////////////
             //return response
             return response()->json([

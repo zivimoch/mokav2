@@ -8,8 +8,8 @@
         <h1 class="m-0"><i class="nav-icon fas fa-file-alt"></i> Buat Dokumen</h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
-        <a href="http://localhost/suratresmi/template/add" class="btn btn-success float-right">
-            <i class="far fa-copy"></i> Blank Template
+        <a href="{{ route('template.create') }}" class="btn btn-success float-right">
+            <i class="far fa-copy"></i> Buat Template
         </a>
       </div><!-- /.col -->
     </div><!-- /.row -->

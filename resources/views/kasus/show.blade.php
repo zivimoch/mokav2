@@ -6,7 +6,7 @@
         display: none;
     }
 
-    .input_pelapor, #tombol_save_pelapor, .input_klien, #tombol_save_klien, .input_kasus, #tombol_save_kasus, .input_terlapor, #tombol_save_terlapor {
+    .input_pelapor, #tombol_save_pelapor, .input_klien, #tombol_save_klien, .input_kasus, #tombol_save_kasus, .input_terlapor, .tombol_save_terlapor {
         display: none;
     }
 
@@ -44,7 +44,9 @@
 
 <section class="content">
 @if (Session::has('data'))
-    <input type="hidden" id="perubahan" value="{{ Session::get('data')  }}">
+    <input type="hidden " id="perubahan" value="{{ Session::get('data') }}">
+@elseif(Request::get('data'))
+    <input type="hidden " id="perubahan" value="{{ Request::get('data') }}">
 @endif
 <div class="container-fluid">
 <div class="row">
@@ -65,7 +67,7 @@
 <p class="text-muted text-center">({{ $klien->tanggal_lahir ? Carbon\Carbon::parse($klien->tanggal_lahir)->age : '' }}) {{ ucfirst($klien->jenis_kelamin) }}</p>
 <p class="text-center">{{ $klien->no_klien }}</p>
 <ul class="list-group list-group-unbordered mb-3">
-<h5><span class="float-right badge bg-danger btn-block">Pelengkapan Data</span></h5>
+<h5><span class="float-right badge bg-primary btn-block">{{ $klien->status }}</span></h5>
 </ul>
 </div>
 <div class="card" style="margin-top:-30px; margin-bottom:0px">
@@ -85,7 +87,8 @@
                     Identifikasi <i class="fa fa-check" id="check_identifikasi"></i>
                     <ul style="margin-left: -25px">
                         <li>
-                            Data Kasus (<span id="persen_title_data"></span>%)
+                            Data Kasus (<span id="persen_title_data"></span>%) <i class="far fa-check-circle"></i>
+                        </li>
                             <div class="progress progress-xs">
                                 <div class="progress-bar bg-success progress-bar-striped" id="persen_data" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 </div>
@@ -215,13 +218,13 @@
         <a class="nav-link {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan-tab" data-toggle="pill" href="#kasus-layanan" role="tab" aria-controls="kasus-layanan" aria-selected="false">Layanan</a>
         </li>
         <li class="nav-item">
-        <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="false">Log Activity</a>
-        </li>
-        <li class="nav-item">
             <a class="nav-link {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas-tab" data-toggle="pill" href="#kasus-petugas" role="tab" aria-controls="kasus-petugas" aria-selected="false">Petugas @if(!($detail['kelengkapan_petugas']))<i class="fas fa-exclamation-circle" style="color: red; font-size:20px"></i>@endif</a>
         </li>
         <li class="nav-item">
         <a class="nav-link {{ Request::get('tab') == 'kasus-persetujuan' ? 'active' : '' }}" id="kasus-persetujuan-tab" data-toggle="pill" href="#kasus-persetujuan" role="tab" aria-controls="kasus-persetujuan" aria-selected="false">Persetujuan <i class="fas fa-exclamation-circle warningSPP" style="color: red; font-size:20px"></i></a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" id="kasus-log-tab" data-toggle="pill" href="#kasus-log" role="tab" aria-controls="kasus-log" aria-selected="false">Log Activity</a>
         </li>
         <li class="nav-item">
         <a class="nav-link {{ Request::get('tab') == 'settings' ? 'active' : '' }}" id="kasus-settings-tab" data-toggle="pill" href="#kasus-settings" role="tab" aria-controls="kasus-settings" aria-selected="false">Settings</a>
@@ -246,6 +249,7 @@
             
             
         <div class="post clearfix" style="color:black">
+            <style> input { width: 100%; }</style>
             <b id="anchor_pelaporan">A. IDENTITAS PELAPOR</b>
             <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
                 @csrf
@@ -269,7 +273,7 @@
                     <tr id="nik_pelapor">
                         <td style="width: 200px">NIK</td>
                         <td>:</td>
-                        <td><span class="data_pelapor">{{ $pelapor->nik }}</span> <input type="text" name="nik" value="{{ $pelapor->nik }}" class="input_pelapor"></td>
+                        <td><span class="data_pelapor">{{ $pelapor->nik }}</span> <input type="number" name="nik" value="{{ $pelapor->nik }}" class="input_pelapor"></td>
                     </tr>
                     <tr id="tanggal_lahir_pelapor">
                         <td style="width: 200px">Tempat/Tgl Lahir</td>
@@ -289,7 +293,8 @@
                         <td><span class="data_pelapor">{{ $pelapor->alamat }}</span> 
                             <input type="text" name="alamat" value="{{ $pelapor->alamat }}" class="input_pelapor">, 
                             <b>Provinsi</b> <span class="data_pelapor">{{ $pelapor->provinsi }}</span> 
-                            <select name="provinsi_id" class="input_pelapor select2bs4" id="provinsi_id_pelapor" onchange="getkotkab('pelapor')">
+                            <select name="provinsi_id" class="input_pelapor select2bs4" id="provinsi_id_pelapor" onchange="getkotkab('pelapor')" style="width:100%">
+                                <option value=""></option>
                                 @foreach ($provinsi as $item)
                                     <option value="{{ $item->code }}" {{ $item->code == $pelapor->provinsi_id ? 'selected' : '' }}>{{ $item->name }}</option>
                                 @endforeach
@@ -319,6 +324,7 @@
                         <td>
                             <span class="data_pelapor">{{ $pelapor->hubungan_pelapor }}</span> 
                             <select name="hubungan_pelapor" class="input_pelapor select2bs4" style="width: 100%;">
+                                <option value=""></option>
                                 @foreach ($hubungan_dengan_klien as $item)
                                     <option value="{{ $item }}" {{ $item == $pelapor->hubungan_pelapor ? 'selected' : '' }}>{{ $item }}</option>
                                 @endforeach
@@ -352,7 +358,28 @@
                 <tr id="nik_klien">
                     <td style="width: 200px">NIK</td>
                     <td>:</td>
-                    <td><span class="data_klien">{{ $klien->nik }}</span> <input type="text" name="nik" value="{{ $klien->nik }}" class="input_klien"></td>
+                    <td><span class="data_klien">{{ $klien->nik }}</span> <input type="number" name="nik" value="{{ $klien->nik }}" class="input_klien"></td>
+                </tr>
+                <tr id="jenis_kelamin_klien">
+                    <td style="width: 200px">Jenis Kelamin</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->jenis_kelamin }}</span> 
+                        <select name="jenis_kelamin" class="input_klien select2bs4" style="width: 100%;">
+                            <option value="perempuan" {{ 'perempuan' == $klien->jenis_kelamin ? 'selected' : '' }}>Perempuan</option>
+                            <option value="laki-laki" {{ 'laki-laki' == $klien->jenis_kelamin ? 'selected' : '' }}>Laki-laki</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="nik_klien">
+                    <td style="width: 200px">Kategori Kasus</td>
+                    <td>:</td>
+                    <td>xxx</td>
+                </tr>
+                <tr id="nik_klien">
+                    <td style="width: 200px">Bentuk Kekerasan</td>
+                    <td>:</td>
+                    <td>xxx</td>
                 </tr>
                 <tr id="tanggal_lahir_klien">
                     <td style="width: 200px">Tempat/Tgl Lahir</td>
@@ -372,7 +399,8 @@
                     <td><span class="data_klien">{{ $klien->alamat }}</span> 
                         <input type="text" name="alamat" value="{{ $klien->alamat }}" class="input_klien">, 
                         <b>Provinsi</b> <span class="data_klien">{{ $klien->provinsi }}</span> 
-                        <select name="provinsi_id" class="input_klien select2bs4" id="provinsi_id_klien" onchange="getkotkab('klien')">
+                        <select name="provinsi_id" class="input_klien select2bs4" id="provinsi_id_klien" onchange="getkotkab('klien')" style="width:100%">
+                            <option value=""></option>
                             @foreach ($provinsi as $item)
                                 <option value="{{ $item->code }}" {{ $item->code == $klien->provinsi_id ? 'selected' : '' }}>{{ $item->name }}</option>
                             @endforeach
@@ -394,12 +422,14 @@
                     <td>
                         <span class="data_klien">{{ $klien->pendidikan }}</span> 
                         <select name="pendidikan" class="input_klien select2bs4" style="width: 100%;">
+                            <option value=""></option>
                             @foreach ($pendidikan_terakhir as $item)
                                 <option value="{{ $item }}" {{ $item == $klien->pendidikan ? 'selected' : '' }}>{{ $item }}</option>
                             @endforeach
                         </select>
                         (<span class="data_klien">{{ $klien->status_pendidikan }}</span> 
                         <select name="status_pendidikan" class="input_klien select2bs4" style="width: 100%;">
+                            <option value=""></option>
                             @foreach ($status_pendidikan as $item)
                                 <option value="{{ $item }}" {{ $item == $klien->status_pendidikan ? 'selected' : '' }}>{{ $item }}</option>
                             @endforeach
@@ -447,12 +477,14 @@
                     <td>
                         <span class="data_klien">{{ $klien->agama }}</span> 
                         <select name="agama" class="input_klien select2bs4" style="width: 100%;">
+                            <option value=""></option>
                             @foreach ($agama as $item)
                                 <option value="{{ $item }}" {{ $item == $klien->agama ? 'selected' : '' }}>{{ $item }}</option>
                             @endforeach
                         </select> / 
                         <span class="data_klien">{{ $klien->suku }}</span> 
                         <select name="suku" class="input_klien select2bs4" style="width: 100%;">
+                            <option value=""></option>
                             @foreach ($suku as $item)
                                 <option value="{{ $item }}" {{ $item == $klien->suku ? 'selected' : '' }}>{{ $item }}</option>
                             @endforeach
@@ -474,6 +506,7 @@
                     <td>
                         <span class="data_klien">{{ $klien->hubungan_klien }}</span> 
                         <select name="hubungan_klien" class="input_klien select2bs4" style="width: 100%;">
+                            <option value=""></option>
                             @foreach ($hubungan_dengan_terlapor as $item)
                                 <option value="{{ $item }}" {{ $item == $klien->hubungan_klien ? 'selected' : '' }}>{{ $item }}</option>
                             @endforeach
@@ -498,72 +531,189 @@
             </table>
             </form>
         </div>
-        <div class="post clearfix" style="color:black">
+        <div class="post clearfix" id="data_terlapor" style="color:black">
             <b>C. IDENTITAS TERLAPOR</b>
             <?php $no_terlapor = 1;?>
-            @foreach ($terlapor as $item)
+            @foreach ($terlapor as $item_terlapor)
             <br>
+            <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
+            @csrf
+            @method('put')
+            <input type="hidden" name="uuid" value="{{ $item_terlapor->uuid }}">
+            <input type="hidden" name="data_update" value="terlapor">
             <b> Terlapor {{ $no_terlapor }}</b>
             <span style="float:right">
-                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor" onclick="editdata('terlapor')">
+                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor{{ $no_terlapor }}" onclick="editdata('terlapor{{ $no_terlapor }}')">
                 <i class="fas fa-edit"></i> Edit
                 </a>
-                <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_terlapor">
+                <button type="submit" class="btn btn-xs bg-gradient-success tombol_save_terlapor" id="tombol_save_terlapor{{ $no_terlapor }}">
                 <i class="fas fa-check"></i> Save
                 </button>
             </span>
                 <table class="table table-bottom table-sm">
-                    <tr>
+                    <tr id="nama_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Nama</td>
                         <td>:</td>
-                        <td>{{ $item->nama }} (Laki-laki)</td>
+                        <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->nama }}</span> <input type="text" name="nama" value="{{ $item_terlapor->nama }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
                     </tr>
-                    <tr>
+                    <tr id="nik_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">NIK</td>
+                        <td>:</td>
+                        <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->nik }}</span> <input type="number" name="nik" value="{{ $item_terlapor->nik }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
+                    </tr>
+                    <tr id="jenis_kelamin_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Jenis Kelamin</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->jenis_kelamin }}</span> 
+                            <select name="jenis_kelamin" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                <option value="perempuan" {{ 'perempuan' == $item_terlapor->jenis_kelamin ? 'selected' : '' }}>Perempuan</option>
+                                <option value="laki-laki" {{ 'laki-laki' == $item_terlapor->jenis_kelamin ? 'selected' : '' }}>Laki-laki</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="tempat_tanggal_lahir_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Tempat/Tgl Lahir</td>
                         <td>:</td>
-                        <td>Bogor, 13 Februari 1997 (25 Tahun)</td>
+                        <td>
+                            <span class="data_terlapor{{ $no_terlapor }}" id="tempat_lahir_terlapor{{ $no_terlapor }}">{{ $item_terlapor->tempat_lahir }}</span> 
+                            <input type="text" name="tempat_lahir" value="{{ $item_terlapor->tempat_lahir }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">, 
+                            <span class="data_terlapor{{ $no_terlapor }}">
+                                {{ $item_terlapor->tanggal_lahir ? date('d M Y', strtotime($item_terlapor->tanggal_lahir)) : '' }} ({{ $item_terlapor->tanggal_lahir ? Carbon\Carbon::parse($item_terlapor->tanggal_lahir)->age.' tahun' : ' '}})
+                            </span> 
+                            <input type="date" name="tanggal_lahir" value="{{ $item_terlapor->tanggal_lahir }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">
+                        </td>
                     </tr>
-                    <tr>
+                    <tr id="alamat_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Alamat</td>
-                        <td>:</td>
-                        <td>Jl. Diponogoro Empu Tantular 45 Jaya, <b>Kelurahan</b> Mantap, <b>Kecamatan</b> Harapan, <b>Kota</b> DKI Jakarta</td>
+                    <td>:</td>
+                    <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->alamat }}</span> 
+                        <input type="text" name="alamat" value="{{ $item_terlapor->alamat }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">, 
+                        <b>Provinsi</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->provinsi }}</span> 
+                        <select name="provinsi_id" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="provinsi_id_terlapor{{ $no_terlapor }}" onchange="getkotkab('terlapor{{ $no_terlapor }}')" style="width:100%">
+                            <option value=""></option>
+                            @foreach ($provinsi as $item)
+                                <option value="{{ $item->code }}" {{ $item->code == $item_terlapor->provinsi_id ? 'selected' : '' }}>{{ $item->name }}</option>
+                            @endforeach
+                        </select>,
+                        <b>Kota</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->kota }}</span> 
+                        <select name="kotkab_id" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="kota_id_terlapor{{ $no_terlapor }}" onchange="getkecamatan('terlapor{{ $no_terlapor }}')" style="width:100%">
+                        </select>, 
+                        <b>Kecamatan</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->kecamatan }}</span> 
+                        <select name="kecamatan_id" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="kecamatan_id_terlapor{{ $no_terlapor }}" style="width:100%">
+                            <option value="" selected></option>
+                        </select>,
+                        <b>Kelurahan</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->kelurahan }}</span> 
+                        <input type="text" name="kelurahan" value="{{ $item_terlapor->kelurahan }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"> 
+                    </td>
                     </tr>
-                    <tr>
-                        <td style="width: 200px">Pendidikan Terakhir</td>
+                    <tr id="pendidikan_terakhir_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Pendidikan</td>
                         <td>:</td>
-                        <td><b>Kelas</b> 2, <b>Sekolah</b> SDN 1 Wakanda</td>
+                        <td>
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->pendidikan }}</span> 
+                            <select name="pendidikan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                <option value=""></option>
+                                @foreach ($pendidikan_terakhir as $item)
+                                    <option value="{{ $item }}" {{ $item == $item_terlapor->pendidikan ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                            (<span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->status_pendidikan }}</span> 
+                            <select name="status_pendidikan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                <option value=""></option>
+                                @foreach ($status_pendidikan as $item)
+                                    <option value="{{ $item }}" {{ $item == $item_terlapor->status_pendidikan ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                            )
+                        </td>
                     </tr>
-                    <tr>
+                    <tr id="agama_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Agama / Suku</td>
-                        <td>:</td>
-                        <td>Islam / Sunda</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->agama }}</span> 
+                        <select name="agama" class="input_klien input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($agama as $item)
+                                <option value="{{ $item }}" {{ $item == $item_terlapor->agama ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select> / 
+                        <span class="data_terlapor{{ $no_terlapor }}">{{ $klien->suku }}</span> 
+                        <select name="suku" class="input_klien input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($suku as $item)
+                                <option value="{{ $item }}" {{ $item == $item_terlapor->suku ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </td>
                     </tr>
-                    <tr>
+                    <tr id="pekerjaan_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Pekerjaan</td>
                         <td>:</td>
-                        <td>Gamer</td>
+                        <td>
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->pekerjaan }}</span> 
+                            <select name="pekerjaan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                <option value=""></option>
+                                @foreach ($pekerjaan as $item)
+                                    <option value="{{ $item }}" {{ $item == $item_terlapor->pekerjaan ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                        </td>
                     </tr>
-                    <tr>
+                    <tr id="pengahsilan_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Penghasilan Perbulan</td>
                         <td>:</td>
-                        <td>6.000.000.000.000</td>
+                        <td>Rp.<span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->penghasilan }}</span> <input type="number" name="penghasilan" value="{{ $item_terlapor->penghasilan }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
                     </tr>
-                    <tr>
+                    <tr id="status_kawin_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Status Perkawinan</td>
                         <td>:</td>
-                        <td>Single</td>
+                        <td>
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->status_kawin }}</span> 
+                            <select name="status_kawin" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                <option value=""></option>
+                                @foreach ($status_perkawinan as $item)
+                                    <option value="{{ $item }}" {{ $item == $item_terlapor->status_kawin ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                        </td>
                     </tr>
-                    <tr>
+                    <tr id="jumlah_anak_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Jumlah Anak</td>
                         <td>:</td>
-                        <td>6</td>
+                        <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->jumlah_anak }}</span> <input type="number" name="jumlah_anak" value="{{ $item_terlapor->jumlah_anak }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
                     </tr>
-                    <tr>
+                    <tr id="hubungan_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Hubungan dengan klien</td>
                         <td>:</td>
-                        <td>Teman</td>
+                        <td>
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->hubungan_terlapor }}</span> 
+                            <select name="hubungan_terlapor" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                <option value=""></option>
+                                @foreach ($hubungan_dengan_klien as $item)
+                                    <option value="{{ $item }}" {{ $item == $item_terlapor->hubungan_terlapor ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="masa_hukuman_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Masa Hukuman</td>
+                        <td>:</td>
+                        <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->masa_hukuman }}</span> <input type="text" name="masa_hukuman" value="{{ $item_terlapor->masa_hukuman }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
+                    </tr>
+                    <tr id="denda_hukuman_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Denda</td>
+                        <td>:</td>
+                        <td>Rp. <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->denda_hukuman }}</span> <input type="number" name="denda_hukuman" value="{{ $item_terlapor->denda_hukuman }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
                     </tr>
                 </table>
+                </form>
+                <script>
+                    $(document).ready(function () {
+                        getkotkab('terlapor{{ $no_terlapor }}');
+                    });
+                </script>
                 <?php $no_terlapor++;?>
             @endforeach
         </div>
@@ -599,6 +749,7 @@
                     <td>
                         <span class="data_kasus">{{ $kasus->tempat_kejadian }}</span> 
                         <select name="tempat_kejadian" class="input_kasus select2bs4" style="width: 100%;">
+                            <option value=""></option>
                             @foreach ($tempat_kejadian as $item_tempat_kejadian)
                                 <option value="{{ $item_tempat_kejadian }}" {{ $item_tempat_kejadian == $kasus->tempat_kejadian ? 'selected' : '' }}>{{ $item_tempat_kejadian }}</option>
                             @endforeach
@@ -611,6 +762,7 @@
                     <td>
                         <span class="data_kasus">{{ $kasus->media_pengaduan }}</span> 
                         <select name="media_pengaduan" class="input_kasus select2bs4" style="width: 100%;">
+                            <option value=""></option>
                             @foreach ($media_pengaduan as $item_media_pengaduan)
                                 <option value="{{ $item_media_pengaduan }}" {{ $item_media_pengaduan == $kasus->media_pengaduan ? 'selected' : '' }}>{{ $item_media_pengaduan }}</option>
                             @endforeach
@@ -623,6 +775,7 @@
                     <td>
                         <span class="data_kasus">{{ $kasus->sumber_rujukan }}</span> 
                         <select name="sumber_rujukan" class="input_kasus select2bs4" style="width: 100%;">
+                            <option value=""></option>
                             @foreach ($sumber_rujukan as $item_sumber_rujukan)
                                 <option value="{{ $item_sumber_rujukan }}" {{ $item_sumber_rujukan == $kasus->sumber_rujukan ? 'selected' : '' }}>{{ $item_sumber_rujukan }}</option>
                             @endforeach
@@ -635,6 +788,7 @@
                     <td>
                         <span class="data_kasus">{{ $kasus->sumber_informasi }}</span> 
                         <select name="sumber_informasi" class="input_kasus select2bs4" style="width: 100%;">
+                            <option value=""></option>
                             @foreach ($sumber_informasi as $item_sumber_informasi)
                                 <option value="{{ $item_sumber_informasi }}" {{ $item_sumber_informasi == $kasus->sumber_informasi ? 'selected' : '' }}>{{ $item_sumber_informasi }}</option>
                             @endforeach
@@ -653,7 +807,7 @@
                         <span class="data_kasus">{{ $kasus->alamat }}</span> 
                         <input type="text" name="alamat" value="{{ $kasus->alamat }}" class="input_kasus">, 
                         <b>Provinsi</b> <span class="data_kasus">{{ $kasus->provinsi }}</span> 
-                        <select name="provinsi_id" class="input_kasus select2bs4" id="provinsi_id_kasus" onchange="getkotkab('kasus')">
+                        <select name="provinsi_id" class="input_kasus select2bs4" id="provinsi_id_kasus" onchange="getkotkab('kasus')" style="width:100%">
                             @foreach ($provinsi as $item)
                                 <option value="{{ $item->code }}" {{ $item->code == $kasus->provinsi_id ? 'selected' : '' }}>{{ $item->name }}</option>
                             @endforeach
@@ -702,7 +856,10 @@
         </div>
         <br>
         <br>
-        <button type="button" class="btn btn-block btn-primary">Print</button>
+        <button type="button" class="btn btn-block btn-primary"><i class="fas fa-print"></i> Print Formulir</button>
+        <br>
+        <div id="kolomPublicUrl"></div>
+        <button type="button" class="btn btn-block btn-primary" onclick="submitPublicURL('url-kasus')"><i class="fas fa-link"></i> Generate URL</button>
         </div>
         <div class="tab-pane {{ Request::get('tab') == 'kasus-asesmen' ? 'active' : '' }}" id="kasus-asesmen" role="tabpanel" aria-labelledby="kasus-asesmen-tab">
             
@@ -779,93 +936,6 @@
         @endif
     </div>
     </div>
-
-        <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
-            <div class="timeline timeline-inverse">
-
-            <div class="time-label">
-            <span class="bg-danger">
-            01 Jan. 2023
-            </span>
-            </div>
-            
-            
-            <div>
-                <i class="fas fa-envelope bg-primary"></i>
-                <div class="timeline-item">
-                <span class="time"><i class="far fa-clock"></i> 12:05</span>
-                <h3 class="timeline-header"><a href="#">Addzifi Mochamad Gumelar</a> menginputkan data kasus</h3>
-                <div class="timeline-body">
-                Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                weebly ning heekya handang zimbra. Babblely odeo kaboodle
-                quora plaxo ideeli hulu weebly balihoo...
-                </div>
-                </div>
-            </div>
-
-
-            <div>
-                <i class="fas fa-envelope bg-primary"></i>
-                <div class="timeline-item">
-                <span class="time"><i class="far fa-clock"></i> 12:05</span>
-                <h3 class="timeline-header"><a href="#">Addzifi Mochamad Gumelar</a> menginputkan data kasus</h3>
-                <div class="timeline-body">
-                Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                weebly ning heekya handang zimbra. Babblely odeo kaboodle
-                quora plaxo ideeli hulu weebly balihoo...
-                </div>
-                <div class="timeline-footer">
-                <a href="#" class="btn btn-primary btn-sm"><i class="nav-icon fas fa-file-alt"></i> Dokumen Pendukung</a>
-                <a href="#" class="btn btn-primary btn-sm"><i class="nav-icon fas fa-file-alt"></i> Dokumen Pendukung</a>
-                <a href="#" class="btn btn-primary btn-sm"><i class="nav-icon fas fa-file-alt"></i> Dokumen Pendukung</a>
-                </div>
-                </div>
-            </div>
-            
-            
-            <div>
-            <i class="fas fa-comments bg-warning"></i>
-            <div class="timeline-item">
-            <span class="time"><i class="far fa-clock"></i> 27 mins ago</span>
-            <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
-            <div class="timeline-body">
-            Take me to your leader!
-            Switzerland is small and neutral!
-            We are more like Germany, ambitious and misunderstood!
-            </div>
-            <div class="timeline-footer">
-            <a href="#" class="btn btn-warning btn-flat btn-sm">View comment</a>
-            </div>
-            </div>
-            </div>
-            
-            
-            <div class="time-label">
-            <span class="bg-success">
-            3 Jan. 2014
-            </span>
-            </div>
-            
-            
-            <div>
-            <i class="fas fa-camera bg-purple"></i>
-            <div class="timeline-item">
-            <span class="time"><i class="far fa-clock"></i> 2 days ago</span>
-            <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
-            <div class="timeline-body">
-            <img src="https://placehold.it/150x100" alt="...">
-            <img src="https://placehold.it/150x100" alt="...">
-            <img src="https://placehold.it/150x100" alt="...">
-            <img src="https://placehold.it/150x100" alt="...">
-            </div>
-            </div>
-            </div>
-            
-            <div>
-            <i class="far fa-clock bg-gray"></i>
-            </div>
-            </div>
-        </div>
         <div class="tab-pane {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas" role="tabpanel" aria-labelledby="kasus-petugas-tab">
         <b id="anchor_petugas">PETUGAS PADA KASUS</b>
             
@@ -995,6 +1065,94 @@
                         </div>
                     </div>
                 </form>
+        </div>
+
+
+        <div class="tab-pane fade" id="kasus-log" role="tabpanel" aria-labelledby="kasus-log-tab">
+            <div class="timeline timeline-inverse">
+
+            <div class="time-label">
+            <span class="bg-danger">
+            01 Jan. 2023
+            </span>
+            </div>
+            
+            
+            <div>
+                <i class="fas fa-envelope bg-primary"></i>
+                <div class="timeline-item">
+                <span class="time"><i class="far fa-clock"></i> 12:05</span>
+                <h3 class="timeline-header"><a href="#">Addzifi Mochamad Gumelar</a> menginputkan data kasus</h3>
+                <div class="timeline-body">
+                Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
+                weebly ning heekya handang zimbra. Babblely odeo kaboodle
+                quora plaxo ideeli hulu weebly balihoo...
+                </div>
+                </div>
+            </div>
+
+
+            <div>
+                <i class="fas fa-envelope bg-primary"></i>
+                <div class="timeline-item">
+                <span class="time"><i class="far fa-clock"></i> 12:05</span>
+                <h3 class="timeline-header"><a href="#">Addzifi Mochamad Gumelar</a> menginputkan data kasus</h3>
+                <div class="timeline-body">
+                Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
+                weebly ning heekya handang zimbra. Babblely odeo kaboodle
+                quora plaxo ideeli hulu weebly balihoo...
+                </div>
+                <div class="timeline-footer">
+                <a href="#" class="btn btn-primary btn-sm"><i class="nav-icon fas fa-file-alt"></i> Dokumen Pendukung</a>
+                <a href="#" class="btn btn-primary btn-sm"><i class="nav-icon fas fa-file-alt"></i> Dokumen Pendukung</a>
+                <a href="#" class="btn btn-primary btn-sm"><i class="nav-icon fas fa-file-alt"></i> Dokumen Pendukung</a>
+                </div>
+                </div>
+            </div>
+            
+            
+            <div>
+            <i class="fas fa-comments bg-warning"></i>
+            <div class="timeline-item">
+            <span class="time"><i class="far fa-clock"></i> 27 mins ago</span>
+            <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
+            <div class="timeline-body">
+            Take me to your leader!
+            Switzerland is small and neutral!
+            We are more like Germany, ambitious and misunderstood!
+            </div>
+            <div class="timeline-footer">
+            <a href="#" class="btn btn-warning btn-flat btn-sm">View comment</a>
+            </div>
+            </div>
+            </div>
+            
+            
+            <div class="time-label">
+            <span class="bg-success">
+            3 Jan. 2014
+            </span>
+            </div>
+            
+            
+            <div>
+            <i class="fas fa-camera bg-purple"></i>
+            <div class="timeline-item">
+            <span class="time"><i class="far fa-clock"></i> 2 days ago</span>
+            <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
+            <div class="timeline-body">
+            <img src="https://placehold.it/150x100" alt="...">
+            <img src="https://placehold.it/150x100" alt="...">
+            <img src="https://placehold.it/150x100" alt="...">
+            <img src="https://placehold.it/150x100" alt="...">
+            </div>
+            </div>
+            </div>
+            
+            <div>
+            <i class="far fa-clock bg-gray"></i>
+            </div>
+            </div>
         </div>
         <div class="tab-pane {{ Request::get('tab') == 'settings' ? 'active' : '' }}" id="kasus-settings" role="tabpanel" aria-labelledby="kasus-settings-tab">
         <b id="anchor_setting">SETTINGS KASUS</b>
@@ -1539,6 +1697,7 @@
         loadMonitoring();
         loadTerminasi();
         loadCatatan();
+        loadPublicUrl();
         check_kelengkapan_data('{{ $klien->id }}');
         check_kelengkapan_persetujuan_spv('{{ $klien->id }}');
         check_kelengkapan_spp('{{ $klien->id }}');
@@ -1568,6 +1727,7 @@
     $('.input_pelapor').next(".select2-container").hide();
     $('.input_klien').next(".select2-container").hide();
     $('.input_kasus').next(".select2-container").hide();
+    $('.input_terlapor').next(".select2-container").hide();
 
     $('#tabelLayanan').DataTable({
       "ordering": false,
@@ -2443,6 +2603,62 @@
             },500);
         });
     }
+
+    function loadPublicUrl() {
+        $('#deleteMonitoring').hide();
+        $.ajax({
+            url: `/publicurl/index?uuid={{ $klien->uuid }}`,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                $('#kolomPublicUrl').html('');
+                
+                data = response.data;
+                i=1;
+                data.forEach(e => {
+                    $('#kolomPublicUrl').prepend("<div class=\"input-group\"> <input type=\"text\" class=\"form-control\" id=\"link-form-{{ route('publicurl.show', '') }}/"+e.uuid+"\" value=\"{{ route('publicurl.show', '') }}/"+e.uuid+"\" tabindex=\"-1\" aria-hidden=\"true\" style=\"background: #eaebeb;font-size: 14px;font-weight: bold;\"> <div class=\"input-group-append\"> <button class=\"input-group-text pointer\" onclick=\"copyClipboard('{{ route('publicurl.show','') }}/"+e.uuid+"')\"> <i class=\"fa fa-fw\" aria-hidden=\"true\"></i> </button> </div> </div>");
+                    i++;
+                });
+            },
+            error: function (response){
+                console.log(response);
+            }
+            });
+    }
+
+    function submitPublicURL(functions) {
+        let token   = $("meta[name='csrf-token']").attr("content");
+        $.ajax({
+        url: `/publicurl/store/`,
+        type: "POST",
+        cache: false,
+        data: {
+            uuid: $('#uuid_monitoring').val(),
+            uuid_klien: '{{ $klien->uuid }}',
+            function: functions,
+            _token: token
+        },
+        success: function (response){
+            if (response.success != true) {
+                $('#message-monitoring').html(JSON.stringify(response));
+                $("#success-message-monitoring").hide();
+                $("#error-message-monitoring").show();
+            }else{
+                loadPublicUrl();
+            }
+        },
+        error: function (response){
+            setTimeout(function(){
+            $("#overlay").fadeOut(300);
+            },500);
+            console.log(response);
+        }
+        }).done(function() { //loading submit form
+            setTimeout(function(){
+            $("#overlay").fadeOut(300);
+            },500);
+        });
+    };
     
     function approveTerminasi(uuid, approval) {
         alasan_approve = null;
@@ -2487,6 +2703,11 @@
         if (inputValue) {
             toastr.success('Berhasil update data!');
             var value = JSON.parse(inputValue);
+
+            if (value[value.length - 1] == 'terlapor') {
+                $('#data_terlapor').addClass('hightlighting');
+            }
+            
             $.each(value, function(index, element) {
                 data_update = $('#data_update').val();
                 $('#'+element+'_'+value[value.length - 1]).addClass('hightlighting');
@@ -2495,6 +2716,7 @@
     }
 
     function copyClipboard(uuid) {
+        // alert('hiha');
         var copyText = document.getElementById("link-form-"+uuid);
         copyText.select();
         copyText.setSelectionRange(0, 99999); // For mobile devices

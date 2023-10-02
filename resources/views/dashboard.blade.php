@@ -99,12 +99,12 @@
                   </li>
                   <li class="nav-item">
                     <a href="{{ route('notifikasi') }}" class="nav-link">
-                      Tugas Belum Selesai <span class="float-right badge bg-danger">5</span>
+                      Jumlah Agenda Kegiatan <span class="float-right badge bg-success">12</span>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="{{ route('notifikasi') }}" class="nav-link">
-                      Seluruh Tugas <span class="float-right badge bg-success">12</span>
+                      Skor Survey Kepuasan Layanan <span class="float-right badge bg-warning">5</span>
                     </a>
                   </li>
                 </ul>

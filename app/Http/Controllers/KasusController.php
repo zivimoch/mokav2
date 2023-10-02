@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\LogActivityHelper;
 use App\Helpers\NotifHelper;
+use App\Helpers\StatusHelper;
 use App\Models\Asesmen;
 use App\Models\Kasus;
 use App\Models\Klien;
@@ -37,7 +38,9 @@ class KasusController extends Controller
                         ->whereNull('b.deleted_at')
                         ->whereNull('c.deleted_at')
                         ->groupBy('a.id');
-            if (Auth::user()->supervisor_id != 0) { // petugas penerima pengaduan tidak masalah bisa melihat semua kasus
+            if (Auth::user()->supervisor_id != 0) { 
+                // jika spv_id nya bukan 0 maka cuman bisa liat kasus2 yg petugasnya ada dirinya saja 
+                // petugas penerima pengaduan spv_id == 0, tidak masalah bisa melihat semua kasus
                 $data->where('c.user_id', Auth::user()->id);
             }
             $datas = $data->get();
@@ -264,18 +267,20 @@ class KasusController extends Controller
                     $no_klien = $this->generate_noreg();
                     $klien->no_klien = $no_klien;
                     $klien->save();
-                    $message_notif = Auth::user()->name.' menyetujui kasus. Nomor regis berhasil dibuat. Silahkan lihat catatan supervisor';
-                    $message_log = Auth::user()->name.' menyetujui kasus. Nomor regis berhasil dibuat';
                     $kode = 'T4';
                     $url = url('/kasus/show/'.$klien->uuid.'?tab=kasus&catatan-kasus=1&kode=T4&tipe=task');
+                    $message_notif = Auth::user()->name.' menyetujui kasus. Nomor regis berhasil dibuat. Silahkan lihat catatan supervisor';
+                    $message_log = Auth::user()->name.' menyetujui kasus. Nomor regis berhasil dibuat';
+                    $message_status = 'Supervisor menyetujui kasus';
                 }else{
                     $no_klien = '[REJECTED]';
                     $klien->no_klien = $no_klien;
                     $klien->save();
-                    $message_notif = Auth::user()->name.' tidak menyetujui kasus. Silahkan lakukan terminasi sepihak / kasus ditutup';
-                    $message_log = Auth::user()->name.' {tidak menyetujui kasus. Proses terminasi';
                     $kode = 'T5';
                     $url = url('/kasus/show/'.$klien->uuid.'?tab=settings&kolom-terminasi=1');
+                    $message_notif = Auth::user()->name.' tidak menyetujui kasus. Silahkan lakukan terminasi sepihak / kasus ditutup';
+                    $message_log = Auth::user()->name.' {tidak menyetujui kasus. Proses terminasi';
+                    $message_status = 'Proses terminasi';
                 }
             // ===========================================================================================
             //Proses read, push notif & log activity ////////////////////////////////////////////////////
@@ -319,6 +324,8 @@ class KasusController extends Controller
                 //klien_id
                 $klien->id 
             );
+            // update status klien //////////////////////////////////////////////////////////////////////
+            StatusHelper::push_status($klien->id, $message_status);
             /////////////////////////////////////////////////////////////////////////////////////////////
 
             //return response
@@ -352,7 +359,14 @@ class KasusController extends Controller
                         ->whereNull('a.deleted_at')
                         ->whereNull('b.deleted_at')
                         ->count();
-        if (($supervisor > 0) && ($mk > 0)) {
+        $penerima_pengaduan = DB::table('petugas as a')
+                        ->leftJoin('users as b', 'a.user_id', '=', 'b.id')
+                        ->where('a.klien_id', $klien_id)
+                        ->where('b.jabatan', 'Penerima Pengaduan')
+                        ->whereNull('a.deleted_at')
+                        ->whereNull('b.deleted_at')
+                        ->count();
+        if (($supervisor > 0) && ($mk > 0)  && ($penerima_pengaduan > 0)) {
             return true;
         }else{
             return false;

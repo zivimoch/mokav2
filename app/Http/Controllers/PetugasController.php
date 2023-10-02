@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\LogActivityHelper;
 use App\Helpers\NotifHelper;
+use App\Helpers\StatusHelper;
 use App\Models\Klien;
 use App\Models\Notifikasi;
 use App\Models\PersetujuanIsi;
@@ -111,16 +112,19 @@ class PetugasController extends Controller
                 $message = 'Kasus baru. Meminta persetujuan Supervisor';
                 $kode = 'T3';
                 $url =  url('/kasus/show/'.$klien->uuid.'?tab=settings&persetujuan-supervisor=1');
+                $message_status = 'Pelaksanaan intervensi';
             } else if ($receiver->jabatan == 'Manajer Kasus' && !($check_kelengkapan_asesmen)) {
                 // jika yang ditambahkan adalah MK dan asesmen belum ada
                 $message = 'Kasus baru. Silahkan periksa kelengkapan kasus (Data Kasus, SPP, dll) & Segera inputkan asesmen BPSS';
                 $kode = 'T6';
                 $url =  url('/kasus/show/'.$klien->uuid.'?tab=kasus-asesmen&tambah-asesmen=1&kolom-kelengkapan=1');
+                $message_status = 'Menunggu tanda tangan klien';
             }else{
                 // jika yang ditambahkan adalah Petugas lain atau MK yang SPP sudah ada maka
                 $message = Auth::user()->name.' menambahkan anda pada kasus. Silahkan lihat / riview kasus dan atau menambahkan informasi kasus dan atau membuat agenda layanan';
                 $kode = 'T8';
                 $url =  url('/kasus/show/'.$klien->uuid.'?tab=kasus&kasus-all=1&kode='.$kode.'&tipe=task');
+                $message_status = 'Pelaksanaan intervensi';
             }
              
             //push notifikasi ///////////////////////////////////////////////////////////////////////////
@@ -146,6 +150,8 @@ class PetugasController extends Controller
                 //klien_id
                 $klien->id 
             );
+            // update status klien //////////////////////////////////////////////////////////////////////
+            StatusHelper::push_status($klien->id, $message_status);
             /////////////////////////////////////////////////////////////////////////////////////////////
 
             //return response

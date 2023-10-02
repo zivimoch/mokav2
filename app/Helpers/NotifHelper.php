@@ -30,7 +30,6 @@ class NotifHelper
                 'url' => $url,
                 'created_by' => $created_by,
             ];
-
             $notif = Notifikasi::create($data_notif);
             return $notif->id;
         }

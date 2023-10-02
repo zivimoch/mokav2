@@ -32,7 +32,7 @@
           <h4><i class="icon fa fa-check"></i> Success!</h4>
           Data berhasil disimpan.
         </div>
-        <div class="modal-body">
+        <div class="modal-body"  style="margin-bottom: -15px">
         <input type="hidden" name="uuid" id="uuid">
         <div class="form-group">
             <label><span class="text-danger">*</span>Judul kegiatan</label>
@@ -77,7 +77,7 @@
           <select class="select2" data-placeholder="Pilih nama" style="width: 100%;" id="klien_id_select" onchange="load_select2_petugas()"></select>
         </div>
         <div class="form-group">
-          <label>Tag</label>
+          <label>Tags <br><span style="font-size: 12px">*jika tidak ada nama anda maka agenda tidak tersimpan di akun anda</span></label>
           <select multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" id="user_id_select"></select>
           <div class="invalid-feedback" id="valid-user_id_select">
             Minimal tag 1 orang.
@@ -131,7 +131,7 @@
                     </div>
                   </div>
                   <div class="form-group">
-                  <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}" target="_blank">disini</a>)<br>*Laporan Hasil Pelayanan</span></label>
+                  <label>Dokumen pendukung <span style="font-size: 12px">(lihat dokumen tersedia <a href="{{ route('dokumen') }}" target="_blank">disini</a>)<br>*Laporan Hasil Kegiatan</span></label>
                   <select multiple="multiple" data-placeholder="Pilih judul dokumen" style="width: 100%;" id="dokumen_id_select"></select>
                     <div class="invalid-feedback" id="valid-dokumen_id_select">
                       Dokumen pendukung wajib diisi jika menTL Penjadwalan Layanan.
@@ -140,6 +140,17 @@
                   <div class="form-group">
                       <label>Catatan</label>
                       <textarea name="" class="form-control" id="catatan" cols="30" rows="2"></textarea>
+                  </div>
+                  <div class="form-group">
+                      <label>Link Survey Kepuasan</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="link-form" value="coming soon..." tabindex="-1" aria-hidden="true" style="background: #eaebeb;font-size: 14px;font-weight: bold;">
+                        <div class="input-group-append">
+                            <span class="input-group-text pointer" onclick="copyClipboard()" onmouseout="copyClipboardOut()" data-toggle="tooltip" data-placement="top" title="" data-original-title="Copy Link to Clipboard" id="copy-btn">
+                                <i class="fa fa-fw" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                    </div>
                   </div>
                   <span style="font-size: 14px">*Laporan Tindak Lanjut tersimpan pada tanggal : <span id='ct' ></span></span>
                 </div>

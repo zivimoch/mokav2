@@ -11,6 +11,7 @@ use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PersetujuanController;
 use App\Http\Controllers\PetugasController;
+use App\Http\Controllers\PublicUrlController;
 use App\Http\Controllers\RiwayatKejadianController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TerminasiController;
@@ -112,6 +113,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/check_kelengkapan_pelaksanaan/{id}', [KasusController::class, 'check_kelengkapan_pelaksanaan'])->name('check_kelengkapan_pelaksanaan');
     Route::get('/check_kelengkapan_monitoring/{id}', [KasusController::class, 'check_kelengkapan_monitoring'])->name('check_kelengkapan_monitoring');
     Route::get('/check_kelengkapan_terminasi/{id}', [KasusController::class, 'check_kelengkapan_terminasi'])->name('check_kelengkapan_terminasi');
+    // monitoring untuk statistik
+    Route::get('publicurl/index/', [PublicUrlController::class, 'index'])->name('publicurl');
+    Route::post('publicurl/store/', [PublicUrlController::class, 'store'])->name('publicurl.store');
+    Route::get('publicurl/show/{uuid}',[PublicUrlController::class, 'show'])->name('publicurl.show');
+    Route::get('publicurl/kasus',[PublicUrlController::class, 'kasus'])->name('publicurl.kasus');
 });
 
 require __DIR__.'/auth.php';

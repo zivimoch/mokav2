@@ -100,7 +100,7 @@ class AsesmenController extends Controller
             //write log activity ////////////////////////////////////////////////////////////////////////
             LogActivityHelper::push_log(
                 //message
-                Auth::user()->name.' menambahkan {{user_name}} pada kasus', 
+                Auth::user()->name.' membuat asesmen', 
                 //klien_id
                 $klien->id 
             );

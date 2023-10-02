@@ -33,6 +33,7 @@ class CreateTerlaporsTable extends Migration
             $table->string('status_pendidikan')->nullable();
             $table->string('pendidikan')->nullable();
             $table->string('pekerjaan')->nullable();
+            $table->string('penghasilan')->nullable();
             $table->string('status_kawin')->nullable();
             $table->integer('jumlah_anak')->nullable();
             $table->string('hubungan_terlapor')->nullable();

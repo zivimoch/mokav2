@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\LogActivityHelper;
 use App\Helpers\NotifHelper;
+use App\Helpers\StatusHelper;
 use App\Models\Klien;
 use App\Models\Terminasi;
 use Illuminate\Http\Request;
@@ -68,6 +69,7 @@ class TerminasiController extends Controller
                     $jabatan = 'Supervisor Kasus';
                     $kode = 'T12';
                     $message_notif = Auth::user()->name.' mengajukan terminasi. Silahkan terima / tolak terminasi';
+                    $message_status = 'Proses terminasi';
                 }else if($request->alasan_approve){
                     // jika ada uuid & ada alasan_approve berarti edit tidak setuju terminasi
                     $data_request = array('alasan_approve' => $request->alasan_approve);
@@ -76,6 +78,7 @@ class TerminasiController extends Controller
                     $jabatan = 'Manajer Kasus';
                     $kode = 'T14';
                     $message_notif = Auth::user()->name.' tidak menyetujui terminasi. SIlahkan lihat catatan supervisor';
+                    $message_status = 'Proses terminasi';
                 }else{
                     // jika ada uuid & ada alasan_approve berarti edit setuju terminasi
                     $data_request = array('validated_by' => Auth::user()->id);
@@ -83,6 +86,7 @@ class TerminasiController extends Controller
                     $kirim_ke_petugas = 1;
                     $kode = 'T13';
                     $message_notif = Auth::user()->name.' menyetujui terminasi. <b>Kasus ditutup / selesai</b>';
+                    $message_status = 'Kasus berhasil diTerminasi';
                 }
 
                 //create post
@@ -126,6 +130,8 @@ class TerminasiController extends Controller
                 //klien_id
                 $klien->id 
             );
+            // update status klien //////////////////////////////////////////////////////////////////////
+            StatusHelper::push_status($klien->id, $message_status);
             /////////////////////////////////////////////////////////////////////////////////////////////
 
             //return response

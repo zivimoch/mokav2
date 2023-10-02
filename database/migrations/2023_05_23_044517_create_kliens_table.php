@@ -19,8 +19,8 @@ class CreateKliensTable extends Migration
             $table->integer('kasus_id');
             $table->string('no_klien')->nullable();
             $table->string('status');
-            $table->string('kategori_kasus')->nullable();
-            $table->string('tindak_kekerasan')->nullable();
+            // $table->string('kategori_kasus')->nullable();
+            // $table->string('tindak_kekerasan')->nullable();
             $table->char('nik')->nullable();
             $table->string('nama');
             $table->string('tempat_lahir');

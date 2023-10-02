@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\LogActivityHelper;
 use App\Helpers\NotifHelper;
+use App\Helpers\StatusHelper;
 use App\Models\Klien;
 use App\Models\PersetujuanIsi;
 use App\Models\PersetujuanItem;
@@ -63,11 +64,12 @@ class PersetujuanController extends Controller
             
             // ===========================================================================================
             //Proses read, push notif & log activity ////////////////////////////////////////////////////
-            
+            // update status klien //////////////////////////////////////////////////////////////////////
+            StatusHelper::push_status($klien->id, 'Menunggu tanda tangan klien');
             //write log activity ////////////////////////////////////////////////////////////////////////
             LogActivityHelper::push_log(
                 //message
-                Auth::user()->name.' membuat Surat Pernyataan Persetujuan', 
+                Auth::user()->name.' membuat '.$persetujuan_template->judul, 
                 //klien_id
                 $klien->id 
             );
@@ -93,7 +95,7 @@ class PersetujuanController extends Controller
 
     public function store(Request $request)
     {
-        try {
+        // try {
             $validator = Validator::make($request->all(), [
                 'nama_penandatangan' => 'required',
                 'no_telp' => 'required',
@@ -143,18 +145,48 @@ class PersetujuanController extends Controller
 
             $persetujuan_isi = PersetujuanIsi::where('uuid', $request->uuid)->first();
             
+            $persetujuan_template = PersetujuanTemplate::where('id', $persetujuan_isi->persetujuan_template_id)->first();
+            
+            $klien = Klien::where('id', $persetujuan_isi->klien_id)->first();
             // ===========================================================================================
             //Proses read, push notif & log activity ////////////////////////////////////////////////////
-            
-            //write log activity ////////////////////////////////////////////////////////////////////////
-            LogActivityHelper::push_log(
-                //message
-                'Klien mengisi Surat Pernyataan Persetujuan', 
-                //klien_id
-                $persetujuan_isi->klien_id 
-            );
-            /////////////////////////////////////////////////////////////////////////////////////////////
-
+                // jika ada uuid berarti update alias persetujuan diisi oleh klien
+                //kirim notifikasi ke MK, MK bisa jadi lebih dari 1
+                $mk = DB::table('petugas as a')
+                        ->leftJoin('users as b', 'a.user_id', 'b.id')
+                        ->where('b.jabatan', 'Manajer Kasus')
+                        ->where('a.klien_id', $klien->id)
+                        ->whereNull('a.deleted_at')
+                        ->whereNull('b.deleted_at')
+                        ->pluck('b.id');
+                foreach ($mk as $key => $value) {
+                    NotifHelper::push_notif(
+                        $value , //receiver_id
+                        ($klien && $klien->id) ? $klien->id : NULL, //klien_id
+                        'T7', //kode
+                        'task', //type_notif
+                        ($klien && $klien->no_klien) ? $klien->no_klien : NULL, //noregis
+                        'System', //from
+                        'Klien sudah mengisi '.$persetujuan_template->judul.'. Silahkan lihat isinya untuk update informasi kasus', //message
+                        ($klien && $klien->nama) ? $klien->nama : NULL,  //nama korban 
+                        ($klien && $klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
+                        url('/kasus/show/'.$klien->uuid.'?tab=kasus-persetujuan&row-persetujuan='.$request->uuid.'&user_id='.$value.'&kode=T7&type_notif=task'), //url
+                        1, // kirim ke diri sendiri 0 / 1
+                        0, // created_by
+                        NULL // agenda_id
+                    );
+                }
+                // update status klien //////////////////////////////////////////////////////////////////////
+                StatusHelper::push_status($persetujuan_isi->klien_id, 'Klien telah menandatangani');
+                //write log activity ////////////////////////////////////////////////////////////////////////
+                LogActivityHelper::push_log(
+                    //message
+                    'Klien mengisi '.$persetujuan_template->judul, 
+                    //klien_id
+                    $persetujuan_isi->klien_id 
+                );
+                /////////////////////////////////////////////////////////////////////////////////////////////
+                
             //return response
             $response =  response()->json([
                 'success' => true,
@@ -164,10 +196,10 @@ class PersetujuanController extends Controller
             ]);
             
             return redirect('persetujuan/donepelayanan/'.$request->uuid.'?success=1');
-        } catch (Exception $e){
-            return response()->json(['message' => $e->getMessage()]);
-            die();
-        }
+        // } catch (Exception $e){
+        //     return response()->json(['message' => $e->getMessage()]);
+        //     die();
+        // }
     }
 
     public function donepelayanan($uuid)

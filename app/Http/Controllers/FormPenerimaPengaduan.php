@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\LogActivityHelper;
 use App\Helpers\NotifHelper;
+use App\Helpers\StatusHelper;
 use App\Models\DifabelType;
 use App\Models\Kasus;
 use App\Models\KategoriKasus;
@@ -19,6 +20,7 @@ use Illuminate\Http\Request;
 use Laravolt\Indonesia\Models\Provinsi;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Validator;
 
 class FormPenerimaPengaduan extends Controller
@@ -163,7 +165,7 @@ class FormPenerimaPengaduan extends Controller
 
                 $klien = Klien::create([
                         'kasus_id' => $kasus->id,
-                        'status' => 'Pelengkapan Data',
+                        'status' => 'Pelengkapan data',
                         'nik' => isset($request->nik_klien[$key]) ? $request->nik_klien[$key] : NULL, 
                         'nama' => $request->nama_klien[$key],  
                         'tempat_lahir' => isset($request->tempat_lahir_klien[$key]) ? $request->tempat_lahir_klien[$key] : NULL,  
@@ -256,6 +258,7 @@ class FormPenerimaPengaduan extends Controller
             if (isset(Auth::user()->id)) {
                 if (Auth::user()->jabatan == 'Penerima Pengaduan') {
                     //push notifikasi ///////////////////////////////////////////////////////////////////////////
+                    // kirim notif dari setiap klien ke petugas penerima pengaduan
                     NotifHelper::push_notif(
                         Auth::user()->id , //receiver_id
                         $klien->id, //klien_id
@@ -278,6 +281,8 @@ class FormPenerimaPengaduan extends Controller
                         //klien_id
                         $klien->id 
                     );
+                    // update status klien //////////////////////////////////////////////////////////////////////
+                    StatusHelper::push_status($klien->id, 'Pelengkapan data');
                     /////////////////////////////////////////////////////////////////////////////////////////////
                 }
             }
@@ -307,6 +312,7 @@ class FormPenerimaPengaduan extends Controller
                         'status_pendidikan' => isset($request->status_pendidikan_terlapor[$key]) ? $request->status_pendidikan_terlapor[$key] : NULL,
                         'pendidikan' => isset($request->pendidikan_terlapor[$key]) ? $request->pendidikan_terlapor[$key] : NULL,
                         'pekerjaan' => isset($request->pekerjaan_telapor[$key]) ? $request->pekerjaan_telapor[$key] : NULL,
+                        'penghasilan' => isset($request->penghasilan_telapor[$key]) ? $request->penghasilan_telapor[$key] : NULL,
                         'status_kawin' => isset($request->perkawinan_terlapor[$key]) ? $request->perkawinan_terlapor[$key] : NULL,
                         'jumlah_anak' => isset($request->jumlah_anak_terlapor[$key]) ? $request->jumlah_anak_terlapor[$key] : NULL,
                         'hubungan_terlapor' => isset($request->hubungan_terlapor[$key]) ? $request->hubungan_terlapor[$key] : NULL,  
@@ -349,15 +355,18 @@ class FormPenerimaPengaduan extends Controller
      */
     public function update(Request $request)
     {
-        try {
+        // $data = Terlapor::where('uuid', $request->uuid)->first();
+        //     $request->request->remove('data_update');
+        //     dd($request);
+        // try {
             $data_update = $request->data_update ;
             if ($data_update == 'pelapor') {
                 $data = Pelapor::where('uuid', $request->uuid)->first();
-                $kasus_id = $data->kasus_id;
+                $klien_id = $data->kasus_id;
             }
             if ($data_update == 'klien') {
                 $data = Klien::where('uuid', $request->uuid)->first();
-                $kasus_id = $data->kasus_id;
+                $klien_id = $data->kasus_id;
                 //proses update kondisi_khusus klien di tabel kondisi_khusus
                 KondisiKhusus::where('klien_id', $data->id)->delete();
                 //simpan kondisi_khusus
@@ -373,9 +382,13 @@ class FormPenerimaPengaduan extends Controller
             }
             if ($data_update == 'kasus') {
                 $data = Kasus::where('uuid', $request->uuid)->first();
-                $kasus_id = $data->id;
+                $klien_id = $data->id;
             }
-            $klien = Klien::where('id', $kasus_id)->first();
+            if ($data_update == 'terlapor') {
+                $data = Terlapor::where('uuid', $request->uuid)->first();
+                $klien_id = $data->kasus_id;
+            }
+            $klien = Klien::where('id', $klien_id)->first();
             //hapus value data_update
             $request->request->remove('data_update');
             $data->update($request->all());
@@ -385,7 +398,53 @@ class FormPenerimaPengaduan extends Controller
                 $perubahan['pengubah'] = Auth::user()->name;
                 $perubahan[$data_update] = '';
             }
+
             $perubahan = array_keys($perubahan);
+            $petugas = DB::table('kasus as a')
+                            ->leftJoin('klien as b', 'a.id', 'b.kasus_id')
+                            ->leftJoin('petugas as c', 'b.id', 'c.klien_id')
+                            ->leftJoin('users as d', 'c.user_id', 'd.id')
+                            ->whereNull('c.deleted_at')
+                            ->whereNull('d.deleted_at')
+                            ->where('a.id', $klien->kasus_id);
+            if ($data_update == 'klien') {
+                // jika yang dirubah adalah data klien maka send notif ke petugas klien itu saja
+                // jika yang dirubah adalah selain data klien maka kirim ke semua petugas yg menangani kasus dengan kejadian yg sama
+                $petugas = $petugas->where('c.klien_id', $klien->id);
+            }
+            $petugas = $petugas->pluck('d.id');
+            
+            for ($i=0; $i < (count($perubahan) - 3); $i++) {
+                // 3 adalah meta data lain yg bukan variabel inti
+                //Proses read, push notif & log activity ////////////////////////////////////////////////////
+                //kirim ke seluruh user yang ada di kasus ini / klien ini
+                foreach ($petugas as $key => $value) {
+                    $perubahanjson = urlencode(json_encode($perubahan));
+                    NotifHelper::push_notif(
+                        $value , //receiver_id
+                        ($klien && $klien->id) ? $klien->id : NULL, //klien_id
+                        'N1', //kode
+                        'notif', //type_notif
+                        ($klien && $klien->no_klien) ? $klien->no_klien : NULL, //noregis
+                        Auth::user()->name, //from
+                        Auth::user()->name.' mengubah variabel '.$perubahan[$i].' '.$data_update.'. Silahkan lihat perubahan untuk update informasi kasus', //message
+                        ($klien && $klien->nama) ? $klien->nama : NULL,  //nama korban 
+                        ($klien && $klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
+                        url('/kasus/show/'.$klien->uuid.'?data='.$perubahanjson.'&kode=N1&type_notif=notif'), //url
+                        0, // kirim ke diri sendiri 0 / 1
+                        Auth::user()->id, // created_by
+                        NULL // agenda_id
+                    );
+                }
+                // write log activity ////////////////////////////////////////////////////////////////////////
+                LogActivityHelper::push_log(
+                    //message
+                    Auth::user()->name.' mengubah variabel '.$perubahan[$i].' '.$data_update, 
+                    //klien_id
+                    $klien->id 
+                );
+                /////////////////////////////////////////////////////////////////////////////////////////////
+            }
 
             if($request->ajax()) {
                 return response()->json([
@@ -403,16 +462,16 @@ class FormPenerimaPengaduan extends Controller
                         ->with('response', $response);
 
             }
-        } catch (Exception $e){
-            if($request->ajax()) {
-                return response()->json(['msg' => $e->getMessage()], 500);
-            }else{
-                return redirect()->route('kasus.show', $klien->uuid)
-                        ->with('error', true)
-                        ->with('response', $e->getMessage());
-            }
-            die();
-        }
+        // } catch (Exception $e){
+        //     if($request->ajax()) {
+        //         return response()->json(['msg' => $e->getMessage()], 500);
+        //     }else{
+        //         return redirect()->route('kasus.show', $klien->uuid)
+        //                 ->with('error', true)
+        //                 ->with('response', $e->getMessage());
+        //     }
+        //     die();
+        // }
     }
 
     /**
