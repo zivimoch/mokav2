@@ -285,7 +285,11 @@
                   if ($(".persen_title_layanan").length > 0 && $("#klien_id_select").val() != null) {
                     check_kelengkapan_perencanaan($("#klien_id_select").val());
                   }
-
+                  // kirim realtime notifikasi
+                  socket.emit('notif_count', {
+                    receiver_id : response.notif_receiver
+                  });
+                  loadnotif();
                   // hapus semua inputan
                   $('#judul_kegiatan').val('');
                   $('#tanggal_mulai').val('');

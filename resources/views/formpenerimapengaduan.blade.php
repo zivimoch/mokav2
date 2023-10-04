@@ -49,10 +49,10 @@
             border-radius: 4px;
         }
 
-        .kbw-signature { width: 100% !important; height: 200px;}
+        .kbw-signature { width: 100%; height: 200px;}
         .sig canvas{
             width: 100% !important;
-            height: 200px;
+            height: auto;
             border-style: solid;
         }
     </style>
@@ -131,7 +131,6 @@
             {{ session('response') }}
         </div>
         @endif
-
     <form id="FormulirPelaporan" action="{{ route('formpenerimapengaduan.store') }}" method="POST">
       @csrf
         <fieldset>
@@ -220,7 +219,6 @@
 
         <fieldset>
             <legend>B. Identitas Klien</legend>
-            
             <ul class="nav nav-tabs" id="myTab">
               <li class="nav-item">
                 <a class="nav-link active" data-toggle="tab" href="#klien1"><span  id="tab_title_klien1">Nama Klien</span> <button type="button" class="close" aria-label="Close" style="margin-left:10px; margin-right:-5px" onclick="return confirm('Hapus data klien ini?');"><span aria-hidden="true">&times;</span></button></a>
@@ -258,11 +256,9 @@
                 </div>
 
                 <div id="formulir_klien1"></div>
-
-              </div>
+            </div>
 
             </div>
-          <div class="row" id="ttd_klien"></div>
         </fieldset>
 
         <fieldset>
@@ -572,7 +568,8 @@
       <fieldset>
         <legend>E. Surat Pernyataan Persetujuan</legend>
           Dengan menandatangani formulir ini kami menyatakan bahwa data yang diinputkan adalah benar adanya dan dapat dipertanggungjawabkan
-      </fieldset>
+          <div class="row" id="ttd_klien"></div>
+        </fieldset>
         <p>
             <button id="SaveAccount" class="btn btn-primary submit">Submit form</button>
         </p>
@@ -735,21 +732,24 @@ $(document).ready(function () {
           )
         );
       });
-
     // tanda tangan verifikasi data klien
-    $('#ttd_klien').append("<div class=\"col-md-4 align-self-center\"> <label class=\"\" for=\"\">Tanda Tangan:</label> <br/> <div class=\"sig\" id=\"sig_"+newTabId+"\"> <button type=\"button\" class=\"btn btn-danger btn-sm\" style=\"position: absolute\" onclick=\"hapusTTD('sig_"+newTabId+"','signature_"+newTabId+"')\">Hapus</button> </div> <textarea id=\"signature_"+newTabId+"\" name=\"tandatangan[]\" style=\"display: none\"></textarea> <br/> <tr> <td> <input type=\"text\" class=\"form-control\" id=\"nama_penandatangan_"+newTabId+"\" style=\"border: none; border-bottom: 2px solid black;\"/> </td> </tr> </div>");
+    $('#ttd_klien').append("<div class=\"col-md-4 align-self-center\"> <label class=\"\" for=\"\">Tanda tangan untuk klien <span id=\"nama_klien_ttd_"+newTabId+"\"></span> :</label> <br/> <div id=\"sig_"+newTabId+"\" class=\"sig\" > <button onclick=\"hapusTTD('sig_"+newTabId+"','signature_"+newTabId+"')\" type=\"button\" id=\"clear\" class=\"btn btn-danger btn-sm\" style=\"position: absolute\">Hapus</button> </div> <textarea id=\"signature_"+newTabId+"\" name=\"tandatangan[]\" style=\"display: none\"></textarea> <br/> <input type=\"text\" name=\"nama_penandatangan[]\" class=\"form-control\" style=\"border: none; border-bottom: 2px solid black;\" placeholder=\"Nama Lengkap\" /> </div>");
     $('#sig_'+newTabId).signature({syncField: '#signature_'+newTabId, syncFormat: 'PNG'});
+    $("canvas").attr("width", 295);
   }
-
+  
   function hapusTTD(sig, sig_text) {
-    $("#"+sig).signature('clear');
-    $("#"+sig_text).val('');
+    // Clear the canvas by setting its width to its own width
+    var canvas = $("#" + sig + " canvas")[0];
+    canvas.width = canvas.width;
+    // Clear the corresponding textarea value
+    $("#" + sig_text).val('');
   };
 
   function ubahtabtitle(newTabId) {
     tab_title = $('#nama_klien_'+newTabId).val();
     $('#tab_title_'+newTabId).html(tab_title);
-    $('#nama_penandatangan_'+newTabId).val(tab_title);
+    $('#nama_klien_ttd_'+newTabId).html(tab_title);
   }
 
   function ubahtabtitle2(newTabId) {

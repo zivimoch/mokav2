@@ -84,6 +84,7 @@ class CatatanController extends Controller
                         ->whereNull('a.deleted_at')
                         ->whereNull('b.deleted_at')
                         ->pluck('b.id');
+
             foreach ($petugas as $key => $value) {
                 NotifHelper::push_notif(
                     $value , //receiver_id
@@ -100,6 +101,11 @@ class CatatanController extends Controller
                     Auth::user()->id, // created_by
                     NULL // agenda_id
                 );
+
+                // untuk kirim realtime notifikasi
+                if ($value != Auth::user()->id) {
+                    $notif_receiver[] = 'user_'.$value;
+                }
             }
             //write log activity ////////////////////////////////////////////////////////////////////////
             LogActivityHelper::push_log(
@@ -115,7 +121,8 @@ class CatatanController extends Controller
                 'success' => true,
                 'code'    => 200,
                 'message' => 'Data Berhasil Disimpan!',
-                'data'    => $proses  
+                'data'    => $proses,
+                'notif_receiver' => $notif_receiver  
             ]);
         } catch (Exception $e){
             return response()->json(['message' => $e->getMessage()]);

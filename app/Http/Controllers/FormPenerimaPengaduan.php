@@ -199,6 +199,7 @@ class FormPenerimaPengaduan extends Controller
                         'isi_putusan' => isset($request->isi_putusan[$key]) ? $request->isi_putusan[$key] : NULL,  
                         'lpsk' => isset($request->lpsk_klien[$key]) ? $request->lpsk_klien[$key] : NULL,  
                         'tandatangan' => $file,  
+                        'nama_penandatangan' => isset($request->nama_penandatangan[$key]) ? $request->nama_penandatangan[$key] : NULL,  
                         'desil' => isset($request->desil_klien[$key]) ? $request->desil_klien[$key] : NULL,  
                         'created_by' => $created_by  
                     ]);
@@ -355,10 +356,7 @@ class FormPenerimaPengaduan extends Controller
      */
     public function update(Request $request)
     {
-        // $data = Terlapor::where('uuid', $request->uuid)->first();
-        //     $request->request->remove('data_update');
-        //     dd($request);
-        // try {
+         try {
             $data_update = $request->data_update ;
             if ($data_update == 'pelapor') {
                 $data = Pelapor::where('uuid', $request->uuid)->first();
@@ -420,6 +418,7 @@ class FormPenerimaPengaduan extends Controller
                 //kirim ke seluruh user yang ada di kasus ini / klien ini
                 foreach ($petugas as $key => $value) {
                     $perubahanjson = urlencode(json_encode($perubahan));
+                    // ini untuk notifikasi ketika diklik
                     NotifHelper::push_notif(
                         $value , //receiver_id
                         ($klien && $klien->id) ? $klien->id : NULL, //klien_id
@@ -462,16 +461,16 @@ class FormPenerimaPengaduan extends Controller
                         ->with('response', $response);
 
             }
-        // } catch (Exception $e){
-        //     if($request->ajax()) {
-        //         return response()->json(['msg' => $e->getMessage()], 500);
-        //     }else{
-        //         return redirect()->route('kasus.show', $klien->uuid)
-        //                 ->with('error', true)
-        //                 ->with('response', $e->getMessage());
-        //     }
-        //     die();
-        // }
+        } catch (Exception $e){
+            if($request->ajax()) {
+                return response()->json(['msg' => $e->getMessage()], 500);
+            }else{
+                return redirect()->route('kasus.show', $klien->uuid)
+                        ->with('error', true)
+                        ->with('response', $e->getMessage());
+            }
+            die();
+        }
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\FormPenerimaPengaduan;
 use App\Http\Controllers\KasusController;
+use App\Http\Controllers\LogActivityControler;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PersetujuanController;
@@ -118,6 +119,8 @@ Route::middleware('auth')->group(function () {
     Route::post('publicurl/store/', [PublicUrlController::class, 'store'])->name('publicurl.store');
     Route::get('publicurl/show/{uuid}',[PublicUrlController::class, 'show'])->name('publicurl.show');
     Route::get('publicurl/kasus',[PublicUrlController::class, 'kasus'])->name('publicurl.kasus');
+    // log activity
+    Route::get('logactivity/index/', [LogActivityControler::class, 'index'])->name('logactivity');
 });
 
 require __DIR__.'/auth.php';

@@ -35,6 +35,13 @@
 <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/toastr/toastr.min.css">
 
 <meta name="csrf-token" content="{{ csrf_token() }}">
+
+<audio id="notif_audio">
+  <source src="{{ asset('sounds') }}/notify.ogg" type="audio/ogg" muted="muted">
+  <source src="{{ asset('sounds') }}/notify.mp3" type="audio/mpeg" muted="muted">
+  <source src="{{ asset('sounds') }}/notify.wav" type="audio/wav" muted="muted">
+</audio>
+
 </head>
 <body class="hold-transition layout-top-nav">
 <!-- Site wrapper -->
@@ -62,7 +69,7 @@
     </div>
   </div>
   </div>
-  
+    
   <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
       <b>Version</b> 2.0
@@ -88,11 +95,36 @@
     </div>
   </div>
 </div>
-
+{{-- ini untuk notifikasi ketika diklik redirect --}}
+<input type="hidden" id="notif_receiver" data-notif="{{ Request::get('notif') }}" value="{{ Request::get('notif') }}">
+{{-- socket --}}
+<script src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
 <script>
   $(function() {
-    loadnotif(0);
+    loadnotif();
+    // ketika di local
+    socket = io(window.location.hostname+':'+3000);
+    // ketika di server
+    // socket = io(window.location.hostname,  {path: '/socket/socket.io'});
+    
+    socket.emit('join_room', {room:'user_', id_room:'{{ Auth::user()->id }}'});
+
+    socket.on('notif_count', (data) => {
+        loadnotif();
+        $('#notif_audio')[0].play();
+        $('#notif_bell').addClass('bell');
+        $('#notif_text').css('color', 'yellow');
+    });
+
+    // untuk notif2 dari action yang tidak menggunakan ajax alias reload halaman
+    if ($('#notif_receiver').val()) {
+      var notif_receiver = $('#notif_receiver').data('notif'); 
+      socket.emit('notif_count', {
+        receiver_id : notif_receiver
+      });
+      }
   });
+
   // Prevent dropdown from closing when clicking on tab links
   document.querySelectorAll('.nav-tabs .nav-link').forEach(function(link) {
       link.addEventListener('click', function(event) {
@@ -118,25 +150,29 @@
   // Check for mousemove, could add other events here such as checking for key presses ect.
   $(document).bind('mousemove', function(){resetActive()});
 
-  function loadnotif(add){
+  function loadnotif(){
     $.ajax({
         url:'{{ route("notifikasi.pull_notif") }}',
         type:'GET',
         dataType: 'json',
         success: function( response ) {
+            // kosongkan dulu
+            $('#count_task').html('');
+            $('#count_notif').html('');
+            $('#notif_count').html('');
+            $('#task_list').html('');
+            $('#notif_list').html('');
+
             task = response.task;
             notif = response.notif;
             $('#count_task').html(task.length);
             $('#count_notif').html(notif.length);
-            if (add == 1) {
-                notif_count = parseInt(task.length + add);
-            }else{
-                notif_count = parseInt(task.length);
-            }
+            notif_count = parseInt(task.length);
             if (notif_count>0) {
                 $('#notif_count').html('<span class="badge-notif badge-notif-danger">'+notif_count+'</span>');   
             }
 
+            // load task
             task.forEach(e => {
               if (e.kasus != null) {
                 kasus = e.kasus;
@@ -151,7 +187,7 @@
               }
               $('#task_list').prepend('<a href=\"'+e.url+'\" class=\"list-group-item list-group-item-action flex-column align-items-start\"> <div class=\"d-flex w-100 justify-content-between\"> <h6 class=\"mb-1\"><b>'+e.from+'</b></h6> <small>'+e.formattedDate+' lalu</small> </div> <p class=\"mb-1\">'+e.message+'</p> <small> '+kasus+' '+no_reg+' </small> </a>')
             });
-
+            // load notif
             notif.forEach(e => {
               if (e.kasus != null) {
                 kasus = e.kasus;

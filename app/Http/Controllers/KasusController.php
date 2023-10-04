@@ -207,7 +207,7 @@ class KasusController extends Controller
        // ===========================================================================================
         //Proses read, push notif & log activity ////////////////////////////////////////////////////
         // jika petugas sudah melihat data kasus maka tasknya (T3, T6) selesai
-        NotifHelper::read_notif(
+        $update = NotifHelper::read_notif(
             Auth::user()->id, // receiver_id
             $klien->id, // klien_id
             $request->kode, // kode ini request dari link 
@@ -268,7 +268,7 @@ class KasusController extends Controller
                     $klien->no_klien = $no_klien;
                     $klien->save();
                     $kode = 'T4';
-                    $url = url('/kasus/show/'.$klien->uuid.'?tab=kasus&catatan-kasus=1&kode=T4&tipe=task');
+                    $url = url('/kasus/show/'.$klien->uuid.'?tab=kasus&catatan-kasus=1&kode=T4&type_notif=task');
                     $message_notif = Auth::user()->name.' menyetujui kasus. Nomor regis berhasil dibuat. Silahkan lihat catatan supervisor';
                     $message_log = Auth::user()->name.' menyetujui kasus. Nomor regis berhasil dibuat';
                     $message_status = 'Supervisor menyetujui kasus';
@@ -316,6 +316,11 @@ class KasusController extends Controller
                     Auth::user()->id, // created_by
                     NULL // agenda_id
                 );
+                // untuk kirim realtime notifikasi
+                if ($value != Auth::user()->id) {
+                    $notif_receiver[] = 'user_'.$value;
+                }
+                $notifjson = urlencode(json_encode($notif_receiver));
             }
             //write log activity ////////////////////////////////////////////////////////////////////////
             LogActivityHelper::push_log(
@@ -334,10 +339,11 @@ class KasusController extends Controller
                 'code'    => 200,
                 'message' => 'Data Berhasil Disimpan!'
             ]);
-            
-            return redirect()->route('kasus.show', ['uuid' => $uuid, 'tab' => 'settings', 'persetujuan-supervisor' => 1])
-            ->with('success', true)
-            ->with('response', $response);
+             // untuk menghindari dobel encoding terhadap notifjson, jadi cara returnnya seperti ini
+             $url = url('/kasus/show/' . $klien->uuid . '?tab=settings&persetujuan-supervisor=1&notif='.$notifjson);
+             return redirect($url)
+                     ->with('success', true)
+                     ->with('response', $response);
         } catch (Exception $e){
             return response()->json(['message' => $e->getMessage()]);
             die();

@@ -70,6 +70,13 @@ class TerminasiController extends Controller
                     $kode = 'T12';
                     $message_notif = Auth::user()->name.' mengajukan terminasi. Silahkan terima / tolak terminasi';
                     $message_status = 'Proses terminasi';
+                    // jika MK sudah mengajukan Terminasi maka tasknya (T5) selesai
+                    NotifHelper::read_notif(
+                        0, // receiver_id
+                        $klien->id, // klien_id
+                        'T5', // kode
+                        'task' // type_notif
+                    );
                 }else if($request->alasan_approve){
                     // jika ada uuid & ada alasan_approve berarti edit tidak setuju terminasi
                     $data_request = array('alasan_approve' => $request->alasan_approve);
@@ -122,6 +129,10 @@ class TerminasiController extends Controller
                     Auth::user()->id, // created_by
                     NULL // agenda_id
                 );
+                // untuk kirim realtime notifikasi
+                if ($value != Auth::user()->id) {
+                    $notif_receiver[] = 'user_'.$value;
+                }
             }
             //write log activity ////////////////////////////////////////////////////////////////////////
             LogActivityHelper::push_log(
@@ -139,7 +150,8 @@ class TerminasiController extends Controller
                 'success' => true,
                 'code'    => 200,
                 'message' => 'Data Berhasil Disimpan!',
-                'data'    => $proses  
+                'data'    => $proses,
+                'notif_receiver' => $notif_receiver 
             ]);
         } catch (Exception $e){
             return response()->json(['message' => $e->getMessage()]);

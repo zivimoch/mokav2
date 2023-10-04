@@ -177,6 +177,7 @@ class AgendaController extends Controller
     public function store(Request $request)
     {
         try {
+            $notif_receiver = NULL;
             $validator = Validator::make($request->all(), [
                 'judul_kegiatan' => 'required',
                 'tanggal_mulai' => 'required',
@@ -226,6 +227,10 @@ class AgendaController extends Controller
                             Auth::user()->id, // created_by
                             $proses->id // agenda_id
                         );
+                        // untuk kirim realtime notifikasi
+                        if ($value != Auth::user()->id) {
+                            $notif_receiver[] = 'user_'.$value;
+                        }
                         //write log activity ////////////////////////////////////////////////////////////////////////
                         $petugas = User::where('id', $value)->first();
                         LogActivityHelper::push_log(
@@ -356,6 +361,10 @@ class AgendaController extends Controller
                             $send_notif = 0;
                             $send_log = 0;
                         }
+                        // untuk kirim realtime notifikasi
+                        if ($value != Auth::user()->id) {
+                            $notif_receiver[] = 'user_'.$value;
+                        }
                     }else if($request->jam_selesai && $request->klien_id){
                         // jika ada jam selesainya maka menginputkan kinerja maka kirim ke MK (untuk kasus penjadawalan layanan)
                         $message_notif = Auth::user()->name.' telah mengupdate laporan tindak lanjut. Silahkan lihat isinya untuk update informasi kasus.';
@@ -428,7 +437,8 @@ class AgendaController extends Controller
                 'success' => true,
                 'code'    => 200,
                 'message' => 'Data Berhasil Disimpan!',
-                'data'    => $proses  
+                'data'    => $proses,
+                'notif_receiver' => $notif_receiver
             ]);
         } catch (Exception $e){
             return response()->json(['msg' => $e->getMessage()]);

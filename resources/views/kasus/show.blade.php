@@ -44,9 +44,11 @@
 
 <section class="content">
 @if (Session::has('data'))
-    <input type="hidden " id="perubahan" value="{{ Session::get('data') }}">
+    {{-- ini ketika submit perubahan --}}
+    <input type="" id="perubahan" value="{{ Session::get('data') }}">
 @elseif(Request::get('data'))
-    <input type="hidden " id="perubahan" value="{{ Request::get('data') }}">
+    {{-- ini untuk notifikasi ketika diklik redirect --}}
+    <input type="" id="perubahan" value="{{ Request::get('data') }}">
 @endif
 <div class="container-fluid">
 <div class="row">
@@ -936,7 +938,7 @@
         @endif
     </div>
     </div>
-        <div class="tab-pane {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas" role="tabpanel" aria-labelledby="kasus-petugas-tab">
+    <div class="tab-pane {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas" role="tabpanel" aria-labelledby="kasus-petugas-tab">
         <b id="anchor_petugas">PETUGAS PADA KASUS</b>
             
             @if(!($detail['kelengkapan_petugas']))
@@ -1069,89 +1071,21 @@
 
 
         <div class="tab-pane fade" id="kasus-log" role="tabpanel" aria-labelledby="kasus-log-tab">
-            <div class="timeline timeline-inverse">
-
-            <div class="time-label">
-            <span class="bg-danger">
-            01 Jan. 2023
-            </span>
-            </div>
-            
-            
-            <div>
-                <i class="fas fa-envelope bg-primary"></i>
-                <div class="timeline-item">
-                <span class="time"><i class="far fa-clock"></i> 12:05</span>
-                <h3 class="timeline-header"><a href="#">Addzifi Mochamad Gumelar</a> menginputkan data kasus</h3>
-                <div class="timeline-body">
-                Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                weebly ning heekya handang zimbra. Babblely odeo kaboodle
-                quora plaxo ideeli hulu weebly balihoo...
+            <div class="post clearfix" style="margin: 0px">
+                <b>LOG ACTIVITY</b>
+                </br>
+                </br>
+                <div style="overflow-x: scroll">
+                <table id="tabelLogActivity" class="table table-sm table-bordered" style="cursor:pointer; color:#fff;background-color:black">
+                    <thead>
+                    <tr>
+                    <th>Waktu</th>
+                    <th>Activity</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
                 </div>
-                </div>
-            </div>
-
-
-            <div>
-                <i class="fas fa-envelope bg-primary"></i>
-                <div class="timeline-item">
-                <span class="time"><i class="far fa-clock"></i> 12:05</span>
-                <h3 class="timeline-header"><a href="#">Addzifi Mochamad Gumelar</a> menginputkan data kasus</h3>
-                <div class="timeline-body">
-                Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                weebly ning heekya handang zimbra. Babblely odeo kaboodle
-                quora plaxo ideeli hulu weebly balihoo...
-                </div>
-                <div class="timeline-footer">
-                <a href="#" class="btn btn-primary btn-sm"><i class="nav-icon fas fa-file-alt"></i> Dokumen Pendukung</a>
-                <a href="#" class="btn btn-primary btn-sm"><i class="nav-icon fas fa-file-alt"></i> Dokumen Pendukung</a>
-                <a href="#" class="btn btn-primary btn-sm"><i class="nav-icon fas fa-file-alt"></i> Dokumen Pendukung</a>
-                </div>
-                </div>
-            </div>
-            
-            
-            <div>
-            <i class="fas fa-comments bg-warning"></i>
-            <div class="timeline-item">
-            <span class="time"><i class="far fa-clock"></i> 27 mins ago</span>
-            <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
-            <div class="timeline-body">
-            Take me to your leader!
-            Switzerland is small and neutral!
-            We are more like Germany, ambitious and misunderstood!
-            </div>
-            <div class="timeline-footer">
-            <a href="#" class="btn btn-warning btn-flat btn-sm">View comment</a>
-            </div>
-            </div>
-            </div>
-            
-            
-            <div class="time-label">
-            <span class="bg-success">
-            3 Jan. 2014
-            </span>
-            </div>
-            
-            
-            <div>
-            <i class="fas fa-camera bg-purple"></i>
-            <div class="timeline-item">
-            <span class="time"><i class="far fa-clock"></i> 2 days ago</span>
-            <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
-            <div class="timeline-body">
-            <img src="https://placehold.it/150x100" alt="...">
-            <img src="https://placehold.it/150x100" alt="...">
-            <img src="https://placehold.it/150x100" alt="...">
-            <img src="https://placehold.it/150x100" alt="...">
-            </div>
-            </div>
-            </div>
-            
-            <div>
-            <i class="far fa-clock bg-gray"></i>
-            </div>
             </div>
         </div>
         <div class="tab-pane {{ Request::get('tab') == 'settings' ? 'active' : '' }}" id="kasus-settings" role="tabpanel" aria-labelledby="kasus-settings-tab">
@@ -1208,7 +1142,7 @@
 
                                 @elseif($klien->no_klien != '[REJECTED]')
                                     <div class="col-md-12">
-                                        Ya, kasus disetujui oleh Supervisor
+                                        Ya, kasus telah disetujui oleh Supervisor
                                     </div>
                                 @else
                                     <div class="col-md-12">
@@ -1930,6 +1864,41 @@
 
     $(function () {
 
+    $('#tabelLogActivity').DataTable({
+      "ordering": true,
+      "processing": true,
+      "serverSide": true,
+      "responsive": false, 
+      "lengthChange": false, 
+      "autoWidth": false,
+      "ajax": "/logactivity/index?uuid={{ $klien->uuid }}",
+      "columns": [
+        {
+            "mData": "tanggal",
+            "width": "20%",
+            "mRender": function (data, type, row) {
+                return "<span style='font-size:14px'>"+row.tanggal_formatted+", "+row.jam_formatted+"</span>";
+            }
+        },
+        {
+            "mData": "message",
+            "mRender": function (data, type, row) {
+              return row.message;
+            }
+        }
+      ],
+      "pageLength": 10,
+      "lengthMenu": [
+          [10, 25, 50, 100, -1],
+          ['10 rows', '25 rows', '50 rows', '100 rows','All'],
+      ],
+      "dom": 'Blfrtip', // Blfrtip or Bfrtip
+      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print"]
+      }).buttons().container().appendTo('#tabelRiwayat_wrapper .col-md-6:eq(0)');
+
+      $('#tabelLogActivity_filter').css({'float':'right','display':'inline-block; background-color:black'});
+    
+
     $('#tabelRiwayat').DataTable({
       "ordering": true,
       "processing": true,
@@ -1986,6 +1955,7 @@
       }).buttons().container().appendTo('#tabelRiwayat_wrapper .col-md-6:eq(0)');
 
       $('#tabelRiwayat_filter').css({'float':'right','display':'inline-block; background-color:black'});
+    
     });
 
     $('#tabelRiwayat tbody').on('click', 'tr', function () {
@@ -2226,6 +2196,7 @@
                     $("#error-message-asesmen").hide();
                     loadAsesmen();
                     check_kelengkapan_asesmen('{{ $klien->id }}');
+                    loadnotif();
 
                     // hapus semua inputan
                     $('#uuid_asesmen').val('');
@@ -2239,7 +2210,6 @@
                     $("#asesmen_hukum").val('');
                     $("#asesmen_lainnya").val('')
                     $('#tambahAsesmenModal').scrollTop(0);
-                    loadNotif(0);
                 }
             },
             error: function (response){
@@ -2318,7 +2288,6 @@
                     $("#monitoring_tujuan").val('');
                     $("#monitoring_rencana").val('');
                     $('#tambahMonitoringModal').scrollTop(0);
-                    loadNotif(0);
                 }
             },
             error: function (response){
@@ -2344,7 +2313,6 @@
     });
 
     function loadTerminasi() {
-        $('#deleteTerminasi').hide();
         $.ajax({
             url: `/terminasi/index?uuid={{ $klien->uuid }}`,
             type: "GET",
@@ -2402,7 +2370,12 @@
                     $('#message-terminasi').html(response.message);
                     $("#success-message-terminasi").show();
                     $("#error-message-terminasi").hide();
-                    loadTerminasi();
+                    loadTerminasi();                    
+                    
+                    // kirim realtime notifikasi
+                    socket.emit('notif_count', {
+                        receiver_id : response.notif_receiver
+                    });
 
                     // hapus semua inputan
                     $('#uuid_terminasi').val('');
@@ -2489,6 +2462,11 @@
                     $('#uuid_catatan').val('');
                     $("#catatan_kasus").val('');
                     $('#tambahCatatanModal').scrollTop(0);
+
+                    // kirim realtime notifikasi
+                    socket.emit('notif_count', {
+                        receiver_id : response.notif_receiver
+                    });
                 }
             },
             error: function (response){
@@ -2681,6 +2659,10 @@
             success: function (response){
                 loadTerminasi();
                 check_kelengkapan_terminasi('{{ $klien->id }}');
+                // kirim realtime notifikasi
+                socket.emit('notif_count', {
+                    receiver_id : response.notif_receiver
+                });
             },
             error: function (response){
                 setTimeout(function(){

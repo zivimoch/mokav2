@@ -54,6 +54,7 @@ class CreateKliensTable extends Migration
             $table->text('isi_putusan')->nullable();
             $table->boolean('lpsk')->nullable()->default(0);
             $table->string('tandatangan')->nullable();
+            $table->string('nama_penandatangan')->nullable();
             $table->integer('desil')->nullable();
             $table->integer('created_by')->nullable();
             $table->timestamps();

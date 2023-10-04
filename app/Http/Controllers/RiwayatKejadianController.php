@@ -197,7 +197,7 @@ class RiwayatKejadianController extends Controller
                     Auth::user()->name.' telah menghapus riwayat kejadian. Silahkan periksa riwayat kejadian', //message
                     $klien->nama, //nama korban 
                     isset($klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
-                    url('/kasus/show/'.$klien->uuid.'?tab=kasus-asesmen&kode=N4&tipe=notif'), //url
+                    url('/kasus/show/'.$klien->uuid.'?tab=kasus-asesmen&kode=N4&type_notif=notif'), //url
                     0, //kirim ke diri sendiri 0 / 1
                     Auth::user()->id, // created_by
                     NULL // agenda_id

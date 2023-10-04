@@ -193,4 +193,24 @@
 </div>
 {{-- tanda tangan / signature pad --}}
 
+{{-- ini untuk notifikasi ketika diklik redirect --}}
+<input type="hidden" id="notif_receiver" data-notif="{{ Request::get('notif') }}" value="{{ Request::get('notif') }}">
+{{-- socket --}}
+<script src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
+<script>
+    $(function() {
+        // ketika di local
+        socket = io(window.location.hostname+':'+3000);
+        // ketika di server
+        // socket = io(window.location.hostname,  {path: '/socket/socket.io'});
+
+        // untuk notif2 dari action yang tidak menggunakan ajax alias reload halaman
+        if ($('#notif_receiver').val()) {
+        var notif_receiver = $('#notif_receiver').data('notif'); 
+        socket.emit('notif_count', {
+            receiver_id : notif_receiver
+        });
+        }
+    });
+</script>
 </body>

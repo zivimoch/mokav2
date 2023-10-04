@@ -107,8 +107,8 @@ class PetugasController extends Controller
             $receiver = User::where('id', $request->user_id)->first();
             $check_kelengkapan_spp = (new KasusController)->check_kelengkapan_spp($klien->id);
             $check_kelengkapan_asesmen = (new KasusController)->check_kelengkapan_asesmen($klien->id);
-            if ($receiver->jabatan == 'Supervisor Kasus') {
-                // jika yang ditambahkan adalah Supervisor Kasus
+            if (($receiver->jabatan == 'Supervisor Kasus') && ($klien->no_klien == NULL)) {
+                // jika yang ditambahkan adalah Supervisor Kasus & tidak ada no kliennya (belum di approve)
                 $message = 'Kasus baru. Meminta persetujuan Supervisor';
                 $kode = 'T3';
                 $url =  url('/kasus/show/'.$klien->uuid.'?tab=settings&persetujuan-supervisor=1');
@@ -123,7 +123,7 @@ class PetugasController extends Controller
                 // jika yang ditambahkan adalah Petugas lain atau MK yang SPP sudah ada maka
                 $message = Auth::user()->name.' menambahkan anda pada kasus. Silahkan lihat / riview kasus dan atau menambahkan informasi kasus dan atau membuat agenda layanan';
                 $kode = 'T8';
-                $url =  url('/kasus/show/'.$klien->uuid.'?tab=kasus&kasus-all=1&kode='.$kode.'&tipe=task');
+                $url =  url('/kasus/show/'.$klien->uuid.'?tab=kasus&kasus-all=1&kode='.$kode.'&type_notif=task');
                 $message_status = 'Pelaksanaan intervensi';
             }
              
@@ -143,6 +143,12 @@ class PetugasController extends Controller
                 Auth::user()->id, // created_by
                 NULL // agenda_id
             );
+            // untuk kirim realtime notifikasi
+            if ($request->user_id != Auth::user()->id) {
+                $notif_receiver[] = 'user_'.$request->user_id;
+            }
+            $notifjson = urlencode(json_encode($notif_receiver));
+
             //write log activity ////////////////////////////////////////////////////////////////////////
             LogActivityHelper::push_log(
                 //message
@@ -161,10 +167,12 @@ class PetugasController extends Controller
                 'message' => 'Data Berhasil Disimpan!',
                 'data'    => $proses  
             ]);
-            
-            return redirect()->route('kasus.show', ['uuid' => $uuid, 'tab' => 'kasus-petugas', 'tabel-petugas' => 1])
-            ->with('success', true)
-            ->with('response', $response);
+
+            // untuk menghindari dobel encoding terhadap notifjson, jadi cara returnnya seperti ini
+            $url = url('/kasus/show/' . $klien->uuid . '?tab=kasus-petugas&tabel-petugas=1&notif='.$notifjson);
+            return redirect($url)
+                    ->with('success', true)
+                    ->with('response', $response);
         } catch (Exception $e){
             return response()->json(['message' => $e->getMessage()]);
             die();
@@ -207,6 +215,7 @@ class PetugasController extends Controller
                 Auth::user()->id, // created_by
                 NULL // agenda_id
             );
+
             //write log activity ////////////////////////////////////////////////////////////////////////
             LogActivityHelper::push_log(
                 //message
@@ -222,10 +231,12 @@ class PetugasController extends Controller
                 'message' => 'Data Berhasil Disimpan!',
                 'data'    => $proses  
             ]);
-            
-            return redirect()->route('kasus.show', ['uuid' => $klien->uuid, 'tab' => 'kasus-petugas', 'tabel-petugas' => 1])
-            ->with('success', true)
-            ->with('response', $response);
+
+            // untuk menghindari dobel encoding terhadap notifjson, jadi cara returnnya seperti ini
+            $url = url('/kasus/show/' . $klien->uuid . '?tab=kasus-petugas&tabel-petugas=1');
+            return redirect($url)
+                    ->with('success', true)
+                    ->with('response', $response);
         } catch (Exception $e){
             return response()->json(['message' => $e->getMessage()]);
             die();

@@ -44,14 +44,15 @@
         </a>
       </div>
     </div>
+
     <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <!-- Right navbar links -->
     <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-trigger" data-toggle="dropdown" href="#">
-                <i class="far fa-bell"></i> <span id="notif_count"></span> <i class="fa fa-caret-down"></i>
+            <a class="nav-link dropdown-trigger" id="notif_text" data-toggle="dropdown" href="#">
+                <i id="notif_bell" class="far fa-bell"></i> <span id="notif_count"></span> <i class="fa fa-caret-down"></i>
             </a>
             <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right" style="width : 400px;">                                            
               <center style="font-weight : bold; margin-bottom : 5px">Task & Notification</center>
