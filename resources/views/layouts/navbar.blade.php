@@ -83,13 +83,10 @@
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
               <a href="#" class="dropdown-item">
-                hehe
+                {{ Auth::user()->name }} ({{ Auth::user()->jabatan }})
               </a>
-              <a href="#" class="dropdown-item">
-                hehe
-              </a>
-              <a href="#" class="dropdown-item">
-                hehe
+              <a href="{{ route('kinerja.detail') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}&user_id={{ Auth::user()->id }}" class="dropdown-item">
+                Laporan Kinerja
               </a>
                 <a href="#" class="">
                   <form method="POST" action="{{ route('logout') }}">

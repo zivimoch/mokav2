@@ -289,6 +289,9 @@ class AgendaController extends Controller
 
                             if (isset($request->dokumen_pendukung)) {
                             $tindak_lanjut = TindakLanjut::where('created_by', $value)->where('agenda_id', $proses->id)->first();
+                            // hapus dulu dokumen_tl pada tindak lanjut ini, kemudian tambahkan lagi
+                            DokumenTl::where('tindak_lanjut_id', $tindak_lanjut->id)->delete();
+
                             foreach ($request->dokumen_pendukung as $value_dokumen) {
                                     DokumenTl::create([
                                         'tindak_lanjut_id' => $tindak_lanjut->id,
@@ -430,7 +433,9 @@ class AgendaController extends Controller
                 );
             }
             // update status klien //////////////////////////////////////////////////////////////////////
-            StatusHelper::push_status($klien->id, 'Pelaksanaan intervensi');
+            if (isset($klien->id)) {
+                StatusHelper::push_status($klien->id, 'Pelaksanaan intervensi');
+            }
             /////////////////////////////////////////////////////////////////////////////////////////////
             //return response
             return response()->json([
@@ -479,9 +484,10 @@ class AgendaController extends Controller
     {
         try {
             $agenda_semua = DB::table('agenda as a')
-                            ->select(DB::raw('a.uuid, a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, a.keterangan, c.nama'))
+                            ->select(DB::raw('a.uuid, a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, a.keterangan, c.nama, GROUP_CONCAT(" ", d.name) as petugas'))
                             ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id') 
                             ->leftJoin('klien as c', 'c.id', 'a.klien_id')
+                            ->leftJoin('users as d', 'd.id', 'b.created_by')
                             ->where('a.tanggal_mulai', $date)
                             ->whereNull('a.deleted_at')
                             ->whereNull('b.deleted_at')

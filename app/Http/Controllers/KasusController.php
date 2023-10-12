@@ -15,6 +15,7 @@ use App\Models\PersetujuanTemplate;
 use App\Models\Petugas;
 use App\Models\Terlapor;
 use App\Models\Terminasi;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -38,18 +39,22 @@ class KasusController extends Controller
                         ->whereNull('b.deleted_at')
                         ->whereNull('c.deleted_at')
                         ->groupBy('a.id');
-            if (Auth::user()->supervisor_id != 0) { 
-                // jika spv_id nya bukan 0 maka cuman bisa liat kasus2 yg petugasnya ada dirinya saja 
-                // petugas penerima pengaduan spv_id == 0, tidak masalah bisa melihat semua kasus
+            if (Auth::user()->supervisor_id != 0 && $request->laporkbg != 1) { 
+                // jika supervisor_id nya bukan 0 dan laporkbg bukan 1, maka cuman bisa liat kasus2 yg petugasnya ada dirinya saja 
                 $data->where('c.user_id', Auth::user()->id);
+            }elseif ($request->laporkbg == 1) {
+                // jika lapor KBG == 1 maka tampilkan kasus yang laporKBG
+                $data->whereNull(('a.created_by'));
             }
+
             $datas = $data->get();
             foreach ($datas as $datas2) {
                 $datas2->tanggal_pelaporan_formatted = date('d M Y', strtotime($datas2->tanggal_pelaporan));
             }
+
             return DataTables::of($datas)->make(true);
        }
-
+       
        // ===========================================================================================
         //Proses read, push notif & log activity ////////////////////////////////////////////////////
         // jika petugas sudah melihat data kasus maka tasknya (T3, T6) selesai
@@ -141,7 +146,7 @@ class KasusController extends Controller
        $users =  (new OpsiController)->api_petugas(); //untuk tambah petugas
        $provinsi = Province::get();
 
-       //data klien (nanti edit lagi)
+       //data klien 
        $klien = DB::table('klien as a')
                     ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan, e.difabel_type, f.kondisi_khusus'))
                     ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
@@ -152,12 +157,14 @@ class KasusController extends Controller
                     ->where('a.uuid', $uuid)
                     ->groupBy('a.id')
                     ->first();
-        $akses = Petugas::where('klien_id', $klien->id)->where('user_id', Auth::user()->id)->first();
-        if (!isset($akses)) {
-            return abort(404);
-        }
 
-       //data kasus (nanti edit lagi)
+        // hanya petugas yang ada di list petugas yang dapat mengakses
+        // $akses = Petugas::where('klien_id', $klien->id)->where('user_id', Auth::user()->id)->first();
+        // if (!isset($akses)) {
+        //     return abort(404);
+        // }
+
+       //data kasus 
        $kasus = DB::table('kasus as a')
                     ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan'))
                     ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
@@ -165,7 +172,6 @@ class KasusController extends Controller
                     ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
                     ->where('a.id', $klien->kasus_id)
                     ->first();
-
        //data pelapor
        $pelapor = DB::table('pelapor as a')
                     ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan'))
@@ -190,12 +196,17 @@ class KasusController extends Controller
                     ->whereNULL('a.deleted_at')
                     ->orderBy('a.created_at')
                     ->get();
+        if ($petugas->contains('user_id', Auth::user()->id)){
+            // check apakah yang login ini adalah petugas kasus ini, kalo bukan maka hidden menu2nya
+            $akses_petugas = 1;
+        }else{
+            $akses_petugas = 0;
+        }
         //data surat persetujuan
         $persetujuan = DB::table('persetujuan_isi as a')
                     ->select(DB::raw('a.*, b.judul'))
                     ->leftJoin('persetujuan_template as b', 'a.persetujuan_template_id', 'b.id')
                     ->where('a.klien_id', $klien->id)
-                    ->whereNULL('a.deleted_at')
                     ->orderBy('a.created_at')
                     ->get();
         //data surat template persetujuan 
@@ -206,8 +217,19 @@ class KasusController extends Controller
        $kasus_terkait = $this->kasus_terkait($klien->kasus_id, $klien->id);
        // ===========================================================================================
         //Proses read, push notif & log activity ////////////////////////////////////////////////////
-        // jika petugas sudah melihat data kasus maka tasknya (T3, T6) selesai
-        $update = NotifHelper::read_notif(
+        // jika petugas sudah melihat data kasus maka tasknya (T8, T11) selesai
+        $task = ['T8', 'T11'];
+        foreach ($task as $item) {
+            NotifHelper::read_notif(
+                Auth::user()->id, // receiver_id
+                $klien->id, // klien_id
+                $item, // kode ini request dari link 
+                'task', // type_notif
+                NULL // agenda_id
+            );   
+        }
+        // read notif sesuai url
+        NotifHelper::read_notif(
             Auth::user()->id, // receiver_id
             $klien->id, // klien_id
             $request->kode, // kode ini request dari link 
@@ -247,7 +269,8 @@ class KasusController extends Controller
                 ->with('persetujuan',$persetujuan)
                 ->with('persetujuan_template',$persetujuan_template)
                 ->with('detail', $detail)
-                ->with('kasus_terkait', $kasus_terkait);
+                ->with('kasus_terkait', $kasus_terkait)
+                ->with('akses_petugas', $akses_petugas);
     }
 
     public function approval($uuid, Request $request)
@@ -267,19 +290,21 @@ class KasusController extends Controller
                     $no_klien = $this->generate_noreg();
                     $klien->no_klien = $no_klien;
                     $klien->save();
+
                     $kode = 'T4';
                     $url = url('/kasus/show/'.$klien->uuid.'?tab=kasus&catatan-kasus=1&kode=T4&type_notif=task');
-                    $message_notif = Auth::user()->name.' menyetujui kasus. Nomor regis berhasil dibuat. Silahkan lihat catatan supervisor';
+                    $message_notif = Auth::user()->name.' menyetujui kasus. Nomor regis berhasil dibuat. Silahkan periksa catatan supervisor bila ada.';
                     $message_log = Auth::user()->name.' menyetujui kasus. Nomor regis berhasil dibuat';
                     $message_status = 'Supervisor menyetujui kasus';
                 }else{
                     $no_klien = '[REJECTED]';
                     $klien->no_klien = $no_klien;
                     $klien->save();
+
                     $kode = 'T5';
                     $url = url('/kasus/show/'.$klien->uuid.'?tab=settings&kolom-terminasi=1');
                     $message_notif = Auth::user()->name.' tidak menyetujui kasus. Silahkan lakukan terminasi sepihak / kasus ditutup';
-                    $message_log = Auth::user()->name.' {tidak menyetujui kasus. Proses terminasi';
+                    $message_log = Auth::user()->name.' tidak menyetujui kasus. Proses terminasi';
                     $message_status = 'Proses terminasi';
                 }
             // ===========================================================================================
@@ -300,6 +325,8 @@ class KasusController extends Controller
                     ->whereNull('a.deleted_at')
                     ->whereNull('b.deleted_at')
                     ->pluck('b.id');
+                    
+            $notif_receiver = [];
             foreach ($mk as $key => $value) {
                 NotifHelper::push_notif(
                     $value , //receiver_id
@@ -339,6 +366,7 @@ class KasusController extends Controller
                 'code'    => 200,
                 'message' => 'Data Berhasil Disimpan!'
             ]);
+            
              // untuk menghindari dobel encoding terhadap notifjson, jadi cara returnnya seperti ini
              $url = url('/kasus/show/' . $klien->uuid . '?tab=settings&persetujuan-supervisor=1&notif='.$notifjson);
              return redirect($url)
@@ -382,7 +410,12 @@ class KasusController extends Controller
     public function check_kelengkapan_data($klien_id)
     {
         // kelengkapan klien 
-        $klien = Klien::where('id', $klien_id)->first();
+        $klien = Klien::where('id', $klien_id)->first();// hitung umur klien
+        if (isset($klien->tanggal_lahir)) {
+            $currentDate = Carbon::now();
+            $umur = $currentDate->diffInYears(Carbon::parse($klien->tanggal_lahir));
+        }
+
         $nullKlien = [];
         $atribut_klien = $klien->getAttributes();
         foreach ($atribut_klien as $key => $value) {
@@ -390,7 +423,12 @@ class KasusController extends Controller
                 $nullKlien[] = $key;
             }
         }
-        $removeKlien = ["desil", "kelas", "pekerjaan", "penghasilan", "status_kawin", "anak_ke", "jumlah_anak", "nama_ibu", "tempat_lahir_ibu", "tanggal_lahir_ibu", "nama_ayah", "tempat_lahir_ayah", "tanggal_lahir_ayah", "created_by", "created_at", "updated_at", "deleted_at"];
+        if ($umur > 17) {
+            // klien dewasa
+            $removeKlien = ["no_klien", "kelas", "anak_ke", "nama_ibu", "tempat_lahir_ibu", "tanggal_lahir_ibu", "nama_ayah", "tempat_lahir_ayah", "tanggal_lahir_ayah", "no_lp", "pengadilan_negri", "isi_putusan", "lpsk", "desil", "created_by", "created_at", "updated_at", "deleted_at"];
+        }else{
+            $removeKlien = ["no_klien", "pekerjaan", "penghasilan", "status_kawin", "anak_ke", "jumlah_anak", "desil", "kelas", "pekerjaan", "penghasilan", "status_kawin", "anak_ke", "jumlah_anak", "nama_ibu", "tempat_lahir_ibu", "tanggal_lahir_ibu", "nama_ayah", "tempat_lahir_ayah", "tanggal_lahir_ayah", "created_by", "created_at", "updated_at", "deleted_at"];
+        }
         $nullKlien = array_values(array_diff($nullKlien, $removeKlien));
         $kolomKlien = count(Schema::getColumnListing('klien'));
 
@@ -403,7 +441,7 @@ class KasusController extends Controller
                 $nullKasus[] = $key;
             }
         }
-        $removeKasus = ["created_by", "created_at", "updated_at", "deleted_at"];
+        $removeKasus = ["no_reg", "created_by", "created_at", "updated_at", "deleted_at"];
         $nullKasus = array_values(array_diff($nullKasus, $removeKasus));
         $kolomKasus = count(Schema::getColumnListing('kasus'));
 

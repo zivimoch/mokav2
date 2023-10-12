@@ -76,7 +76,7 @@
 
             <table class="table" style="width:100%;">
                 <tr>
-                    <td colspan="4">1. Saya yang bertandatangan dibawah ini setuju / tidak setuju untuk melakukan penanganan atas diri saya / anak keluarga saya : </td>
+                    <td colspan="4">{{ $persetujuan_template->konten }}</td>
                 </tr>
                 <tr>
                     <td style="width: 20%;">Nama Korban</td>
@@ -91,12 +91,22 @@
                 <tr>
                     <td style="width: 20%;">Alamat</td>
                     <td style="width: 20px;">:</td>
-                    <td><textarea name="alamat" class="form-control">{{ $klien->alamat }}</textarea></td>
+                    <td>
+                        <textarea name="alamat" class="form-control required-field-agenda" id="alamat" required>{{ $klien->alamat }}</textarea>
+                        <div class="invalid-feedback" id="valid-alamat">
+                            Alamat wajib diisi.
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td style="width: 20%;">Telp</td>
                     <td style="width: 20px;">:</td>
-                    <td><input type="text" name="no_telp" class="form-control" value="{{ $klien->no_telp }}"/></td>
+                    <td>
+                        <input type="number" name="no_telp" class="form-control required-field-agenda" id="no_telp" value="{{ $klien->no_telp }}" required/>
+                        <div class="invalid-feedback" id="valid-no_telp">
+                            Nomor Telpon wajib diisi.
+                        </div>
+                    </td>
                 </tr>
             </table>
             <table class="table">

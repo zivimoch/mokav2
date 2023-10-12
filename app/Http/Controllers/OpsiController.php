@@ -155,11 +155,15 @@ class OpsiController extends Controller
 
     public function api_hubungan_dengan_terlapor()
     {
-        $data = ['Ibu Kandung',
+        $data = ['Ayah Kandung',
+                'Ayah Tiri',
+                'Ibu Kandung',
                 'Ibu Tiri',
+                'Anak Kandung',
+                'Anak Tiri',
                 'Adik Kandung',
-                'Kakak Kandung',
                 'Adik Tiri',
+                'Kakak Kandung',
                 'Kakak Tiri',
                 'Bibi',
                 'Sepupu',
@@ -187,12 +191,14 @@ class OpsiController extends Controller
     public function api_hubungan_dengan_klien()
     {
         $data = ['Ayah Kandung',
-                'Ibu Kandung',
                 'Ayah Tiri',
+                'Ibu Kandung',
                 'Ibu Tiri',
+                'Anak Kandung',
+                'Anak Tiri',
                 'Adik Kandung',
-                'Kakak Kandung',
                 'Adik Tiri',
+                'Kakak Kandung',
                 'Kakak Tiri',
                 'Paman',
                 'Bibi',
@@ -206,6 +212,7 @@ class OpsiController extends Controller
                 'Teman',
                 'Guru',
                 'Majikan',
+                'ART / Pembantu',
                 'Rekan Kerja',
                 'Bukan Siapa-Siapa / Tak Dikenal',
                 'Pedagang',
@@ -830,6 +837,8 @@ class OpsiController extends Controller
                 ->orWhere('jabatan', 'Supervisor Kasus')
                 ->orWhere('jabatan', 'Pendamping Kasus')
                 ->orWhere('jabatan', 'Unit Reaksi Cepat')
+                ->orWhere('jabatan', 'Advokat')
+                ->orWhere('jabatan', 'Psikolog')
                 ->orWhere('jabatan', 'Konselor')
                 ->orWhere('jabatan', 'Paralegal');
         }

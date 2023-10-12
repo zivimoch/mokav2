@@ -80,7 +80,7 @@
 
         <table class="table" style="width:100%;">
             <tr>
-                <td colspan="4">1. Saya yang bertandatangan dibawah ini setuju / tidak setuju untuk melakukan penanganan atas diri saya / anak keluarga saya : </td>
+                <td colspan="4">{{ $persetujuan_template->konten }}</td>
             </tr>
             <tr>
                 <td style="width: 20%;">Nama Korban</td>
@@ -173,7 +173,7 @@
         <div class="col-md-4 align-self-center">
                 <label class="" for="">Tanda Tangan:</label>
                 <div id="sig" >
-                    <img src="{{ asset('img/tandatangan/ttd_spp/'.$persetujuan_isi->tandatangan) }}" alt="">
+                    <img src="{{ asset('img/tandatangan/ttd_klien/'.$persetujuan_isi->tandatangan) }}" alt="">
                 </div>
                 <div style="border: none; border-bottom: 2px solid black;">
                     {{ $persetujuan_isi->nama_penandatangan }}

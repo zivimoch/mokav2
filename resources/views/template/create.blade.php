@@ -99,9 +99,17 @@
                   <div id="mytoolbar" style="width: 1000px"></div>
                   <main>
                     <div class="centered">
+                      <input type="text" name="blank_template" id="blank_template_hidden" value="0" hidden>
+                      <input type="checkbox" class="btn-sm" 
+                      checked 
+                      data-bootstrap-switch 
+                      id="blank_template"
+                      data-on-text="Formatted"
+                      data-off-text="Blank"
+                      data-off-color="warning" 
+                      data-on-color="success">
                       <div class="row-editor">
-                        <textarea id="post_content" name="konten" class="form-control editor">
-                        </textarea>
+                        <textarea id="post_content" name="konten" class="form-control editor"></textarea>
                       </div>
                     </div>
                   </main>
@@ -121,7 +129,22 @@
 <script src="{{ asset('source/js/main.js') }}"></script>
 <script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
 <script src="{{ asset('vendor/tinymce4/tinymce.min.js') }}"></script>
+<script src="{{ asset('adminlte') }}/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
 <script>
+  $('#blank_template').on('switchChange.bootstrapSwitch', function(event, state) {
+      if (state) {
+          $('.row-editor').show();
+          $('#blank_template_hidden').val(0);
+      } else {
+          $('.row-editor').hide();
+          $('#blank_template_hidden').val(1);
+      }
+  });
+  
+  $("input[data-bootstrap-switch]").each(function(){
+    $(this).bootstrapSwitch('state', $(this).prop('checked'));
+  })
+
   //Initialize Select2 Elements
   $('.select2bs4').select2({
       theme: 'bootstrap4'

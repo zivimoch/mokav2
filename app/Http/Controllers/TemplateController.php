@@ -64,12 +64,12 @@ class TemplateController extends Controller
                 {
                     throw new Exception($validator->errors());
                 }
-            
             //Data Template
             $template = Template::create([
                 'nama_template' => $request->nama_template,
                 'pemilik' => $request->pemilik,
                 'konten' => json_encode($request->konten),
+                'blank_template' => $request->blank_template,
                 'created_by' => Auth::user()->id
             ]);
 

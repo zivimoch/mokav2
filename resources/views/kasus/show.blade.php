@@ -22,7 +22,7 @@
         height: 30px !important;
     }
 
-    #check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_monitoring, #check_terminasi, .warningTerminasi {
+    .akses_petugas, #check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_monitoring, #check_terminasi, .warningTerminasi {
         display: none;
     }
 </style>
@@ -45,10 +45,10 @@
 <section class="content">
 @if (Session::has('data'))
     {{-- ini ketika submit perubahan --}}
-    <input type="" id="perubahan" value="{{ Session::get('data') }}">
+    <input type="hidden" id="perubahan" value="{{ Session::get('data') }}">
 @elseif(Request::get('data'))
     {{-- ini untuk notifikasi ketika diklik redirect --}}
-    <input type="" id="perubahan" value="{{ Request::get('data') }}">
+    <input type="hidden" id="perubahan" value="{{ Request::get('data') }}">
 @endif
 <div class="container-fluid">
 <div class="row">
@@ -63,7 +63,7 @@
     </div>
 <div class="card-body box-profile">
 <div class="text-center">
-<img class="profile-user-img img-fluid img-circle" src="{{ asset('adminlte') }}/dist/img/user4-128x128.jpg" alt="User profile picture">
+<img class="profile-user-img img-fluid img-circle" src="{{ asset('adminlte') }}/dist/img/default-150x150.png" alt="User profile picture">
 </div>
 <h3 class="profile-username text-center">{{ $klien->nama }}</h3>
 <p class="text-muted text-center">({{ $klien->tanggal_lahir ? Carbon\Carbon::parse($klien->tanggal_lahir)->age : '' }}) {{ ucfirst($klien->jenis_kelamin) }}</p>
@@ -174,7 +174,7 @@
         </ul>
     <hr>
     @foreach ($kasus_terkait as $item)
-    <a href="#">
+    <a href="{{ route('kasus.show', $item->uuid) }}">
         <strong>{{ $item->no_klien }}</strong>
         <p class="text-muted">
             @php
@@ -228,7 +228,7 @@
         <li class="nav-item">
         <a class="nav-link" id="kasus-log-tab" data-toggle="pill" href="#kasus-log" role="tab" aria-controls="kasus-log" aria-selected="false">Log Activity</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item akses_petugas">
         <a class="nav-link {{ Request::get('tab') == 'settings' ? 'active' : '' }}" id="kasus-settings-tab" data-toggle="pill" href="#kasus-settings" role="tab" aria-controls="kasus-settings" aria-selected="false">Settings</a>
         </li>
         </ul>
@@ -258,7 +258,7 @@
                 @method('put')
                 <input type="hidden" name="uuid" value="{{ $pelapor->uuid }}">
                 <input type="hidden" name="data_update" value="pelapor">
-                <span style="float:right">
+                <span style="float:right" class="akses_petugas">
                     <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_pelapor" onclick="editdata('pelapor')">
                     <i class="fas fa-edit"></i> Edit
                     </a>
@@ -338,12 +338,14 @@
         </div>
         <div class="post clearfix" style="color:black">
             <b>B. IDENTITAS KLIEN</b>
+            {{-- id_klien_modal_agenda untuk modal agenda  --}}
+            <input type="hidden" id="id_klien_modal_agenda" value="{{ $klien->id }}">
             <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
             @csrf
             @method('put')
             <input type="hidden" name="uuid" value="{{ $klien->uuid }}">
             <input type="hidden" name="data_update" value="klien">
-            <span style="float:right">
+            <span style="float:right" class="akses_petugas">
                 <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_klien" onclick="editdata('klien')">
                 <i class="fas fa-edit"></i> Edit
                 </a>
@@ -355,7 +357,8 @@
                 <tr id="nama_klien">
                     <td style="width: 200px">Nama</td>
                     <td>:</td>
-                    <td><span class="data_klien">{{ $klien->nama }}</span> <input type="text" name="nama" value="{{ $klien->nama }}" class="input_klien"></td>
+                    {{-- nama_klien_modal_agenda untuk modal agenda  --}}
+                    <td><span class="data_klien">{{ $klien->nama }}</span> <input type="text" name="nama" value="{{ $klien->nama }}" class="input_klien" id="nama_klien_modal_agenda"></td>
                 </tr>
                 <tr id="nik_klien">
                     <td style="width: 200px">NIK</td>
@@ -544,7 +547,7 @@
             <input type="hidden" name="uuid" value="{{ $item_terlapor->uuid }}">
             <input type="hidden" name="data_update" value="terlapor">
             <b> Terlapor {{ $no_terlapor }}</b>
-            <span style="float:right">
+            <span style="float:right" class="akses_petugas">
                 <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor{{ $no_terlapor }}" onclick="editdata('terlapor{{ $no_terlapor }}')">
                 <i class="fas fa-edit"></i> Edit
                 </a>
@@ -726,7 +729,7 @@
             @method('put')
             <input type="hidden" name="uuid" value="{{ $kasus->uuid }}">
             <input type="hidden" name="data_update" value="kasus">
-            <span style="float:right">
+            <span style="float:right" class="akses_petugas">
                 <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_kasus" onclick="editdata('kasus')">
                 <i class="fas fa-edit"></i> Edit
                 </a>
@@ -828,7 +831,7 @@
             </table>
             </form>
         </div>
-        <div class="post clearfix" style="color:black">
+        {{-- <div class="post clearfix" style="color:black">
             <div class="row">
                 <div class="col-md-4 text-center">
                     <b>Penerima Pengaduan</b>
@@ -855,13 +858,13 @@
                     (..............................................)
                 </div>
             </div>
-        </div>
+        </div> --}}
         <br>
         <br>
-        <button type="button" class="btn btn-block btn-primary"><i class="fas fa-print"></i> Print Formulir</button>
+        <button type="button" class="btn btn-block btn-primary akses_petugas"><i class="fas fa-print"></i> Print Formulir</button>
         <br>
-        <div id="kolomPublicUrl"></div>
-        <button type="button" class="btn btn-block btn-primary" onclick="submitPublicURL('url-kasus')"><i class="fas fa-link"></i> Generate URL</button>
+        {{-- <div id="kolomPublicUrl" class="akses_petugas"></div>
+        <button type="button" class="btn btn-block btn-primary akses_petugas" onclick="submitPublicURL('url-kasus')"><i class="fas fa-link"></i> Generate URL</button> --}}
         </div>
         <div class="tab-pane {{ Request::get('tab') == 'kasus-asesmen' ? 'active' : '' }}" id="kasus-asesmen" role="tabpanel" aria-labelledby="kasus-asesmen-tab">
             
@@ -895,7 +898,7 @@
                 </div>
             </div>
             <div id="kolomAsesmen"></div>
-            @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Unit Reaksi Cepat']))
+            @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Unit Reaksi Cepat']) && $akses_petugas == 1)
             <button type="buttons" class="btn btn-block btn-default {{ Request::get('tambah-asesmen') == 1 ? 'hightlighting' : '' }}" id="modalAsesmen" data-toggle="modal" data-target="#tambahAsesmenModal"><i class="fas fa-plus"></i> Tambah Asesmen</button>
             @endif
         </div>
@@ -932,7 +935,7 @@
             </table>
         </div>
         <br>
-        @if (Auth::user()->jabatan == 'Manajer Kasus')
+        @if (Auth::user()->jabatan == 'Manajer Kasus' && $akses_petugas == 1)
         <div id="kolomMonitoring"></div>
         <button type="submit" class="btn btn-block btn-default" data-toggle="modal" data-target="#tambahMonitoringModal"><i class="fas fa-plus"></i> Tambah Laporan Monitoring</button>
         @endif
@@ -983,7 +986,7 @@
             </table>
             </div>
             <br>
-            @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan']))
+            @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan']) && $akses_petugas == 1)
             {{-- <div class="col-md-12">
                 <div class="alert alert-danger">
                 <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
@@ -997,7 +1000,7 @@
                         <select name="user_id" class="select2bs4" style="width: 100%;">
                             <option>Silahkan pilih petugas</option>
                             @foreach ($users as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                <option value="{{ $item->id }}">{{ $item->name }} ({{ $item->jabatan }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -1042,15 +1045,21 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <input type="text" id="link-form-{{ $item->uuid }}" value="{{ route('persetujuan.persetujuan_pelayanan', $item->uuid) }}" hidden>
-                                    <button type="button" class="btn btn-primary" onclick="copyClipboard('{{ $item->uuid }}')"><i class="fas fa-link"></i></button>
+                                    @if ($item->deleted_at)
+                                        [Expired]
+                                    @else
+                                        <input type="text" id="link-form-{{ $item->uuid }}" value="{{ route('persetujuan.show', $item->uuid) }}" hidden>
+                                        <button type="button" class="btn btn-primary" onclick="copyClipboard('{{ $item->uuid }}')"><i class="fas fa-link"></i></button>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
                 </div>
+                *Link akan kadaluarsa setelah 2 hari
                 <br>
+                @if ($akses_petugas == 1)                    
                 <form action="{{ route('persetujuan.create', $klien->uuid) }}" method="POST">
                     @csrf
                     <div class="row {{ Request::get('tambah-persetujuan') == 1 ? 'hightlighting' : '' }}"  style="padding : 15px">
@@ -1067,6 +1076,7 @@
                         </div>
                     </div>
                 </form>
+                @endif
         </div>
 
 
@@ -1219,6 +1229,7 @@
 </div>
 </section>
 
+@if ($akses_petugas == 1)
 <!-- Modal Riwayat Kejadian-->
 <div class="modal fade" id="riwayatModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -1261,7 +1272,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label><span class="text-danger">*</span>Jam</label>
-                    <input type="time" class="form-control required-field-riwayat" id="jam">
+                    <input type="text" class="form-control required-field-riwayat time-picker" id="jam">
                     <div class="invalid-feedback" id="valid-jam_mulai">
                         Jam Kejadian wajib diisi.
                     </div>
@@ -1280,6 +1291,7 @@
         </div>
     </div>
 </div>
+@endif
 
 <!-- Modal Tambah Asesmen-->
 <div class="modal fade" id="tambahAsesmenModal" role="dialog" aria-hidden="true">
@@ -1631,7 +1643,7 @@
         loadMonitoring();
         loadTerminasi();
         loadCatatan();
-        loadPublicUrl();
+        // loadPublicUrl();
         check_kelengkapan_data('{{ $klien->id }}');
         check_kelengkapan_persetujuan_spv('{{ $klien->id }}');
         check_kelengkapan_spp('{{ $klien->id }}');
@@ -1644,7 +1656,7 @@
         $('#kelengkapan_kasus').html(kelengkapan_kasus);
 
         $("input[data-bootstrap-switch]").each(function(){
-        $(this).bootstrapSwitch('state', $(this).prop('checked'));
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
         })
 
         //Initialize Select2 Elements
@@ -1760,7 +1772,7 @@
                 if (row.created_by == {{ Auth::user()->id }}) {
                     return '<div  class="icheck-primary d-inline ml-2"><input class="checkboxSelesai '+selesaiLayanan+'" type="checkbox" value="" id="todoCheck'+row.uuid+'" '+checked+' '+disabled+' onclick="showModalAgenda(`'+row.tanggal_mulai+'`,`'+row.uuid+'`)"><label for="todoCheck'+row.uuid+'"></label></div>';
                 } else {
-                    return '<div  class="icheck-primary d-inline ml-2" onclick="alert(`Anda tidak memiliki hak akses untuk menginputkan laproan tindak lanjut untuk agenda ini. Minta seseorang yang ada di agenda untuk mentag/menambahkan anda.`)"><input type="checkbox" value=""><label for="todoCheck'+row.uuid+'"></label></div>';
+                    return '<div  class="icheck-primary d-inline ml-2" onclick="alert(`Anda tidak memiliki hak akses untuk menginputkan laproan tindak lanjut untuk agenda ini. Minta seseorang yang ada di agenda untuk mentag/menambahkan anda.`)"><input type="checkbox" value="" '+checked+'><label for="todoCheck'+row.uuid+'"></label></div>';
                 }
             }
         }
@@ -1900,7 +1912,7 @@
     
 
     $('#tabelRiwayat').DataTable({
-      "ordering": true,
+      "ordering": false,
       "processing": true,
       "serverSide": true,
       "responsive": false, 
@@ -2464,9 +2476,12 @@
                     $('#tambahCatatanModal').scrollTop(0);
 
                     // kirim realtime notifikasi
-                    socket.emit('notif_count', {
-                        receiver_id : response.notif_receiver
-                    });
+                    notif_receiver = response.notif_receiver;
+                    if (notif_receiver.length > 0) {
+                        socket.emit('notif_count', {
+                            receiver_id : response.notif_receiver
+                        });
+                    }
                 }
             },
             error: function (response){
@@ -2594,7 +2609,11 @@
                 data = response.data;
                 i=1;
                 data.forEach(e => {
-                    $('#kolomPublicUrl').prepend("<div class=\"input-group\"> <input type=\"text\" class=\"form-control\" id=\"link-form-{{ route('publicurl.show', '') }}/"+e.uuid+"\" value=\"{{ route('publicurl.show', '') }}/"+e.uuid+"\" tabindex=\"-1\" aria-hidden=\"true\" style=\"background: #eaebeb;font-size: 14px;font-weight: bold;\"> <div class=\"input-group-append\"> <button class=\"input-group-text pointer\" onclick=\"copyClipboard('{{ route('publicurl.show','') }}/"+e.uuid+"')\"> <i class=\"fa fa-fw\" aria-hidden=\"true\"></i> </button> </div> </div>");
+                    console.log(e.kadaluarsa);
+                    const originalDate = new Date(e.created_at);
+                    originalDate.setDate(originalDate.getDate() + 2);
+                    const formattedDate = originalDate.toLocaleString();
+                    $('#kolomPublicUrl').prepend("<div class=\"input-group\"> <input type=\"text\" class=\"form-control\" id=\"link-form-{{ route('publicurl.show', '') }}/"+e.uuid+"\" value=\"{{ route('publicurl.show', '') }}/"+e.uuid+"\" tabindex=\"-1\" aria-hidden=\"true\" style=\"background: #eaebeb;font-size: 14px;font-weight: bold;\"> <div class=\"input-group-append\"> <button class=\"input-group-text pointer\" onclick=\"copyClipboard('{{ route('publicurl.show','') }}/"+e.uuid+"')\"> <i class=\"fa fa-fw\" aria-hidden=\"true\"></i> </button> </div> </div><span style=\"color:red;font-size:15px\">Link ini berlaku hingga tanggal : "+formattedDate+"</span>");
                     i++;
                 });
             },
@@ -2898,6 +2917,16 @@ function check_kelengkapan_terminasi(klien_id) {
         }
         });
 }
+
+$(function(){
+    $('.dt-buttons').addClass('akses_petugas');
+    
+    if ('{{ $akses_petugas }}' == 1) {
+        $('.akses_petugas').css('display', 'inline-flex');
+    }else{
+        $('.akses_petugas').css('display', 'none');
+    }
+})
 </script>
 {{-- include modal agenda --}}
 @include('agenda.modal')

@@ -85,7 +85,7 @@
       <div class="modal-body">
         <div class="box-profile">
           <div class="text-center">
-          <img class="profile-user-img img-fluid img-circle" src="http://127.0.0.1:8000/adminlte/dist/img/user4-128x128.jpg" alt="User profile picture">
+          <img class="profile-user-img img-fluid img-circle" src="http://127.0.0.1:8000/adminlte/dist/img/default-150x150.png" alt="User profile picture">
           </div>
           <h3 class="profile-username text-center" id="nama"></h3>
           <p class="text-muted text-center">(<span id="usia"></span>) <span id="jenis_kelamin"></span></p>

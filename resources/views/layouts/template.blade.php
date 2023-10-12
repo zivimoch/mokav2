@@ -44,7 +44,12 @@
 
 </head>
 <body class="hold-transition layout-top-nav">
-<!-- Site wrapper -->
+{{-- ubah ini dan style wrapper saat production  --}}
+<div class="alert alert-danger" style="position: fixed; z-index:10000; width:100%;">
+  <center><b>MOKA.V2 (Alpha). Akses terbatas</b></center>
+</div>
+<div class="alert alert-danger" style="width:100%;"></div>
+  <!-- Site wrapper -->
 <div class="wrapper">
   <!-- Navbar -->
   @include('layouts.navbar')

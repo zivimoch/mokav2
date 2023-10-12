@@ -50,10 +50,7 @@
                   <h5>Jadwal Mas Fajar</h5>
 
                   <p>Selamat Pagi Bapak Ibu, 
-
-                    Izin menyampaikan ulang jadwal kegiatan harian untuk hari ini.
-                    
-                    Atas perhatian dan kerjasamanya diucapkan terima kasih lorem ipsum amet...</p>
+                    Izin menyampaikan jadwal harian. Sekarang jadwal harian seluruh petugas PPPA Provinsi DKI Jakarta dapat dilihat di MOKA! </p>
                 </div>
               </div>
               <!-- /.card-body -->
@@ -84,7 +81,7 @@
               <!-- Add the bg color to the header using any of the bg-* classes -->
               <div class="widget-user-header bg-warning">
                 <div class="widget-user-image">
-                  <img class="img-circle elevation-2" src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" alt="User Avatar">
+                  <img class="img-circle elevation-2" src="https://adminlte.io/themes/v3/dist/img/default-150x150.png" alt="User Avatar">
                 </div>
                 <!-- /.widget-user-image -->
                 <h3 class="widget-user-username">{{ Auth::user()->name }}</h3>
@@ -94,24 +91,22 @@
                 <ul class="nav flex-column">
                   <li class="nav-item">
                     <a href="{{ route('kasus') }}" class="nav-link">
-                      Kasus Yang Ditangani <span class="float-right badge bg-primary">31</span>
+                      Kasus Yang Ditangani <span class="float-right badge bg-primary">NAN</span>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="{{ route('notifikasi') }}" class="nav-link">
-                      Jumlah Agenda Kegiatan <span class="float-right badge bg-success">12</span>
+                      Jumlah Agenda Kegiatan <span class="float-right badge bg-success">NAN</span>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="{{ route('notifikasi') }}" class="nav-link">
-                      Skor Survey Kepuasan Layanan <span class="float-right badge bg-warning">5</span>
+                      Skor Survey Kepuasan Layanan <span class="float-right badge bg-warning">5 / 5</span>
                     </a>
                   </li>
                 </ul>
               </div>
             </div>
-
-          
             <!-- TO DO List -->
             <div class="card card-primary">
               <div class="card-header">
@@ -258,7 +253,7 @@ function loadAgenda(tanggal_mulai, id) {
       agenda_semua = response.data.agenda_semua;
       y = 1;
       agenda_semua.forEach(e => {
-        $('#agendaSemua'+id).append('<li>'+y+'. <span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span></li>');
+        $('#agendaSemua'+id).append('<li>'+y+'. <span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span><br>Petugas : '+e.petugas+'</li>');
         $('#agendaSemuaHeading'+id).html('Agenda Seluruh Petugas ('+y+' agenda)')
         y++;
       });

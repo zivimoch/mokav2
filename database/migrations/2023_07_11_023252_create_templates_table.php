@@ -19,6 +19,7 @@ class CreateTemplatesTable extends Migration
             $table->string('nama_template')->nullable();
             $table->string('pemilik')->nullable();
             $table->text('konten')->nullable()->default(NULL);
+            $table->boolean('blank_template')->default(0);
             $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();

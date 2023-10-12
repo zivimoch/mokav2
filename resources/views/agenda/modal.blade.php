@@ -506,5 +506,11 @@
     $('#ajaxModel').modal('show'); 
     $('#ajaxModelDetail').modal('hide'); 
     
+    if ($("#nama_klien_modal_agenda").length > 0) {
+      // jika di halaman show klien maka tambah agenda untuk klien di show ini
+      $('#penjadwalan_layanan').val(1);
+      $("#list_klien").show();
+      $("#klien_id_select").append('<option value="'+$("#id_klien_modal_agenda").val()+'" selected>'+$("#nama_klien_modal_agenda").val()+'</option>');
+    }
    }
 </script>

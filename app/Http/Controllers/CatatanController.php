@@ -84,7 +84,8 @@ class CatatanController extends Controller
                         ->whereNull('a.deleted_at')
                         ->whereNull('b.deleted_at')
                         ->pluck('b.id');
-
+            
+            $notif_receiver = [];
             foreach ($petugas as $key => $value) {
                 NotifHelper::push_notif(
                     $value , //receiver_id

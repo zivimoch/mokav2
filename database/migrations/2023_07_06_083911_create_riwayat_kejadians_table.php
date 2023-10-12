@@ -19,7 +19,7 @@ class CreateRiwayatKejadiansTable extends Migration
             $table->integer('klien_id');
             $table->date('tanggal')->nullable();
             $table->time('jam')->nullable();
-            $table->string('keterangan');
+            $table->text('keterangan');
             $table->integer('created_by');
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();

@@ -12,6 +12,7 @@ use App\Models\Klien;
 use App\Models\KondisiKhusus;
 use App\Models\Pasal;
 use App\Models\Pelapor;
+use App\Models\PersetujuanIsi;
 use App\Models\Petugas;
 use App\Models\ProgramPemerintah;
 use App\Models\Terlapor;
@@ -99,8 +100,13 @@ class FormPenerimaPengaduan extends Controller
                 'tanggal_pelaporan' => 'required',
                 'tanggal_kejadian' => 'required'
                 ]);
-                if (Auth::user()->jabatan == 'Penerima Pengaduan') {
-                    $created_by = Auth::user()->id; 
+                
+                if (isset(Auth::user()->id)) {
+                    if (Auth::user()->jabatan == 'Penerima Pengaduan') {
+                        $created_by = Auth::user()->id; 
+                    }else{
+                        $created_by = NULL;
+                    }
                 }else{
                     $created_by = NULL;
                 }
@@ -151,14 +157,14 @@ class FormPenerimaPengaduan extends Controller
             foreach ($klien as $key => $value) {
                 if ($request->tandatangan[$key]) {
                     //simpan tandatangan
-                    $folderPath = public_path('img/tandatangan/ttd_verif_data/');
+                    $folderPath = public_path('img/tandatangan/ttd_klien/');
                     $image_parts = explode(";base64,", $request->tandatangan[$key]);
                     $image_type_aux = explode("image/", $image_parts[0]);
                     $image_type = $image_type_aux[1];
                     $image_base64 = base64_decode($image_parts[1]);
                     $file = uniqid() . '.'.$image_type;
                     $filepath = $folderPath . $file;
-                    file_put_contents($filepath, $image_base64);
+                    file_put_contents($filepath, $image_base64);                
                 } else {
                     $file = NULL;
                 }
@@ -197,9 +203,7 @@ class FormPenerimaPengaduan extends Controller
                         'no_lp' => isset($request->no_lp[$key]) ? $request->no_lp[$key]  : NULL,  
                         'pengadilan_negri' => isset($request->pengadilan_negri[$key]) ? $request->pengadilan_negri[$key]  : NULL,  
                         'isi_putusan' => isset($request->isi_putusan[$key]) ? $request->isi_putusan[$key] : NULL,  
-                        'lpsk' => isset($request->lpsk_klien[$key]) ? $request->lpsk_klien[$key] : NULL,  
-                        'tandatangan' => $file,  
-                        'nama_penandatangan' => isset($request->nama_penandatangan[$key]) ? $request->nama_penandatangan[$key] : NULL,  
+                        'lpsk' => isset($request->lpsk_klien[$key]) ? $request->lpsk_klien[$key] : NULL,   
                         'desil' => isset($request->desil_klien[$key]) ? $request->desil_klien[$key] : NULL,  
                         'created_by' => $created_by  
                     ]);
@@ -253,6 +257,24 @@ class FormPenerimaPengaduan extends Controller
                         $proses['pasal'] = Pasal::create(['klien_id' => $klien->id, 'value' => $pasal[$key6]]);
                     }
                 }
+                // buat persetujuan
+                $proses_persetujuan = PersetujuanIsi::create([
+                    'klien_id'   => $klien->id, 
+                    'persetujuan_template_id' => 1,
+                    // 1 adalah persetujuan verif data 
+                    'created_by'   => $created_by
+                ]);
+                                
+                if ($file) {
+                    $nama_penandatangan = isset($request->nama_penandatangan[$key]) ? $request->nama_penandatangan[$key] : NULL;
+                    // simpan tandatangan
+                    PersetujuanIsi::find($proses_persetujuan->id)
+                                    ->update(['tandatangan' => $file, 
+                                    'nama_penandatangan' => $nama_penandatangan,
+                                    'no_telp' => NULL,
+                                    'alamat' => NULL
+                                ]);
+                }
 
             // ===========================================================================================
             //Proses read, push notif & log activity ////////////////////////////////////////////////////
@@ -288,7 +310,6 @@ class FormPenerimaPengaduan extends Controller
                 }
             }
             /////////////////////////////////////////////////////////////////////////////////////////////
-
             }
 
             //Data Terlapor
@@ -324,12 +345,14 @@ class FormPenerimaPengaduan extends Controller
             }
 
             //Data Petugas
-            if (Auth::user()->jabatan == 'Penerima Pengaduan') {
-                Petugas::create([
-                    'klien_id' => $klien->id,
-                    'user_id' => $created_by,
-                    'created_by' => $created_by
-                ]);
+            if (isset(Auth::user()->id)) {
+                if (Auth::user()->jabatan == 'Penerima Pengaduan') {
+                    Petugas::create([
+                        'klien_id' => $klien->id,
+                        'user_id' => $created_by,
+                        'created_by' => $created_by
+                    ]);
+                }
             }
 
             //return response
@@ -360,12 +383,13 @@ class FormPenerimaPengaduan extends Controller
             $data_update = $request->data_update ;
             if ($data_update == 'pelapor') {
                 $data = Pelapor::where('uuid', $request->uuid)->first();
-                $klien_id = $data->kasus_id;
+                $kasus = Kasus::find($data->kasus_id);
+                // ambil salah 1 klien aja di kasus ini, nanti akan dipakai kasus_id nya
+                $klien = Klien::where('kasus_id', $kasus->id)->first();
             }
             if ($data_update == 'klien') {
                 $data = Klien::where('uuid', $request->uuid)->first();
-                $klien_id = $data->kasus_id;
-                //proses update kondisi_khusus klien di tabel kondisi_khusus
+                // proses update kondisi_khusus klien di tabel kondisi_khusus
                 KondisiKhusus::where('klien_id', $data->id)->delete();
                 //simpan kondisi_khusus
                 if (isset($request->kondisi_khusus)) {
@@ -375,18 +399,22 @@ class FormPenerimaPengaduan extends Controller
                     }
                 }
 
+                $klien = Klien::where('id', $data->id)->first();
+
                 $request->request->remove('kondisi_khusus');
                 $request->request->remove('difabel_type');
             }
             if ($data_update == 'kasus') {
                 $data = Kasus::where('uuid', $request->uuid)->first();
-                $klien_id = $data->id;
+                // ambil salah 1 klien aja di kasus ini, nanti akan dipakai kasus_id nya
+                $klien = Klien::where('kasus_id', $data->id)->first();
             }
             if ($data_update == 'terlapor') {
                 $data = Terlapor::where('uuid', $request->uuid)->first();
-                $klien_id = $data->kasus_id;
+                $kasus = Kasus::find($data->kasus_id);
+                // ambil salah 1 klien aja di kasus ini, nanti akan dipakai kasus_id nya
+                $klien = Klien::where('kasus_id', $kasus->id)->first();
             }
-            $klien = Klien::where('id', $klien_id)->first();
             //hapus value data_update
             $request->request->remove('data_update');
             $data->update($request->all());
@@ -411,6 +439,15 @@ class FormPenerimaPengaduan extends Controller
                 $petugas = $petugas->where('c.klien_id', $klien->id);
             }
             $petugas = $petugas->pluck('d.id');
+
+            if (count($petugas) == 0) {
+                // jika tidak ada satupun petugas maka ini action untuk Petugas Terima Kasus LaporKBG
+                Petugas::create([
+                    'klien_id' => $klien->id,
+                    'user_id' => Auth::user()->id,
+                    'created_by'=>  Auth::user()->id
+                ]);
+            }
             
             for ($i=0; $i < (count($perubahan) - 3); $i++) {
                 // 3 adalah meta data lain yg bukan variabel inti

@@ -108,8 +108,13 @@ class DokumenController extends Controller
                         ->where('a.uuid', $request->uuid)
                         ->groupBy('a.id')
                         ->first();
-
-        return view('dokumen.create')
+        if ($template->blank_template == 1) {
+            $view = 'dokumen.create_blank';
+        } else {
+            $view = 'dokumen.create';
+        }
+        
+        return view($view)
                     ->with('template', $template);
     }
 

@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/', '/login');
 Route::get('formpenerimapengaduan', [FormPenerimaPengaduan::class, 'index'])->name('formpenerimapengaduan.index');
 Route::post('formpenerimapengaduan', [FormPenerimaPengaduan::class, 'store'])->name('formpenerimapengaduan.store');
-Route::get('persetujuan/persetujuan_pelayanan/{uuid}', [PersetujuanController::class, 'persetujuan_pelayanan'])->name('persetujuan.persetujuan_pelayanan');
+Route::get('persetujuan/show/{uuid}', [PersetujuanController::class, 'show'])->name('persetujuan.show');
 Route::post('persetujuan', [PersetujuanController::class, 'store'])->name('persetujuan.store');
 Route::get('persetujuan/donepelayanan/{uuid}', [PersetujuanController::class, 'donepelayanan'])->name('persetujuan.done');
 Route::get('blankpage', [DashboardController::class, 'blankpage'])->name('blankpage');

@@ -149,7 +149,7 @@
  function validasi(id) {
   // alert('apakah checked : '+$('#checkboxSuccess'+id).is(':checked'));
   // toastr.success('Berhasil update data', 'Event');
-  alert(id);
+  alert('Fiture is Under Construction\n'+id);
  }
     
     $('#tabelAgenda').DataTable({
@@ -243,7 +243,7 @@
       ],
       "columnDefs": [
         { className: "bg-light", "targets": [ 0 ] },
-        { className: "cursor-disabled", "targets": [ 3 ] }
+        { className: "cursor-disabled", "targets": [ 3, 4 ] }
       ],
       "pageLength": 25,
       "lengthMenu": [
@@ -264,7 +264,7 @@
 
 
        $('#tabelAgenda tbody').on( 'click', 'tr', function (evt) {
-        if ($(evt.target).closest('td').index() !== 3) {
+        if (($(evt.target).closest('td').index() !== 3) && ($(evt.target).closest('td').index() !== 4)) {
         $("#success-message").hide();
         $("#error-message").hide();
         showModalAgenda('',this.id);

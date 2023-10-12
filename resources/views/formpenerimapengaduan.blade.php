@@ -119,8 +119,10 @@
         @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('response') }}
-            @if (Auth::user()->jabatan == "Penerima Pengaduan")
-                <a href="{{ route('kasus.show', session('uuid')) }}" class="btn btn-success">Lihat Kasus</a>
+            @if (isset(Auth::user()->id))
+              @if (Auth::user()->jabatan == "Penerima Pengaduan")
+                  <a href="{{ route('kasus.show', session('uuid')) }}" class="btn btn-success">Lihat Kasus</a>
+              @endif
             @endif
         </div>
         @endif
@@ -635,6 +637,7 @@ $(document).ready(function () {
       var tabId = $(this).parent().attr("href");
       $(this).parent().parent().remove(); // remove the tab title
       $(tabId).remove(); // remove the tab content
+      $("#kolomTTD_"+newTabId).html(''); // remove ttd
     });
 
     // Add Tab Function Terlapor
@@ -733,7 +736,7 @@ $(document).ready(function () {
         );
       });
     // tanda tangan verifikasi data klien
-    $('#ttd_klien').append("<div class=\"col-md-4 align-self-center\"> <label class=\"\" for=\"\">Tanda tangan untuk klien <span id=\"nama_klien_ttd_"+newTabId+"\"></span> :</label> <br/> <div id=\"sig_"+newTabId+"\" class=\"sig\" > <button onclick=\"hapusTTD('sig_"+newTabId+"','signature_"+newTabId+"')\" type=\"button\" id=\"clear\" class=\"btn btn-danger btn-sm\" style=\"position: absolute\">Hapus</button> </div> <textarea id=\"signature_"+newTabId+"\" name=\"tandatangan[]\" style=\"display: none\"></textarea> <br/> <input type=\"text\" name=\"nama_penandatangan[]\" class=\"form-control\" style=\"border: none; border-bottom: 2px solid black;\" placeholder=\"Nama Lengkap\" /> </div>");
+    $('#ttd_klien').append("<div class=\"col-md-4 align-self-center\" id=\"kolomTTD_"+newTabId+"\"> <label class=\"\" for=\"\">Tanda tangan untuk klien <span id=\"nama_klien_ttd_"+newTabId+"\"></span> :</label> <br/> <div id=\"sig_"+newTabId+"\" class=\"sig\" > <button onclick=\"hapusTTD('sig_"+newTabId+"','signature_"+newTabId+"')\" type=\"button\" id=\"clear\" class=\"btn btn-danger btn-sm\" style=\"position: absolute\">Hapus</button> </div> <textarea id=\"signature_"+newTabId+"\" name=\"tandatangan[]\" style=\"display: none\"></textarea> <br/> <input type=\"text\" name=\"nama_penandatangan[]\" class=\"form-control\" style=\"border: none; border-bottom: 2px solid black;\" placeholder=\"Nama Lengkap\" /> </div>");
     $('#sig_'+newTabId).signature({syncField: '#signature_'+newTabId, syncFormat: 'PNG'});
     $("canvas").attr("width", 295);
   }

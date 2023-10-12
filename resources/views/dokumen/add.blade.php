@@ -26,7 +26,16 @@
     <div class="col-md-4 target" data-toggle="tooltip" data-placement="bottom" title="{{ $item->nama_template }}">
         <a href="{{ route('dokumen.create') }}?uuid={{ $item->uuid }}">
             <div class="info-box" style="text-decoration: inherit;color: black;">
-            <span class="info-box-icon bg-info"><i class="far fa-copy"></i></span>
+            <span class="info-box-icon bg-info">
+                <i class="far fa-copy"></i>
+            </span>
+            @if ($item->blank_template == 1)
+            <div class="ribbon-wrapper ribbon-xs">
+                <div class="ribbon bg-warning text-xs warningTerminasi">
+                Blank
+                </div>
+            </div>
+            @endif
             <div class="info-box-content">
             <span class="info-box-text" style="font-size:15px">{{ $item->nama_template }}</span>
             <span class="info-box-number" style="margin-top: -5px; font-size:13px">{{ $item->pemilik }}</span>

@@ -11,7 +11,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard</li>
+              <li class="breadcrumb-item active">Monitoring</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -22,6 +22,32 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              
+              <div class="card card-danger direct-chat direct-chat-primary">
+                <div class="card-header">
+                <h3 class="card-title"></h3>
+                <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+                </button>
+                </div>
+                </div>
+                
+                <div class="card-body" style="display: block;">
+                  <center>
+                    <img src="{{ asset('img/underconstruction.gif') }}" style="width:50%">
+                    <br>
+                    <b style="font-size:60px">[UNDER CONSTRUCTION]</b>
+                  </center>
+                </div>
+                
+                </div>
+              <!-- /.card -->
+            </div>
+          </div>
+
             <div class="row">
               <div class="col-md-6">
                 

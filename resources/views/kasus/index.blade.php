@@ -17,6 +17,45 @@
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
+
+    <!-- Main content -->
+    @if ((Auth::user()->jabatan == 'Penerima Pengaduan') || (Auth::user()->supervisor_id == 0))
+    <section class="content">
+        <div class="container-fluid">
+          <div class="card">
+              <div class="card-header">
+              <h3 class="card-title">Lapor KBG (Laporan masuk dari aplikasi Lapor KBG)</h3>
+              </div>
+              
+              <div class="card-body" style="overflow-x: scroll">
+              <table id="tabelLaporKBG" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
+              <thead>
+              <tr>
+              <th>Tgl Pelaporan</th>
+              <th>Nama</th>
+              <th>Kategori Klien</th>
+              <th>Pengaduan</th>
+              <th>Status Terkahir</th>
+              </tr>
+              </thead>
+              <tbody>
+              </tbody>
+              <tfoot>
+              <tr>
+              <th>Tgl Pelaporan</th>
+              <th>Nama</th>
+              <th>Kategori Klien</th>
+              <th>Pengaduan</th>
+              <th>Status</th>
+              </tr>
+              </tfoot>
+              </table>
+              </div>
+              
+              </div>
+        </div><!-- /.container-fluid -->
+      </section>
+      @endif
     
     <!-- Main content -->
     <section class="content">
@@ -81,7 +120,7 @@
       </div>
       <div class="card-body box-profile">
       <div class="text-center">
-      <img class="profile-user-img img-fluid img-circle" src="{{ asset('adminlte') }}/dist/img/user4-128x128.jpg" alt="User profile picture">
+      <img class="profile-user-img img-fluid img-circle" src="{{ asset('adminlte') }}/dist/img/default-150x150.png" alt="User profile picture">
       </div>
       <h3 class="profile-username text-center" id="nama"></h3>
       <p class="text-muted text-center"> (<span id="usia"></span>) <span id="jenis_kelamin"></span></p>
@@ -172,6 +211,55 @@
 
 <script>
     $(function () {
+    $('#tabelLaporKBG').DataTable({
+      "ordering": true,
+      "processing": true,
+      "serverSide": true,
+      "responsive": false, 
+      "lengthChange": false, 
+      "autoWidth": false,
+      "ajax": "/kasus?laporkbg=1",
+      'createdRow': function( row, data, dataIndex ) {
+          $(row).attr('id', data.uuid);
+      },
+      "columns": [
+        {"data": "tanggal_pelaporan_formatted"},
+        {"data": "nama"},
+        {
+            "mData": "status",
+            "mRender": function (data, type, row) {
+              dob = new Date(row.tanggal_lahir);
+              var today = new Date(row.tanggal_pelaporan);
+              var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
+
+              if (row.jenis_kelamin == 'laki-laki') {
+                return 'Anak Laki-laki'
+              }else if (age >= 18) {
+                return 'Dewasa';
+              }else{
+                return 'Anak Perempuan';
+              }
+            }
+        },
+        {"data": "petugas"},
+        {
+            "mData": "jenis_kelamin",
+            "mRender": function (data, type, row) {
+              return '<span class="badge bg-primary">'+row.status+'</span>';
+            }
+        }
+      ],
+      "pageLength": 25,
+      "lengthMenu": [
+          [10, 25, 50, 100, -1],
+          ['10 rows', '25 rows', '50 rows', '100 rows','All'],
+      ],
+      "dom": 'Blfrtip', // Blfrtip or Bfrtip
+      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print"]
+      }).buttons().container().appendTo('#tabelLaporKBG_wrapper .col-md-6:eq(0)');
+
+      $('#tabelLaporKBG_filter').css({'float':'right','display':'inline-block; background-color:black'});
+
     $('#tabelKasus').DataTable({
       "ordering": true,
       "processing": true,
@@ -223,7 +311,7 @@
       $('#tabelKasus_filter').css({'float':'right','display':'inline-block; background-color:black'});
     });
 
-    $('#tabelKasus tbody').on('click', 'tr', function () {
+    $('#tabelLaporKBG tbody').on('click', 'tr', function () {
       $.get(`/kasus/show/`+this.id, function (data) {
           dob = new Date(data.tanggal_lahir);
           var today = new Date();
@@ -251,14 +339,50 @@
           
           //munculkan tombol
           $('#buttons').html('');
-          if (data.petugas == null && '{{ Auth::user()->jabatan }}' == 'Penerima Pengaduan') {
+          if ('{{ Auth::user()->jabatan }}' == 'Penerima Pengaduan') {
             $('#buttons').append('<button type="button" class="btn btn-success btn-block" id="terima" onclick="terima_kasus(`'+data.uuid+'`)"><i class="fa fa-check"></i> Terima Kasus</button>');
-          }else{
-            $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="window.location.assign(`'+"{{route('kasus.show', '')}}"+"/"+data.uuid+'`)"><i class="fa fa-info-circle"></i> Detail Kasus</button>');
           }
-          if ('{{ Auth::user()->jabatan }}' == 'Manajer Kasus' || '{{ Auth::user()->jabatan }}' == 'Penerima Pengaduan') {
+          $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="window.location.assign(`'+"{{route('kasus.show', '')}}"+"/"+data.uuid+'`)"><i class="fa fa-info-circle"></i> Detail Kasus</button>');
+          if ('{{ Auth::user()->jabatan }}' == 'Manajer Kasus' || '{{ Auth::user()->jabatan }}' == 'Penerima Pengaduan' || '{{ Auth::user()->supervisor_id }}' == 0) {
               $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
           }
+          
+          $("#overlay").hide();
+        });
+    });
+
+    $('#tabelKasus tbody').on('click', 'tr', function () {
+      $.get(`/kasus/show/`+this.id, function (data) {
+        dob = new Date(data.tanggal_lahir);
+        var today = new Date();
+        var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
+
+        $('#nama').html(data.nama);
+        $('#usia').html(age);
+        $('#jenis_kelamin').html(data.jenis_kelamin);
+        $('#no_klien').html(data.no_klien);
+        $('#status').html(data.status);
+        $('#ajaxModal').modal('show');
+
+        $('#check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_monitoring, #check_terminasi, .warningTerminasi').hide();
+        
+        check_kelengkapan_data(data.id);
+        check_kelengkapan_persetujuan_spv(data.id);
+        check_kelengkapan_spp(data.id);
+        check_kelengkapan_asesmen(data.id);
+        check_kelengkapan_perencanaan(data.id);
+        check_kelengkapan_monitoring(data.id);
+        check_kelengkapan_terminasi(data.id);
+        kelengkapan_kasus = 0;
+        kelengkapan_identifikasi = 0;
+        $('#kelengkapan_kasus').html(kelengkapan_kasus);
+          
+         //munculkan tombol
+        $('#buttons').html('');
+        $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="window.location.assign(`'+"{{route('kasus.show', '')}}"+"/"+data.uuid+'`)"><i class="fa fa-info-circle"></i> Detail Kasus</button>');
+        if ('{{ Auth::user()->jabatan }}' == 'Manajer Kasus' || '{{ Auth::user()->jabatan }}' == 'Penerima Pengaduan' || '{{ Auth::user()->supervisor_id }}' == 0) {
+            $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
+        }
           
           $("#overlay").hide();
         });
@@ -278,6 +402,7 @@
             success: function( response ) {
               $("#overlay").hide();
               $('#ajaxModal').modal('hide');
+              $('#tabelLaporKBG').DataTable().ajax.reload();
               $('#tabelKasus').DataTable().ajax.reload();
             }
         });
@@ -289,6 +414,9 @@
             type: "GET",
             cache: false,
             success: function (response){
+                // nol kan dulu persentasenya 
+                $('.persen_data').css('width','0%');
+                // update persentase
                 jml_null_kasus = response.nullKasus;
                 jml_null_klien = response.nullKlien;
                 jml_null_pelapor = response.nullPelapor;
@@ -304,7 +432,7 @@
                 alert("Error");
                 console.log(response);
             }
-            });
+        });
     }
 
     function check_kelengkapan_persetujuan_spv(klien_id) {
@@ -404,6 +532,9 @@
             type: "GET",
             cache: false,
             success: function (response){
+                // nol kan dulu persentasenya 
+                $('.persen_layanan').css('width','0%');
+                // update persentase
                 persentase = (response / jml_perencanaan) * 100
                 persentase = persentase.toFixed(2);
                 $('.persen_title_layanan').html(persentase);

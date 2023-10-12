@@ -11,34 +11,38 @@ use App\Models\PersetujuanItem;
 use App\Models\PersetujuanTemplate;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Validator;
 
 class PersetujuanController extends Controller
 {
-    public function persetujuan_pelayanan($uuid)
+    public function show(Request $request, $uuid)
     {
-        $persetujuan_isi = PersetujuanIsi::where('uuid', $uuid)->first();
-        $persetujuan_template = PersetujuanTemplate::where('id', $persetujuan_isi->persetujuan_template_id)->first();
-        $persetujuan_item = PersetujuanItem::where('persetujuan_template_id', $persetujuan_template->id)
-                            ->where('parent_id', 0)
-                            ->with('children')
-                            ->get();
+        try {
+            $persetujuan_isi = PersetujuanIsi::where('uuid', $uuid)->first();
+            $persetujuan_template = PersetujuanTemplate::where('id', $persetujuan_isi->persetujuan_template_id)->first();
+            $persetujuan_item = PersetujuanItem::where('persetujuan_template_id', $persetujuan_template->id)
+                                ->where('parent_id', 0)
+                                ->with('children')
+                                ->get();
 
-        if ($persetujuan_isi->tandatangan != null) {
-            return redirect('persetujuan/donepelayanan/'.$uuid);
+            if ($persetujuan_isi->tandatangan != null) {
+                return redirect('persetujuan/donepelayanan/'.$uuid);
+            }
+
+            $klien = Klien::where('id', $persetujuan_isi->klien_id)->first();
+
+            return view('persetujuan.show')
+                    ->with('persetujuan_template', $persetujuan_template)
+                    ->with('persetujuan_item', $persetujuan_item)
+                    ->with('persetujuan_isi', $persetujuan_isi)
+                    ->with('klien', $klien);
+        } catch (Exception $e){
+            return response()->json(['message' => $e->getMessage()]);
+            die();
         }
-
-        $klien = Klien::where('id', $persetujuan_isi->klien_id)->first();
-        return view('persetujuan.pelayanan')
-                ->with('persetujuan_item', $persetujuan_item)
-                ->with('klien', $klien);
-    }
-
-    public function persetujuan_terminasi()
-    {
-        return view('persetujuan.terminasi');
     }
 
     public function create($uuid, Request $request)
@@ -54,7 +58,6 @@ class PersetujuanController extends Controller
 
                 $klien = Klien::where('uuid', $uuid)->first();
                 $persetujuan_template = PersetujuanTemplate::where('uuid', $request->persetujuan_template_uuid)->first();
-
                 //create persetujuan
                 $proses = PersetujuanIsi::create([
                     'klien_id'   => $klien->id, 
@@ -111,19 +114,21 @@ class PersetujuanController extends Controller
                 'setuju' => [],
                 'tidak_setuju' => [],
             ];
-            if (count($request->statement) > 0) {
-                foreach ($request->statement as $key => $value) {
-                    if ($value == 1) {
-                        $statement['setuju'][] = $key;
-                    }
-                    if ($value == 0) {
-                        $statement['tidak_setuju'][] = $key;
+            if (isset($request->statement)) {
+                if (count($request->statement) > 0) {
+                    foreach ($request->statement as $key => $value) {
+                        if ($value == 1) {
+                            $statement['setuju'][] = $key;
+                        }
+                        if ($value == 0) {
+                            $statement['tidak_setuju'][] = $key;
+                        }
                     }
                 }
             }
 
             //simpan tandatangan
-            $folderPath = public_path('img/tandatangan/ttd_spp/');
+            $folderPath = public_path('img/tandatangan/ttd_klien/');
             $image_parts = explode(";base64,", $request->tandatangan);
             $image_type_aux = explode("image/", $image_parts[0]);
             $image_type = $image_type_aux[1];
@@ -158,6 +163,8 @@ class PersetujuanController extends Controller
                     ->whereNull('a.deleted_at')
                     ->whereNull('b.deleted_at')
                     ->pluck('b.id');
+
+            $notifjson = NULL;
             foreach ($mk as $key => $value) {
                 NotifHelper::push_notif(
                     $value , //receiver_id
@@ -216,8 +223,89 @@ class PersetujuanController extends Controller
         $klien = Klien::where('id', $persetujuan_isi->klien_id)->first();
 
         return view('persetujuan.donepelayanan',)
-                ->with('persetujuan_isi', $persetujuan_isi)
-                ->with('persetujuan_item', $persetujuan_item)
-                ->with('klien', $klien);
+                    ->with('persetujuan_template', $persetujuan_template)
+                    ->with('persetujuan_item', $persetujuan_item)
+                    ->with('persetujuan_isi', $persetujuan_isi)
+                    ->with('klien', $klien);
+    }
+
+    public function isi_persetujuan_data($uuid)
+    {
+        //data klien 
+       $klien = DB::table('klien as a')
+                ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan, e.difabel_type, f.kondisi_khusus'))
+                ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
+                ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
+                ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
+                ->leftJoin(DB::raw('(SELECT klien_id, GROUP_CONCAT(" ", value) as difabel_type FROM difabel_type GROUP BY klien_id) as e'), 'a.id', 'e.klien_id')
+                ->leftJoin(DB::raw('(SELECT klien_id, GROUP_CONCAT(" ", value) as kondisi_khusus FROM kondisi_khusus GROUP BY klien_id) as f'), 'a.id', 'f.klien_id')
+                ->where('a.uuid', $uuid)
+                ->groupBy('a.id')
+                ->first();
+
+        //data kasus 
+        $kasus = DB::table('kasus as a')
+            ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan'))
+            ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
+            ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
+            ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
+            ->where('a.id', $klien->kasus_id)
+            ->first();
+        //data pelapor
+        $pelapor = DB::table('pelapor as a')
+            ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan'))
+            ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
+            ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
+            ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
+            ->where('a.kasus_id', $klien->kasus_id)
+            ->first();
+        //data terlapor
+        $terlapor = DB::table('terlapor as a')
+            ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan'))
+            ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
+            ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
+            ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
+            ->where('a.kasus_id', $klien->kasus_id)
+            ->get();
+
+        $pelapor_tanggal_lahir = $pelapor->tanggal_lahir ? date('d M Y', strtotime($pelapor->tanggal_lahir)) : "";
+        $isi = '
+            <b>A. IDENTITAS PELAPOR</b>
+            <table class="table table-bottom table-sm">
+            <tr>
+                <td style="width: 200px">Nama</td>
+                <td>:</td>
+                <td>'.$pelapor->nama.'</td>
+            </tr>
+            <tr>
+                <td style="width: 200px">NIK</td>
+                <td>:</td>
+                <td>'.$pelapor->nik.'</td>
+            </tr>
+            <tr>
+                <td style="width: 200px">Tempat/Tgl Lahir</td>
+                <td>:</td>
+                <td>'.$pelapor->tempat_lahir.', '.$pelapor_tanggal_lahir.'('. $pelapor->tanggal_lahir ? Carbon::parse($pelapor->tanggal_lahir)->age.' tahun' : "".')
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 200px">Alamat</td>
+                <td>:</td>
+                <td>'.$pelapor->alamat.'<b>Provinsi</b> '.$pelapor->provinsi.' <b>Kota</b> '.$pelapor->kota.' <b>Kelurahan</b> '.$pelapor->kelurahan.'
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 200px">No Telp</td>
+                <td>:</td>
+                <td>'.$pelapor->no_telp.'</td>
+            </tr>
+            <tr>
+                <td style="width: 200px">Hubungan dengan klien</td>
+                <td>:</td>
+                <td>'.$pelapor->hubungan_pelapor.'
+                </td>
+            </tr>
+        </table>';
+        return $isi;
     }
 }
