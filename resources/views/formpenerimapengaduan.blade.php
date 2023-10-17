@@ -98,9 +98,12 @@
 </head>
 
 <body>
+@if (isset(Auth::user()->id))
+  <a href="{{ route('dashboard') }}"><- Kembali Ke MOKA</a>
+@endif
 <h1 style="margin:45px auto 30px auto;" class="text-center">LAPOR KEKERASAN BERBASIS GENDER</h1>
-<div class="row wrap"><div class="col-lg-12">
-
+<div class="row wrap">
+  <div class="col-lg-12">
     <div id='progress'><div id='progress-complete'></div></div>
         @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show" role="alert">

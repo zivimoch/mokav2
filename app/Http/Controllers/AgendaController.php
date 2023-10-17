@@ -359,11 +359,13 @@ class AgendaController extends Controller
                         $url = url('/kinerja/detail?tahun='.$tahun.'&bulan='.$bulan.'&user_id='.$value.'&row-agenda='.$proses->uuid.'&kode='.$kode.'&type_notif='.$type_notif.'&agenda_id='.$proses->id);
                         $kirim_ke_diri = 1;
                         $message_log = Auth::user()->name.' membuat agenda untuk '.$petugas->name;
-                        if (!(in_array($value, $petugas_baru))) {
+                        if (!(in_array($value, $petugas_baru)) && isset($request->uuid)) {
                             // jika id petugas yang sedang dilooping tidak ada di array petugas baru maka jangan kirim notif
+                            // dan jika sifatnya update bukan add
                             $send_notif = 0;
                             $send_log = 0;
                         }
+                        // dd(!(in_array($value, $petugas_baru)));
                         // untuk kirim realtime notifikasi
                         if ($value != Auth::user()->id) {
                             $notif_receiver[] = 'user_'.$value;
@@ -389,6 +391,7 @@ class AgendaController extends Controller
                         $send_notif = 0;
                         $send_log = 0;
                     }
+
                     if ($send_notif) {
                         // jika perlu kirim notif maka kirim
                         NotifHelper::push_notif(
@@ -422,6 +425,7 @@ class AgendaController extends Controller
                     $send_log = 1;
                 }
             }
+            
             if ($request->jam_selesai) {
                 // jika petugas sudah membuat tindak lanjut maka tasknya (T9) selesai
                 NotifHelper::read_notif(

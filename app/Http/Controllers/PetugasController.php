@@ -34,7 +34,7 @@ class PetugasController extends Controller
                          ->leftJoin('petugas as b', 'b.user_id', 'a.id')
                          ->whereNull('a.deleted_at')
                          ->whereNull('b.deleted_at')
-                         ->orderby('b.created_at','asc')
+                         ->groupBy('a.id')
                          ->select('a.id','a.name');
              if ($request->klien_id != null) {
                  $data = $data->where('b.klien_id', $request->klien_id);
@@ -45,8 +45,8 @@ class PetugasController extends Controller
                         ->leftJoin('petugas as b', 'b.user_id', 'a.id')
                         ->whereNull('a.deleted_at')
                         ->whereNull('b.deleted_at')
-                        ->orderby('b.created_at','asc')
-                        ->select('a.id','a.name')
+                         ->groupBy('a.id')
+                         ->select('a.id','a.name')
                         ->where('a.name', 'like', '%' .$search . '%');
             if ($request->klien_id != null) {
                 $data = $data->where('b.klien_id', $request->klien_id);
