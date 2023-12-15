@@ -74,7 +74,7 @@
         </div>
         <div class="form-group" id="list_klien">
           <label>Pilih Klien</label>
-          <select class="select2" data-placeholder="Pilih nama" style="width: 100%;" id="klien_id_select" onchange="load_select2_petugas()"></select>
+          <select class="select2" data-placeholder="Pilih nama" style="width: 100%" id="klien_id_select" onchange="load_select2_petugas()"></select>
         </div>
         <div class="form-group">
           <label>Tags <br><span style="font-size: 12px">*jika tidak ada nama anda maka agenda tidak tersimpan di akun anda</span></label>
