@@ -1,0 +1,140 @@
+/* Calendar Header */
+.year-header {
+    background: rgb(248, 241, 241);
+    text-align: center;
+    position: relative;
+    color: #fff;
+    border-top-left-radius: 3px;
+}
+
+.year-header span {
+    font-size: 20px;
+    line-height: 40px;
+    color: #000;
+}
+
+.left-button,
+.right-button {
+    cursor: pointer;
+    width: 50px;
+    color: #6e6d6d !important;
+    font-size: 14px !important;
+}
+
+/* input dialog */
+.dialog {
+    z-index: 5;
+    background: #343a40;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    left: 0;
+    display: none;
+}
+.event-date {
+    border-color: #343a40;
+    background: #343a40;
+    color: #fff;
+}
+.event-date:after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    content: "";
+    background: #ffc107;
+    border: 1px solid white;
+}
+
+.event-date.active-date {
+    background: transparent;
+    border: none;
+}
+
+.active-date {
+    color: #fff;
+}
+.active-date:before {
+    background: #343a40;
+}
+/*  Dates table */
+.table-date {
+    cursor: default;
+    color: #ffffff;
+    height: 26px;
+    width: 26px;
+    font-size: 15px;
+    padding: 10px;
+    line-height: 26px;
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    -webkit-transition: all 250ms;
+    -o-transition: all 250ms;
+    transition: all 250ms;
+    position: relative;
+    z-index: 0;
+}
+.table-date:before {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    content: "";
+    margin: 0 auto;
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.days-table,
+.dates-table,
+.months-table {
+    border-collapse: separate;
+    text-align: center;
+}
+
+.day {
+    height: 26px;
+    width: 26px;
+    padding: 0 10px;
+    line-height: 26px;
+    border: 2px solid transparent;
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #000;
+}
+
+.month {
+    cursor: default;
+    height: 26px;
+    width: 26px;
+    padding: 0 2px;
+    padding-top: 10px;
+    line-height: 26px;
+    text-transform: uppercase;
+    font-size: 15px;
+    -webkit-transition: all 250ms;
+    -o-transition: all 250ms;
+    transition: all 250ms;
+}
+
+.active-month {
+    font-weight: 700;
+    color: #343a40;
+}
+
+.month:hover {
+    color: #343a40;
+}
+.w-100 {
+    width: 100% !important;
+}
