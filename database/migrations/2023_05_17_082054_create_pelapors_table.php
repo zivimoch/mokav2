@@ -18,7 +18,6 @@ class CreatePelaporsTable extends Migration
             $table->string('uuid');
             $table->integer('kasus_id');
             $table->char('nik')->nullable();
-<<<<<<< HEAD
             $table->string('nama')->nullable();
             $table->string('tempat_lahir')->nullable();
             $table->date('tanggal_lahir')->nullable();
@@ -40,18 +39,6 @@ class CreatePelaporsTable extends Migration
             $table->string('status_pendidikan')->nullable();
             $table->string('pendidikan')->nullable();
             $table->char('no_telp')->nullable();
-=======
-            $table->string('nama');
-            $table->string('tempat_lahir')->nullable();
-            $table->date('tanggal_lahir')->nullable();
-            $table->integer('provinsi_id')->nullable();
-            $table->integer('kotkab_id')->nullable();
-            $table->integer('kecamatan_id')->nullable();
-            $table->string('kelurahan')->nullable();
-            $table->text('alamat')->nullable();
-            $table->char('no_telp')->nullable();
-            $table->string('hubungan_pelapor')->nullable();
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             $table->integer('desil')->nullable();
             $table->integer('created_by')->nullable();
             $table->timestamps();

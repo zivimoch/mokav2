@@ -17,7 +17,6 @@ class CreateKasusesTable extends Migration
             $table->id();
             $table->string('uuid');
             $table->string('no_reg')->nullable();
-<<<<<<< HEAD
             $table->string('sumber_rujukan')->nullable();
             $table->string('media_pengaduan');
             $table->string('sumber_informasi')->nullable();
@@ -30,20 +29,6 @@ class CreateKasusesTable extends Migration
             $table->char('kecamatan_id')->nullable();
             $table->char('kelurahan_id')->nullable();
             $table->text('alamat')->nullable();
-=======
-            $table->date('tanggal_pelaporan');
-            $table->date('tanggal_kejadian');
-            $table->string('tempat_kejadian');
-            $table->string('media_pengaduan');
-            $table->string('sumber_rujukan')->nullable();
-            $table->string('sumber_informasi');
-            $table->text('deskripsi');
-            $table->integer('provinsi_id');
-            $table->integer('kotkab_id');
-            $table->integer('kecamatan_id');
-            $table->string('kelurahan');
-            $table->text('alamat');
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();
