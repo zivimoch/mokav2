@@ -1,7 +1,10 @@
 @extends('layouts.template')
 @section('content')
+<<<<<<< HEAD
 <!-- daterange picker -->
 <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/daterangepicker/daterangepicker.css">
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
@@ -9,6 +12,7 @@
           <div class="col-sm-6">
             <h1 class="m-0"><i class="nav-icon fas fa-search"></i> Kasus</h1>
           </div><!-- /.col -->
+<<<<<<< HEAD
           <div class="col-sm-6 text-right">
             <input type="checkbox" class="btn-xs" id="kontainerwidth"
             {{ Auth::user()->settings_kontainer_width == 'normal' ? 'checked' : '' }}
@@ -18,12 +22,21 @@
                   data-off-color="default" 
                   data-on-color="default">
           </div>
+=======
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+          </div><!-- /.col -->
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
 
     <!-- Main content -->
+<<<<<<< HEAD
     @if (in_array(Auth::user()->jabatan, ['Penerima Pengaduan', 'Super Admin', 'Tenaga Ahli', 'Kepala Instansi', 'Tim Data']))
     <section class="content">
       <div class="container-fluid">
@@ -68,6 +81,43 @@
             </div>
         </div>
       </div>
+=======
+    @if ((Auth::user()->jabatan == 'Penerima Pengaduan') || (Auth::user()->supervisor_id == 0))
+    <section class="content">
+        <div class="container-fluid">
+          <div class="card">
+              <div class="card-header">
+              <h3 class="card-title">Lapor KBG (Laporan masuk dari aplikasi Lapor KBG)</h3>
+              </div>
+              
+              <div class="card-body" style="overflow-x: scroll">
+              <table id="tabelLaporKBG" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
+              <thead>
+              <tr>
+              <th>Tgl Pelaporan</th>
+              <th>Nama</th>
+              <th>Kategori Klien</th>
+              <th>Pengaduan</th>
+              <th>Status Terkahir</th>
+              </tr>
+              </thead>
+              <tbody>
+              </tbody>
+              <tfoot>
+              <tr>
+              <th>Tgl Pelaporan</th>
+              <th>Nama</th>
+              <th>Kategori Klien</th>
+              <th>Pengaduan</th>
+              <th>Status</th>
+              </tr>
+              </tfoot>
+              </table>
+              </div>
+              
+              </div>
+        </div><!-- /.container-fluid -->
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       </section>
       @endif
     
@@ -78,6 +128,10 @@
             {{-- <div class="card-header">
             <h3 class="card-title">DataTable with default features</h3>
             </div> --}}
+<<<<<<< HEAD
+=======
+            
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             <div class="card-body" style="overflow-x: scroll">
             <table id="tabelKasus" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
             <thead>
@@ -87,7 +141,11 @@
             <th>Nama</th>
             <th>Kategori Klien</th>
             <th>Pengaduan</th>
+<<<<<<< HEAD
             <th>Status Terakhir</th>
+=======
+            <th>Status Terkahir</th>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             </tr>
             </thead>
             <tbody>
@@ -99,7 +157,11 @@
             <th>Nama</th>
             <th>Kategori Klien</th>
             <th>Pengaduan</th>
+<<<<<<< HEAD
             <th>Status Terakhir</th>
+=======
+            <th>Status</th>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             </tr>
             </tfoot>
             </table>
@@ -145,6 +207,7 @@
       <div class="card" style="margin-top:-30px; margin-bottom:0px">
           <div id="accordionKelengkapan" style="margin-bottom:-15px">
               <div class="card card-light">
+<<<<<<< HEAD
                 <div class="card-header" data-toggle="collapse" data-target="#collapseKelengkapan" aria-expanded="true" aria-controls="collapseKelengkapan" style="cursor: pointer;">
                   <h3 class="card-title">
                       <b>Kelengkapan Kasus (<span id="kelengkapan_kasus"></span>/6) </b>
@@ -155,12 +218,22 @@
                     </button>
                   </div>
                 </div>
+=======
+              <div class="card-header">
+              <h4 class="card-title w-100">
+              <a class="d-block w-100" data-toggle="collapse" href="#collapseKelengkapan">
+              <b>Kelengkapan Kasus (<span id="kelengkapan_kasus"></span>/6) </b>
+              </a>
+              </h4>
+              </div>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
               <div id="collapseKelengkapan" class="collapse show" data-parent="#accordionKelengkapan">
               <div class="card-body">
                   <ol style="padding:15px; margin :-25px 0px -20px 0px">
                       <li>
                           Identifikasi <i class="fa fa-check" id="check_identifikasi"></i>
                           <ul style="margin-left: -25px">
+<<<<<<< HEAD
                             <li style="color: blue; cursor: pointer; font-weight:bold" onclick="alert('Field yang dibutuhkan untuk diisi :\n1. Data Kasus : \nMedia Pengagduan, Sumber Informasi, Tanggal Pelaporan, Tanggal Kejadian, Kategori Lokasi, Ringkasan, TKP\n2. Data Pelapor :\n Nama Lengkap, Jenis Kelamin\n3. Data Korban :\nNama Lengkap, Tempat Lahir, Tanggal Lahir, Jenis Kelamin, Alamat KTP, Alamat Domisili, Agama, Status Kawin, Pekerjaan, Kewargangaraan, Status Pendidikan, Pendidikan, Hubungan dengan Pelapor\n4. Data Terlapor :\nNama Lengkap, Tempat Lahir, Tanggal Lahir, Jenis Kelamin, Agama, Pekerjaan, Kewarganegaraan, Status Pendidikan, Pendidikan')">
                                 Kelengkapan Data (<span id="persen_title_data"></span>%) <i class="far fa-check-circle"></i>
                                 <div class="progress progress-xs">
@@ -168,6 +241,15 @@
                                     </div>
                                 </div>
                             </li>
+=======
+                              <li>
+                                  Data Kasus (<span id="persen_title_data"></span>%)
+                                  <div class="progress progress-xs">
+                                      <div class="progress-bar bg-success progress-bar-striped" id="persen_data" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                      </div>
+                                  </div>
+                              </li>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                               <li>
                                   Persetujuan Supervisor <i class="far fa-check-circle" id="check_persetujuan_spv"></i>
                               </li>
@@ -180,10 +262,17 @@
                           Asesmen <i class="fa fa-check" id="check_asesmen"></i>
                       </li>
                       <li>
+<<<<<<< HEAD
                           Perencanaan Intervensi <i class="fa fa-check" id="check_perencanaan"></i>
                       </li>
                       <li>
                           Pelaksanaan Intervensi  <i class="fa fa-check" id="check_pelaksanaan"></i>
+=======
+                          Perencanaan Layanan <i class="fa fa-check" id="check_perencanaan"></i>
+                      </li>
+                      <li>
+                          Pelaksanaan Layanan  <i class="fa fa-check" id="check_pelaksanaan"></i>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                           <br>
                           (<span class="persen_title_layanan"></span>%)
                           <div class="progress progress-xs">
@@ -192,7 +281,11 @@
                           </div>
                       </li>
                       <li>
+<<<<<<< HEAD
                           Pemantauan & Evaluasi <i class="fa fa-check" id="check_pemantauan"></i>
+=======
+                          Monitoring <i class="fa fa-check" id="check_monitoring"></i>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                       </li>
                       <li>
                           Terminasi <i class="fa fa-check" id="check_terminasi"></i>
@@ -202,6 +295,7 @@
               </div>
               </div>
           </div>
+<<<<<<< HEAD
 
           <div style="margin-bottom:-15px">
             <div class="card card-light">
@@ -222,6 +316,8 @@
             </div>
             </div>
         </div>
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         </div>
       </div>
       <div class="modal-footer" id="buttons">
@@ -230,6 +326,7 @@
   </div>
 </div>
 
+<<<<<<< HEAD
 <!-- Modal Filter Kasus-->
 <div class="modal fade" id="modalFilterKasus" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -353,6 +450,10 @@
 
 
 {{-- DataTable --}}
+=======
+    {{-- DataTable --}}
+
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -365,6 +466,7 @@
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<<<<<<< HEAD
 <!-- InputMask -->
 <script src="{{ asset('adminlte') }}/plugins/moment/moment.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/inputmask/jquery.inputmask.min.js"></script>
@@ -381,13 +483,23 @@
   );
     $(function () {
       $('#tabelLaporKBG').DataTable({
+=======
+
+<script>
+    $(function () {
+    $('#tabelLaporKBG').DataTable({
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       "ordering": true,
       "processing": true,
       "serverSide": true,
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
+<<<<<<< HEAD
       "ajax": "{{ env('APP_URL') }}/kasus?laporkbg=1",
+=======
+      "ajax": "/kasus?laporkbg=1",
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
       },
@@ -424,6 +536,7 @@
           ['10 rows', '25 rows', '50 rows', '100 rows','All'],
       ],
       "dom": 'Blfrtip', // Blfrtip or Bfrtip
+<<<<<<< HEAD
       "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print"],
       "initComplete": function(settings, json) {
         // Check if DataTables API is available
@@ -442,19 +555,29 @@
             console.error("DataTable initialization failed.");
         } 
       }
+=======
+      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print"]
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       }).buttons().container().appendTo('#tabelLaporKBG_wrapper .col-md-6:eq(0)');
 
       $('#tabelLaporKBG_filter').css({'float':'right','display':'inline-block; background-color:black'});
 
     $('#tabelKasus').DataTable({
       "ordering": true,
+<<<<<<< HEAD
       "order": [],
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       "processing": true,
       "serverSide": true,
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
+<<<<<<< HEAD
       "ajax": "{{ env('APP_URL') }}/kasus?basis_tanggal=" + $('#filter1BasisTanggal').val() + "&basis_wilayah=" + $('#filter1BasisWilayah').val() + "&wilayah=" + $('#filter1Wilayah').val() + "&tanggal=" + $('#filter1Tanggal').val() + "&arsip=" + $('input[name="filter1Arsip"]:checked').val() + "&anda=" + $('input[name="filter1Anda"]:checked').val(),
+=======
+      "ajax": "/kasus",
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
       },
@@ -492,6 +615,7 @@
           ['10 rows', '25 rows', '50 rows', '100 rows','All'],
       ],
       "dom": 'Blfrtip', // Blfrtip or Bfrtip
+<<<<<<< HEAD
       "buttons": ["pageLength", "copy", "excel", "pdf", {
                 className: "btn-info",
                 text: 'Filter',
@@ -502,13 +626,20 @@
                   // $('#tabelKasus').DataTable().ajax.url("{{ env('APP_URL') }}/kasus?arsip=" + $('#arsip').val()).load();
                   }
               }]
+=======
+      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print"]
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       }).buttons().container().appendTo('#tabelKasus_wrapper .col-md-6:eq(0)');
 
       $('#tabelKasus_filter').css({'float':'right','display':'inline-block; background-color:black'});
     });
 
     $('#tabelLaporKBG tbody').on('click', 'tr', function () {
+<<<<<<< HEAD
       $.get(`{{ env('APP_URL') }}/kasus/show/`+this.id, function (data) {
+=======
+      $.get(`/kasus/show/`+this.id, function (data) {
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
           dob = new Date(data.tanggal_lahir);
           var today = new Date();
           var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
@@ -520,14 +651,22 @@
           $('#status').html(data.status);
           $('#ajaxModal').modal('show');
 
+<<<<<<< HEAD
           $('#check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_pemantauan, #check_terminasi, .warningTerminasi').hide();
+=======
+          $('#check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_monitoring, #check_terminasi, .warningTerminasi').hide();
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
           
           check_kelengkapan_data(data.id);
           check_kelengkapan_persetujuan_spv(data.id);
           check_kelengkapan_spp(data.id);
           check_kelengkapan_asesmen(data.id);
           check_kelengkapan_perencanaan(data.id);
+<<<<<<< HEAD
           check_kelengkapan_pemantauan(data.id);
+=======
+          check_kelengkapan_monitoring(data.id);
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
           check_kelengkapan_terminasi(data.id);
           kelengkapan_kasus = 0;
           kelengkapan_identifikasi = 0;
@@ -538,6 +677,7 @@
           if ('{{ Auth::user()->jabatan }}' == 'Penerima Pengaduan') {
             $('#buttons').append('<button type="button" class="btn btn-success btn-block" id="terima" onclick="terima_kasus(`'+data.uuid+'`)"><i class="fa fa-check"></i> Terima Kasus</button>');
           }
+<<<<<<< HEAD
           $('#buttons').append('<a href="' + "{{ route('kasus.show', '') }}" + '/' + data.uuid + '" class="btn btn-primary btn-block" id="detail"><i class="fa fa-info-circle"></i> Detail Kasus (Bisa New Tab)</a>');
           if ( data.no_klien == null && "{{ in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Super Admin']) }}") {
               $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
@@ -550,13 +690,23 @@
           listPetugas.forEach(e => {
             $('#listPetugas').append('<li>'+e.name+' ('+e.jabatan+')</li>')
           });
+=======
+          $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="window.location.assign(`'+"{{route('kasus.show', '')}}"+"/"+data.uuid+'`)"><i class="fa fa-info-circle"></i> Detail Kasus</button>');
+          if ('{{ Auth::user()->jabatan }}' == 'Manajer Kasus' || '{{ Auth::user()->jabatan }}' == 'Penerima Pengaduan' || '{{ Auth::user()->supervisor_id }}' == 0) {
+              $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
+          }
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
           
           $("#overlay").hide();
         });
     });
 
     $('#tabelKasus tbody').on('click', 'tr', function () {
+<<<<<<< HEAD
       $.get(`{{ env('APP_URL') }}/kasus/show/`+this.id, function (data) {
+=======
+      $.get(`/kasus/show/`+this.id, function (data) {
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         dob = new Date(data.tanggal_lahir);
         var today = new Date();
         var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
@@ -568,14 +718,22 @@
         $('#status').html(data.status);
         $('#ajaxModal').modal('show');
 
+<<<<<<< HEAD
         $('#check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_pemantauan, #check_terminasi, .warningTerminasi').hide();
+=======
+        $('#check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_monitoring, #check_terminasi, .warningTerminasi').hide();
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         
         check_kelengkapan_data(data.id);
         check_kelengkapan_persetujuan_spv(data.id);
         check_kelengkapan_spp(data.id);
         check_kelengkapan_asesmen(data.id);
         check_kelengkapan_perencanaan(data.id);
+<<<<<<< HEAD
         check_kelengkapan_pemantauan(data.id);
+=======
+        check_kelengkapan_monitoring(data.id);
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         check_kelengkapan_terminasi(data.id);
         kelengkapan_kasus = 0;
         kelengkapan_identifikasi = 0;
@@ -583,6 +741,7 @@
           
          //munculkan tombol
         $('#buttons').html('');
+<<<<<<< HEAD
         $('#buttons').append('<a href="' + "{{ route('kasus.show', '') }}" + '/' + data.uuid + '" class="btn btn-primary btn-block" id="detail"><i class="fa fa-info-circle"></i> Detail Kasus (Bisa New Tab)</a>');
         if ( data.no_klien == null && "{{ in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Super Admin']) }}") {
             $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
@@ -596,6 +755,12 @@
         listPetugas.forEach(e => {
           $('#listPetugas').append('<li><b>'+e.name+'</b> ('+e.jabatan+')</li>')
         });
+=======
+        $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="window.location.assign(`'+"{{route('kasus.show', '')}}"+"/"+data.uuid+'`)"><i class="fa fa-info-circle"></i> Detail Kasus</button>');
+        if ('{{ Auth::user()->jabatan }}' == 'Manajer Kasus' || '{{ Auth::user()->jabatan }}' == 'Penerima Pengaduan' || '{{ Auth::user()->supervisor_id }}' == 0) {
+            $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
+        }
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
           
           $("#overlay").hide();
         });
@@ -608,16 +773,23 @@
               uuid: uuid,
               created_by : '{{ Auth::user()->id }}', 
               data_update : 'klien', 
+<<<<<<< HEAD
               _token: '{{csrf_token()}}',
               _method:'PUT'
             },
             type:'POST',
+=======
+              _token: '{{csrf_token()}}'
+            },
+            type:'PUT',
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             dataType: 'json',
             success: function( response ) {
               $("#overlay").hide();
               $('#ajaxModal').modal('hide');
               $('#tabelLaporKBG').DataTable().ajax.reload();
               $('#tabelKasus').DataTable().ajax.reload();
+<<<<<<< HEAD
 
               // Update jumlah kasus laporKBG dalam badge
               if ($.fn.DataTable.isDataTable('#tabelLaporKBG')) {
@@ -634,21 +806,40 @@
               } else {
                   console.error("DataTable initialization failed.");
               } 
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             }
         });
     }
 
     function check_kelengkapan_data(klien_id) {
         $.ajax({
+<<<<<<< HEAD
             url: `{{ env('APP_URL') }}/check_kelengkapan_data/`+klien_id,
+=======
+            url: `/check_kelengkapan_data/`+klien_id,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "GET",
             cache: false,
             success: function (response){
                 // nol kan dulu persentasenya 
                 $('.persen_data').css('width','0%');
                 // update persentase
+<<<<<<< HEAD
                 $('#persen_title_data').html(response);
                 $('#persen_data').css('width', response+'%');
+=======
+                jml_null_kasus = response.nullKasus;
+                jml_null_klien = response.nullKlien;
+                jml_null_pelapor = response.nullPelapor;
+                total_null = jml_null_kasus.length + jml_null_klien.length + jml_null_pelapor.length;
+                total_all = parseInt(response.kolomKasus) + parseInt(response.kolomKlien) + parseInt(response.kolomPelapor);
+                total_isi = total_all - total_null;
+                persentase = (total_isi / total_all) * 100;
+                persentase = persentase.toFixed(2);
+                $('#persen_title_data').html(persentase);
+                $('#persen_data').css('width', persentase+'%');
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             },
             error: function (response){
                 alert("Error");
@@ -659,7 +850,11 @@
 
     function check_kelengkapan_persetujuan_spv(klien_id) {
         $.ajax({
+<<<<<<< HEAD
             url: `{{ env('APP_URL') }}/check_kelengkapan_persetujuan_spv/`+klien_id,
+=======
+            url: `/check_kelengkapan_persetujuan_spv/`+klien_id,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "GET",
             cache: false,
             success: function (response){
@@ -682,7 +877,11 @@
 
     function check_kelengkapan_spp(klien_id) {
         $.ajax({
+<<<<<<< HEAD
             url: `{{ env('APP_URL') }}/check_kelengkapan_spp/`+klien_id,
+=======
+            url: `/check_kelengkapan_spp/`+klien_id,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "GET",
             cache: false,
             success: function (response){
@@ -708,7 +907,11 @@
 
     function check_kelengkapan_asesmen(klien_id) {
         $.ajax({
+<<<<<<< HEAD
             url: `{{ env('APP_URL') }}/check_kelengkapan_asesmen/`+klien_id,
+=======
+            url: `/check_kelengkapan_asesmen/`+klien_id,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "GET",
             cache: false,
             success: function (response){
@@ -730,7 +933,11 @@
 
     function check_kelengkapan_perencanaan(klien_id) {
         $.ajax({
+<<<<<<< HEAD
             url: `{{ env('APP_URL') }}/check_kelengkapan_perencanaan/`+klien_id,
+=======
+            url: `/check_kelengkapan_perencanaan/`+klien_id,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "GET",
             cache: false,
             success: function (response){
@@ -750,7 +957,11 @@
 
     function check_kelengkapan_pelaksanaan(jml_perencanaan, klien_id) {
         $.ajax({
+<<<<<<< HEAD
             url: `{{ env('APP_URL') }}/check_kelengkapan_pelaksanaan/`+klien_id,
+=======
+            url: `/check_kelengkapan_pelaksanaan/`+klien_id,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "GET",
             cache: false,
             success: function (response){
@@ -774,14 +985,24 @@
             });
     }
 
+<<<<<<< HEAD
     function check_kelengkapan_pemantauan(klien_id) {
         $.ajax({
             url: `{{ env('APP_URL') }}/check_kelengkapan_pemantauan/`+klien_id,
+=======
+    function check_kelengkapan_monitoring(klien_id) {
+        $.ajax({
+            url: `/check_kelengkapan_monitoring/`+klien_id,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "GET",
             cache: false,
             success: function (response){
                 if (response > 0) {
+<<<<<<< HEAD
                     $('#check_pemantauan').show();
+=======
+                    $('#check_monitoring').show();
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     kelengkapan_kasus = kelengkapan_kasus + 1;
                     $('#kelengkapan_kasus').html(kelengkapan_kasus);
                 }
@@ -795,7 +1016,11 @@
 
     function check_kelengkapan_terminasi(klien_id) {
         $.ajax({
+<<<<<<< HEAD
             url: `{{ env('APP_URL') }}/check_kelengkapan_terminasi/`+klien_id,
+=======
+            url: `/check_kelengkapan_terminasi/`+klien_id,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "GET",
             cache: false,
             success: function (response){
@@ -815,6 +1040,7 @@
     }
 
     function hapus(uuid) {
+<<<<<<< HEAD
       if (confirm("Apakah anda yakin ingin menghapus kasus ini? Seluruh task & notifikasi terkait kasus ini akan dihapus juga.") == true) {
         let token   = $("meta[name='csrf-token']").attr("content");
         $.ajax({
@@ -823,6 +1049,15 @@
         cache: false,
         data: {
             _method:'DELETE',
+=======
+      if (confirm("Apakah anda yakin ingin menghapus kasus ini?") == true) {
+        let token   = $("meta[name='csrf-token']").attr("content");
+        $.ajax({
+        url: `/kasus/destroy/`+uuid,
+        type: "DELETE",
+        cache: false,
+        data: {
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             _token: token
         },
         success: function (response){
@@ -830,10 +1065,15 @@
                 console.log(response);
             }else{
                 $('#tabelKasus').DataTable().ajax.reload();
+<<<<<<< HEAD
                 $('#tabelLaporKBG').DataTable().ajax.reload();
                 $('#ajaxModal').modal('hide');
             }
             loadnotif();
+=======
+                $('#ajaxModal').modal('hide');
+            }
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         },
         error: function (response){
             setTimeout(function(){
@@ -848,6 +1088,7 @@
         });
       }
     }
+<<<<<<< HEAD
 
     function submitFilterKasus() {
       var basisTanggal = $('#filter1BasisTanggal').val();
@@ -864,6 +1105,8 @@
 
       $('#modalFilterKasus').modal('hide');
     }
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
   </script>
 {{-- 
 // alert('redirect ke : '+this.id);

@@ -6,6 +6,7 @@ use App\Models\Notifikasi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+<<<<<<< HEAD
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -16,6 +17,11 @@ class NotifikasiController extends Controller
         return view('notifikasi');
     }
 
+=======
+
+class NotifikasiController extends Controller
+{
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     public static function pull_notif()
     {   
         //tasks  
@@ -39,6 +45,7 @@ class NotifikasiController extends Controller
                         );
         return json_encode($data);
     }
+<<<<<<< HEAD
     
     public function pull_all(Request $request)
     {
@@ -54,4 +61,6 @@ class NotifikasiController extends Controller
         }
         return DataTables::of($data)->make(true);
     }
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 }

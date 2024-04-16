@@ -212,9 +212,14 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
 <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/south-street/jquery-ui.css" rel="stylesheet"> 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<<<<<<< HEAD
 <script type="text/javascript" src="{{ asset('source/js/jquery.signature.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="http://keith-wood.name/css/jquery.signature.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js" ></script>
+=======
+<script type="text/javascript" src="http://keith-wood.name/js/jquery.signature.js"></script>
+<link rel="stylesheet" type="text/css" href="http://keith-wood.name/css/jquery.signature.css">
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 
 <script src="{{ asset('/source/js/validation.js') }}"></script>
 

@@ -124,6 +124,21 @@ class RiwayatKejadianController extends Controller
             die();
         }
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     /**
      * Show the form for editing the specified resource.
      *

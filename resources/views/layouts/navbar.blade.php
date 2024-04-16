@@ -14,11 +14,15 @@
 
 @media  (max-width:960px) { .dropdown-menu { width: 360px !important; } }
 </style>
+<<<<<<< HEAD
 @if (Auth::user()->settings_navbar_bg_color == 'default')
   <nav class="main-header navbar navbar-expand-md navbar-black navbar-dark">
 @else
   <nav class="main-header navbar navbar-expand-md navbar-black navbar-dark" style="background-color: {{ Auth::user()->settings_navbar_bg_color }};">
 @endif
+=======
+<nav class="main-header navbar navbar-expand-md navbar-black navbar-dark">
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
   <div class="container">
     <a href="{{ route('dashboard') }}" class="navbar-brand">
       <img src="{{ asset('img') }}/logo-moka.png" alt="MOKA Logo" class="brand-image" style="opacity: .8; max-width:150px; border-radius: 50%;">
@@ -36,6 +40,7 @@
           <a href="{{ route('kasus') }}" class="nav-link"><i class="nav-icon fas fa-search"></i> Kasus</a>
         </li>
         {{-- <li class="nav-item">
+<<<<<<< HEAD
           <a href="{{ route('dokumen') }}" class="nav-link"><i class="nav-icon fas fa-file-alt"></i> Dokumen</a>
         </li> --}}
         @if (in_array(Auth::user()->jabatan, ['Super Admin', 'Sekretariat', 'Kepala Instansi']))
@@ -48,6 +53,13 @@
             <a href="{{ route('websettings') }}" class="nav-link"><i class="fas fa-cogs"></i> Web Settings</a>
           </li>
         @endif
+=======
+          <a href="{{ route('agenda') }}" class="nav-link"><i class="nav-icon far fa-calendar-alt"></i> Agenda</a>
+        </li>  --}}
+        <li class="nav-item">
+          <a href="{{ route('dokumen') }}" class="nav-link"><i class="nav-icon fas fa-file-alt"></i> Dokumen</a>
+        </li>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       </ul>
       <div class="btn-group">
         <a href="{{ route('formpenerimapengaduan.index') }}" class="btn btn-success btn-sm">
@@ -85,13 +97,18 @@
                       </div>
                   </div>
               </div>
+<<<<<<< HEAD
               <center style="margin-top: 10px;"><b><a href="{{ route('notifikasi') }}">Lihat semua notifikasi</a></b></center>
+=======
+              <center style="margin-top: 10px;"><b><a href="">Lihat semua notifikasi</a></b></center>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
           </div>
         </li>
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
                 <i class="far fa-user"></i> <i class="fa fa-caret-down"></i>
             </a>
+<<<<<<< HEAD
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
               <a href="{{ route('users.show', Auth::user()->uuid) }}" class="list-group-item list-group-item-action flex-column align-items-start"> 
                 <div class="d-flex"> 
@@ -134,6 +151,16 @@
                 </div> 
               </a>
               <a href="#" class="">
+=======
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+              <a href="#" class="dropdown-item">
+                {{ Auth::user()->name }} ({{ Auth::user()->jabatan }})
+              </a>
+              <a href="{{ route('kinerja.detail') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}&user_id={{ Auth::user()->id }}" class="dropdown-item">
+                Laporan Kinerja
+              </a>
+                <a href="#" class="">
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                   <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button style="width: 100%"
@@ -142,7 +169,11 @@
                       <i class="fas fa-arrow-alt-circle-right"></i> Logout
                     </button>
                 </form>
+<<<<<<< HEAD
               </a>
+=======
+                </a>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             </div>
         </li>
     </ul>

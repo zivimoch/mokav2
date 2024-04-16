@@ -149,6 +149,7 @@ class AsesmenController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+<<<<<<< HEAD
     public function update(Request $request)
     {
          try {
@@ -209,6 +210,11 @@ class AsesmenController extends Controller
                     ->with('response', $e->getMessage());
             die();
         }
+=======
+    public function update(Request $request, $id)
+    {
+        //
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     }
 
     /**
@@ -217,6 +223,7 @@ class AsesmenController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+<<<<<<< HEAD
     public function destroy($uuid)
     {
         try {
@@ -236,5 +243,10 @@ class AsesmenController extends Controller
             return response()->json(['message' => $e->getMessage()]);
             die();
         }
+=======
+    public function destroy($id)
+    {
+        //
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     }
 }

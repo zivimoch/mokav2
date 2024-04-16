@@ -28,7 +28,11 @@ class DokumenController extends Controller
         if($request->ajax()) {
             // ditampilkan di index dokumen
             $data = DB::table('dokumen as a')
+<<<<<<< HEAD
                         ->select(DB::raw('a.id, a.uuid, a.template_id, a.judul, a.konten, a.created_at, z.keyword, group_concat(b.id) as status, group_concat(d.tanggal_mulai) as tanggal_mulai, group_concat(d.jam_mulai) as jam_mulai, group_concat(c.tanggal_selesai) as tanggal_selesai, group_concat(c.jam_selesai) as jam_selesai, group_concat(f.name) as name, group_concat(e.nama) as nama_klien'))
+=======
+                        ->select(DB::raw('a.*, z.keyword, group_concat(b.id) as status, group_concat(d.tanggal_mulai) as tanggal_mulai, group_concat(d.jam_mulai) as jam_mulai, group_concat(c.tanggal_selesai) as tanggal_selesai, group_concat(c.jam_selesai) as jam_selesai, group_concat(f.name) as name, group_concat(e.nama) as nama_klien'))
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                         ->leftJoin('dokumen_tl as b', 'a.id', 'b.dokumen_id')
                         ->leftJoin(DB::raw('(
                             SELECT dokumen_id, GROUP_CONCAT(CONCAT(" "), keyword) AS keyword FROM dokumen_keyword GROUP BY dokumen_id) z'), 
@@ -41,7 +45,11 @@ class DokumenController extends Controller
                         ->leftJoin('klien as e', 'e.id', 'd.klien_id')
                         ->leftJoin('users as f', 'f.id', 'c.created_by')
                         ->whereNull('a.deleted_at')
+<<<<<<< HEAD
                         ->groupBy('a.id', 'a.uuid', 'a.template_id', 'a.judul', 'a.konten', 'z.keyword', 'a.created_at')
+=======
+                        ->groupBy('a.id')
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                         ->orderBy('a.created_at', 'DESC');
 
             if ($request->uuid) { //jika data ini untuk di halaman map klien digital
@@ -90,6 +98,7 @@ class DokumenController extends Controller
         $template = DB::table('template as a')
                         ->select('a.*', 'b.name')
                         ->leftJoin('users as b', 'a.created_by', 'b.id')
+<<<<<<< HEAD
                         ->whereNull('a.deleted_at')
                         ;
 
@@ -98,6 +107,10 @@ class DokumenController extends Controller
         }
 
         return view('dokumen.add')->with('template', $template->get());
+=======
+                        ->get();
+        return view('dokumen.add')->with('template', $template);
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     }
 
     /**
@@ -108,11 +121,19 @@ class DokumenController extends Controller
     public function create(Request $request)
     {
         $template = DB::table('template as a')
+<<<<<<< HEAD
                         ->select(DB::raw('a.id, a.uuid, a.nama_template, a.pemilik, a.konten, a.blank_template, a.created_at, a.updated_at, a.created_at, b.name, GROUP_CONCAT(c.keyword) as keyword'))
                         ->leftJoin('users as b', 'a.created_by', 'b.id')
                         ->leftJoin('template_keyword as c', 'a.id', 'c.template_id')
                         ->where('a.uuid', $request->uuid)
                         ->groupBy('a.id', 'a.uuid', 'a.nama_template', 'a.pemilik', 'a.konten', 'a.blank_template', 'a.created_at', 'a.updated_at', 'b.name')
+=======
+                        ->select(DB::raw('a.*, b.name, GROUP_CONCAT(c.keyword) as keyword'))
+                        ->leftJoin('users as b', 'a.created_by', 'b.id')
+                        ->leftJoin('template_keyword as c', 'a.id', 'c.template_id')
+                        ->where('a.uuid', $request->uuid)
+                        ->groupBy('a.id')
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                         ->first();
         if ($template->blank_template == 1) {
             $view = 'dokumen.create_blank';
@@ -142,19 +163,30 @@ class DokumenController extends Controller
                     throw new Exception($validator->errors());
                 }
 
+<<<<<<< HEAD
                 $template = DB::table('template as a')
+=======
+            $template = DB::table('template as a')
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                             ->select(DB::raw('a.*, b.name, GROUP_CONCAT(c.keyword) as keyword'))
                             ->leftJoin('users as b', 'a.created_by', 'b.id')
                             ->leftJoin('template_keyword as c', 'a.id', 'c.template_id')
                             ->where('a.uuid', $request->uuid)
+<<<<<<< HEAD
                             ->groupBy('a.id', 'a.uuid', 'a.nama_template', 'a.pemilik', 'a.konten', 'a.blank_template', 'a.created_by', 'a.created_at', 'a.updated_at', 'a.deleted_at', 'b.name')
+=======
+                            ->groupBy('a.id')
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                             ->first();
             //Data Dokumen
             $dokumen = Dokumen::create([
                 'template_id' => $template->id,
                 'judul' => $request->judul,
                 'konten' => json_encode($request->konten),
+<<<<<<< HEAD
                 'blank_template' => $template->blank_template,
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 'nama_template' => $template->nama_template,
                 'pemilik_template' => $template->pemilik,
                 'created_by_template' => $template->name,
@@ -215,6 +247,7 @@ class DokumenController extends Controller
                         ->leftJoin('dokumen_keyword as b', 'a.id', 'b.dokumen_id')
                         ->where('a.uuid', $request->uuid)
                         ->first(['a.*', 'b.keyword']);
+<<<<<<< HEAD
             $dokumen_tl = DB::table('dokumen_tl as a')
                         ->select(DB::raw('c.judul_kegiatan, c.tanggal_mulai, c.jam_mulai'))
                         ->leftJoin('tindak_lanjut as b', 'a.tindak_lanjut_id', 'b.id')
@@ -231,6 +264,9 @@ class DokumenController extends Controller
                 'data'    => $data,
                 'dokumen_tl' => $dokumen_tl  
             ]);
+=======
+            return $data;
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
        }
     }
 
@@ -248,6 +284,7 @@ class DokumenController extends Controller
                         ->leftJoin('users as b', 'a.created_by', 'b.id')
                         ->leftJoin('template_keyword as c', 'a.id', 'c.template_id')
                         ->where('a.id', $data->template_id)
+<<<<<<< HEAD
                         ->groupBy('a.id', 'a.uuid', 'a.nama_template', 'a.pemilik', 'a.konten', 'a.blank_template', 'a.created_by', 'a.created_at', 'a.updated_at', 'a.deleted_at', 'b.name')
                         ->first();
         $dokumen_tl = DB::table('dokumen_tl as a')
@@ -270,6 +307,14 @@ class DokumenController extends Controller
                     ->with('data', $data)
                     ->with('template', $template)
                     ->with('dokumen_tl', $dokumen_tl);
+=======
+                        ->groupBy('a.id')
+                        ->first();
+
+        return view('dokumen.edit')
+                    ->with('data', $data)
+                    ->with('template', $template);
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     }
 
     /**
@@ -281,6 +326,7 @@ class DokumenController extends Controller
      */
     public function update(Request $request, $id)
     {
+<<<<<<< HEAD
         try {
             $validator = Validator::make($request->all(), [
                 'judul' => 'required'
@@ -349,6 +395,9 @@ class DokumenController extends Controller
                     ->with('response', $e->getMessage());
             die();
         }
+=======
+        //
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     }
 
     /**

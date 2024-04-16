@@ -2,11 +2,19 @@
 
 @section('content')
 <style>
+<<<<<<< HEAD
     .input_pelapor, .input_klien, .input_kasus, .input_rekam, .input_klasifikasi, #formTerlapor {
         display: none;
     }
 
     .input_pelapor, #tombol_save_pelapor, .input_klien, #tombol_save_klien, .input_kasus, #tombol_save_kasus, .input_terlapor, .tombol_save_terlapor, .input_rekam, #tombol_save_rekam, .input_klasifikasi, #tombol_save_klasifikasi {
+=======
+    .input_pelapor, .input_klien, .input_kasus {
+        display: none;
+    }
+
+    .input_pelapor, #tombol_save_pelapor, .input_klien, #tombol_save_klien, .input_kasus, #tombol_save_kasus, .input_terlapor, .tombol_save_terlapor {
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         display: none;
     }
 
@@ -22,6 +30,7 @@
         height: 30px !important;
     }
 
+<<<<<<< HEAD
     .akses_petugas, #check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_pemantauan, #check_terminasi, .warningTerminasi {
         display: none;
     }
@@ -49,6 +58,27 @@
       </div>
     </div>
   </section>
+=======
+    .akses_petugas, #check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_monitoring, #check_terminasi, .warningTerminasi {
+        display: none;
+    }
+</style>
+<section class="content-header">
+<div class="container-fluid">
+<div class="row mb-2">
+<div class="col-sm-6">
+<h1>Detail Kasus</h1>
+</div>
+<div class="col-sm-6">
+<ol class="breadcrumb float-sm-right">
+<li class="breadcrumb-item"><a href="#">Home</a></li>
+<li class="breadcrumb-item active">Detail Kasus</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 
 <section class="content">
 @if (Session::has('data'))
@@ -83,6 +113,7 @@
 <div class="card" style="margin-top:-30px; margin-bottom:0px">
     <div id="accordionKelengkapan" style="margin-bottom:-15px">
         <div class="card card-light">
+<<<<<<< HEAD
 
             <div class="card-header {{ Request::get('kolom-kelengkapan') == 1 ? 'hightlighting' : '' }}" data-toggle="collapse" data-target="#collapseKelengkapan" aria-expanded="true" aria-controls="collapseKelengkapan" style="cursor: pointer;">
                 <h3 class="card-title">
@@ -94,14 +125,28 @@
                   </button>
                 </div>
               </div>
+=======
+        <div class="card-header {{ Request::get('kolom-kelengkapan') == 1 ? 'hightlighting' : '' }}">
+        <h4 class="card-title w-100">
+        <a class="d-block w-100" data-toggle="collapse" href="#collapseKelengkapan">
+        <b>Kelengkapan Kasus (<span id="kelengkapan_kasus"></span>/6) </b>
+        </a>
+        </h4>
+        </div>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         <div id="collapseKelengkapan" class="collapse {{ Request::get('kolom-kelengkapan') == 1 ? 'show' : '' }} {{ Request::get('kolom-kelengkapan') == 1 ? 'hightlighting' : '' }}" data-parent="#accordionKelengkapan">
         <div class="card-body">
             <ol style="padding:15px; margin :-25px 0px -20px 0px">
                 <li>
                     Identifikasi <i class="fa fa-check" id="check_identifikasi"></i>
                     <ul style="margin-left: -25px">
+<<<<<<< HEAD
                         <li style="color: blue; cursor: pointer; font-weight:bold" onclick="alert('Field yang dibutuhkan untuk diisi :\n1. Data Kasus : \nMedia Pengagduan, Sumber Informasi, Tanggal Pelaporan, Tanggal Kejadian, Kategori Lokasi, Ringkasan, TKP\n2. Data Pelapor :\n Nama Lengkap, Jenis Kelamin\n3. Data Korban :\nNama Lengkap, Tempat Lahir, Tanggal Lahir, Jenis Kelamin, Alamat KTP, Alamat Domisili, Agama, Status Kawin, Pekerjaan, Kewargangaraan, Status Pendidikan, Pendidikan, Hubungan dengan Pelapor\n4. Data Terlapor :\nNama Lengkap, Tempat Lahir, Tanggal Lahir, Jenis Kelamin, Agama, Pekerjaan, Kewarganegaraan, Status Pendidikan, Pendidikan')">
                             Kelengkapan Data (<span id="persen_title_data"></span>%) <i class="far fa-check-circle"></i>
+=======
+                        <li>
+                            Data Kasus (<span id="persen_title_data"></span>%) <i class="far fa-check-circle"></i>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                         </li>
                             <div class="progress progress-xs">
                                 <div class="progress-bar bg-success progress-bar-striped" id="persen_data" role="progressbar" aria-valuemin="0" aria-valuemax="100">
@@ -120,10 +165,17 @@
                     Asesmen <i class="fa fa-check" id="check_asesmen"></i>
                 </li>
                 <li>
+<<<<<<< HEAD
                     Perencanaan Intervensi <i class="fa fa-check" id="check_perencanaan"></i>
                 </li>
                 <li>
                     Pelaksanaan Intervensi  <i class="fa fa-check" id="check_pelaksanaan"></i>
+=======
+                    Perencanaan Layanan <i class="fa fa-check" id="check_perencanaan"></i>
+                </li>
+                <li>
+                    Pelaksanaan Layanan  <i class="fa fa-check" id="check_pelaksanaan"></i>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     <br>
                     (<span class="persen_title_layanan"></span>)
                     <div class="progress progress-xs">
@@ -132,7 +184,11 @@
                     </div>
                 </li>
                 <li>
+<<<<<<< HEAD
                     Pemantauan & Evaluasi <i class="fa fa-check" id="check_pemantauan"></i>
+=======
+                    Monitoring <i class="fa fa-check" id="check_monitoring"></i>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 </li>
                 <li>
                     Terminasi <i class="fa fa-check" id="check_terminasi"></i>
@@ -229,7 +285,11 @@
             <a class="nav-link {{ Request::get('tab') == 'kasus-asesmen' ? 'active' : '' }}" id="kasus-asesmen-tab" data-toggle="pill" href="#kasus-asesmen" role="tab" aria-controls="kasus-asesmen" aria-selected="false">Asesmen <i class="fas fa-exclamation-circle warningAsesmen" style="color: red; font-size:20px"></i></a>
         </li>
         <li class="nav-item">
+<<<<<<< HEAD
         <a class="nav-link {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan-tab" data-toggle="pill" href="#kasus-layanan" role="tab" aria-controls="kasus-layanan" aria-selected="false">Intervensi</a>
+=======
+        <a class="nav-link {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan-tab" data-toggle="pill" href="#kasus-layanan" role="tab" aria-controls="kasus-layanan" aria-selected="false">Layanan</a>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         </li>
         <li class="nav-item">
             <a class="nav-link {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas-tab" data-toggle="pill" href="#kasus-petugas" role="tab" aria-controls="kasus-petugas" aria-selected="false">Petugas @if(!($detail['kelengkapan_petugas']))<i class="fas fa-exclamation-circle" style="color: red; font-size:20px"></i>@endif</a>
@@ -261,6 +321,7 @@
             </div>
         </div>
             
+<<<<<<< HEAD
         <style> input { width: 100%; }</style>
         <div class="post clearfix" style="color:black">
             <b>A. DATA KASUS</b>
@@ -486,6 +547,12 @@
         <div class="post clearfix" style="color:black">
             <b id="anchor_pelaporan">B. IDENTITAS PELAPOR</b>
             <br>
+=======
+            
+        <div class="post clearfix" style="color:black">
+            <style> input { width: 100%; }</style>
+            <b id="anchor_pelaporan">A. IDENTITAS PELAPOR</b>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
                 @csrf
                 @method('put')
@@ -499,6 +566,7 @@
                     <i class="fas fa-check"></i> Save
                     </button>
                 </span>
+<<<<<<< HEAD
                 <span style="color: red" class="input_pelapor">*merubah data ini akan merubah pula data pada kasus yang terkait</span>
                 <table class="table table-bottom table-sm">
                     <tr id="nik_pelapor">
@@ -506,11 +574,22 @@
                         <td>:</td>
                         <td><span class="data_pelapor">{{ $pelapor->nik }}</span> <input type="number" name="nik" value="{{ $pelapor->nik }}" class="input_pelapor"></td>
                     </tr>
+=======
+                <table class="table table-bottom table-sm">
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     <tr id="nama_pelapor">
                         <td style="width: 200px">Nama</td>
                         <td>:</td>
                         <td><span class="data_pelapor">{{ $pelapor->nama }}</span> <input type="text" name="nama" value="{{ $pelapor->nama }}" class="input_pelapor"></td>
                     </tr>
+<<<<<<< HEAD
+=======
+                    <tr id="nik_pelapor">
+                        <td style="width: 200px">NIK</td>
+                        <td>:</td>
+                        <td><span class="data_pelapor">{{ $pelapor->nik }}</span> <input type="number" name="nik" value="{{ $pelapor->nik }}" class="input_pelapor"></td>
+                    </tr>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     <tr id="tanggal_lahir_pelapor">
                         <td style="width: 200px">Tempat/Tgl Lahir</td>
                         <td>:</td>
@@ -523,6 +602,7 @@
                             <input type="date" name="tanggal_lahir" value="{{ $pelapor->tanggal_lahir }}" class="input_pelapor">
                         </td>
                     </tr>
+<<<<<<< HEAD
                     <tr id="jenis_kelamin_pelapor">
                         <td style="width: 200px">Jenis Kelamin</td>
                         <td>:</td>
@@ -559,6 +639,10 @@
                     </tr>
                     <tr id="alamat_pelapor">
                         <td style="width: 200px">Alamat Domisili</td>
+=======
+                    <tr id="alamat_pelapor">
+                        <td style="width: 200px">Alamat</td>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                         <td>:</td>
                         <td><span class="data_pelapor">{{ $pelapor->alamat }}</span> 
                             <input type="text" name="alamat" value="{{ $pelapor->alamat }}" class="input_pelapor">, 
@@ -573,6 +657,7 @@
                             <select name="kotkab_id" class="input_pelapor select2bs4" id="kota_id_pelapor" onchange="getkecamatan('pelapor')" style="width:100%">
                             </select>, 
                             <b>Kecamatan</b> <span class="data_pelapor">{{ $pelapor->kecamatan }}</span> 
+<<<<<<< HEAD
                             <select name="kecamatan_id" class="input_pelapor select2bs4" id="kecamatan_id_pelapor" onchange="getkelurahan('pelapor')" style="width:100%">
                             </select>,
                             <b>Kelurahan</b> <span class="data_pelapor">{{ $pelapor->kelurahan }}</span> 
@@ -659,16 +744,50 @@
                     <tr class="input_pelapor">
                         <td colspan="3">
                             <span style="color: green">*merubah data "Hubungan dengan klien" tidak merubah data pada kasus terkait. Hubungan dengan Klien tergantung masing-masing klien </span>
+=======
+                            <select name="kecamatan_id" class="input_pelapor select2bs4" id="kecamatan_id_pelapor" style="width:100%">
+                                <option value="" selected></option>
+                            </select>,
+                            <b>Kelurahan</b> <span class="data_pelapor">{{ $pelapor->kelurahan }}</span> 
+                            <input type="text" name="kelurahan" value="{{ $pelapor->kelurahan }}" class="input_pelapor"> 
+                        </td>
+                    </tr>
+                    <tr id="no_telp_pelapor">
+                        <td style="width: 200px">No Telp</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_pelapor">{{ $pelapor->no_telp }}</span> 
+                            <input type="text" name="no_telp" value="{{ $pelapor->no_telp }}" class="input_pelapor">
+                        </td>
+                    </tr>
+                    <tr id="hubungan_pelapor_pelapor">
+                        <td style="width: 200px">Hubungan dengan klien</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_pelapor">{{ $pelapor->hubungan_pelapor }}</span> 
+                            <select name="hubungan_pelapor" class="input_pelapor select2bs4" style="width: 100%;">
+                                <option value=""></option>
+                                @foreach ($hubungan_dengan_klien as $item)
+                                    <option value="{{ $item }}" {{ $item == $pelapor->hubungan_pelapor ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                         </td>
                     </tr>
                 </table>
             </form>
         </div>
         <div class="post clearfix" style="color:black">
+<<<<<<< HEAD
             <b>C. IDENTITAS KORBAN</b>
             {{-- id_klien_modal_agenda untuk modal agenda  --}}
             <input type="hidden" id="id_klien_modal_agenda" value="{{ $klien->id }}">
             <input type="hidden" id="nama_klien_modal_agenda" value="{{ $klien->nama }}">
+=======
+            <b>B. IDENTITAS KLIEN</b>
+            {{-- id_klien_modal_agenda untuk modal agenda  --}}
+            <input type="hidden" id="id_klien_modal_agenda" value="{{ $klien->id }}">
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
             @csrf
             @method('put')
@@ -683,6 +802,7 @@
                 </button>
             </span>
             <table class="table table-bottom table-sm">
+<<<<<<< HEAD
                 <tr id="nik_klien">
                     <td style="width: 200px">NIK</td>
                     <td>:</td>
@@ -704,6 +824,18 @@
                         </span> 
                         <input type="date" name="tanggal_lahir" value="{{ $klien->tanggal_lahir }}" class="input_klien">
                     </td>
+=======
+                <tr id="nama_klien">
+                    <td style="width: 200px">Nama</td>
+                    <td>:</td>
+                    {{-- nama_klien_modal_agenda untuk modal agenda  --}}
+                    <td><span class="data_klien">{{ $klien->nama }}</span> <input type="text" name="nama" value="{{ $klien->nama }}" class="input_klien" id="nama_klien_modal_agenda"></td>
+                </tr>
+                <tr id="nik_klien">
+                    <td style="width: 200px">NIK</td>
+                    <td>:</td>
+                    <td><span class="data_klien">{{ $klien->nik }}</span> <input type="number" name="nik" value="{{ $klien->nik }}" class="input_klien"></td>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 </tr>
                 <tr id="jenis_kelamin_klien">
                     <td style="width: 200px">Jenis Kelamin</td>
@@ -711,6 +843,7 @@
                     <td>
                         <span class="data_klien">{{ $klien->jenis_kelamin }}</span> 
                         <select name="jenis_kelamin" class="input_klien select2bs4" style="width: 100%;">
+<<<<<<< HEAD
                             <option value="perempuan" {{ "perempuan" == $klien->jenis_kelamin ? 'selected' : '' }}>Perempuan</option>
                             <option value="laki-laki" {{ "laki-laki" == $klien->jenis_kelamin ? 'selected' : '' }}>Laki-laki</option>
                         </select>
@@ -744,6 +877,37 @@
                 </tr>
                 <tr id="alamat_klien">
                     <td style="width: 200px">Alamat Domisili</td>
+=======
+                            <option value="perempuan" {{ 'perempuan' == $klien->jenis_kelamin ? 'selected' : '' }}>Perempuan</option>
+                            <option value="laki-laki" {{ 'laki-laki' == $klien->jenis_kelamin ? 'selected' : '' }}>Laki-laki</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="nik_klien">
+                    <td style="width: 200px">Kategori Kasus</td>
+                    <td>:</td>
+                    <td>xxx</td>
+                </tr>
+                <tr id="nik_klien">
+                    <td style="width: 200px">Bentuk Kekerasan</td>
+                    <td>:</td>
+                    <td>xxx</td>
+                </tr>
+                <tr id="tanggal_lahir_klien">
+                    <td style="width: 200px">Tempat/Tgl Lahir</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klien" id="tempat_lahir_klien">{{ $klien->tempat_lahir }}</span> 
+                        <input type="text" name="tempat_lahir" value="{{ $klien->tempat_lahir }}" class="input_klien">, 
+                        <span class="data_klien">
+                            {{ $klien->tanggal_lahir ? date('d M Y', strtotime($klien->tanggal_lahir)) : '' }} ({{ $klien->tanggal_lahir ? Carbon\Carbon::parse($klien->tanggal_lahir)->age.' tahun' : ' '}})
+                        </span> 
+                        <input type="date" name="tanggal_lahir" value="{{ $klien->tanggal_lahir }}" class="input_klien">
+                    </td>
+                </tr>
+                <tr id="alamat_klien">
+                    <td style="width: 200px">Alamat</td>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     <td>:</td>
                     <td><span class="data_klien">{{ $klien->alamat }}</span> 
                         <input type="text" name="alamat" value="{{ $klien->alamat }}" class="input_klien">, 
@@ -758,6 +922,7 @@
                         <select name="kotkab_id" class="input_klien select2bs4" id="kota_id_klien" onchange="getkecamatan('klien')" style="width:100%">
                         </select>, 
                         <b>Kecamatan</b> <span class="data_klien">{{ $klien->kecamatan }}</span> 
+<<<<<<< HEAD
                         <select name="kecamatan_id" class="input_klien select2bs4" id="kecamatan_id_klien" onchange="getkelurahan('klien')" style="width:100%">
                             <option value="" selected></option>
                         </select>,
@@ -852,6 +1017,124 @@
                                 <option value="Non Disabilitas" {{ "Non Disabilitas" == $klien->kedisabilitasan ? 'selected' : '' }}>Non Disabilitas</option>
                                 <option value="Disabilitas" {{ "Disabilitas" == $klien->kedisabilitasan ? 'selected' : '' }}>Disabilitas</option>
                                 <option value="Tidak Diketahui" {{ "Tidak Diketahui" == $klien->kedisabilitasan ? 'selected' : '' }}>Tidak Diketahui</option>
+=======
+                        <select name="kecamatan_id" class="input_klien select2bs4" id="kecamatan_id_klien" style="width:100%">
+                            <option value="" selected></option>
+                        </select>,
+                        <b>Kelurahan</b> <span class="data_klien">{{ $klien->kelurahan }}</span> 
+                        <input type="text" name="kelurahan" value="{{ $klien->kelurahan }}" class="input_klien"> 
+                    </td>
+                </tr>
+                <tr id="pendidikan_klien">
+                    <td style="width: 200px">Pendidikan</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->pendidikan }}</span> 
+                        <select name="pendidikan" class="input_klien select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($pendidikan_terakhir as $item)
+                                <option value="{{ $item }}" {{ $item == $klien->pendidikan ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                        (<span class="data_klien">{{ $klien->status_pendidikan }}</span> 
+                        <select name="status_pendidikan" class="input_klien select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($status_pendidikan as $item)
+                                <option value="{{ $item }}" {{ $item == $klien->status_pendidikan ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                        )
+                    </td>
+                </tr>
+                <tr id="nama_ibu_klien">
+                    <td style="width: 200px">Nama Ibu</td>
+                    <td>:</td>
+                    <td><span class="data_klien">{{ $klien->nama_ibu }}</span> <input type="text" name="nama_ibu" value="{{ $klien->nama_ibu }}" class="input_klien"></td>
+                </tr>
+                <tr id="tanggal_lahir_ibu_klien">
+                    <td style="width: 200px">Tempat/Tgl Lahir Ibu</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klien" id="tempat_lahir_ibu">{{ $klien->tempat_lahir_ibu }}</span> 
+                        <input type="text" name="tempat_lahir_ibu" value="{{ $klien->tempat_lahir_ibu }}" class="input_klien">, 
+                        <span class="data_klien">
+                            {{ $klien->tanggal_lahir_ibu ? date('d M Y', strtotime($klien->tanggal_lahir_ibu)) : '' }} ({{ $klien->tanggal_lahir_ibu ? Carbon\Carbon::parse($klien->tanggal_lahir_ibu)->age.' tahun' : ' '}})
+                        </span> 
+                        <input type="date" name="tanggal_lahir_ibu" value="{{ $klien->tanggal_lahir_ibu }}" class="input_klien">
+                    </td>
+                </tr>
+                <tr id="nama_ayah_klien">
+                    <td style="width: 200px">Nama Ayah</td>
+                    <td>:</td>
+                    <td><span class="data_klien">{{ $klien->nama_ayah }}</span> <input type="text" name="nama_ayah" value="{{ $klien->nama_ayah }}" class="input_klien"></td>
+                </tr>
+                <tr id="tanggal_lahir_ayah_klien">
+                    <td style="width: 200px">Tempat/Tgl Lahir Ayah</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klien" id="tempat_lahir_ayah">{{ $klien->tempat_lahir_ayah }}</span> 
+                        <input type="text" name="tempat_lahir_ayah" value="{{ $klien->tempat_lahir_ayah }}" class="input_klien">, 
+                        <span class="data_klien">
+                            {{ $klien->tanggal_lahir_ayah ? date('d M Y', strtotime($klien->tanggal_lahir_ayah)) : '' }} ({{ $klien->tanggal_lahir_ayah ? Carbon\Carbon::parse($klien->tanggal_lahir_ayah)->age.' tahun' : ' '}})
+                        </span> 
+                        <input type="date" name="tanggal_lahir_ayah" value="{{ $klien->tanggal_lahir_ayah }}" class="input_klien">
+                    </td>
+                </tr>
+                <tr id="agama_klien">
+                    <td style="width: 200px">Agama / Suku</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->agama }}</span> 
+                        <select name="agama" class="input_klien select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($agama as $item)
+                                <option value="{{ $item }}" {{ $item == $klien->agama ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select> / 
+                        <span class="data_klien">{{ $klien->suku }}</span> 
+                        <select name="suku" class="input_klien select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($suku as $item)
+                                <option value="{{ $item }}" {{ $item == $klien->suku ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                </tr>
+                <tr id="anak_ke_klien">
+                    <td style="width: 200px">Anak Ke</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->anak_ke }}</span> <input type="text" name="anak_ke" value="{{ $klien->anak_ke }}" class="input_klien"> 
+                        <b>dari</b> 
+                        <span class="data_klien">{{ $klien->jumlah_anak }}</span> <input type="text" name="jumlah_anak" value="{{ $klien->jumlah_anak }}" class="input_klien"> bersaudara
+                    </td>
+                </tr>
+                <tr id="hubungan_klien_klien">
+                    <td style="width: 200px">Hubungan dengan terlapor</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->hubungan_klien }}</span> 
+                        <select name="hubungan_klien" class="input_klien select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($hubungan_dengan_terlapor as $item)
+                                <option value="{{ $item }}" {{ $item == $klien->hubungan_klien ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                </tr>
+                <tr id="kondisi_khusus_klien">
+                    <td style="width: 200px">Kekhususan</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->kondisi_khusus }}</span> 
+                        <select name="kondisi_khusus[]" class="input_klien select2bs4" style="width: 100%;" multiple="multiple">
+                            @php
+                            $kondisi_khusus = explode(",",$klien->kondisi_khusus);
+                            @endphp
+                            @foreach ($kekhususan as $item)
+                                <option value="{{ $item }}" {{ in_array(' '.$item, $kondisi_khusus) ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                         </select>
                     </td>
                 </tr>
@@ -859,6 +1142,7 @@
             </form>
         </div>
         <div class="post clearfix" id="data_terlapor" style="color:black">
+<<<<<<< HEAD
             <b>D. IDENTITAS TERLAPOR</b>
             <?php $no_terlapor = 1;?>
             @foreach ($terlapor as $item_terlapor)
@@ -876,6 +1160,19 @@
                 <a class="btn btn-xs bg-gradient-danger" onclick="deleteTerlapor('{{ $item_terlapor->uuid }}')">
                 <i class="fas fa-trash"></i> Delete
                 </a>
+=======
+            <b>C. IDENTITAS TERLAPOR</b>
+            <?php $no_terlapor = 1;?>
+            @foreach ($terlapor as $item_terlapor)
+            <br>
+            <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
+            @csrf
+            @method('put')
+            <input type="hidden" name="uuid" value="{{ $item_terlapor->uuid }}">
+            <input type="hidden" name="data_update" value="terlapor">
+            <b> Terlapor {{ $no_terlapor }}</b>
+            <span style="float:right" class="akses_petugas">
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor{{ $no_terlapor }}" onclick="editdata('terlapor{{ $no_terlapor }}')">
                 <i class="fas fa-edit"></i> Edit
                 </a>
@@ -884,16 +1181,20 @@
                 </button>
             </span>
                 <table class="table table-bottom table-sm">
+<<<<<<< HEAD
                     <tr id="nik_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">NIK</td>
                         <td>:</td>
                         <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->nik }}</span> <input type="number" name="nik" value="{{ $item_terlapor->nik }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
                     </tr>
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     <tr id="nama_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Nama</td>
                         <td>:</td>
                         <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->nama }}</span> <input type="text" name="nama" value="{{ $item_terlapor->nama }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
                     </tr>
+<<<<<<< HEAD
                     <tr id="tempat_tanggal_lahir_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Tempat/Tgl Lahir</td>
                         <td>:</td>
@@ -905,6 +1206,12 @@
                             </span> 
                             <input type="date" name="tanggal_lahir" value="{{ $item_terlapor->tanggal_lahir }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">
                         </td>
+=======
+                    <tr id="nik_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">NIK</td>
+                        <td>:</td>
+                        <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->nik }}</span> <input type="number" name="nik" value="{{ $item_terlapor->nik }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     </tr>
                     <tr id="jenis_kelamin_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Jenis Kelamin</td>
@@ -917,6 +1224,7 @@
                             </select>
                         </td>
                     </tr>
+<<<<<<< HEAD
                     <tr id="alamat_terlapor_ktp{{ $no_terlapor }}">
                         <td style="width: 200px">Alamat KTP</td>
                     <td>:</td>
@@ -944,6 +1252,22 @@
                     </tr>
                     <tr id="alamat_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Alamat Domisili</td>
+=======
+                    <tr id="tempat_tanggal_lahir_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Tempat/Tgl Lahir</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_terlapor{{ $no_terlapor }}" id="tempat_lahir_terlapor{{ $no_terlapor }}">{{ $item_terlapor->tempat_lahir }}</span> 
+                            <input type="text" name="tempat_lahir" value="{{ $item_terlapor->tempat_lahir }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">, 
+                            <span class="data_terlapor{{ $no_terlapor }}">
+                                {{ $item_terlapor->tanggal_lahir ? date('d M Y', strtotime($item_terlapor->tanggal_lahir)) : '' }} ({{ $item_terlapor->tanggal_lahir ? Carbon\Carbon::parse($item_terlapor->tanggal_lahir)->age.' tahun' : ' '}})
+                            </span> 
+                            <input type="date" name="tanggal_lahir" value="{{ $item_terlapor->tanggal_lahir }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">
+                        </td>
+                    </tr>
+                    <tr id="alamat_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Alamat</td>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     <td>:</td>
                     <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->alamat }}</span> 
                         <input type="text" name="alamat" value="{{ $item_terlapor->alamat }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">, 
@@ -958,6 +1282,7 @@
                         <select name="kotkab_id" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="kota_id_terlapor{{ $no_terlapor }}" onchange="getkecamatan('terlapor{{ $no_terlapor }}')" style="width:100%">
                         </select>, 
                         <b>Kecamatan</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->kecamatan }}</span> 
+<<<<<<< HEAD
                         <select name="kecamatan_id" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="kecamatan_id_terlapor{{ $no_terlapor }}" onchange="getkelurahan('terlapor{{ $no_terlapor }}')" style="width:100%">
                             <option value="" selected></option>
                         </select>,
@@ -991,18 +1316,73 @@
                             </select>
                         </td>
                     </tr>
+=======
+                        <select name="kecamatan_id" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="kecamatan_id_terlapor{{ $no_terlapor }}" style="width:100%">
+                            <option value="" selected></option>
+                        </select>,
+                        <b>Kelurahan</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->kelurahan }}</span> 
+                        <input type="text" name="kelurahan" value="{{ $item_terlapor->kelurahan }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"> 
+                    </td>
+                    </tr>
+                    <tr id="pendidikan_terakhir_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Pendidikan</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->pendidikan }}</span> 
+                            <select name="pendidikan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                <option value=""></option>
+                                @foreach ($pendidikan_terakhir as $item)
+                                    <option value="{{ $item }}" {{ $item == $item_terlapor->pendidikan ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                            (<span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->status_pendidikan }}</span> 
+                            <select name="status_pendidikan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                <option value=""></option>
+                                @foreach ($status_pendidikan as $item)
+                                    <option value="{{ $item }}" {{ $item == $item_terlapor->status_pendidikan ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                            )
+                        </td>
+                    </tr>
+                    <tr id="agama_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Agama / Suku</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->agama }}</span> 
+                        <select name="agama" class="input_klien input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($agama as $item)
+                                <option value="{{ $item }}" {{ $item == $item_terlapor->agama ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select> / 
+                        <span class="data_terlapor{{ $no_terlapor }}">{{ $klien->suku }}</span> 
+                        <select name="suku" class="input_klien input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($suku as $item)
+                                <option value="{{ $item }}" {{ $item == $item_terlapor->suku ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    </tr>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     <tr id="pekerjaan_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Pekerjaan</td>
                         <td>:</td>
                         <td>
                             <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->pekerjaan }}</span> 
                             <select name="pekerjaan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+<<<<<<< HEAD
+=======
+                                <option value=""></option>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                                 @foreach ($pekerjaan as $item)
                                     <option value="{{ $item }}" {{ $item == $item_terlapor->pekerjaan ? 'selected' : '' }}>{{ $item }}</option>
                                 @endforeach
                             </select>
                         </td>
                     </tr>
+<<<<<<< HEAD
                     <tr id="kewarganegaraan_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Kewarganegaraan</td>
                         <td>:</td>
@@ -1052,10 +1432,57 @@
                                 <option value=""></option>
                                 @foreach ($hubungan_dengan_klien as $item)
                                     <option value="{{ $item }}" {{ $item_terlapor->hubungan_terlapor == $item ? 'selected' : '' }}>{{ $item }}</option>
+=======
+                    <tr id="pengahsilan_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Penghasilan Perbulan</td>
+                        <td>:</td>
+                        <td>Rp.<span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->penghasilan }}</span> <input type="number" name="penghasilan" value="{{ $item_terlapor->penghasilan }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
+                    </tr>
+                    <tr id="status_kawin_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Status Perkawinan</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->status_kawin }}</span> 
+                            <select name="status_kawin" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                <option value=""></option>
+                                @foreach ($status_perkawinan as $item)
+                                    <option value="{{ $item }}" {{ $item == $item_terlapor->status_kawin ? 'selected' : '' }}>{{ $item }}</option>
                                 @endforeach
                             </select>
                         </td>
                     </tr>
+                    <tr id="jumlah_anak_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Jumlah Anak</td>
+                        <td>:</td>
+                        <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->jumlah_anak }}</span> <input type="number" name="jumlah_anak" value="{{ $item_terlapor->jumlah_anak }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
+                    </tr>
+                    <tr id="hubungan_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Hubungan dengan klien</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->hubungan_terlapor }}</span> 
+                            <select name="hubungan_terlapor" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                <option value=""></option>
+                                @foreach ($hubungan_dengan_klien as $item)
+                                    <option value="{{ $item }}" {{ $item == $item_terlapor->hubungan_terlapor ? 'selected' : '' }}>{{ $item }}</option>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
+                                @endforeach
+                            </select>
+                        </td>
+                    </tr>
+<<<<<<< HEAD
+=======
+                    <tr id="masa_hukuman_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Masa Hukuman</td>
+                        <td>:</td>
+                        <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->masa_hukuman }}</span> <input type="text" name="masa_hukuman" value="{{ $item_terlapor->masa_hukuman }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
+                    </tr>
+                    <tr id="denda_hukuman_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Denda</td>
+                        <td>:</td>
+                        <td>Rp. <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->denda_hukuman }}</span> <input type="number" name="denda_hukuman" value="{{ $item_terlapor->denda_hukuman }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
+                    </tr>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 </table>
                 </form>
                 <script>
@@ -1065,6 +1492,7 @@
                 </script>
                 <?php $no_terlapor++;?>
             @endforeach
+<<<<<<< HEAD
 
             <div class="akses_petugas" style="width:100%">
                 <button type="submit" class="btn btn-block btn-default" id="buttonTerlapor" onclick="TambahTerlapor()"><i class="fas fa-plus"></i> Tambah Terlapor</button>
@@ -1245,6 +1673,117 @@
                         </tr>
                     </table>
                 </form>
+=======
+        </div>
+        <div class="post clearfix" style="color:black">
+            <b>D. KASUS KLIEN</b>
+            <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
+            @csrf
+            @method('put')
+            <input type="hidden" name="uuid" value="{{ $kasus->uuid }}">
+            <input type="hidden" name="data_update" value="kasus">
+            <span style="float:right" class="akses_petugas">
+                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_kasus" onclick="editdata('kasus')">
+                <i class="fas fa-edit"></i> Edit
+                </a>
+                <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_kasus">
+                <i class="fas fa-check"></i> Save
+                </button>
+            </span>
+            <table class="table table-bottom table-sm">
+                <tr id="tanggal_kejadian_kasus">
+                    <td style="width: 200px">Tanggal Kejadian</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_kasus">
+                            {{ $kasus->tanggal_kejadian ? date('d M Y', strtotime($kasus->tanggal_kejadian)) : '' }}
+                        </span> 
+                        <input type="date" name="tanggal_kejadian" value="{{ $kasus->tanggal_kejadian }}" class="input_kasus">
+                    </td>
+                </tr>
+                <tr id="tempat_kejadian_kasus">
+                    <td style="width: 200px">Kategori Lokasi</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_kasus">{{ $kasus->tempat_kejadian }}</span> 
+                        <select name="tempat_kejadian" class="input_kasus select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($tempat_kejadian as $item_tempat_kejadian)
+                                <option value="{{ $item_tempat_kejadian }}" {{ $item_tempat_kejadian == $kasus->tempat_kejadian ? 'selected' : '' }}>{{ $item_tempat_kejadian }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                </tr>
+                <tr id="media_pengaduan_kasus">
+                    <td style="width: 200px">Media Pengaduan</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_kasus">{{ $kasus->media_pengaduan }}</span> 
+                        <select name="media_pengaduan" class="input_kasus select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($media_pengaduan as $item_media_pengaduan)
+                                <option value="{{ $item_media_pengaduan }}" {{ $item_media_pengaduan == $kasus->media_pengaduan ? 'selected' : '' }}>{{ $item_media_pengaduan }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                </tr>
+                <tr id="sumber_rujukan_kasus">
+                    <td style="width: 200px">Sumber Rujukan</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_kasus">{{ $kasus->sumber_rujukan }}</span> 
+                        <select name="sumber_rujukan" class="input_kasus select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($sumber_rujukan as $item_sumber_rujukan)
+                                <option value="{{ $item_sumber_rujukan }}" {{ $item_sumber_rujukan == $kasus->sumber_rujukan ? 'selected' : '' }}>{{ $item_sumber_rujukan }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                </tr>
+                <tr id="sumber_informasi_kasus">
+                    <td style="width: 200px">Sumber Informasi</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_kasus">{{ $kasus->sumber_informasi }}</span> 
+                        <select name="sumber_informasi" class="input_kasus select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($sumber_informasi as $item_sumber_informasi)
+                                <option value="{{ $item_sumber_informasi }}" {{ $item_sumber_informasi == $kasus->sumber_informasi ? 'selected' : '' }}>{{ $item_sumber_informasi }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                </tr>
+                <tr id="deskripsi_kasus">
+                    <td style="width: 200px">Deskripsi</td>
+                    <td>:</td>
+                    <td><span class="data_kasus">{{ $kasus->deskripsi }}</span> <textarea name="deskripsi" class="input_kasus" style="width:100%" rows="10">{{ $kasus->deskripsi }}</textarea></td>
+                </tr>
+                <tr id="alamat_kasus">
+                    <td style="width: 200px">Alamat</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_kasus">{{ $kasus->alamat }}</span> 
+                        <input type="text" name="alamat" value="{{ $kasus->alamat }}" class="input_kasus">, 
+                        <b>Provinsi</b> <span class="data_kasus">{{ $kasus->provinsi }}</span> 
+                        <select name="provinsi_id" class="input_kasus select2bs4" id="provinsi_id_kasus" onchange="getkotkab('kasus')" style="width:100%">
+                            @foreach ($provinsi as $item)
+                                <option value="{{ $item->code }}" {{ $item->code == $kasus->provinsi_id ? 'selected' : '' }}>{{ $item->name }}</option>
+                            @endforeach
+                        </select>,
+                        <b>Kota</b> <span class="data_kasus">{{ $kasus->kota }}</span> 
+                        <select name="kotkab_id" class="input_kasus select2bs4" id="kota_id_kasus" onchange="getkecamatan('kasus')" style="width:100%">
+                        </select>, 
+                        <b>Kecamatan</b> <span class="data_kasus">{{ $kasus->kecamatan }}</span> 
+                        <select name="kecamatan_id" class="input_kasus select2bs4" id="kecamatan_id_kasus" style="width:100%">
+                            <option value="" selected></option>
+                        </select>,
+                        <b>Kelurahan</b> <span class="data_kasus">{{ $kasus->kelurahan }}</span> 
+                        <input type="text" name="kelurahan" value="{{ $kasus->kelurahan }}" class="input_kasus"> 
+                    </td>
+                </tr>
+            </table>
+            </form>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         </div>
         {{-- <div class="post clearfix" style="color:black">
             <div class="row">
@@ -1276,7 +1815,11 @@
         </div> --}}
         <br>
         <br>
+<<<<<<< HEAD
         {{-- <button type="button" class="btn btn-block btn-primary akses_petugas"><i class="fas fa-print"></i> Print Formulir</button> --}}
+=======
+        <button type="button" class="btn btn-block btn-primary akses_petugas"><i class="fas fa-print"></i> Print Formulir</button>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         <br>
         {{-- <div id="kolomPublicUrl" class="akses_petugas"></div>
         <button type="button" class="btn btn-block btn-primary akses_petugas" onclick="submitPublicURL('url-kasus')"><i class="fas fa-link"></i> Generate URL</button> --}}
@@ -1309,6 +1852,7 @@
             <div class="col-md-12 warningAsesmen">
                 <div class="alert alert-danger">
                 <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+<<<<<<< HEAD
                 Mohon melengkapi data asesmen pada MOKA.
                 </div>
             </div>
@@ -1400,17 +1944,31 @@
             @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Unit Reaksi Cepat']) && $akses_petugas == 1)
             <button type="buttons" class="btn btn-block btn-default {{ Request::get('tambah-asesmen') == 1 ? 'hightlighting' : '' }}" id="modalAsesmen" data-toggle="modal" data-target="#tambahAsesmenModal"><i class="fas fa-plus"></i> Tambah Asesmen</button>
             @endif --}}
+=======
+                Segera inputkan data asesmen pada MOKA.
+                </div>
+            </div>
+            <div id="kolomAsesmen"></div>
+            @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Unit Reaksi Cepat']) && $akses_petugas == 1)
+            <button type="buttons" class="btn btn-block btn-default {{ Request::get('tambah-asesmen') == 1 ? 'hightlighting' : '' }}" id="modalAsesmen" data-toggle="modal" data-target="#tambahAsesmenModal"><i class="fas fa-plus"></i> Tambah Asesmen</button>
+            @endif
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         </div>
 
     </div>
     
     <div class="tab-pane {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan" role="tabpanel" aria-labelledby="kasus-layanan-tab">
         <div class="post clearfix" style="margin: 0px">
+<<<<<<< HEAD
         <b id="anchor_pelaporan">PROGRES INTERVENSI / LAYANAN</b>
+=======
+        <b id="anchor_pelaporan">PROGRES LAYANAN</b>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         <div class="progress" style="height: 25px;">
             <div class="progress-bar bg-success persen_layanan" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px" class="persen_title_layanan">100%</span></div>
         </div>
         <br>
+<<<<<<< HEAD
         {{-- include tabel intervensi --}}
         @if (Auth::user()->settings_tabel_intervensi == 2)
             @include('kasus.intervensiv2')
@@ -1456,6 +2014,34 @@
         <div id="kolomPemantauan"></div>
         @if (Auth::user()->jabatan == 'Manajer Kasus' && $akses_petugas == 1)
         <button type="submit" class="btn btn-block btn-default" data-toggle="modal" data-target="#tambahPemantauanModal"><i class="fas fa-plus"></i> Tambah Laporan Pemantauan & Evaluasi</button>
+=======
+        <div style="overflow-x: scroll">
+            <input type="hidden" id="uuid_layanan_hightlight" value="{{ Request::get('row-layanan') }}">
+            <table id="tabelLayanan" class="table table-sm table-bordered  table-hover" style="cursor:pointer; color:black">
+                <thead>
+                <tr>
+                <th>Waktu Kegiatan</th>
+                <th>Agenda</th>
+                <th>Tindak Lanjut</th>
+                <th>Centang</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                <tr>
+                    <th>Waktu Kegiatan</th>
+                    <th>Agenda</th>
+                    <th>Tindak Lanjut</th>
+                    <th>Centang</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+        <br>
+        @if (Auth::user()->jabatan == 'Manajer Kasus' && $akses_petugas == 1)
+        <div id="kolomMonitoring"></div>
+        <button type="submit" class="btn btn-block btn-default" data-toggle="modal" data-target="#tambahMonitoringModal"><i class="fas fa-plus"></i> Tambah Laporan Monitoring</button>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         @endif
     </div>
     </div>
@@ -1483,15 +2069,23 @@
                     @foreach ($petugas as $item)
                     <tr>
                         <td>
+<<<<<<< HEAD
                             <img alt="Avatar" class="table-avatar" src="{{ asset('img/profile/'.$item->foto) }}" style="margin-right: 10px"
                             onerror="this.onerror=null; this.src='{{ asset('adminlte/dist/img/default-150x150.png') }}'" >
+=======
+                            <img alt="Avatar" class="table-avatar" src="https://adminlte.io/themes/v3/dist/img/avatar.png" style="margin-right: 10px">
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                             {{ $item->name }}
                         </td>
                         <td>
                             <h6><span class="badge badge-pill badge-primary">{{ $item->jabatan }}</span></h6>
                         </td>
                         <td>
+<<<<<<< HEAD
                             @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Supervisor Kasus']))
+=======
+                            @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan']))
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                             <form action="{{ route('petugas.destroy',$item->id) }}" method="post">
                                 @csrf 
                                 @method('delete')
@@ -1505,7 +2099,11 @@
             </table>
             </div>
             <br>
+<<<<<<< HEAD
             @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Supervisor Kasus']) && $akses_petugas == 1)
+=======
+            @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan']) && $akses_petugas == 1)
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             {{-- <div class="col-md-12">
                 <div class="alert alert-danger">
                 <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
@@ -1516,8 +2114,13 @@
                 @csrf
                 <div class="row {{ Request::get('tambah-petugas') == 1 ? 'hightlighting' : '' }}" style="padding : 15px">
                     <div class="col-md-9">
+<<<<<<< HEAD
                         <select name="user_id" class="select2bs4" style="width: 100%;" required>
                             <option></option>
+=======
+                        <select name="user_id" class="select2bs4" style="width: 100%;">
+                            <option>Silahkan pilih petugas</option>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                             @foreach ($users as $item)
                                 <option value="{{ $item->id }}">{{ $item->name }} ({{ $item->jabatan }})</option>
                             @endforeach
@@ -1565,9 +2168,15 @@
                                 </td>
                                 <td>
                                     @if ($item->deleted_at)
+<<<<<<< HEAD
                                         [Link Expired]
                                     @else
                                         <input hidden type="text" id="link-form-{{ $item->uuid }}" value="{{ route('persetujuan.show', $item->uuid) }}">
+=======
+                                        [Expired]
+                                    @else
+                                        <input type="text" id="link-form-{{ $item->uuid }}" value="{{ route('persetujuan.show', $item->uuid) }}" hidden>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                                         <button type="button" class="btn btn-primary" onclick="copyClipboard('{{ $item->uuid }}')"><i class="fas fa-link"></i></button>
                                     @endif
                                 </td>
@@ -1583,7 +2192,12 @@
                     @csrf
                     <div class="row {{ Request::get('tambah-persetujuan') == 1 ? 'hightlighting' : '' }}"  style="padding : 15px">
                         <div class="col-md-9">
+<<<<<<< HEAD
                             <select name="persetujuan_template_uuid" class="select2bs4" style="width: 100%;" required>
+=======
+                            <select name="persetujuan_template_uuid" class="select2bs4" style="width: 100%;">
+                                <option>Silahkan pilih surat persetujuan</option>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                                 @foreach ($persetujuan_template as $item)
                                     <option value="{{ $item->uuid }}">{{ $item->judul }}</option>
                                 @endforeach
@@ -1622,6 +2236,7 @@
                 <tr>
                     <td style="width: 200px"><b>Arsipkan Kasus<b></td>
                     <td>
+<<<<<<< HEAD
                         @if (Auth::user()->jabatan == 'Penerima Pengaduan')
                         {{-- 
                         dibuat hanya petugas penerima pengaduan saja yang bisa mengarsipkan karena : 
@@ -1646,12 +2261,24 @@
                         <br>
                         <span style="display: {{ $klien->arsip == 0 ? 'show' : 'none' }}" id="status_arsip_on">Status kasus saat ini aktif, akan muncul di pencarian kasus</span>
                         <span style="display: {{ $klien->arsip == 1 ? 'show' : 'none' }}" id="status_arsip_off">Status kasus saat ini diarsipkan, tidak akan muncul di pencarian kasus</span>
+=======
+                        <input type="checkbox" name="arsipkan" class="btn-sm" 
+                        checked 
+                        data-bootstrap-switch 
+                        data-on-text="Aktif"
+                        data-off-text="Diarsipkan"
+                        data-off-color="danger" 
+                        data-on-color="success">
+                        <br>
+                        <span>Status kasus saat ini sedang aktif, akan muncul di pencarian kasus</span>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     </td>
                 </tr>
                 <tr class="{{ Request::get('persetujuan-supervisor') == 1 ? 'hightlighting' : '' }}">
                     <td style="width: 200px"><b>Approval<b></td>
                     <td>
                         <div class="row">
+<<<<<<< HEAD
                             <div class="col-md-12 m-0 {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'hightlighting' : '' }}">
                                 Apakah anda ingin menyetujui kasus ini?
                             </div>
@@ -1663,6 +2290,12 @@
                                 @endif
                             @else
                                 @if ($klien->no_klien == null)
+=======
+                            <div class="col-md-12 {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'hightlighting' : '' }}">
+                                Apakah anda ingin menyetujui kasus ini?
+                            </div>
+                                @if (!$klien->no_klien)
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                                 {{-- jika tidak ada no klien berarti belum diapprove / ditolak --}}
                                     @if(in_array(Auth::user()->jabatan, ['Supervisor Kasus']))
                                         @if(!($detail['kelengkapan_petugas']))
@@ -1699,7 +2332,10 @@
                                         Tidak, kasus tidak disetujui oleh Supervisor
                                     </div>
                                 @endif
+<<<<<<< HEAD
                             @endif
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                         </div>
                     </td>
                 </tr>
@@ -1972,13 +2608,22 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-success btn-block" id="submitAsesmen"><i class="fa fa-check"></i> Simpan</button>
+<<<<<<< HEAD
+=======
+            <button type="button" class="btn btn-danger btn-block" id="deleteAsesmen"><i class="fa fa-trash"></i> Hapus</button>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         </div>
         </div>
     </div>
 </div>
 
+<<<<<<< HEAD
 <!-- Modal Tambah Pemantauan-->
 <div class="modal fade" id="tambahPemantauanModal" role="dialog" aria-hidden="true">
+=======
+<!-- Modal Tambah Monitoring-->
+<div class="modal fade" id="tambahMonitoringModal" role="dialog" aria-hidden="true">
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
 
@@ -1989,44 +2634,78 @@
         </div>
         
         <div class="modal-header">
+<<<<<<< HEAD
             <h5 class="modal-title" id="modelHeadingPemantauan">Pemantauan & Evaluasi</h5>
+=======
+            <h5 class="modal-title" id="modelHeadingMonitoring">Monitoring</h5>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button>
         </div>
+<<<<<<< HEAD
         <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message-pemantauan">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
             <span id="message-pemantauan"></span>
         </div>
         <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message-pemantauan">
+=======
+        <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message-monitoring">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
+            <span id="message-monitoring"></span>
+        </div>
+        <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message-monitoring">
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <h4><i class="icon fa fa-check"></i> Success!</h4>
             Data berhasil disimpan.
         </div>
         <div class="modal-body">
+<<<<<<< HEAD
         <input type="hidden" id="uuid_pemantauan">
         <div class="col-md-12">
             <div class="form-group">
             <label>Kemajuan yang Dicapai / Kondisi Klien Saat Pemantauan : </label>
                 <textarea class="form-control required-field-pemantauan" id="pemantauan_kemajuan" aria-label="With textarea" style="resize: none;" ></textarea>
+=======
+        <input type="hidden" id="uuid_monitoring">
+        <div class="col-md-12">
+            <div class="form-group">
+            <label>Kemajuan yang Dicapai / Kondisi Klien Saat Monitoring : </label>
+                <textarea class="form-control required-field-monitoring" id="monitoring_kemajuan" aria-label="With textarea" style="resize: none;" ></textarea>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             </div>
         </div>
         <div class="col-md-12">
             <div class="form-group">
             <label>Tujuan yang Belum Tercapai : </label>
+<<<<<<< HEAD
                 <textarea class="form-control required-field-pemantauan" id="pemantauan_tujuan" aria-label="With textarea" style="resize: none;"></textarea>
+=======
+                <textarea class="form-control required-field-monitoring" id="monitoring_tujuan" aria-label="With textarea" style="resize: none;"></textarea>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             </div>
         </div>
         <div class="col-md-12">
             <div class="form-group">
             <label>Rencana Tindak Lanjut : </label>
+<<<<<<< HEAD
                 <textarea class="form-control required-field-pemantauan" id="pemantauan_rencana" aria-label="With textarea" style="resize: none;"></textarea>
+=======
+                <textarea class="form-control required-field-monitoring" id="monitoring_rencana" aria-label="With textarea" style="resize: none;"></textarea>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             </div>
         </div>
         </div>
         <div class="modal-footer">
+<<<<<<< HEAD
             <button type="button" class="btn btn-success btn-block" id="submitPemantauan"><i class="fa fa-check"></i> Simpan</button>
+=======
+            <button type="button" class="btn btn-success btn-block" id="submitMonitoring"><i class="fa fa-check"></i> Simpan</button>
+            <button type="button" class="btn btn-danger btn-block" id="deleteMonitoring"><i class="fa fa-trash"></i> Hapus</button>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         </div>
         </div>
     </div>
@@ -2072,6 +2751,10 @@
     </div>
 </div>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 <!-- Modal Catatan-->
 <div class="modal fade" id="tambahCatatanModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -2141,7 +2824,10 @@
                 <main>
                   <div class="centered">
                     <div class="row-editor">
+<<<<<<< HEAD
                         <div id="kontenDokumen"></div>
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                       <textarea name="konten" readonly class="textarea-replace editor textarea-tinymce" id="konten">
                       </textarea>
                     </div>
@@ -2150,8 +2836,11 @@
               </body>
             </div>
           </div>
+<<<<<<< HEAD
           <b>Agenda Terkait :</b>
           <div id="dokumen_tl"></div>
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         </div>
         <div class="modal-footer" id="buttonsDokumen">
         </div>
@@ -2159,6 +2848,7 @@
     </div>
   </div>
 
+<<<<<<< HEAD
 
 <!-- Modal Filter Layanan-->
 <div class="modal fade" id="modalFilterLayanan" role="dialog" aria-hidden="true">
@@ -2241,6 +2931,8 @@
     </div>
 </div>
 
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -2254,6 +2946,7 @@
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <script src="https://cdn.rawgit.com/ashl1/datatables-rowsgroup/fbd569b8768155c7a9a62568e66a64115887d7d0/dataTables.rowsGroup.js"></script>
+<<<<<<< HEAD
 <script src="{{ asset('vendor/tinymce4/tinymce.min.js') }}"></script>
 <script>
     $(document).ready(function () {
@@ -2265,6 +2958,18 @@
         hightlighting();
         loadAsesmen();
         loadPemantauan();
+=======
+<script src="{{ asset('adminlte') }}/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+<script src="{{ asset('vendor/tinymce4/tinymce.min.js') }}"></script>
+<script>
+    $(document).ready(function () {
+        getkotkab('pelapor');
+        getkotkab('klien');
+        getkotkab('kasus');
+        hightlighting();
+        loadAsesmen();
+        loadMonitoring();
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         loadTerminasi();
         loadCatatan();
         // loadPublicUrl();
@@ -2273,12 +2978,17 @@
         check_kelengkapan_spp('{{ $klien->id }}');
         check_kelengkapan_asesmen('{{ $klien->id }}');
         check_kelengkapan_perencanaan('{{ $klien->id }}');
+<<<<<<< HEAD
         check_kelengkapan_pemantauan('{{ $klien->id }}');
+=======
+        check_kelengkapan_monitoring('{{ $klien->id }}');
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         check_kelengkapan_terminasi('{{ $klien->id }}');
         kelengkapan_kasus = 0;
         kelengkapan_identifikasi = 0;
         $('#kelengkapan_kasus').html(kelengkapan_kasus);
 
+<<<<<<< HEAD
         $('#arsipkan').on('switchChange.bootstrapSwitch', function (event, state) {
                 let token   = $("meta[name='csrf-token']").attr("content");
                 $.ajax({
@@ -2318,6 +3028,11 @@
                     },500);
                 });
         }); 
+=======
+        $("input[data-bootstrap-switch]").each(function(){
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
+        })
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 
         //Initialize Select2 Elements
         $('.select2').select2();
@@ -2328,6 +3043,7 @@
         });
     });
     
+<<<<<<< HEAD
     function submitFilterLayanan() {
         var jabatanValue = $('#filterJabatan').val();
         var tl = $('input[name="filter1TL"]:checked').val();
@@ -2350,6 +3066,8 @@
         $('#modalFilterLayanan').modal('hide');
     }
 
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     $(function () {
 
     $('.input_pelapor').next(".select2-container").hide();
@@ -2357,6 +3075,7 @@
     $('.input_kasus').next(".select2-container").hide();
     $('.input_terlapor').next(".select2-container").hide();
 
+<<<<<<< HEAD
       $('#tabelLayanan_filter').css({'float':'right','display':'inline-block; background-color:black'});
     });
 
@@ -2653,6 +3372,207 @@
         });
     }; 
     
+=======
+    $('#tabelLayanan').DataTable({
+      "ordering": false,
+      "processing": true,
+      "serverSide": true,
+      "responsive": false, 
+      "lengthChange": false, 
+      "autoWidth": false,
+      "ajax": "/agenda/api_index?uuid={{ $klien->uuid }}",
+      "rowsGroup": [1],
+      'createdRow': function( row, data, dataIndex ) {
+          $(row).attr('id', data.uuid);
+
+          rowHightlight = $('#uuid_layanan_hightlight').val();
+          if (data.uuid == rowHightlight) {
+            $(row).attr('class', 'hightlighting');
+          }
+      },
+      "columns": [
+        {
+            "mData": "tanggal_mulai",
+            "mRender": function (data, type, row) {
+                if (row.jam_selesai != null) {
+                    jam_mulai = row.jam_mulai+' - '+row.jam_selesai;
+                }else{
+                    jam_mulai =  row.jam_mulai;
+                }
+                return row.tanggal_mulai_formatted+"<br><span style='font-size:13px'>"+jam_mulai+"</span>";
+            }
+        },
+        {
+            "mData": "judul_kegiatan",
+            "mRender": function (data, type, row) {
+                judul_kegiatan = keterangan = '';
+                if (row.judul_kegiatan != null) {
+                    judul_kegiatan = '<b>'+row.judul_kegiatan+'</b>';
+                }
+
+                if (row.keterangan != null) {
+                    keterangan = '</br>'+row.keterangan;
+                }
+
+                return judul_kegiatan+keterangan;
+            }
+        },
+        {
+            "mData": "catatan",
+            "mRender": function (data, type, row) {
+                catatan = lokasi = '';
+
+                if (row.catatan) {
+                    catatan = row.catatan+'<br>';
+                }
+
+                if (row.lokasi) {
+                    lokasi = 'Lokasi : '+row.lokasi;
+                }
+
+                if(row.judul != null){
+                    uuid_dokumen = row.uuid_dokumen;
+                    var array2 = uuid_dokumen.split(",|");
+
+                    dokumen = row.judul;
+                    dokumens = '';
+                    var array = dokumen.split(",|");
+                    for (i=1;i<array.length;i++){
+                    string = array2[i];
+                    uuid_dokumen = string.replace(/,/g, "");
+                    dokumens += '<a href="#" onclick="showModalDokumen(`'+uuid_dokumen+'`)"><span class="badge bg-primary"><i class="nav-icon fas fa-file-alt"></i> '+array[i]+'</span></a> ';
+                    };
+                }else{
+                    dokumens = '';
+                }
+
+                if (row.terlaksana) {
+                    return 'Petugas : '+row.petugas+' ('+row.jabatan+')<br>'+lokasi+'<br>'+catatan+dokumens;
+                } else {
+                    return '<span class="badge bg-danger">Dibatalkan</span>';
+                }
+            }
+        },
+        {
+            "mData": "ceklis",
+            "mRender": function (data, type, row) {
+                if (row.jam_selesai == null) {
+                    done = '';
+                    checked = '';
+                    disabled = '';
+                    selesaiLayanan = '';
+                } else {
+                    done = 'done';
+                    checked = 'checked';
+                    disabled = 'disabled';
+                    selesaiLayanan = 'layananSelesai';
+                }
+                if (row.created_by == {{ Auth::user()->id }}) {
+                    return '<div  class="icheck-primary d-inline ml-2"><input class="checkboxSelesai '+selesaiLayanan+'" type="checkbox" value="" id="todoCheck'+row.uuid+'" '+checked+' '+disabled+' onclick="showModalAgenda(`'+row.tanggal_mulai+'`,`'+row.uuid+'`)"><label for="todoCheck'+row.uuid+'"></label></div>';
+                } else {
+                    return '<div  class="icheck-primary d-inline ml-2" onclick="alert(`Anda tidak memiliki hak akses untuk menginputkan laproan tindak lanjut untuk agenda ini. Minta seseorang yang ada di agenda untuk mentag/menambahkan anda.`)"><input type="checkbox" value="" '+checked+'><label for="todoCheck'+row.uuid+'"></label></div>';
+                }
+            }
+        }
+      ],
+      "pageLength": 25,
+      "lengthMenu": [
+          [10, 25, 50, 100, -1],
+          ['10 rows', '25 rows', '50 rows', '100 rows','All'],
+      ],
+      "order": [[0, 'ASC']],
+      "dom": 'Blfrtip', // Blfrtip or Bfrtip
+      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print", 
+              {
+                className: "btn-info",
+                text: 'Tambah',
+                  action: function ( ) {
+                    showModalAgenda("{{ date('Y-m-d') }}",0);
+                  }
+              }]
+      }).buttons().container().appendTo('#tabelLayanan_wrapper .col-md-6:eq(0)');
+
+      $('#tabelLayanan_filter').css({'float':'right','display':'inline-block; background-color:black'});
+    });
+
+    $('#tabelLayanan tbody').on('click', 'tr', function () {
+      $("#success-message").hide();
+      $("#error-message").hide();
+    });
+
+    function showModalDokumen(uuid) { 
+        $.ajax({
+          url:'/dokumen/show/'+uuid,
+          type:'GET',
+          dataType: 'json',
+          success: function( response ) {
+            $("#overlay").hide();
+            tinymce.activeEditor.setContent(JSON.parse(response.konten));
+            $('#dokumenModal').modal('show');
+            //munculkan tombol
+            $('#buttonsDokumen').html('');
+            $('#buttonsDokumen').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="saveAndPrint()"><i class="fas fa-print"></i> Print Dokumen</button>');
+            // $('#buttons').append('<button type="button" onclick="window.location.assign(`'+"{{route('dokumen.edit', '')}}"+"/"+data.uuid+'`)" class="btn btn-warning btn-block" id="terima"><i class="fas fa-edit"></i> Edit Dokumen</button>');
+            // $('#buttonsDokumen').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Dokumen</button>');
+            }
+        });
+    };
+
+    tinymce.init({
+        selector: ".textarea-tinymce",
+        toolbar: '#mytoolbar',
+        lineheight_formats: "8pt 9pt 10pt 11pt 12pt 14pt 16pt 18pt 20pt 22pt 24pt 26pt 36pt",
+        // ukuran A4 Potrait
+        height: "500",
+        readonly: 1,
+        menubar: false,
+        toolbar: false,
+        plugins: 'textcolor table paste',
+        plugins: [
+            "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+            "searchreplace wordcount visualblocks visualchars code fullscreen",
+            "insertdatetime nonbreaking save table contextmenu directionality",
+            "emoticons template paste textcolor colorpicker textpattern"
+        ],
+        visual: false,
+        toolbar: "saveandprint",
+        convert_fonts_to_spans: true,
+        paste_word_valid_elements: "b,strong,i,em,h1,h2,u,p,ol,ul,li,a[href],span,color,font-size,font-color,font-family,mark,table,tr,td",
+        paste_retain_style_properties: "all",
+        automatic_uploads: true,
+        image_advtab: true,
+        file_picker_types: 'image',
+        paste_data_images: true,
+        relative_urls: false,
+        remove_script_host: false,
+        file_picker_callback: function(cb, value, meta) {
+            var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.onchange = function() {
+                var file = this.files[0];
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function() {
+                    var id = 'post-image-' + (new Date()).getTime();
+                    var blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                    var blobInfo = blobCache.create(id, file, reader.result);
+                    blobCache.add(blobInfo);
+                    cb(blobInfo.blobUri(), {
+                        title: file.name
+                    });
+                };
+            };
+            input.click();
+        }
+    });
+
+    function saveAndPrint() {
+        tinymce.activeEditor.execCommand('mcePrint');
+    }
+
+
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     $(function () {
 
     $('#tabelLogActivity').DataTable({
@@ -2662,7 +3582,11 @@
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
+<<<<<<< HEAD
       "ajax": "{{ env('APP_URL') }}/logactivity/index?uuid={{ $klien->uuid }}",
+=======
+      "ajax": "/logactivity/index?uuid={{ $klien->uuid }}",
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       "columns": [
         {
             "mData": "tanggal",
@@ -2684,6 +3608,7 @@
           ['10 rows', '25 rows', '50 rows', '100 rows','All'],
       ],
       "dom": 'Blfrtip', // Blfrtip or Bfrtip
+<<<<<<< HEAD
       "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print", 
               {
                 className: "btn-info",
@@ -2693,6 +3618,10 @@
                   }
               }]
       }).buttons().container().appendTo('#tabelLogActivity_wrapper .col-md-6:eq(0)');
+=======
+      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print"]
+      }).buttons().container().appendTo('#tabelRiwayat_wrapper .col-md-6:eq(0)');
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 
       $('#tabelLogActivity_filter').css({'float':'right','display':'inline-block; background-color:black'});
     
@@ -2704,7 +3633,11 @@
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
+<<<<<<< HEAD
       "ajax": "{{ env('APP_URL') }}/riwayatkejadian/index?uuid={{ $klien->uuid }}",
+=======
+      "ajax": "/riwayatkejadian/index?uuid={{ $klien->uuid }}",
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
 
@@ -2724,7 +3657,11 @@
         {
             "mData": "keterangan",
             "mRender": function (data, type, row) {
+<<<<<<< HEAD
               return row.keterangan.replace(/\n/g, '<br>');
+=======
+              return row.keterangan;
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             }
         }
       ],
@@ -2759,7 +3696,11 @@
     $('#tabelRiwayat tbody').on('click', 'tr', function () {
         $("#success-message").hide();
         $("#error-message").hide();
+<<<<<<< HEAD
         $.get(`{{ env('APP_URL') }}/riwayatkejadian/edit/`+this.id, function (data) {
+=======
+        $.get(`/riwayatkejadian/edit/`+this.id, function (data) {
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             $("#overlay").hide();
             $('#modelHeading').html("Edit Riwayat Kegiatan");
             $('#riwayatModal').modal('show');
@@ -2772,11 +3713,80 @@
         });
     });
 
+<<<<<<< HEAD
+=======
+    function editdata(params) {
+        $('.data_'+params).hide();
+        $('#tombol_edit_'+params).hide();
+        $('.input_'+params).show();
+        $('.input_'+params).next(".select2-container").show();
+        $('#tombol_save_'+params).show(); 
+    }
+
+    function getkotkab(field_id='') {
+        province_code = $('#provinsi_id_'+field_id).val();
+        if (field_id == 'pelapor') { //pelapor
+            var kotkabID = '{{ $pelapor->kotkab_id }}';
+        } else { //klien
+            var kotkabID = '{{ $klien->kotkab_id }}';
+        }
+        
+        $.ajax({
+          url:'{{ route("api.v1.kotkab") }}?province_code='+province_code,
+          type:'GET',
+          dataType: 'json',
+          success: function( response ) {
+                var option = '<option value="">-- Pilih Kotkab --</option>';
+                $.each(response.data, function(i, value) {
+                    var selected = ''
+                    if (kotkabID == value.code) {
+                        selected = `selected="selected"`;
+                    }
+
+                    option += `<option value="${value.code}" ${selected}>${value.name}</option>`
+                });
+                $('#kota_id_'+field_id).html(option);
+                //panggil kecamatan
+                getkecamatan(field_id);
+            }
+        });
+    };
+
+    function getkecamatan(field_id='') {
+        kota_code = $('#kota_id_'+field_id).val();
+        if (field_id == 'pelapor') { //pelapor
+            var kecamatanID = '{{ $pelapor->kecamatan_id }}';
+        } else { //klien
+            var kecamatanID = '{{ $klien->kecamatan_id }}';
+        }
+        $.ajax({
+          url:'{{ route("api.v1.kecamatan") }}?kota_code='+kota_code,
+          type:'GET',
+          dataType: 'json',
+          success: function( response ) {
+                var option = '<option value="">-- Pilih Kecamatan --</option>';
+                $.each(response.data, function(i, value) {
+                    var selected = ''
+                    if (kecamatanID == value.code) {
+                        selected = `selected="selected"`
+                    }
+                    option += `<option value="${value.code}" ${selected}>${value.name}</option>`
+                });
+                $('#kecamatan_id_'+field_id).html(option);
+            }
+        });
+    }; 
+
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     $('#submitRiwayatKejadian').click(function() {
         if(validateForm('riwayat')){
             let token   = $("meta[name='csrf-token']").attr("content");
             $.ajax({
+<<<<<<< HEAD
             url: "{{ route('riwayatkejadian.store') }}",
+=======
+            url: `/riwayatkejadian/store/`,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "POST",
             cache: false,
             data: {
@@ -2789,6 +3799,10 @@
             },
             success: function (response){
                 if (response.success != true) {
+<<<<<<< HEAD
+=======
+                    console.log(response);
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     $('#message').html(JSON.stringify(response));
                     $("#success-message").hide();
                     $("#error-message").show();
@@ -2835,15 +3849,26 @@
         let token   = $("meta[name='csrf-token']").attr("content");
         uuid = $('#uuid_riwayat').val();
         $.ajax({
+<<<<<<< HEAD
         url: `{{ env('APP_URL') }}/riwayatkejadian/destroy/`+uuid,
         type: "POST",
         cache: false,
         data: {
             _method:'DELETE',
+=======
+        url: `/riwayatkejadian/destroy/`+uuid,
+        type: "DELETE",
+        cache: false,
+        data: {
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             _token: token
         },
         success: function (response){
             if (response.success != true) {
+<<<<<<< HEAD
+=======
+                console.log(response);
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 $('#message').html(JSON.stringify(response));
                 $("#success-message").hide();
                 $("#error-message").show();
@@ -2881,7 +3906,11 @@
     function loadAsesmen() {
         $('#deleteAsesmen').hide();
         $.ajax({
+<<<<<<< HEAD
             url: `{{ env('APP_URL') }}/asesmen/index?uuid={{ $klien->uuid }}`,
+=======
+            url: `/asesmen/index?uuid={{ $klien->uuid }}`,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "GET",
             cache: false,
             success: function (response){
@@ -2889,11 +3918,15 @@
                 $('#kolomAsesmen').html('');
                 i=1;
                 data.forEach(e => {
+<<<<<<< HEAD
                     tombolHapus = '';
                     if (e.created_by == '{{ Auth::user()->id }}' || '{{ Auth::user()->jabatan }}' == 'Manajer Kasus') {
                         tombolHapus = '<button type="button" class="btn btn-danger btn-block" id="deleteAsesmen" onclick="deleteAsesmen(`'+e.uuid+'`)"><i class="fa fa-trash"></i> Hapus</button>';
                     }
                     $('#kolomAsesmen').prepend('<div class=\"card collapsed-card target\"> <div class=\"card-header\" data-card-widget=\"collapse\" style=\"cursor: pointer;\"> <h3 class=\"card-title\"><b>Asesmen ke-'+i+' oleh '+e.petugas+' ('+e.jabatan+')</b></h3> <div class=\"card-tools\"> <button type=\"button\" class=\"btn btn-tool\"><i class=\"fa fa-chevron-down\"></i> </button> </div> </div> <div class=\"card-body\"> <b>A. UPAYA PEMECAHAN MASALAH</b> </br> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Upaya yang pernah dilakukan : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\" >'+e.upaya+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Faktor pendukung pemecahan masalah : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.pendukung+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Faktor penghambat pemecahan masalah : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.hambatan+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Harapan/Kebutuhan klien : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.harapan+'</textarea> </div> </div> <div class=\"post clearfix\"></div> <b>B. BIOPSIKOSOSIAL</b> </br> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Biologis (kondisi fisik, catatan kesehatan, pengobatan)</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.fisik+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Psikologis</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.psikologis+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Sosial & Spiritual</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.sosial+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Hukum</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.hukum+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Catatan Lainnya</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.lainnya+'</textarea> </div> '+tombolHapus+'</div> </div> </div>');
+=======
+                    $('#kolomAsesmen').prepend('<div class=\"card collapsed-card target\"> <div class=\"card-header\" data-card-widget=\"collapse\" style=\"cursor: pointer;\"> <h3 class=\"card-title\"><b>Asesmen ke-'+i+' oleh '+e.petugas+' ('+e.jabatan+')</b></h3> <div class=\"card-tools\"> <button type=\"button\" class=\"btn btn-tool\"><i class=\"fa fa-chevron-down\"></i> </button> </div> </div> <div class=\"card-body\"> <b>A. UPAYA PEMECAHAN MASALAH</b> </br> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Upaya yang pernah dilakukan : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\" >'+e.upaya+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Faktor pendukung pemecahan masalah : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.pendukung+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Faktor penghambat pemecahan masalah : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.hambatan+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Harapan/Kebutuhan klien : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.harapan+'</textarea> </div> </div> <div class=\"post clearfix\"></div> <b>B. BIOPSIKOSOSIAL</b> </br> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Biologis (kondisi fisik, catatan kesehatan, pengobatan)</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.fisik+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Psikologis</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.psikologis+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Sosial & Spiritual</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.sosial+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Hukum</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.hukum+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Catatan Lainnya</label> <textarea readonly cols=\"30\" rows=\"2\" class=\"form-control\" style=\"resize: none;\">'+e.lainnya+'</textarea> </div> </div> </div> </div>');
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     i++;
                 });
             },
@@ -2907,7 +3940,11 @@
         if(validateForm('asesmen')){
             let token   = $("meta[name='csrf-token']").attr("content");
             $.ajax({
+<<<<<<< HEAD
             url: "{{ route('asesmen.store') }}",
+=======
+            url: `/asesmen/store/`,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "POST",
             cache: false,
             data: {
@@ -2973,6 +4010,7 @@
         }
     });
 
+<<<<<<< HEAD
     function deleteAsesmen(uuid) {
         if (confirm("Apakah anda yakin ingin menghapus laporan asesmen ini?") == true) {
             let token   = $("meta[name='csrf-token']").attr("content");
@@ -3013,15 +4051,29 @@
             cache: false,
             success: function (response){
                 $('#kolomPemantauan').html('');
+=======
+    function loadMonitoring() {
+        $('#deleteMonitoring').hide();
+        $.ajax({
+            url: `/monitoring/index?uuid={{ $klien->uuid }}`,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                $('#kolomMonitoring').html('');
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 
                 data = response.data;
                 i=1;
                 data.forEach(e => {
+<<<<<<< HEAD
                     tombolHapus = '';
                     if (e.created_by == '{{ Auth::user()->id }}' || '{{ Auth::user()->jabatan }}' == 'Manajer Kasus') {
                         tombolHapus = '<button type="button" class="btn btn-danger btn-block" id="deletePemantauan" onclick="deletePemantauan(`'+e.uuid+'`)"><i class="fa fa-trash"></i> Hapus</button>';
                     }
                     $('#kolomPemantauan').prepend('<div class=\"card collapsed-card target\"> <div class=\"card-header\" data-card-widget=\"collapse\" style=\"cursor: pointer;\"> <h3 class=\"card-title\"><b>Pemantauan & Evaluasi tanggal '+e.created_at_formatted+' oleh '+e.petugas+' ('+e.jabatan+')</b></h3> <div class=\"card-tools\"> <button type=\"button\" class=\"btn btn-tool\"><i class=\"fa fa-chevron-down\"></i> </button> </div> </div> <div class=\"card-body\"> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Kemajuan yang Dicapai / Kondisi Klien Saat Pemantauan & Evaluasi : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\" >'+e.kemajuan+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Tujuan yang Belum Tercapai : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.tujuan+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Rencana Tindak Lanjut : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.rencana+'</textarea> </div> '+tombolHapus+' </div> </div> </div>');
+=======
+                    $('#kolomMonitoring').prepend('<div class=\"card collapsed-card target\"> <div class=\"card-header\" data-card-widget=\"collapse\" style=\"cursor: pointer;\"> <h3 class=\"card-title\"><b>Monitoring tanggal '+e.created_at_formatted+' oleh '+e.petugas+' ('+e.jabatan+')</b></h3> <div class=\"card-tools\"> <button type=\"button\" class=\"btn btn-tool\"><i class=\"fa fa-chevron-down\"></i> </button> </div> </div> <div class=\"card-body\"> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Kemajuan yang Dicapai / Kondisi Klien Saat Monitoring : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\" >'+e.kemajuan+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Tujuan yang Belum Tercapai : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.tujuan+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Rencana Tindak Lanjut : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.rencana+'</textarea> </div> </div> </div> </div>');
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     i++;
                 });
             },
@@ -3031,6 +4083,7 @@
             });
     }
 
+<<<<<<< HEAD
     $('#submitPemantauan').click(function() {
         if(validateForm('pemantauan')){
             let token   = $("meta[name='csrf-token']").attr("content");
@@ -3044,10 +4097,26 @@
                 kemajuan: $("#pemantauan_kemajuan").val(),
                 tujuan: $("#pemantauan_tujuan").val(),
                 rencana: $("#pemantauan_rencana").val(),
+=======
+    $('#submitMonitoring').click(function() {
+        if(validateForm('monitoring')){
+            let token   = $("meta[name='csrf-token']").attr("content");
+            $.ajax({
+            url: `/monitoring/store/`,
+            type: "POST",
+            cache: false,
+            data: {
+                uuid: $('#uuid_monitoring').val(),
+                uuid_klien: '{{ $klien->uuid }}',
+                kemajuan: $("#monitoring_kemajuan").val(),
+                tujuan: $("#monitoring_tujuan").val(),
+                rencana: $("#monitoring_rencana").val(),
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 _token: token
             },
             success: function (response){
                 if (response.success != true) {
+<<<<<<< HEAD
                     $('#message-pemantauan').html(JSON.stringify(response));
                     $("#success-message-pemantauan").hide();
                     $("#error-message-pemantauan").show();
@@ -3063,6 +4132,23 @@
                     $("#pemantauan_tujuan").val('');
                     $("#pemantauan_rencana").val('');
                     $('#tambahPemantauanModal').scrollTop(0);
+=======
+                    $('#message-monitoring').html(JSON.stringify(response));
+                    $("#success-message-monitoring").hide();
+                    $("#error-message-monitoring").show();
+                }else{
+                    $('#message-monitoring').html(response.message);
+                    $("#success-message-monitoring").show();
+                    $("#error-message-monitoring").hide();
+                    loadMonitoring();
+
+                    // hapus semua inputan
+                    $('#uuid_monitoring').val('');
+                    $("#monitoring_kemajuan").val('');
+                    $("#monitoring_tujuan").val('');
+                    $("#monitoring_rencana").val('');
+                    $('#tambahMonitoringModal').scrollTop(0);
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 }
             },
             error: function (response){
@@ -3071,9 +4157,15 @@
                 },500);
                 console.log(response);
 
+<<<<<<< HEAD
                 $('#message-pemantauan').html(JSON.stringify(response));
                 $("#success-message-pemantauan").hide();
                 $("#error-message-pemantauan").show();
+=======
+                $('#message-monitoring').html(JSON.stringify(response));
+                $("#success-message-monitoring").hide();
+                $("#error-message-monitoring").show();
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             }
             }).done(function() { //loading submit form
                 setTimeout(function(){
@@ -3081,6 +4173,7 @@
                 },500);
             });
         }else{
+<<<<<<< HEAD
             $('#message-pemantauan').html('Mohon cek ulang data yang wajib diinput.');
             $("#success-message-pemantauan").hide();
             $("#error-message-pemantauan").show();
@@ -3122,6 +4215,17 @@
     function loadTerminasi() {
         $.ajax({
             url: `{{ env('APP_URL') }}/terminasi/index?uuid={{ $klien->uuid }}`,
+=======
+            $('#message-monitoring').html('Mohon cek ulang data yang wajib diinput.');
+            $("#success-message-monitoring").hide();
+            $("#error-message-monitoring").show();
+        }
+    });
+
+    function loadTerminasi() {
+        $.ajax({
+            url: `/terminasi/index?uuid={{ $klien->uuid }}`,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "GET",
             cache: false,
             success: function (response){
@@ -3158,7 +4262,11 @@
         if(validateForm('terminasi')){
             let token   = $("meta[name='csrf-token']").attr("content");
             $.ajax({
+<<<<<<< HEAD
             url: "{{ route('terminasi.store') }}",
+=======
+            url: `/terminasi/store/`,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "POST",
             cache: false,
             data: {
@@ -3213,7 +4321,11 @@
 
     function loadCatatan() {
         $.ajax({
+<<<<<<< HEAD
             url: `{{ env('APP_URL') }}/catatan/index?uuid={{ $klien->uuid }}`,
+=======
+            url: `/catatan/index?uuid={{ $klien->uuid }}`,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "GET",
             cache: false,
             success: function (response){
@@ -3245,7 +4357,11 @@
         if(validateForm('catatan')){
             let token   = $("meta[name='csrf-token']").attr("content");
             $.ajax({
+<<<<<<< HEAD
             url: "{{ route('catatan.store') }}",
+=======
+            url: `/catatan/store/`,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "POST",
             cache: false,
             data: {
@@ -3305,7 +4421,11 @@
         if(validateForm('catatan')){
             let token   = $("meta[name='csrf-token']").attr("content");
             $.ajax({
+<<<<<<< HEAD
             url: "{{ route('catatan.store') }}",
+=======
+            url: `/catatan/store/`,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "POST",
             cache: false,
             data: {
@@ -3353,7 +4473,11 @@
     });
 
     function editCatatan(uuid) {
+<<<<<<< HEAD
         // gak ada edit langsung hapus saja, ini cuman show
+=======
+        // gak ada edit langsung hapus saja
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         $("#success-message-catatan").hide();
         $("#error-message-catatan").hide();
         $('#submitCatatan').hide();
@@ -3361,7 +4485,11 @@
         $('#tambahCatatanModal').modal('show');
         let token   = $("meta[name='csrf-token']").attr("content");
         $.ajax({
+<<<<<<< HEAD
         url: `{{ env('APP_URL') }}/catatan/edit/`+uuid,
+=======
+        url: `/catatan/edit/`+uuid,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         type: "GET",
         cache: false,
         success: function (response){
@@ -3393,8 +4521,14 @@
     }
 
     function loadPublicUrl() {
+<<<<<<< HEAD
         $.ajax({
             url: `{{ env('APP_URL') }}/publicurl/index?uuid={{ $klien->uuid }}`,
+=======
+        $('#deleteMonitoring').hide();
+        $.ajax({
+            url: `/publicurl/index?uuid={{ $klien->uuid }}`,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "GET",
             cache: false,
             success: function (response){
@@ -3420,20 +4554,34 @@
     function submitPublicURL(functions) {
         let token   = $("meta[name='csrf-token']").attr("content");
         $.ajax({
+<<<<<<< HEAD
         url: "{{ route('publicurl.store') }}",
         type: "POST",
         cache: false,
         data: {
             uuid: $('#uuid_pemantauan').val(),
+=======
+        url: `/publicurl/store/`,
+        type: "POST",
+        cache: false,
+        data: {
+            uuid: $('#uuid_monitoring').val(),
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             uuid_klien: '{{ $klien->uuid }}',
             function: functions,
             _token: token
         },
         success: function (response){
             if (response.success != true) {
+<<<<<<< HEAD
                 $('#message-pemantauan').html(JSON.stringify(response));
                 $("#success-message-pemantauan").hide();
                 $("#error-message-pemantauan").show();
+=======
+                $('#message-monitoring').html(JSON.stringify(response));
+                $("#success-message-monitoring").hide();
+                $("#error-message-monitoring").show();
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             }else{
                 loadPublicUrl();
             }
@@ -3456,11 +4604,19 @@
         if (approval == '0') {
             alasan_approve = prompt("Masukan alasan tidak menerima pengajuan terminasi : ");
         }
+<<<<<<< HEAD
         if (alasan_approve != '') {
         if (alasan_approve || approval == 1) {
             let token = $("meta[name='csrf-token']").attr("content");
             $.ajax({
             url: "{{ route('terminasi.store') }}",
+=======
+        
+        if (alasan_approve || approval == 1) {
+            let token = $("meta[name='csrf-token']").attr("content");
+            $.ajax({
+            url: `/terminasi/store/`,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             type: "POST",
             cache: false,
             data: {
@@ -3490,9 +4646,12 @@
             });
             
         }
+<<<<<<< HEAD
         }else{
             alert('Masukan alasan tidak menerima pengajuan terminasi');
         }
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     }
 
     function hightlighting() {
@@ -3514,6 +4673,7 @@
     }
 
     function copyClipboard(uuid) {
+<<<<<<< HEAD
         // Get the text field
 
         var temp = $("<input>");
@@ -3523,6 +4683,13 @@
         temp.remove();
 
         // Alert the copied text
+=======
+        // alert('hiha');
+        var copyText = document.getElementById("link-form-"+uuid);
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); // For mobile devices
+        navigator.clipboard.writeText(copyText.value);
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         alert('Link berhasil dicopy');
     }
 
@@ -3542,6 +4709,7 @@
     }
 
     function check_kelengkapan_data(klien_id) {
+<<<<<<< HEAD
         $.ajax({
             url: `{{ env('APP_URL') }}/check_kelengkapan_data/`+klien_id,
             type: "GET",
@@ -3563,6 +4731,34 @@
 function check_kelengkapan_persetujuan_spv(klien_id) {
     $.ajax({
         url: `{{ env('APP_URL') }}/check_kelengkapan_persetujuan_spv/`+klien_id,
+=======
+    $.ajax({
+        url: `/check_kelengkapan_data/`+klien_id,
+        type: "GET",
+        cache: false,
+        success: function (response){
+            jml_null_kasus = response.nullKasus;
+            jml_null_klien = response.nullKlien;
+            jml_null_pelapor = response.nullPelapor;
+            total_null = jml_null_kasus.length + jml_null_klien.length + jml_null_pelapor.length;
+            total_all = parseInt(response.kolomKasus) + parseInt(response.kolomKlien) + parseInt(response.kolomPelapor);
+            total_isi = total_all - total_null;
+            persentase = (total_isi / total_all) * 100;
+            persentase = persentase.toFixed(2);
+            $('#persen_title_data').html(persentase);
+            $('#persen_data').css('width', persentase+'%');
+        },
+        error: function (response){
+            alert("Error");
+            console.log(response);
+        }
+        });
+}
+
+function check_kelengkapan_persetujuan_spv(klien_id) {
+    $.ajax({
+        url: `/check_kelengkapan_persetujuan_spv/`+klien_id,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         type: "GET",
         cache: false,
         success: function (response){
@@ -3585,7 +4781,11 @@ function check_kelengkapan_persetujuan_spv(klien_id) {
 
 function check_kelengkapan_spp(klien_id) {
     $.ajax({
+<<<<<<< HEAD
         url: `{{ env('APP_URL') }}/check_kelengkapan_spp/`+klien_id,
+=======
+        url: `/check_kelengkapan_spp/`+klien_id,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         type: "GET",
         cache: false,
         success: function (response){
@@ -3596,12 +4796,19 @@ function check_kelengkapan_spp(klien_id) {
                     $('#check_identifikasi').show();
                     kelengkapan_kasus = kelengkapan_kasus + 1;
                     $('#kelengkapan_kasus').html(kelengkapan_kasus);
+<<<<<<< HEAD
                     $('#tombol_edit_rekam').show();
                 }
                 // $('#modalAsesmen').show();
             }else{
                 $('.warningSPP').show();
                 $('#tombol_edit_rekam').hide();
+=======
+                }
+                $('#modalAsesmen').show();
+            }else{
+                $('.warningSPP').show();
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             }
         },
         error: function (response){
@@ -3613,7 +4820,11 @@ function check_kelengkapan_spp(klien_id) {
 
 function check_kelengkapan_asesmen(klien_id) {
     $.ajax({
+<<<<<<< HEAD
         url: `{{ env('APP_URL') }}/check_kelengkapan_asesmen/`+klien_id,
+=======
+        url: `/check_kelengkapan_asesmen/`+klien_id,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         type: "GET",
         cache: false,
         success: function (response){
@@ -3635,7 +4846,11 @@ function check_kelengkapan_asesmen(klien_id) {
 
 function check_kelengkapan_perencanaan(klien_id) {
     $.ajax({
+<<<<<<< HEAD
         url: `{{ env('APP_URL') }}/check_kelengkapan_perencanaan/`+klien_id,
+=======
+        url: `/check_kelengkapan_perencanaan/`+klien_id,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         type: "GET",
         cache: false,
         success: function (response){
@@ -3655,7 +4870,11 @@ function check_kelengkapan_perencanaan(klien_id) {
 
 function check_kelengkapan_pelaksanaan(jml_perencanaan, klien_id) {
     $.ajax({
+<<<<<<< HEAD
         url: `{{ env('APP_URL') }}/check_kelengkapan_pelaksanaan/`+klien_id,
+=======
+        url: `/check_kelengkapan_pelaksanaan/`+klien_id,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         type: "GET",
         cache: false,
         success: function (response){
@@ -3676,14 +4895,24 @@ function check_kelengkapan_pelaksanaan(jml_perencanaan, klien_id) {
         });
 }
 
+<<<<<<< HEAD
 function check_kelengkapan_pemantauan(klien_id) {
     $.ajax({
         url: `{{ env('APP_URL') }}/check_kelengkapan_pemantauan/`+klien_id,
+=======
+function check_kelengkapan_monitoring(klien_id) {
+    $.ajax({
+        url: `/check_kelengkapan_monitoring/`+klien_id,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         type: "GET",
         cache: false,
         success: function (response){
             if (response > 0) {
+<<<<<<< HEAD
                 $('#check_pemantauan').show();
+=======
+                $('#check_monitoring').show();
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 kelengkapan_kasus = kelengkapan_kasus + 1;
                 $('#kelengkapan_kasus').html(kelengkapan_kasus);
             }
@@ -3697,7 +4926,11 @@ function check_kelengkapan_pemantauan(klien_id) {
 
 function check_kelengkapan_terminasi(klien_id) {
     $.ajax({
+<<<<<<< HEAD
         url: `{{ env('APP_URL') }}/check_kelengkapan_terminasi/`+klien_id,
+=======
+        url: `/check_kelengkapan_terminasi/`+klien_id,
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         type: "GET",
         cache: false,
         success: function (response){
@@ -3724,6 +4957,7 @@ $(function(){
     }else{
         $('.akses_petugas').css('display', 'none');
     }
+<<<<<<< HEAD
 
 
     getJenisKekerasan();
@@ -3810,6 +5044,9 @@ function getJenisKekerasan() {
     $('#formTerlapor').show();
     $('#buttonTerlapor').hide();
   }
+=======
+})
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 </script>
 {{-- include modal agenda --}}
 @include('agenda.modal')

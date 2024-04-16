@@ -3,12 +3,20 @@
 @section('content')
 <style type="text/css">
     .scroll-area {
+<<<<<<< HEAD
         height: 1000px;
+=======
+        height: 800px;
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         overflow-y: scroll;
     }
 
     .scroll-area::-webkit-scrollbar {
+<<<<<<< HEAD
         width: 3px;
+=======
+        width: 8px;
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         background-color: #F5F5F5;
     }
 
@@ -48,6 +56,7 @@
         <div class="col-sm-6">
         <h1><i class="nav-icon fas fa-file-alt"></i> Buat Dokumen</h1>
         </div>
+<<<<<<< HEAD
         <div class="col-sm-6 text-right">
           <input type="checkbox" class="btn-xs" id="kontainerwidth"
           {{ Auth::user()->settings_kontainer_width == 'normal' ? 'checked' : '' }}
@@ -56,13 +65,24 @@
                 data-off-text="Fullwidth"
                 data-off-color="default" 
                 data-on-color="default">
+=======
+        <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item active">Detail Kasus</li>
+        </ol>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         </div>
         </div>
     </div>
 </section>
 
 <div class="col-md-12">
+<<<<<<< HEAD
     <!-- general form e500lements -->
+=======
+    <!-- general form elements -->
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Buat Dokumen > <span class='titleFormOutput' id='titleFormOutput'></span></h3>
@@ -88,7 +108,10 @@
             </div>
             @endif
             <input type="text" name="uuid" class="form-control" value="{{ $template->uuid }}" hidden>
+<<<<<<< HEAD
             <input type="text" name="blank_template" id="" value="{{ $template->blank_template }}" hidden>
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             <div class="card-body">
                 <fieldset>
                     <script>
@@ -160,7 +183,11 @@
                             <input type="text" name="judul" class="form-control" id="titleForm" value="">
                         </div>
                         <div class="form-card">
+<<<<<<< HEAD
                             <label>Tambah Agenda Terkait (max 1 agenda, jika lebih edit pada halaman agenda) </label>
+=======
+                            <label>Agenda Terkait </label>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                             <span style="font-size:13px">(Belum membuat agenda? <a href="#" type="button" onclick="showModalAgenda('{{ date('Y-m-d') }}',0)">klik disini</a>)</span>
                             <select name="uuid_tindak_lanjut" class="form-control select2bs4" id="uuid_tindak_lanjut" style="width:100%">
                             </select>
@@ -230,7 +257,11 @@
                             </div>
                           <div class="form-group">
                               <label>Catatan</label>
+<<<<<<< HEAD
                               <textarea name="catatan" class="form-control" id="catatan_dokumen" cols="30" rows="10"></textarea>
+=======
+                              <textarea name="catatan" class="form-control" id="catatan_dokumen" cols="30" rows="2"></textarea>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                           </div>
                           <span style="font-size: 14px">*Laporan Tindak Lanjut tersimpan pada tanggal : <span id='ct' ></span></span>
                         </br>
@@ -246,11 +277,18 @@
 
                             <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
                                 <main>
+<<<<<<< HEAD
                                     {{-- <div class="centered"> --}}
                                         <div class="scroll-area">
                                             {{-- <div class="row-editor"> --}}
                                                 {{-- <div class="form-control editor" id="preview"> --}}
                                                     <div class="editor" id="preview">
+=======
+                                    <div class="centered">
+                                        <div class="scroll-area">
+                                            <div class="row-editor">
+                                                <div class="form-control editor" id="preview">
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                                                     <?php
                                                     $konten = json_decode($template->konten);
                                                     preg_match_all('/{{(.*?)}}/', $konten, $variable);
@@ -271,9 +309,15 @@
                                                     ?>
                                                 </div>
                                                 <textarea name="konten" id="konten" readonly hidden></textarea>
+<<<<<<< HEAD
                                             {{-- </div> --}}
                                         </div>
                                     {{-- </div> --}}
+=======
+                                            </div>
+                                        </div>
+                                    </div>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                                 </main>
                             </body>
                         </div>
@@ -287,11 +331,18 @@
 
                             <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
                                 <main>
+<<<<<<< HEAD
                                     {{-- <div class="centered"> --}}
                                         <div class="scroll-area">
                                             {{-- <div class="row-editor"> --}}
                                                 {{-- <div class="form-control editor"> --}}
                                                 <div class="editor">
+=======
+                                    <div class="centered">
+                                        <div class="scroll-area">
+                                            <div class="row-editor">
+                                                <div class="form-control editor">
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                                                     <?php
                                                     //replace contenteditable dan tombol tabel
                                                     $konten = str_replace('[add row]', '', $konten);
@@ -300,9 +351,15 @@
                                                     $konten = preg_replace('/{{(.*?)}}/', '', $konten); ?>
                                                     <div id="last-priview"></div>
                                                 </div>
+<<<<<<< HEAD
                                             {{-- </div>--}}
                                         </div> 
                                     {{-- </div> --}}
+=======
+                                            </div>
+                                        </div>
+                                    </div>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                                 </main>
                             </body>
                         </div>
@@ -326,6 +383,7 @@
 
 <script>
 
+<<<<<<< HEAD
     // enter menjadi newline
     document.addEventListener('DOMContentLoaded', function() {
                                                         var inputVariables = document.querySelectorAll('.input-variable');
@@ -352,6 +410,8 @@
                                                         });
                                                     });
 
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 $(document).ready(function () {
     //Initialize Select2 Elements
   $('.select2bs4').select2({

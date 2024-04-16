@@ -13,7 +13,11 @@ class CreateDifabelTypesTable extends Migration
      */
     public function up()
     {
+<<<<<<< HEAD
         Schema::create('t_tipe_disabilitas', function (Blueprint $table) {
+=======
+        Schema::create('difabel_type', function (Blueprint $table) {
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             $table->id();
             $table->integer('klien_id');
             $table->string('value');
@@ -28,6 +32,10 @@ class CreateDifabelTypesTable extends Migration
      */
     public function down()
     {
+<<<<<<< HEAD
         Schema::dropIfExists('t_tipe_disabilitas');
+=======
+        Schema::dropIfExists('difabel_type');
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     }
 }

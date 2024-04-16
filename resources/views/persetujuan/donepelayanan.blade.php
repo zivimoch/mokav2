@@ -191,6 +191,10 @@
 </div>
 @endif
 </div>
+<<<<<<< HEAD
+=======
+{{-- tanda tangan / signature pad --}}
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 
 {{-- ini untuk notifikasi ketika diklik redirect --}}
 <input type="hidden" id="notif_receiver" data-notif="{{ Request::get('notif') }}" value="{{ Request::get('notif') }}">

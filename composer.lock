@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "dfa42e569e3f0f30e2c5bfd95501f876",
+=======
+    "content-hash": "022e8cc9a3981854c2c99e58c2e2de46",
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -123,6 +127,7 @@
             "time": "2021-08-15T20:50:18+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "codedge/laravel-fpdf",
             "version": "1.9.0",
             "source": {
@@ -189,6 +194,8 @@
             "time": "2022-07-22T09:07:18+00:00"
         },
         {
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             "name": "composer/semver",
             "version": "3.3.2",
             "source": {
@@ -702,6 +709,7 @@
             "time": "2022-09-18T07:06:19+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "firebase/php-jwt",
             "version": "v6.10.0",
             "source": {
@@ -765,6 +773,8 @@
             "time": "2023-12-01T16:26:39+00:00"
         },
         {
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             "name": "fruitcake/laravel-cors",
             "version": "v2.2.0",
             "source": {
@@ -844,6 +854,7 @@
             "time": "2022-02-23T14:25:13+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "google/apiclient",
             "version": "v2.14.0",
             "source": {
@@ -1016,6 +1027,8 @@
             "time": "2023-04-05T15:11:57+00:00"
         },
         {
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             "name": "graham-campbell/result-type",
             "version": "v1.1.0",
             "source": {
@@ -3330,6 +3343,7 @@
             "time": "2022-01-27T09:35:39+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "paragonie/constant_time_encoding",
             "version": "v2.6.3",
             "source": {
@@ -3447,6 +3461,8 @@
             "time": "2020-10-15T08:29:30+00:00"
         },
         {
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             "name": "phpoffice/phpspreadsheet",
             "version": "1.28.0",
             "source": {
@@ -3627,6 +3643,7 @@
             "time": "2022-07-30T15:51:26+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "phpseclib/phpseclib",
             "version": "3.0.37",
             "source": {
@@ -3786,6 +3803,8 @@
             "time": "2016-08-06T20:24:11+00:00"
         },
         {
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             "name": "psr/clock",
             "version": "1.0.0",
             "source": {
@@ -4269,6 +4288,7 @@
             "time": "2022-11-06T15:29:46+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "pulkitjalan/google-apiclient",
             "version": "5.0.0",
             "source": {
@@ -4333,6 +4353,8 @@
             "time": "2022-02-16T05:35:53+00:00"
         },
         {
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             "name": "ralouphie/getallheaders",
             "version": "3.0.3",
             "source": {
@@ -4554,6 +4576,7 @@
             "time": "2021-09-25T23:10:38+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "revolution/laravel-google-sheets",
             "version": "5.8.1",
             "source": {
@@ -4617,6 +4640,8 @@
             "time": "2022-04-21T13:21:21+00:00"
         },
         {
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             "name": "swiftmailer/swiftmailer",
             "version": "v6.3.0",
             "source": {

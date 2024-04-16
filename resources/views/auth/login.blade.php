@@ -23,15 +23,19 @@
 <div class="card">
 <div class="card-body login-card-body">
 <p class="login-box-msg">Sign in to start your session</p>
+<<<<<<< HEAD
 @if ($errors->any())
 <div class="alert alert-danger alert-dismissible fade show" role="alert">
     Email atau password yang anda masukan salah! Silahkan hubungi admin.
 </div>
 @endif
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 <form method="POST" action="{{ route('login') }}">
 @csrf
 <div class="input-group mb-3">
     <select name="email" class="form-control select2" style="width: 100%;">
+<<<<<<< HEAD
         <option value="penerima@moka.ol">Penerima Pengaduan</option>
         <option value="mk@moka.ol">Manajer Kasus</option>
         <option value="pk@moka.ol">Pendamping Kasus</option>
@@ -51,6 +55,27 @@
 </div>
 <div class="input-group mb-3">
 <input type="password" name="password" class="form-control" placeholder="Password" value="qwerty123">
+=======
+    <option value="penerima@moka.ol">Penerima Pengaduan</option>
+    <option value="mk@moka.ol">Manajer Kasus</option>
+    <option value="pk@moka.ol">Pendamping Kasus</option>
+    <option value="psikolog@moka.ol">Psikolog</option>
+    <option value="advokat@moka.ol">Advokat</option>
+    <option value="paralegal@moka.ol">Paralegal</option>
+    <option value="urc@moka.ol">Unit Reaksi Cepat</option>
+    <option value="spv@moka.ol">Supervisor Kasus</option>
+    <option value="ta@moka.ol">Tenaga Ahli</option>
+    <option value="timdata@moka.ol">Tim Data</option>
+    <option value="kepala@moka.ol">Kepala Instansi</option>
+    <option value="advokat.spv@moka.ol">Advokat Sebagai SPV</option>
+    <option value="psikolog.spv@moka.ol">Psikolog Sebagai SPV</option>
+    <option value="konselor@moka.ol">Konselor</option>
+    <option value="sekretariat@moka.ol">Sekretariat</option>
+</select>
+</div>
+<div class="input-group mb-3">
+<input type="password" value="qwerty123" name="password" class="form-control" placeholder="Password">
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 <div class="input-group-append">
 <div class="input-group-text">
 <span class="fas fa-lock"></span>

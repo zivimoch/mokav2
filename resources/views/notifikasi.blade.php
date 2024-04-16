@@ -23,6 +23,7 @@
     <section class="content">
       <div class="container-fluid">
         <div class="card">
+<<<<<<< HEAD
           <ul class="nav nav-tabs nav-justified" id="custom-content-below-tab" role="tablist">
             <li class="nav-item">
             <a class="nav-link active" id="custom-content-below-home-tab" style="color : black" data-toggle="pill" href="#custom-content-below-home" role="tab" aria-controls="custom-content-below-home" aria-selected="true">Task</a>
@@ -64,6 +65,58 @@
           </div>
       </div><!-- /.container-fluid -->
     </section>
+=======
+            {{-- <div class="card-header">
+            <h3 class="card-title">DataTable with default features</h3>
+            </div> --}}
+            
+            <div class="card-body" style="overflow-x: scroll">
+            <table id="example1" class="table table-bordered  table-hover" style="cursor:pointer">
+            <thead>
+            <tr>
+            <th>Sudah DiTL 2 | Belum DiTL 1</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr id="1">
+            <td>
+                <div class="d-flex w-100 justify-content-between">
+                <h6 class="mb-1">Korban / Pelapor </h6>
+                <small>2 hari lalu</small>
+                </div>
+                <p class="mb-1">Pelapor / Korban menyetujui laporan pengaduan. Silahkan tentukan Supervisor</p>
+                <small>Dinda Rika Rahim (29) | </small>
+            </td>
+            </tr>
+            <tr id="2">
+                <td>
+                    <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">Korban / Pelapor </h6>
+                    <small>2 hari lalu</small>
+                    </div>
+                    <p class="mb-1">Pelapor / Korban menyetujui laporan pengaduan. Silahkan tentukan Supervisor</p>
+                    <small>Dinda Rika Rahim (29) | </small>
+                </td>
+            </tr>
+            <tr id="3">
+                <td>
+                    <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">Korban / Pelapor </h6>
+                    <small>2 hari lalu</small>
+                    </div>
+                    <p class="mb-1">Pelapor / Korban menyetujui laporan pengaduan. Silahkan tentukan Supervisor</p>
+                    <small>Dinda Rika Rahim (29) | </small>
+                </td>
+            </tr>
+            </tbody>
+            </table>
+            </div>
+            
+            </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     {{-- DataTable --}}
 
 
@@ -81,6 +134,7 @@
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
 <script>
+<<<<<<< HEAD
    $(function () {
 
     $('#tabelTask').DataTable({
@@ -166,5 +220,17 @@
       $('#tabelNotif_filter').css({'float':'right','display':'inline-block; background-color:black'});
 
     });
+=======
+    $(function () {
+      $("#example1").DataTable({
+        "responsive": false, "lengthChange": false, "autoWidth": false
+      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+      
+    });
+
+    $('#example1 tbody').on( 'click', 'tr', function () {
+        alert('redirect ke : '+this.id);
+    } );
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
   </script>
 @endsection

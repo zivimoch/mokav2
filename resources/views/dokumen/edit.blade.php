@@ -3,12 +3,20 @@
 @section('content')
 <style type="text/css">
     .scroll-area {
+<<<<<<< HEAD
         height: 500px;
+=======
+        height: 800px;
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         overflow-y: scroll;
     }
 
     .scroll-area::-webkit-scrollbar {
+<<<<<<< HEAD
         width: 3px;
+=======
+        width: 8px;
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         background-color: #F5F5F5;
     }
 
@@ -47,6 +55,7 @@
         <div class="row mb-2">
         <div class="col-sm-6">
         <h1><i class="nav-icon fas fa-file-alt"></i> Edit Dokumen</h1>
+<<<<<<< HEAD
         </div>
         <div class="col-sm-6 text-right">
           <input type="checkbox" class="btn-xs" id="kontainerwidth"
@@ -56,6 +65,15 @@
                 data-off-text="Fullwidth"
                 data-off-color="default" 
                 data-on-color="default">
+=======
+        AKAN DILANJUTKAN NANTI, SEKARANG HAPUS DULU SAJA DAN BIKIN BARU KETIKA MAU ADA PERUBAHAN UNTUK DISEMATKAN DI AGENDA
+        </div>
+        <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item active">Detail Kasus</li>
+        </ol>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         </div>
         </div>
     </div>
@@ -73,9 +91,14 @@
         </div>
         <!-- /.card-header -->
         <!-- form start -->
+<<<<<<< HEAD
         <form method="POST" action="{{ route('dokumen.update', $data->id) }}" role="form" id="wzform">
             @csrf
             @method('put')
+=======
+        <form method="POST" action="{{ route('dokumen.store') }}" role="form" id="wzform">
+            @csrf
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('response') }}. <a href="{{ route('dokumen') }}">Lihat data</a>
@@ -160,6 +183,7 @@
                             <input type="text" name="judul" class="form-control" id="titleForm" value="{{ $data->judul }}">
                         </div>
                         <div class="form-card">
+<<<<<<< HEAD
                             <label>Agenda Terkait : </label><br>
                             @php
                                 $no_agenda = 1;
@@ -173,6 +197,9 @@
                         </div>
                         <div class="form-card">
                             <label>Tambah Agenda Terkait (max 1 agenda, jika lebih edit pada halaman agenda)</label>
+=======
+                            <label>Agenda Terkait </label>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                             <span style="font-size:13px">(Belum membuat agenda? <a href="#" type="button" onclick="showModalAgenda('{{ date('Y-m-d') }}',0)">klik disini</a>)</span>
                             <select name="uuid_tindak_lanjut" class="form-control select2bs4" id="uuid_tindak_lanjut" style="width:100%">
                             </select>
@@ -258,6 +285,7 @@
 
                             <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
                                 <main>
+<<<<<<< HEAD
                                     {{-- <div class="centered"> --}}
                                         <div class="scroll-area">
                                             {{-- <div class="row-editor"> --}}
@@ -265,6 +293,14 @@
                                                     <div class="editor" id="preview">
                                                     <?php
                                                     $konten = json_decode($data->konten);
+=======
+                                    <div class="centered">
+                                        <div class="scroll-area">
+                                            <div class="row-editor">
+                                                <div class="form-control editor" id="preview">
+                                                    <?php
+                                                    $konten = json_decode($template->konten);
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                                                     preg_match_all('/{{(.*?)}}/', $konten, $variable);
 
                                                     $a = array_unique($variable[0]);
@@ -283,9 +319,15 @@
                                                     ?>
                                                 </div>
                                                 <textarea name="konten" id="konten" readonly hidden></textarea>
+<<<<<<< HEAD
                                             {{-- </div> --}}
                                         </div>
                                     {{-- </div> --}}
+=======
+                                            </div>
+                                        </div>
+                                    </div>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                                 </main>
                             </body>
                         </div>
@@ -299,11 +341,18 @@
 
                             <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
                                 <main>
+<<<<<<< HEAD
                                     {{-- <div class="centered"> --}}
                                         <div class="scroll-area">
                                             {{-- <div class="row-editor"> --}}
                                                 {{-- <div class="form-control editor"> --}}
                                                     <div class="editor" id="preview">
+=======
+                                    <div class="centered">
+                                        <div class="scroll-area">
+                                            <div class="row-editor">
+                                                <div class="form-control editor">
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                                                     <?php
                                                     //replace contenteditable dan tombol tabel
                                                     $konten = str_replace('[add row]', '', $konten);
@@ -312,10 +361,16 @@
                                                     $konten = preg_replace('/{{(.*?)}}/', '', $konten); ?>
                                                     <div id="last-priview"></div>
                                                 </div>
+<<<<<<< HEAD
                                                 {{-- </div> --}}
                                             {{-- </div> --}}
                                         </div>
                                     {{-- </div> --}}
+=======
+                                            </div>
+                                        </div>
+                                    </div>
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                                 </main>
                             </body>
                         </div>
@@ -338,6 +393,7 @@
 <script src="{{ asset('/source/js/validation.js') }}"></script>
 
 <script>
+<<<<<<< HEAD
 // enter menjadi newline
 document.addEventListener('DOMContentLoaded', function() {
     var inputVariables = document.querySelectorAll('.input-variable');
@@ -363,6 +419,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+=======
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 
 $(document).ready(function () {
     //Initialize Select2 Elements

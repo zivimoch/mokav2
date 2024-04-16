@@ -1,6 +1,7 @@
 @extends('layouts.template')
 
 @section('content')
+<<<<<<< HEAD
 <style>
   .cursor-disabled {
     cursor:not-allowed;
@@ -243,4 +244,7 @@ Sudah di
 </script>
 {{-- include modal agenda --}}
 @include('agenda.modal')
+=======
+list
+>>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 @endsection
