@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Laravolt\Indonesia\Models\Kabupaten;
 use Laravolt\Indonesia\Models\Kecamatan;
-<<<<<<< HEAD
 use Laravolt\Indonesia\Models\Kelurahan;
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 
 class WilayahController extends Controller
 {
@@ -51,7 +48,6 @@ class WilayahController extends Controller
         
         return response()->json($response, 200);   
     }
-<<<<<<< HEAD
 
     public function getKelurahan()
     {
@@ -72,6 +68,4 @@ class WilayahController extends Controller
         
         return response()->json($response, 200);   
     }
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 }

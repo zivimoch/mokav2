@@ -34,16 +34,10 @@ class PetugasController extends Controller
                          ->leftJoin('petugas as b', 'b.user_id', 'a.id')
                          ->whereNull('a.deleted_at')
                          ->whereNull('b.deleted_at')
-<<<<<<< HEAD
                         ->where('a.jabatan','!=' ,'Supervisor Kasus') // filter agar tidak bisa milih satpel
                         ->groupBy('a.id', 'a.name')
                          ->select('a.id','a.name');
              if ($request->klien_id != null && Auth::user()->jabatan != 'Super Admin') {
-=======
-                         ->groupBy('a.id')
-                         ->select('a.id','a.name');
-             if ($request->klien_id != null) {
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                  $data = $data->where('b.klien_id', $request->klien_id);
              }
              $data = $data->limit(100)->get();
@@ -52,18 +46,11 @@ class PetugasController extends Controller
                         ->leftJoin('petugas as b', 'b.user_id', 'a.id')
                         ->whereNull('a.deleted_at')
                         ->whereNull('b.deleted_at')
-<<<<<<< HEAD
                         ->where('a.jabatan','!=' ,'Supervisor Kasus') // filter agar tidak bisa milih satpel
                          ->groupBy('a.id','a.name')
                          ->select('a.id','a.name')
                         ->where('a.name', 'like', '%' .$search . '%');
             if ($request->klien_id != null && Auth::user()->jabatan != 'Super Admin') {
-=======
-                         ->groupBy('a.id')
-                         ->select('a.id','a.name')
-                        ->where('a.name', 'like', '%' .$search . '%');
-            if ($request->klien_id != null) {
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 $data = $data->where('b.klien_id', $request->klien_id);
             }
             $data = $data->limit(100)->get();

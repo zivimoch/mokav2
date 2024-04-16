@@ -2,25 +2,18 @@
 
 namespace App\Http\Controllers;
 
-<<<<<<< HEAD
 use App\Models\MBentukKekerasan;
 use App\Models\MJenisKekerasan;
 use App\Models\MKategoriKasus;
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 use App\Models\Petugas;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-<<<<<<< HEAD
 use Illuminate\Support\Facades\DB;
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 
 class OpsiController extends Controller
 {
     // data kategori lokasi / tempat kejadian
-<<<<<<< HEAD
     public function api_kategori_lokasi()
     {
         $data = [
@@ -35,33 +28,6 @@ class OpsiController extends Controller
             'Transportasi' => ['Ojek Online', 'Taksi / Mobile Online', 'Taksi Konvensional', 'Bajaj', 'Transjakarta', 'MRT', 'LRT', 'KRL', 'Kereta Cepat', 'Angkot', 'Kendaraan Pribadi'],
             'Public Area' => ['Jalan', 'Taman']
         ];
-=======
-    public function api_tempat_kejadian()
-    {
-        $data = ['Rumah Tinggal', //Tempat tinggal
-                'Apartemen',
-                'Kos-kosan',
-                'Hotel', //Penginapan
-                'Villa',
-                'Kantor Swasta', //Lokasi komersial
-                'Pabrik',
-                'Toko',
-                'Pasar',
-                'Museum', //Cagar budaya
-                'Tempat Wisata',
-                'Kantor Pemerintahan', //Pemerintahan
-                'Bajaj', //Transportasi
-                'Lahanan Transportasi Online', 
-                'Transjakarta', 
-                'MRT', 
-                'LRT', 
-                'KRL', 
-                'Angkot', 
-                'Kendaraan Pribadi', 
-                'Media Online / Digital',  //Online
-                'Jalan'
-            ];
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 
         return $data;
     }
@@ -163,13 +129,9 @@ class OpsiController extends Controller
                 'POLRI', 
                 'Pedagang', 
                 'Petani', 
-<<<<<<< HEAD
                 'Nelayan',
                 'ART / Pembantu'
             ];
-=======
-                'Nelayan'];
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 
         return $data;
     }
@@ -198,11 +160,8 @@ class OpsiController extends Controller
                 'Adik Tiri',
                 'Kakak Kandung',
                 'Kakak Tiri',
-<<<<<<< HEAD
                 'Kakak Ipar',
                 'Adik Ipar',
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 'Bibi',
                 'Sepupu',
                 'Keponakan', 
@@ -220,12 +179,8 @@ class OpsiController extends Controller
                 'Customer',
                 'Driver Ojek Online',
                 'Driver Taksi Online',
-<<<<<<< HEAD
                 'Driver Transportasi Publik',
                 'Supir Pribadi'
-=======
-                'Driver Transportasi Publik'
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 ];
                 
         return $data;
@@ -243,41 +198,28 @@ class OpsiController extends Controller
                 'Adik Tiri',
                 'Kakak Kandung',
                 'Kakak Tiri',
-<<<<<<< HEAD
                 'Kakak Ipar',
                 'Adik Ipar',
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 'Paman',
                 'Bibi',
                 'Sepupu',
                 'Keponakan',
                 'Kakek',
                 'Nenek',
-<<<<<<< HEAD
                 'Suami',
                 'Mantan Suami',
-=======
-                'Istri',
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 'Tetangga',
                 'Pacar',
                 'Teman',
                 'Guru',
-<<<<<<< HEAD
                 'Staff TU',
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 'Majikan',
                 'ART / Pembantu',
                 'Rekan Kerja',
                 'Bukan Siapa-Siapa / Tak Dikenal',
                 'Pedagang',
                 'Customer',
-<<<<<<< HEAD
                 'Supir Pribadi',
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 'Driver Ojek Online',
                 'Driver Taksi Online',
                 'Driver Transportasi Publik',
@@ -292,7 +234,6 @@ class OpsiController extends Controller
 
     public function api_kekhususan()
     {
-<<<<<<< HEAD
         $data = ['Tinggal dengan Terlapor',
                 'Tidak memiliki Keluarga Dekat',
                 'Ancaman dibunuh',
@@ -308,19 +249,6 @@ class OpsiController extends Controller
         $data = ['Fasilitasi SPP',
                 'Pemberian Informasi',
                 'Layanan Kedaruratan'
-=======
-        $data = ['Kehamilan (dampak kekerasan)',
-                'HIV',
-                'IMS',
-                'Perkawinan usia anak',
-                'Putus sekolah',
-                'Nikah siri',
-                'Terlapor sudah ditahan',
-                'Kasus sudah dilimpahkan ke kejaksaan',
-                'Proses persidangan sudah berjalan',
-                'Saling lapor',
-                'Perebutan kuasa asuh'
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 ];
                 
         return $data;
@@ -409,26 +337,16 @@ class OpsiController extends Controller
                 
         return $data;
     }
-<<<<<<< HEAD
     // data media pengaduan
-=======
-
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     public function api_media_pengaduan()
     {
         $data = ['Datang Langsung',
                 'Pos Pengaduan RPTRA',
                 'Hotline',
-<<<<<<< HEAD
                 // 'Jakarta Siaga 112',
                 // 'PUSPA',
                 // 'SAPA'
             ];
-=======
-                'Jakarta Siaga 112',
-                'PUSPA',
-                'SAPA'];
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 
         return $data;
     }
@@ -565,7 +483,6 @@ class OpsiController extends Controller
                 'RSIA Sayyidah',
                 'RSIA Tambak',
                 'RSIA YPK Mandiri',
-<<<<<<< HEAD
                 'RSUD Cempaka Putih',
                 'RSUD Cilincing',
                 'RSUD Johar Baru',
@@ -577,19 +494,6 @@ class OpsiController extends Controller
                 'RSUD Sawah Besar',
                 'RSUD tebet',
                 'RSUDO Jakarta',
-=======
-                'RSK Cempaka Putih',
-                'RSK Cilincing',
-                'RSK Johar Baru',
-                'RSK Kemayoran',
-                'RSK Kembangan',
-                'RSK Koja',
-                'RSK Mampang Prapatan',
-                'RSK Pademangan',
-                'RSK Sawah Besar',
-                'RSK tebet',
-                'RSKO Jakarta',
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 'RSU Adhyaksa',
                 'RSU Alfauzan',
                 'RSU Bunda',
@@ -606,19 +510,11 @@ class OpsiController extends Controller
                 'RSUD Taman Sari',
                 'RSUD Tanah Abang',
                 'RSUD Tanjung Priok',
-<<<<<<< HEAD
                 'RSUD Ciracas',
                 'RSUD Jagakarsa',
                 'RSUD Kalideres',
                 'RSUD Kramat Jati',
                 'RSUD Matraman',
-=======
-                'RSUK Ciracas',
-                'RSUK Jagakarsa',
-                'RSUK Kalideres',
-                'RSUK Kramat Jati',
-                'RSUK Matraman',
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 'RS Olahraga Nasional',
                 'RS Cilandak',
                 'RS Satya Negara',
@@ -680,14 +576,10 @@ class OpsiController extends Controller
                 'PUSKESMAS Kec. Pulogadung',
                 'PUSKESMAS Kec. Matraman',
                 'PUSKESMAS Kec. Kepulauan Seribu Utara',
-<<<<<<< HEAD
                 'PUSKESMAS Kec. Kepulauan Seribu Selatan',
                 'PUSKESMAS Kec. Jagakarsa',
                 'UPTD PPA Tangsel'
             ];
-=======
-                'PUSKESMAS Kec. Kepulauan Seribu Selatan'];
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 
         return $data;
     }
@@ -700,10 +592,7 @@ class OpsiController extends Controller
                 'KemenPPA',
                 'Kepolisian',
                 'Masyarakat',
-<<<<<<< HEAD
                 'Jakarta Siaga 112',
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 'Media Sosial',
                 'Korban / Keluarga Korban',
                 'RS Abdi Waluyo',
@@ -711,10 +600,7 @@ class OpsiController extends Controller
                 'RS Asri',
                 'RS Atmajaya',
                 'RS Aulia',
-<<<<<<< HEAD
                 'UPTD PPA Tangsel',
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 'RS Bakti Mulia',
                 'RS Budhi Asih',
                 'RS Budi Kemuliaan',
@@ -818,11 +704,7 @@ class OpsiController extends Controller
                 'RS Ukrida',
                 'RS Umum Pekerja',
                 'RS Zahirah',
-<<<<<<< HEAD
                 'RSB Duren Tsumber_iiga',
-=======
-                'RSB Duren Tiga',
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 'RSIA Alvernia Agusta',
                 'RSIA Andhika',
                 'RSIA Anggrek Mas',
@@ -836,7 +718,6 @@ class OpsiController extends Controller
                 'RSIA Sayyidah',
                 'RSIA Tambak',
                 'RSIA YPK Mandiri',
-<<<<<<< HEAD
                 'RSUD Cempaka Putih',
                 'RSUD Cilincing',
                 'RSUD Johar Baru',
@@ -848,19 +729,6 @@ class OpsiController extends Controller
                 'RSUD Sawah Besar',
                 'RSUD tebet',
                 'RSUDO Jakarta',
-=======
-                'RSK Cempaka Putih',
-                'RSK Cilincing',
-                'RSK Johar Baru',
-                'RSK Kemayoran',
-                'RSK Kembangan',
-                'RSK Koja',
-                'RSK Mampang Prapatan',
-                'RSK Pademangan',
-                'RSK Sawah Besar',
-                'RSK tebet',
-                'RSKO Jakarta',
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 'RSU Adhyaksa',
                 'RSU Alfauzan',
                 'RSU Bunda',
@@ -877,19 +745,11 @@ class OpsiController extends Controller
                 'RSUD Taman Sari',
                 'RSUD Tanah Abang',
                 'RSUD Tanjung Priok',
-<<<<<<< HEAD
                 'RSUD Ciracas',
                 'RSUD Jagakarsa',
                 'RSUD Kalideres',
                 'RSUD Kramat Jati',
                 'RSUD Matraman',
-=======
-                'RSUK Ciracas',
-                'RSUK Jagakarsa',
-                'RSUK Kalideres',
-                'RSUK Kramat Jati',
-                'RSUK Matraman',
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 'RS Olahraga Nasional',
                 'RS Cilandak',
                 'RS Satya Negara',
@@ -951,16 +811,12 @@ class OpsiController extends Controller
                 'PUSKESMAS Kec. Pulogadung',
                 'PUSKESMAS Kec. Matraman',
                 'PUSKESMAS Kec. Kepulauan Seribu Utara',
-<<<<<<< HEAD
                 'PUSKESMAS Kec. Kepulauan Seribu Selatan',
                 'PUSKESMAS Kec. Jagakarsa',
                 'UPTD PPA Tangsel',
                 'Yayasan / NGO',
                 'Pemerintah Daerah (PEMDA)'
             ];
-=======
-                'PUSKESMAS Kec. Kepulauan Seribu Selatan'];
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 
         return $data;
     }
@@ -995,7 +851,6 @@ class OpsiController extends Controller
     {
         $data = User::whereNull('deleted_at');
         if (Auth::user()->jabatan == 'Penerima Pengaduan') {
-<<<<<<< HEAD
             $data->whereIn('jabatan', [
                 'Penerima Pengaduan', 
                 'Manajer Kasus', 
@@ -1139,17 +994,4 @@ class OpsiController extends Controller
         // Return the results as JSON
         echo json_encode($result);
     }
-=======
-            $data->where('jabatan', 'Manajer Kasus')
-                ->orWhere('jabatan', 'Supervisor Kasus')
-                ->orWhere('jabatan', 'Pendamping Kasus')
-                ->orWhere('jabatan', 'Unit Reaksi Cepat')
-                ->orWhere('jabatan', 'Advokat')
-                ->orWhere('jabatan', 'Psikolog')
-                ->orWhere('jabatan', 'Konselor')
-                ->orWhere('jabatan', 'Paralegal');
-        }
-        return $data->get();
-    }
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 }

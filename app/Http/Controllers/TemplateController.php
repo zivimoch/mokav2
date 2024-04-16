@@ -25,7 +25,6 @@ class TemplateController extends Controller
                         ->leftJoin('users as b', 'b.id', 'a.created_by')
                         ->whereNotNULL('a.konten')
                         ->whereNULL('a.deleted_at')
-<<<<<<< HEAD
                         ;
 
             if (Auth::user()->jabatan != 'Super Admin') {
@@ -33,10 +32,6 @@ class TemplateController extends Controller
             }
             
             return DataTables::of($data->get(['a.*', 'b.name as petugas']))->make(true);
-=======
-                        ->get(['a.*', 'b.name as petugas']);
-            return DataTables::of($data)->make(true);
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
        }
 
        return view('template.index');
@@ -86,13 +81,8 @@ class TemplateController extends Controller
             //simpan tindak kekerasan
             if (isset($request->keyword)) {
                 $keyword = $request->keyword;
-<<<<<<< HEAD
                 foreach ($keyword as $item) {
                     TemplateKeyword::create(['template_id' => $template->id, 'keyword' => $item]);
-=======
-                foreach ($keyword as $key1 => $value) {
-                    $proses['keyword'] = TemplateKeyword::create(['template_id' => $template->id, 'keyword' => $keyword[$key1]]);
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 }
             }
             
@@ -116,7 +106,6 @@ class TemplateController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-<<<<<<< HEAD
     public function show(Request $request, $uuid)
     {
         if($request->ajax()) { 
@@ -136,11 +125,6 @@ class TemplateController extends Controller
                 'keyword' => $keyword
             ]);
        }
-=======
-    public function show($id)
-    {
-        //
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     }
 
     /**
@@ -149,7 +133,6 @@ class TemplateController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-<<<<<<< HEAD
     public function edit($uuid)
     {
         $data = Template::where('uuid',$uuid)->first();
@@ -162,11 +145,6 @@ class TemplateController extends Controller
                     ->with('data_keyword', $data_keyword)
                     ->with('keyword', $keyword)
                     ->with('jabatan', $jabatan);
-=======
-    public function edit($id)
-    {
-        //
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     }
 
     /**
@@ -178,7 +156,6 @@ class TemplateController extends Controller
      */
     public function update(Request $request, $id)
     {
-<<<<<<< HEAD
         try {
             $validator = Validator::make($request->all(), [
                 'nama_template' => 'required'
@@ -221,9 +198,6 @@ class TemplateController extends Controller
                     ->with('response', $e->getMessage());
             die();
         }
-=======
-        //
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     }
 
     /**
@@ -232,7 +206,6 @@ class TemplateController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-<<<<<<< HEAD
     /**
      * Remove the specified resource from storage.
      *
@@ -260,10 +233,5 @@ class TemplateController extends Controller
             return response()->json(['message' => $e->getMessage()]);
             die();
         }
-=======
-    public function destroy($id)
-    {
-        //
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     }
 }

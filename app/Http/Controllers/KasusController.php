@@ -8,17 +8,12 @@ use App\Helpers\StatusHelper;
 use App\Models\Asesmen;
 use App\Models\Kasus;
 use App\Models\Klien;
-<<<<<<< HEAD
 use App\Models\Notifikasi;
 use App\Models\Pemantauan;
-=======
-use App\Models\Monitoring;
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 use App\Models\Pelapor;
 use App\Models\PersetujuanIsi;
 use App\Models\PersetujuanTemplate;
 use App\Models\Petugas;
-<<<<<<< HEAD
 use App\Models\RHubunganTerlaporKlien;
 use App\Models\TBentukKekerasan;
 use App\Models\Terlapor;
@@ -26,10 +21,6 @@ use App\Models\Terminasi;
 use App\Models\TJenisKekerasan;
 use App\Models\TKategoriKasus;
 use App\Models\User;
-=======
-use App\Models\Terlapor;
-use App\Models\Terminasi;
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -39,17 +30,13 @@ use Yajra\DataTables\Facades\DataTables;
 use Validator;
 use Exception;
 use Illuminate\Support\Facades\Schema;
-<<<<<<< HEAD
 use Laravolt\Indonesia\Models\City;
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 
 class KasusController extends Controller
 {
     public function index(Request $request)
     {
         if($request->ajax()) {
-<<<<<<< HEAD
             // mendapatkan periode
             if ($request->get('tanggal') != null) {
                 $daterange = explode (" - ", $request->get('tanggal')); 
@@ -124,25 +111,6 @@ class KasusController extends Controller
             // $data->orderBy('a.updated_at');
             $data->where('a.arsip', $arsip);
             
-=======
-            $data = DB::table('klien as a')
-                        ->select('a.uuid', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 'a.jenis_kelamin', 'a.tanggal_lahir', 'a.status', 'a.uuid', 'd.name as petugas')
-                        ->leftJoin('kasus as b', 'b.id', 'a.kasus_id')
-                        ->leftJoin('petugas as c', 'a.id', 'c.klien_id')
-                        ->leftJoin('users as d', 'd.id', 'a.created_by')
-                        ->whereNull('a.deleted_at')
-                        ->whereNull('b.deleted_at')
-                        ->whereNull('c.deleted_at')
-                        ->groupBy('a.id');
-            if (Auth::user()->supervisor_id != 0 && $request->laporkbg != 1) { 
-                // jika supervisor_id nya bukan 0 dan laporkbg bukan 1, maka cuman bisa liat kasus2 yg petugasnya ada dirinya saja 
-                $data->where('c.user_id', Auth::user()->id);
-            }elseif ($request->laporkbg == 1) {
-                // jika lapor KBG == 1 maka tampilkan kasus yang laporKBG
-                $data->whereNull(('a.created_by'));
-            }
-
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             $datas = $data->get();
             foreach ($datas as $datas2) {
                 $datas2->tanggal_pelaporan_formatted = date('d M Y', strtotime($datas2->tanggal_pelaporan));
@@ -163,14 +131,9 @@ class KasusController extends Controller
         );
         /////////////////////////////////////////////////////////////////////////////////////////////
 
-<<<<<<< HEAD
         $kota = City::where('province_code', env('id_provinsi'))->get();
         return view('kasus.index')
                     ->with('kota', $kota);
-=======
-
-       return view('kasus.index');
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     }
 
     //untuk select2 list klien, dia methodnya POST
@@ -178,7 +141,6 @@ class KasusController extends Controller
     {
         $search = $request->search;
 
-<<<<<<< HEAD
         $data = DB::table('petugas as a')
                             ->leftJoin('klien as b', 'b.id','a.klien_id')
                             ->whereNull('a.deleted_at')
@@ -192,28 +154,6 @@ class KasusController extends Controller
             $data = $data->where('user_id', Auth::user()->id);
         }
         $data = $data->select('b.id','b.nama')->limit(10)->get();
-=======
-        if($search == ''){
-           $data = DB::table('petugas as a')
-                            ->leftJoin('klien as b', 'b.id','a.klien_id')
-                            ->where('user_id', Auth::user()->id)
-                            ->whereNull('a.deleted_at')
-                            ->whereNull('b.deleted_at')
-                            ->orderby('a.created_at','asc')
-                            ->select('b.id','b.nama')
-                            ->limit(10)->get();
-        }else{
-            $data = DB::table('petugas as a')
-                             ->leftJoin('klien as b', 'b.id','a.klien_id')
-                             ->where('user_id', Auth::user()->id)
-                             ->whereNull('a.deleted_at')
-                             ->whereNull('b.deleted_at')
-                             ->where('b.nama', 'like', '%' .$search . '%')
-                             ->orderby('a.created_at','asc')
-                             ->select('b.id','b.nama')
-                             ->limit(10)->get();
-        }
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
   
         $response = array();
         foreach($data as $value){
@@ -233,7 +173,6 @@ class KasusController extends Controller
                         ->leftJoin('kasus as b', 'b.id', 'a.kasus_id')
                         ->leftJoin('petugas as c', 'a.id', 'c.klien_id')
                         ->leftJoin('users as d', 'd.id', 'a.created_by')
-<<<<<<< HEAD
                         ->leftJoin('terlapor as e', 'b.id', 'e.kasus_id');
             if ($request->klien_id) {
                 // jika ada maka cari berdasarkan id. digunakan di modal agenda buat memunculkan detail data klien
@@ -253,13 +192,6 @@ class KasusController extends Controller
                                     ->where('a.klien_id', $data->id)
                                     ->get();
             
-=======
-                        ->leftJoin('terlapor as e', 'b.id', 'e.kasus_id')
-                        ->where('a.uuid', $request->uuid)
-                        ->first(['a.id', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 
-                        'a.jenis_kelamin', 'a.tanggal_lahir', 'a.jenis_kelamin', 
-                        'a.status', 'a.uuid', 'd.name as petugas']);
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             return $data;
        }
 
@@ -273,29 +205,18 @@ class KasusController extends Controller
        $hubungan_dengan_terlapor =  (new OpsiController)->api_hubungan_dengan_terlapor();
        $hubungan_dengan_klien =  (new OpsiController)->api_hubungan_dengan_klien();
        $kekhususan =  (new OpsiController)->api_kekhususan();
-<<<<<<< HEAD
-=======
-       $difabel_type =  (new OpsiController)->api_difabel_type();
-       $kategori_kasus =  (new OpsiController)->api_kategori_kasus();
-       $tindak_kekerasan =  (new OpsiController)->api_tindak_kekerasan();
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
        $pengadilan_negri =  (new OpsiController)->api_pengadilan_negri();
        $pasal = (new OpsiController)->api_pasal();
        $media_pengaduan =  (new OpsiController)->api_media_pengaduan();
        $sumber_rujukan =  (new OpsiController)->api_sumber_rujukan();
        $sumber_informasi =  (new OpsiController)->api_sumber_infromasi();
        $program_pemerintah =  (new OpsiController)->api_program_pemerintah();
-<<<<<<< HEAD
        $kategori_lokasi =  (new OpsiController)->api_kategori_lokasi();
-=======
-       $tempat_kejadian =  (new OpsiController)->api_tempat_kejadian();
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
        $users =  (new OpsiController)->api_petugas(); //untuk tambah petugas
        $provinsi = Province::get();
 
        //data klien 
        $klien = DB::table('klien as a')
-<<<<<<< HEAD
        ->select(
            'a.*',
            'b.name as provinsi', // domisili
@@ -326,27 +247,11 @@ class KasusController extends Controller
         // hanya petugas yang ada di list petugas yang dapat mengakses
         // $akses = Petugas::where('klien_id', $klien->id)->where('user_id', Auth::user()->id)->first();
         // if (!isset($akses) && !in_array(Auth::user()->jabatan, ['Super Admin', 'Tenaga Ahli', 'Kepala Instansi', 'Tim Data'])) {
-=======
-                    ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan, e.difabel_type, f.kondisi_khusus'))
-                    ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
-                    ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
-                    ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
-                    ->leftJoin(DB::raw('(SELECT klien_id, GROUP_CONCAT(" ", value) as difabel_type FROM difabel_type GROUP BY klien_id) as e'), 'a.id', 'e.klien_id')
-                    ->leftJoin(DB::raw('(SELECT klien_id, GROUP_CONCAT(" ", value) as kondisi_khusus FROM kondisi_khusus GROUP BY klien_id) as f'), 'a.id', 'f.klien_id')
-                    ->where('a.uuid', $uuid)
-                    ->groupBy('a.id')
-                    ->first();
-
-        // hanya petugas yang ada di list petugas yang dapat mengakses
-        // $akses = Petugas::where('klien_id', $klien->id)->where('user_id', Auth::user()->id)->first();
-        // if (!isset($akses)) {
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         //     return abort(404);
         // }
 
        //data kasus 
        $kasus = DB::table('kasus as a')
-<<<<<<< HEAD
                     ->select(DB::raw(
                         'a.*,
                         b.name as provinsi,
@@ -358,17 +263,10 @@ class KasusController extends Controller
                     ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
                     ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
                     ->leftJoin('indonesia_villages as e', 'a.kelurahan_id', 'e.code')
-=======
-                    ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan'))
-                    ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
-                    ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
-                    ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     ->where('a.id', $klien->kasus_id)
                     ->first();
        //data pelapor
        $pelapor = DB::table('pelapor as a')
-<<<<<<< HEAD
                     ->select(DB::raw(
                         'a.*,
                         b.name as provinsi,
@@ -388,17 +286,10 @@ class KasusController extends Controller
                     ->leftJoin('indonesia_cities as g', 'a.kotkab_id_ktp', 'g.code')
                     ->leftJoin('indonesia_districts as h', 'a.kecamatan_id_ktp', 'h.code')
                     ->leftJoin('indonesia_villages as i', 'a.kelurahan_id_ktp', 'i.code')
-=======
-                    ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan'))
-                    ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
-                    ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
-                    ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     ->where('a.kasus_id', $klien->kasus_id)
                     ->first();
         //data terlapor
         $terlapor = DB::table('terlapor as a')
-<<<<<<< HEAD
                     ->select(DB::raw(
                         'a.*,
                         b.name as provinsi,
@@ -470,27 +361,12 @@ class KasusController extends Controller
         //data petugas
         $petugas = DB::table('petugas as a')
                     ->select(DB::raw('a.*, b.name, b.foto, b.jabatan'))
-=======
-                    ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan'))
-                    ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
-                    ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
-                    ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
-                    ->where('a.kasus_id', $klien->kasus_id)
-                    ->get();
-        //data petugas
-        $petugas = DB::table('petugas as a')
-                    ->select(DB::raw('a.*, b.name, b.jabatan'))
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     ->leftJoin('users as b','a.user_id', 'b.id')
                     ->where('a.klien_id', $klien->id)
                     ->whereNULL('a.deleted_at')
                     ->orderBy('a.created_at')
                     ->get();
-<<<<<<< HEAD
         if ($petugas->contains('user_id', Auth::user()->id) || Auth::user()->jabatan == 'Super Admin'){
-=======
-        if ($petugas->contains('user_id', Auth::user()->id)){
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             // check apakah yang login ini adalah petugas kasus ini, kalo bukan maka hidden menu2nya
             $akses_petugas = 1;
         }else{
@@ -522,7 +398,6 @@ class KasusController extends Controller
                 NULL // agenda_id
             );   
         }
-<<<<<<< HEAD
         // spesifik ke yang notif
         NotifHelper::read_notif(
             Auth::user()->id, // receiver_id
@@ -531,8 +406,6 @@ class KasusController extends Controller
             'notif', // type_notif
             NULL // agenda_id
         ); 
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         // read notif sesuai url
         NotifHelper::read_notif(
             Auth::user()->id, // receiver_id
@@ -548,14 +421,11 @@ class KasusController extends Controller
                 ->with('pelapor', $pelapor)
                 ->with('terlapor', $terlapor)
                 ->with('kasus', $kasus)
-<<<<<<< HEAD
                 ->with('jenis_kekerasan', $jenis_kekerasan)
                 ->with('bentuk_kekerasan', $bentuk_kekerasan)
                 ->with('bentuk_kekerasan_sets', $bentuk_kekerasan_sets)
                 ->with('kategori_kasus', $kategori_kasus)
                 ->with('rekam_kasus', $rekam_kasus)
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 ->with('provinsi', $provinsi)
                 ->with('status_pendidikan', $status_pendidikan)
                 ->with('pendidikan_terakhir', $pendidikan_terakhir)
@@ -567,23 +437,13 @@ class KasusController extends Controller
                 ->with('hubungan_dengan_terlapor', $hubungan_dengan_terlapor)
                 ->with('hubungan_dengan_klien', $hubungan_dengan_klien)
                 ->with('kekhususan', $kekhususan)
-<<<<<<< HEAD
-=======
-                ->with('difabel_type', $difabel_type)
-                ->with('kategori_kasus', $kategori_kasus)
-                ->with('tindak_kekerasan', $tindak_kekerasan)
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 ->with('pengadilan_negri', $pengadilan_negri)
                 ->with('pasal', $pasal)
                 ->with('media_pengaduan', $media_pengaduan)
                 ->with('sumber_rujukan', $sumber_rujukan)
                 ->with('sumber_informasi', $sumber_informasi)
                 ->with('program_pemerintah', $program_pemerintah)
-<<<<<<< HEAD
                 ->with('kategori_lokasi',$kategori_lokasi)
-=======
-                ->with('tempat_kejadian',$tempat_kejadian)
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 ->with('users',$users)
                 ->with('petugas',$petugas)
                 ->with('persetujuan',$persetujuan)
@@ -604,7 +464,6 @@ class KasusController extends Controller
                     throw new Exception($validator->errors());
                 }
                 $klien = Klien::where('uuid', $uuid)->first();
-<<<<<<< HEAD
                 $kasus = Kasus::where('id', $klien->kasus_id)->first();
                 
                 if ($klien->no_klien != null) {
@@ -627,14 +486,6 @@ class KasusController extends Controller
                         $kasus->no_reg = $no_kasus;
                         $kasus->save();
                     }
-=======
-                // jika kasus diapprove maka generate no regis klien
-                if ($request->approval) {
-                    //buat & simpan no regis
-                    $no_klien = $this->generate_noreg();
-                    $klien->no_klien = $no_klien;
-                    $klien->save();
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 
                     $kode = 'T4';
                     $url = url('/kasus/show/'.$klien->uuid.'?tab=kasus&catatan-kasus=1&kode=T4&type_notif=task');
@@ -754,7 +605,6 @@ class KasusController extends Controller
 
     public function check_kelengkapan_data($klien_id)
     {
-<<<<<<< HEAD
         $data = DB::table('kasus as a')
         ->select('b.id as klien_id')
         ->selectRaw('ROUND(((
@@ -851,60 +701,6 @@ class KasusController extends Controller
             ->first();
                         
       return $data->kelengkapan_data;
-=======
-        // kelengkapan klien 
-        $klien = Klien::where('id', $klien_id)->first();// hitung umur klien
-        if (isset($klien->tanggal_lahir)) {
-            $currentDate = Carbon::now();
-            $umur = $currentDate->diffInYears(Carbon::parse($klien->tanggal_lahir));
-        }
-
-        $nullKlien = [];
-        $atribut_klien = $klien->getAttributes();
-        foreach ($atribut_klien as $key => $value) {
-            if ($value === null) {
-                $nullKlien[] = $key;
-            }
-        }
-        if ($umur > 17) {
-            // klien dewasa
-            $removeKlien = ["no_klien", "kelas", "anak_ke", "nama_ibu", "tempat_lahir_ibu", "tanggal_lahir_ibu", "nama_ayah", "tempat_lahir_ayah", "tanggal_lahir_ayah", "no_lp", "pengadilan_negri", "isi_putusan", "lpsk", "desil", "created_by", "created_at", "updated_at", "deleted_at"];
-        }else{
-            $removeKlien = ["no_klien", "pekerjaan", "penghasilan", "status_kawin", "anak_ke", "jumlah_anak", "desil", "kelas", "pekerjaan", "penghasilan", "status_kawin", "anak_ke", "jumlah_anak", "nama_ibu", "tempat_lahir_ibu", "tanggal_lahir_ibu", "nama_ayah", "tempat_lahir_ayah", "tanggal_lahir_ayah", "created_by", "created_at", "updated_at", "deleted_at"];
-        }
-        $nullKlien = array_values(array_diff($nullKlien, $removeKlien));
-        $kolomKlien = count(Schema::getColumnListing('klien'));
-
-        // kelengkapan kasus
-        $kasus = Kasus::where('id', $klien->kasus_id)->first();
-        $nullKasus = [];
-        $atribut_kasus = $kasus->getAttributes();
-        foreach ($atribut_kasus as $key => $value) {
-            if ($value === null) {
-                $nullKasus[] = $key;
-            }
-        }
-        $removeKasus = ["no_reg", "created_by", "created_at", "updated_at", "deleted_at"];
-        $nullKasus = array_values(array_diff($nullKasus, $removeKasus));
-        $kolomKasus = count(Schema::getColumnListing('kasus'));
-
-        // kelengkapan pelapor
-        $pelapor = Pelapor::where('kasus_id', $klien->kasus_id)->first();
-        $nullPelapor = [];
-        $atribut_pelapor = $pelapor->getAttributes();
-        foreach ($atribut_pelapor as $key => $value) {
-            if ($value === null) {
-                $nullPelapor[] = $key;
-            }
-        }
-        $removePelapor = ["desil", "created_by", "created_at", "updated_at", "deleted_at"];
-        $nullPelapor = array_values(array_diff($nullPelapor, $removePelapor));
-        $kolomPelapor = count(Schema::getColumnListing('pelapor'));
-
-        $data = array('nullKlien' => $nullKlien, 'kolomKlien' => $kolomKlien, 'nullKasus' => $nullKasus, 'kolomKasus' => $kolomKasus, 'nullPelapor' => $nullPelapor, 'kolomPelapor' => $kolomPelapor);
-
-        return $data;
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     }
 
     public function check_kelengkapan_persetujuan_spv($klien_id)
@@ -936,7 +732,6 @@ class KasusController extends Controller
     public function check_kelengkapan_asesmen($klien_id)
     {
         $asesmen = Asesmen::where('klien_id', $klien_id)
-<<<<<<< HEAD
                             ->whereNotNull('fisik')
                             ->whereNotNull('psikologis')
                             ->whereNotNull('sosial')
@@ -945,8 +740,6 @@ class KasusController extends Controller
                             ->whereNotNull('pendukung')
                             ->whereNotNull('hambatan')
                             ->whereNotNull('harapan')
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                             ->whereNull('deleted_at')
                             ->count();
         if ($asesmen > 0) {
@@ -985,21 +778,12 @@ class KasusController extends Controller
         return $pelaksanaan;
     }
 
-<<<<<<< HEAD
     public function check_kelengkapan_pemantauan($klien_id)
     {
         // pelaksanaan pemantauan
         $pemantauan = Pemantauan::where('klien_id', $klien_id)->count();
         // return jumlah pemantauan
         return $pemantauan;
-=======
-    public function check_kelengkapan_monitoring($klien_id)
-    {
-        // pelaksanaan monitoring
-        $monitoring = Monitoring::where('klien_id', $klien_id)->count();
-        // return jumlah monitoring
-        return $monitoring;
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     }
 
     public function check_kelengkapan_terminasi($klien_id)
@@ -1028,16 +812,11 @@ class KasusController extends Controller
 
     public function generate_noreg()
     {
-<<<<<<< HEAD
         // 1. Jumlahkan klien yang ada no regisnya dan bukan empty
-=======
-        // 1. Jumlahkan kasus yang ada no regisnya dan bukan empty
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         // 2. Cari yang tahun ini saja
         // 3. Jumlahnya tambah 1
         // 4. Kombinasikan dengan bulan dan tahun saat ini
 
-<<<<<<< HEAD
         // bisa terjadi : 
         // tadinya jumlah kasus 100
         // yang sudah di regis 50 
@@ -1074,26 +853,10 @@ class KasusController extends Controller
                 break;
             }
         } while (true);
-=======
-        $kasus_regis = Klien::whereNull('deleted_at')
-                            ->whereIn('no_klien', ['',NULL])
-                            ->whereYear('created_at', date('Y'))
-                            ->count();
-        $urutan_regis = $kasus_regis + 1;
-        if ($urutan_regis < 10) {
-            $urutan_regis = '00'.$urutan_regis;
-        }else if($urutan_regis < 100){
-            $urutan_regis = '0'.$urutan_regis;
-        }else{
-            $urutan_regis = $urutan_regis;
-        }
-        $no_klien = $urutan_regis.'/'.date('m').'/'.date('Y');
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 
         return $no_klien;
     }
 
-<<<<<<< HEAD
     public function generate_nokas()
     {
         // 1. Jumlahkan kasus yang ada no regisnya dan bukan empty
@@ -1147,17 +910,6 @@ class KasusController extends Controller
             if (!$proses) {
                 throw new Exception($proses);
             }        
-=======
-    public function destroy($uuid)
-    {
-        try {
-            $proses = Klien::where('uuid', $uuid)->delete();
-
-            if (!$proses) {
-                throw new Exception($proses);
-            }
-            
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             //return response
             return response()->json([
                 'success' => true,
@@ -1171,7 +923,6 @@ class KasusController extends Controller
             die();
         }
     }
-<<<<<<< HEAD
 
     public function arsip($uuid)
     {
@@ -1275,6 +1026,4 @@ class KasusController extends Controller
             return redirect(404);
         }
     }
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 }

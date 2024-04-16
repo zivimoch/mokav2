@@ -214,12 +214,9 @@ class PersetujuanController extends Controller
     public function donepelayanan($uuid)
     {
         $persetujuan_isi = PersetujuanIsi::where('uuid', $uuid)->first();
-<<<<<<< HEAD
         if (!$persetujuan_isi) {
             abort(404);
         }
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         $persetujuan_template = PersetujuanTemplate::where('id', $persetujuan_isi->persetujuan_template_id)->first();
         $persetujuan_item = PersetujuanItem::where('persetujuan_template_id', $persetujuan_template->id)
                             ->where('parent_id', 0)
@@ -239,19 +236,11 @@ class PersetujuanController extends Controller
     {
         //data klien 
        $klien = DB::table('klien as a')
-<<<<<<< HEAD
                 ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan, e.t_tipe_disabilitas, f.kondisi_khusus'))
                 ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
                 ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
                 ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
                 ->leftJoin(DB::raw('(SELECT klien_id, GROUP_CONCAT(" ", value) as t_tipe_disabilitas FROM t_tipe_disabilitas GROUP BY klien_id) as e'), 'a.id', 'e.klien_id')
-=======
-                ->select(DB::raw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan, e.difabel_type, f.kondisi_khusus'))
-                ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
-                ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
-                ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
-                ->leftJoin(DB::raw('(SELECT klien_id, GROUP_CONCAT(" ", value) as difabel_type FROM difabel_type GROUP BY klien_id) as e'), 'a.id', 'e.klien_id')
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 ->leftJoin(DB::raw('(SELECT klien_id, GROUP_CONCAT(" ", value) as kondisi_khusus FROM kondisi_khusus GROUP BY klien_id) as f'), 'a.id', 'f.klien_id')
                 ->where('a.uuid', $uuid)
                 ->groupBy('a.id')
