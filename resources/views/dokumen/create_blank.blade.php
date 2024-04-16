@@ -3,20 +3,12 @@
 @section('content')
 <style type="text/css">
     .scroll-area {
-<<<<<<< HEAD
         height: 500px;
-=======
-        height: 800px;
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         overflow-y: scroll;
     }
 
     .scroll-area::-webkit-scrollbar {
-<<<<<<< HEAD
         width: 3px;
-=======
-        width: 8px;
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         background-color: #F5F5F5;
     }
 
@@ -56,7 +48,6 @@
         <div class="col-sm-6">
         <h1><i class="nav-icon fas fa-file-alt"></i> Buat Dokumen</h1>
         </div>
-<<<<<<< HEAD
         <div class="col-sm-6 text-right">
           <input type="checkbox" class="btn-xs" id="kontainerwidth"
           {{ Auth::user()->settings_kontainer_width == 'normal' ? 'checked' : '' }}
@@ -65,13 +56,6 @@
                 data-off-text="Fullwidth"
                 data-off-color="default" 
                 data-on-color="default">
-=======
-        <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right">
-        <li class="breadcrumb-item"><a href="#">Home</a></li>
-        <li class="breadcrumb-item active">Detail Kasus</li>
-        </ol>
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         </div>
         </div>
     </div>
@@ -175,11 +159,7 @@
                             <input type="text" name="judul" class="form-control" id="titleForm" value="">
                         </div>
                         <div class="form-card">
-<<<<<<< HEAD
                             <label>Tambah Agenda Terkait (max 1 agenda, jika lebih edit pada halaman agenda) </label>
-=======
-                            <label>Agenda Terkait </label>
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                             <span style="font-size:13px">(Belum membuat agenda? <a href="#" type="button" onclick="showModalAgenda('{{ date('Y-m-d') }}',0)">klik disini</a>)</span>
                             <select name="uuid_tindak_lanjut" class="form-control select2bs4" id="uuid_tindak_lanjut" style="width:100%">
                             </select>
@@ -265,7 +245,6 @@
 
                             <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
                                 <main>
-<<<<<<< HEAD
                                     {{-- <div class="centered"> --}}
                                         <div class="scroll-area">
                                             {{-- <div class="row-editor"> --}}
@@ -273,15 +252,6 @@
                                             {{-- </div> --}}
                                         </div>
                                     {{-- </div> --}}
-=======
-                                    <div class="centered">
-                                        <div class="scroll-area">
-                                            <div class="row-editor">
-                                                <textarea name="konten" id="post_content" class="form-control editor"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                                 </main>
                             </body>
                         </div>
@@ -295,7 +265,6 @@
 
                             <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
                                 <main>
-<<<<<<< HEAD
                                     {{-- <div class="centered"> --}}
                                         <div class="scroll-area">
                                             {{-- <div class="row-editor"> --}}
@@ -303,15 +272,6 @@
                                             {{-- </div> --}}
                                         </div>
                                     {{-- </div> --}}
-=======
-                                    <div class="centered">
-                                        <div class="scroll-area">
-                                            <div class="row-editor">
-                                                <div class="form-control editor" id="preview"></div>
-                                            </div>
-                                        </div>
-                                    </div>
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                                 </main>
                             </body>
                         </div>
@@ -426,11 +386,7 @@ tinymce.init({
     }
   ],
   content_style: "body { font-family: Cambria; }",
-<<<<<<< HEAD
   selector: ".editor",
-=======
-  selector: "#post_content",
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
   toolbar: '#mytoolbar',
   lineheight_formats: "8pt 9pt 10pt 11pt 12pt 14pt 16pt 18pt 20pt 22pt 24pt 26pt 36pt",
   // ukuran A4 Potrait

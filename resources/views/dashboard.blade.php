@@ -35,35 +35,18 @@
               <div class="card-header">
                 <h3 class="card-title">
                   <i class="fas fa-bullhorn"></i>
-<<<<<<< HEAD
                   Pengumuman 
                 </h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" onclick="tambahPengumuman()"><i class="nav-icon fas fa-edit"></i>
-=======
-                  Pengumuman
-                </h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="nav-icon fas fa-edit"></i>
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     </button>
                     <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
                     </button>
                 </div>
               </div>
               <!-- /.card-header -->
-<<<<<<< HEAD
               <div class="card-body" style="height: 177px; overflow-y:scroll">
                 <div id="kolomPengumuman"></div>
-=======
-              <div class="card-body">
-                <div class="callout callout-info" style="cursor: pointer;">
-                  <h5>Jadwal Mas Fajar</h5>
-
-                  <p>Selamat Pagi Bapak Ibu, 
-                    Izin menyampaikan jadwal harian. Sekarang jadwal harian seluruh petugas PPPA Provinsi DKI Jakarta dapat dilihat di MOKA! </p>
-                </div>
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
               </div>
               <!-- /.card-body -->
             </div>
@@ -93,15 +76,11 @@
               <!-- Add the bg color to the header using any of the bg-* classes -->
               <div class="widget-user-header bg-warning">
                 <div class="widget-user-image">
-<<<<<<< HEAD
                   {{-- <img class="img-circle elevation-2" src="{{ asset('img/profile/'.Auth::user()->foto) }}" alt="User Avatar"> --}}
                   <img class="img-circle elevation-2 fotoProfile" 
                 src="{{ asset('img/profile/'.Auth::user()->foto) }}" 
                 onerror="this.onerror=null; this.src='{{ asset('adminlte/dist/img/default-150x150.png') }}'"  
                 alt="User Avatar">
-=======
-                  <img class="img-circle elevation-2" src="https://adminlte.io/themes/v3/dist/img/default-150x150.png" alt="User Avatar">
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 </div>
                 <!-- /.widget-user-image -->
                 <h3 class="widget-user-username">{{ Auth::user()->name }}</h3>
@@ -111,29 +90,17 @@
                 <ul class="nav flex-column">
                   <li class="nav-item">
                     <a href="{{ route('kasus') }}" class="nav-link">
-<<<<<<< HEAD
                       Kasus Yang Ditangani <span class="float-right badge bg-primary">{{ $jumlah_kasus }}</span>
-=======
-                      Kasus Yang Ditangani <span class="float-right badge bg-primary">NAN</span>
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="{{ route('notifikasi') }}" class="nav-link">
-<<<<<<< HEAD
                       Jumlah Agenda Kegiatan <span class="float-right badge bg-success">{{ $jumlah_agenda }}</span>
-=======
-                      Jumlah Agenda Kegiatan <span class="float-right badge bg-success">NAN</span>
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="{{ route('notifikasi') }}" class="nav-link">
-<<<<<<< HEAD
                       Skor Survey Kepuasan Layanan <span class="float-right badge bg-warning">NAN / NAN</span>
-=======
-                      Skor Survey Kepuasan Layanan <span class="float-right badge bg-warning">5 / 5</span>
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     </a>
                   </li>
                 </ul>
@@ -147,11 +114,7 @@
                   Agenda hari ini, {{ date('d M Y') }}
                 </h3>
                 <div class="card-tools">
-<<<<<<< HEAD
                     <a href="{{ route('kinerja.detail') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}&user_id={{ Auth::user()->uuid }}" class="btn btn-tool"><i class="fas fa-tasks"></i> Laporan Kinerja</a>
-=======
-                    <a href="{{ route('kinerja.detail') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}&user_id={{ Auth::user()->id }}" class="btn btn-tool"><i class="fas fa-tasks"></i> Laporan Kinerja</a>
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
                     </button>
                 </div>
@@ -198,7 +161,6 @@
   </div>
 </div>
 
-<<<<<<< HEAD
 
 <!-- Modal Pengumuman-->
 <div class="modal fade" id="tambahPengumumanModal" role="dialog" aria-hidden="true">
@@ -296,8 +258,6 @@
   </div>
 </div>
 
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 <script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
 <script src="{{ asset('/source/js/validation.js') }}"></script>
 
@@ -311,13 +271,7 @@
 <!-- Script -->
 <script>
   $(document).ready(function () {
-<<<<<<< HEAD
     loadPengumuman();
-=======
-
-   var SITEURL = "{{ url('/') }}";
-     
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
    $.ajaxSetup({
        headers: {
        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -329,11 +283,7 @@
           eventTextColor: '#fff',
           eventTextSize: '20px',
           editable: false,
-<<<<<<< HEAD
           events: "{{ env('APP_URL') }}/agenda",
-=======
-          events: SITEURL + "/agenda",
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
           displayEventTime: false,
           eventRender: function (event, element, view) {
               if (event.allDay === 'true') {
@@ -353,11 +303,7 @@
               $('#ajaxModelDetail').modal('show'); 
               $.ajax({
                   type: "GET",
-<<<<<<< HEAD
                   url: "{{ env('APP_URL') }}/agenda/showdate/"+tanggal_mulai,
-=======
-                  url: SITEURL + '/agenda/showdate/' + tanggal_mulai,
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                   success: function (response) {
                     loadAgenda(event.start._i,1);
                   }
@@ -367,7 +313,6 @@
       });    
    });
 
-<<<<<<< HEAD
 function displayMessage(message) {
     toastr.success(message, 'Event');
 } 
@@ -378,18 +323,6 @@ function loadAgenda(tanggal_mulai, id) {
   $.ajax({
     type: "GET",
     url: "{{ env('APP_URL') }}/agenda/showdate/" + tanggal_mulai,
-=======
-   function displayMessage(message) {
-       toastr.success(message, 'Event');
-   } 
-   
-loadAgenda('{{  date("Y-m-d") }}',2);
-function loadAgenda(tanggal_mulai, id) {
-  var SITEURL = "{{ url('/') }}";
-  $.ajax({
-    type: "GET",
-    url: SITEURL + '/agenda/showdate/' + tanggal_mulai,
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     success: function (response) {
 
       $('#agendaSaya'+id).html('');
@@ -405,11 +338,7 @@ function loadAgenda(tanggal_mulai, id) {
           checked = 'checked';
           disabled = 'disabled';
         }
-<<<<<<< HEAD
         $('#agendaSaya'+id).append('<li class="'+done+'"><div  class="icheck-primary d-inline ml-2"><input type="checkbox" value="" id="todoCheck'+i+'" '+checked+' '+disabled+' onclick="showModalAgenda(`'+e.tanggal_mulai+'`,`'+e.uuid+'`,{{ Auth::user()->id }})"><label for="todoCheck'+i+'"></label></div><span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span></li>');
-=======
-        $('#agendaSaya'+id).append('<li class="'+done+'"><div  class="icheck-primary d-inline ml-2"><input type="checkbox" value="" id="todoCheck'+i+'" '+checked+' '+disabled+' onclick="showModalAgenda(`'+e.tanggal_mulai+'`,`'+e.uuid+'`)"><label for="todoCheck'+i+'"></label></div><span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span></li>');
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         $('#agendaAndaHeading'+id).html('Agenda Anda ('+i+' agenda)')
         i++;
       });
@@ -426,7 +355,6 @@ function loadAgenda(tanggal_mulai, id) {
     }
 });
 }
-<<<<<<< HEAD
 
 function loadPengumuman() {
   $.ajax({
@@ -611,7 +539,5 @@ function tambahPengumuman() {
             },500);
         });
     }
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 </script>
 @endsection

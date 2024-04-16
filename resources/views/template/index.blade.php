@@ -8,7 +8,6 @@
           <div class="col-sm-6">
             <h1 class="m-0"><i class="far fa-copy"></i> Template</h1>
           </div><!-- /.col -->
-<<<<<<< HEAD
           <div class="col-sm-6 text-right">
             <input type="checkbox" class="btn-xs" id="kontainerwidth"
                   checked
@@ -18,14 +17,6 @@
                   data-off-color="default" 
                   data-on-color="default">
           </div>
-=======
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
-          </div><!-- /.col -->
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
@@ -40,7 +31,6 @@
             </div> --}}
             
             <div class="card-body" style="overflow-x: scroll">
-<<<<<<< HEAD
             <table id="tableTemplate" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
             <thead>
             <tr>
@@ -48,14 +38,6 @@
             <th>Blank</th>
             <th>Pemilik</th>
             <th>Terakhir Dirubah</th>
-=======
-            <table id="example1" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
-            <thead>
-            <tr>
-            <th>Nama Template</th>
-            <th>Pemilik</th>
-            <th>Created By</th>
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             <th>Created At</th>
             <th>Modified At</th>
             </tr>
@@ -65,14 +47,9 @@
             <tfoot>
             <tr>
             <th>Nama Template</th>
-<<<<<<< HEAD
             <th>Blank</th>
             <th>Pemilik</th>
             <th>Terakhir Dirubah</th>
-=======
-            <th>Pemilik</th>
-            <th>Created By</th>
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             <th>Created At</th>
             <th>Modified At</th>
             </tr>
@@ -84,15 +61,9 @@
       </div><!-- /.container-fluid -->
     </section>
 
-<<<<<<< HEAD
 <!-- Modal Template -->
 <div class="modal fade" id="TemplateModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl" role="document">
-=======
-<!-- Modal -->
-<div class="modal fade" id="ajaxModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     <div class="modal-content">
 
       <div id="overlay" class="overlay dark">
@@ -106,7 +77,6 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-<<<<<<< HEAD
       <div class="modal-body">
         <div class="form-card">
           <div class="form-group">
@@ -174,41 +144,6 @@
         <div id="konten"></div> 
       </div>
       <div class="modal-footer" id="buttonsTemplate">
-=======
-      <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
-        <span id="message"></span>
-      </div>
-      <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h4><i class="icon fa fa-check"></i> Success!</h4>
-        Data berhasil disimpan.
-      </div>
-      <div class="modal-body">
-        <div class="box-profile">
-          <div class="text-center">
-          <img class="profile-user-img img-fluid img-circle" src="http://127.0.0.1:8000/adminlte/dist/img/default-150x150.png" alt="User profile picture">
-          </div>
-          <h3 class="profile-username text-center" id="nama"></h3>
-          <p class="text-muted text-center">(<span id="usia"></span>) <span id="jenis_kelamin"></span></p>
-          <p class="text-center" id="no_klien"></p>
-          <ul class="list-group list-group-unbordered mb-3">
-          <h5><span class="float-right badge bg-danger btn-block" id="status"></span></h5>
-          <li class="list-group-item">
-          <b>Layanan</b> <a class="float-right">5</a>
-          </li>
-          <li class="list-group-item">
-          <b>Intervensi</b> <a class="float-right">10</a>
-          </li>
-          <li class="list-group-item">
-          <b>Petugas</b> <a class="float-right">6</a>
-          </li>
-          </ul>
-        </div>
-      </div>
-      <div class="modal-footer" id="buttons">
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       </div>
     </div>
   </div>
@@ -231,22 +166,14 @@
 
 <script>
     $(function () {
-<<<<<<< HEAD
     $('#tableTemplate').DataTable({
-=======
-    $('#example1').DataTable({
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       "ordering": true,
       "processing": true,
       "serverSide": true,
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
-<<<<<<< HEAD
       "ajax": "{{ env('APP_URL') }}/template",
-=======
-      "ajax": "/template",
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
       },
@@ -257,7 +184,6 @@
               return '<i class="far fa-copy"></i> '+row.nama_template;
             }
         },
-<<<<<<< HEAD
         {
             "mData": "blank_template",
             "mRender": function (data, type, row) {
@@ -269,8 +195,6 @@
               return blank;
             }
         },
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         {"data": "pemilik"},
         {"data": "petugas"},
         {"data": "created_at"},
@@ -290,7 +214,6 @@
                     window.location.assign('{{ route("template.create") }}')
                   }
               }]
-<<<<<<< HEAD
       }).buttons().container().appendTo('#tableTemplate_wrapper .col-md-6:eq(0)');
 
       $('#tableTemplate_filter').css({'float':'right','display':'inline-block; background-color:black'});
@@ -360,37 +283,6 @@
       }
     }
 
-=======
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-
-      $('#example1_filter').css({'float':'right','display':'inline-block; background-color:black'});
-    });
-
-    $('#example1 tbody').on('click', 'tr', function () {
-      $("#success-message").hide();
-      $("#error-message").hide();
-      
-      $.get(`/kasus/show/`+this.id, function (data) {
-          dob = new Date(data.tanggal_lahir);
-          var today = new Date();
-          var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
-
-          $("#overlay").hide();
-          $('#nama').html(data.nama);
-          $('#usia').html(age);
-          $('#jenis_kelamin').html(data.jenis_kelamin);
-          $('#no_klien').html(data.no_klien);
-          $('#status').html(data.status);
-          $('#ajaxModal').modal('show');
-          //munculkan tombol
-          $('#buttons').html('');
-          $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="window.location.assign(`'+"{{route('kasus.show', '')}}"+"/"+data.uuid+'`)"><i class="fa fa-info-circle"></i> Detail Kasus</button>');
-          $('#buttons').append('<button type="button" class="btn btn-success btn-block" id="terima"><i class="fa fa-check"></i> Terima Kasus</button>');
-          $('#buttons').append('<button type="button" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
-        });
-    });
-
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
   </script>
 {{-- 
 // alert('redirect ke : '+this.id);

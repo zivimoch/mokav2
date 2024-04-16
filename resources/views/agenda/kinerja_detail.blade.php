@@ -5,7 +5,6 @@
   .cursor-disabled {
     cursor:not-allowed;
   }
-<<<<<<< HEAD
 
   #tambahAgenda {
   display: none;
@@ -16,15 +15,12 @@
   padding: 15px;
   border-radius: 4px;
 }
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 </style>
     {{-- DataTable --}}
      <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
-<<<<<<< HEAD
           <div class="col-sm-8">
             <h1 class="m-0"><i class="fas fa-tasks"></i> Laporan Kinerja <span style="color: blue">{{ $user->name.' ('.$user->jabatan.')' }}</span></h1>
           </div><!-- /.col -->
@@ -37,17 +33,6 @@
                   data-off-color="default" 
                   data-on-color="default">
           </div>
-=======
-          <div class="col-sm-6">
-            <h1 class="m-0"><i class="fas fa-tasks"></i> Laporan Kinerja</h1>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
-          </div><!-- /.col -->
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
@@ -60,7 +45,6 @@
             {{-- <div class="card-header">
             <h3 class="card-title">DataTable with default features</h3>
             </div> --}}
-<<<<<<< HEAD
             {{-- <a href="{{ route('kinerja.detail') }}?tahun={{ date('Y') }}&bulan=01&user_id={{ Auth::user()->id }}"><button>Kinerja Bulan Januari klik Disini</button></a> --}}
             <div class="card-body" style="overflow-x: scroll">
               <form action="{{ route('kinerja.detail') }}" method="GET">
@@ -97,11 +81,6 @@
             </form>
             <input type="hidden" id="uuid_agenda_hightlight" value="{{ Request::get('row-agenda') }}">
             <input type="hidden" id="belumtl">
-=======
-            
-            <div class="card-body" style="overflow-x: scroll">
-            <input type="hidden" id="uuid_agenda_hightlight" value="{{ Request::get('row-agenda') }}">
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
               <table id="tabelAgenda" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
         
                 <thead>
@@ -110,7 +89,6 @@
                       <th>Jam</th>
                       <th>Agenda</th>
                       <th>Tindak Lanjut</th>
-<<<<<<< HEAD
                       <th>DiTL</th>
                       @if (Auth::user()->jabatan == 'Sekretariat') 
                           <th>Valid</th>
@@ -133,36 +111,6 @@
                         <img src="{{ asset('img/tandatangan/ttd_user/'.Auth::user()->tandatangan) }}" alt="">
                         <br>
                         {{ Auth::user()->name }}
-=======
-                      <th>Validasi</th>
-                  </tr>
-                  </thead>
-                  <tbody></tbody>
-                    <tfoot>
-                      <th colspan="4"><center>Centang Semua</center></th>
-                      <th><div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" id="checkAll"><label for="checkAll"></label></div></th>
-                    </tfoot>
-              </table>
-
-                  <div class="row">
-                    <div class="col-md-6 text-center">
-                        Jakarta, 31 Januari 2023</br>
-                        Yang Membuat,</br>
-                        <br>
-                        <br>
-                        <br>
-                        <br>
-                        Addzifi Mochamad Gumelar
-                    </div>
-                    <div class="col-md-6 text-center">
-                        Jakarta, 31 Januari 2023</br>
-                        Yang Memverifikasi,</br>
-                        <br>
-                        <br>
-                        <br>
-                        <br>
-                        Sekretariat
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     </div>
                 </div>
             </div>
@@ -204,22 +152,15 @@
             </body>
           </div>
         </div>
-<<<<<<< HEAD
         <b>Agenda Terkait :</b>
         <div id="dokumen_tl"></div>
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       </div>
       <div class="modal-footer" id="buttonsDokumen">
       </div>
     </div>
   </div>
 </div>
-<<<<<<< HEAD
 <button id="tambahAgenda" class="btn btn-success btn-lg" onclick="showModalAgenda('{{ date(`Y-m-d`) }}',0)">Tambah Agenda</button>
-=======
-
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -243,7 +184,6 @@
 <script src="{{ asset('vendor/tinymce4/tinymce.min.js') }}"></script>
 
 <script>
-<<<<<<< HEAD
   window.onscroll = function() {scrollFunction()};
   function scrollFunction() {
     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
@@ -297,16 +237,6 @@
       $("#overlay").fadeOut(300);
       },500);
   });
-=======
- $("#checkAll").click(function () {
-     $('input:checkbox').not(this).prop('checked', this.checked);
- });
-
- function validasi(id) {
-  // alert('apakah checked : '+$('#checkboxSuccess'+id).is(':checked'));
-  // toastr.success('Berhasil update data', 'Event');
-  alert('Fiture is Under Construction\n'+id);
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
  }
     
     $('#tabelAgenda').DataTable({
@@ -316,25 +246,16 @@
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
-<<<<<<< HEAD
       "ajax": "{{ env('APP_URL') }}/agenda/api_index?tahun={{ request()->get('tahun') }}&bulan={{ request()->get('bulan') }}&user_id={{ request()->get('user_id') }}",
-=======
-      "ajax": "/agenda/api_index?tahun={{ request()->get('tahun') }}&bulan={{ request()->get('bulan') }}&user_id={{ Auth::user()->id }}",
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       "rowsGroup": [0],
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
           rowHightlight = $('#uuid_agenda_hightlight').val();
-<<<<<<< HEAD
           if (data.uuid_agenda == rowHightlight) {
-=======
-          if (data.uuid == rowHightlight) {
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             $(row).attr('class', 'hightlighting');
           }
       },
       "columns": [
-<<<<<<< HEAD
         {
             "mData": "tanggal_mulai",
             "width":"10%",
@@ -342,9 +263,6 @@
               return '<b>'+row.hari+'</b>, '+row.tanggal_mulai_formatted;
             }
         },
-=======
-        {"data": "tanggal_mulai", "width":"10%"},
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         {
             "mData": "jam_mulai",
             "mRender": function (data, type, row) {
@@ -358,44 +276,21 @@
         {
             "mData": "judul_kegiatan",
             "mRender": function (data, type, row) {
-<<<<<<< HEAD
               judul_kegiatan = '';
-=======
-              judul_kegiatan = keterangan = '';
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
               if (row.judul_kegiatan != null) {
                 judul_kegiatan = '<b>'+row.judul_kegiatan+'</b>';
               }
 
-<<<<<<< HEAD
               return judul_kegiatan;
-=======
-              if (row.keterangan != null) {
-                keterangan = '</br>'+row.keterangan;
-              }
-
-              return judul_kegiatan+keterangan;
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             }
         },
         {
             "mData": "catatan",
             "mRender": function (data, type, row) {
-<<<<<<< HEAD
               lokasi = '';
 
               if (row.lokasi) {
                 lokasi = '<b>Lokasi :</b> <br>'+row.lokasi;
-=======
-              catatan = lokasi = '';
-
-              if (row.catatan) {
-                catatan = row.catatan+'<br>';
-              }
-
-              if (row.lokasi) {
-                lokasi = 'Lokasi : '+row.lokasi;
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
               }
 
               if(row.judul != null){
@@ -408,19 +303,13 @@
                 for (i=1;i<array.length;i++){
                 string = array2[i];
                 uuid_dokumen = string.replace(/,/g, "");
-<<<<<<< HEAD
                 dokumens += '<a href="#" onclick="showModalDokumen(`'+uuid_dokumen+'`)"><span class="badge bg-primary" style="font-size:15px"><i class="nav-icon fas fa-file-alt"></i> '+array[i]+'</span></a> ';
                 };
                 dokumens = dokumens+'<br>';
-=======
-                dokumens += '<a href="#" onclick="showModalDokumen(`'+uuid_dokumen+'`)"><span class="badge bg-primary"><i class="nav-icon fas fa-file-alt"></i> '+array[i]+'</span></a> ';
-                };
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
               }else{
                 dokumens = '';
               }
 
-<<<<<<< HEAD
               if(row.keyword != null){
                 detail_layanan = row.keyword;
                 detail_layanans = '';
@@ -434,17 +323,12 @@
 
               if (row.terlaksana) {
                 return lokasi+'<br>'+dokumens+detail_layanans;
-=======
-              if (row.terlaksana) {
-                return lokasi+'<br>'+catatan+dokumens;
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
               } else {
                 return '<span class="badge bg-danger">Dibatalkan</span>';
               }
             }
         },
         {
-<<<<<<< HEAD
           "data" : "jam_selesai",
             "mRender": function (data, type, row) {
               if (row.jam_selesai == null) {
@@ -477,25 +361,14 @@
                 } else {
                     return '';
                     // return '<div  class="icheck-danger d-inline ml-2" onclick="alert(`Anda tidak memiliki hak akses. Hanya sekretariat yang dapat memvalidasi agenda`)"><input type="checkbox"  id="checkboxSuccess'+row.uuid+'" '+checked+' disabled><label for="checkboxSuccess'+row.uuid+'"></label></div>';
-=======
-            "mRender": function (data, type, row) {
-                if (row.name == null) {
-                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" id="checkboxSuccess'+row.uuid+'" onchange="validasi(`'+row.uuid+'`)"><label for="checkboxSuccess'+row.uuid+'"></label></div>'
-                }else{
-                  return '<div class="icheck-success d-inline d-flex justify-content-around"><input type="checkbox" checked="" id="checkboxSuccess'+row.uuid+'" onchange="validasi(`'+row.uuid+'`)"><label for="checkboxSuccess'+row.uuid+'"></label></div>';
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                 }
             }
         },
       ],
       "columnDefs": [
         { className: "bg-light", "targets": [ 0 ] },
-<<<<<<< HEAD
         { className: "cursor-disabled", "targets": [ 5 ] }
         // { className: "cursor-disabled", "targets": [ 3, 4 ] }
-=======
-        { className: "cursor-disabled", "targets": [ 3, 4 ] }
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       ],
       "pageLength": 25,
       "lengthMenu": [
@@ -503,7 +376,6 @@
           ['10 rows', '25 rows', '50 rows', '100 rows','All'],
       ],
       "dom": 'Blfrtip', // Blfrtip or Bfrtip
-<<<<<<< HEAD
       "buttons": ["pageLength", "copy", {
                 className: "btn-seconday",
                 text: 'PDF',
@@ -527,9 +399,6 @@
                   $('#tabelAgenda').DataTable().ajax.url("{{ env('APP_URL') }}/agenda/api_index?tahun={{ request()->get('tahun') }}&bulan={{ request()->get('bulan') }}&user_id={{ request()->get('user_id') }}&belumtl=" + $('#belumtl').val()).load();
                   }
               },
-=======
-      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print", 
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         {
           className: "btn-success",
           text: 'Tambah',
@@ -542,7 +411,6 @@
 
 
        $('#tabelAgenda tbody').on( 'click', 'tr', function (evt) {
-<<<<<<< HEAD
         if ($(evt.target).closest('td').index() !== 5) {
           $("#success-message").hide();
           $("#error-message").hide();
@@ -557,18 +425,11 @@
           } else {
               $('#tombol_edit_agenda').hide();
           }
-=======
-        if (($(evt.target).closest('td').index() !== 3) && ($(evt.target).closest('td').index() !== 4)) {
-        $("#success-message").hide();
-        $("#error-message").hide();
-        showModalAgenda('',this.id);
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         }
         });
 
       function showModalDokumen(uuid) { 
         $.ajax({
-<<<<<<< HEAD
           url:"{{ env('APP_URL') }}/dokumen/show/"+uuid,
           type:'GET',
           dataType: 'json',
@@ -590,20 +451,6 @@
             $('#buttonsDokumen').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="saveAndPrint()"><i class="fas fa-print"></i> Print Dokumen</button>');
             $('#buttonsDokumen').append('<button type="button" onclick="window.location.assign(`'+"{{route('dokumen.edit', '')}}"+"/"+data.uuid+'`)" class="btn btn-warning btn-block" id="Edit"><i class="fas fa-edit"></i> Edit Dokumen</button>');
             $('#buttonsDokumen').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Dokumen</button>');
-=======
-          url:'/dokumen/show/'+uuid,
-          type:'GET',
-          dataType: 'json',
-          success: function( response ) {
-            $("#overlay").hide();
-            tinymce.activeEditor.setContent(JSON.parse(response.konten));
-            $('#dokumenModal').modal('show');
-            //munculkan tombol
-            $('#buttonsDokumen').html('');
-            $('#buttonsDokumen').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="saveAndPrint()"><i class="fas fa-print"></i> Print Dokumen</button>');
-            // $('#buttons').append('<button type="button" onclick="window.location.assign(`'+"{{route('dokumen.edit', '')}}"+"/"+data.uuid+'`)" class="btn btn-warning btn-block" id="terima"><i class="fas fa-edit"></i> Edit Dokumen</button>');
-            // $('#buttonsDokumen').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Dokumen</button>');
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             }
         });
     };

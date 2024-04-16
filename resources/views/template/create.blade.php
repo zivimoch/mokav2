@@ -25,7 +25,6 @@
         <div class="col-sm-6">
           <h1 class="m-0"><i class="far fa-copy"></i> Buat Template</h1>
         </div><!-- /.col -->
-<<<<<<< HEAD
         <div class="col-sm-6 text-right">
           <input type="checkbox" class="btn-xs" id="kontainerwidth"
                 checked
@@ -35,14 +34,6 @@
                 data-off-color="default" 
                 data-on-color="default">
         </div>
-=======
-        <div class="col-sm-6">
-          <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Template</li>
-          </ol>
-        </div><!-- /.col -->
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->
   </div>
@@ -94,11 +85,7 @@
             <div class="form-card">
               <div class="form-group">
                 <label>Keyword / Detail Layanan (contoh : Koordinasi Internal, Pemeriksaan Psikologi, Konsultasi Hukum dll)</label>
-<<<<<<< HEAD
                 <select name="keyword[]" class="form-control select-tag" id="keyword" style="width:100%" multiple="multiple" required>
-=======
-                <select name="keyword[]" class="form-control select-tag titlecase" id="keyword" style="width:100%" multiple="multiple" required>
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
                     @foreach ($keyword as $item)
                         <option value="{{ $item->keyword }}" >{{ $item->keyword }}</option>
                     @endforeach
@@ -271,7 +258,6 @@
       classes: 'tablerow1'
     }
   ],
-<<<<<<< HEAD
   setup: function(ed) {
     ed.on('keydown', function(event) {
         if (event.keyCode == 9) { // tab pressed
@@ -287,8 +273,6 @@
         }
     });
 },
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
   
   toolbar: "insertfile undo redo | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image responsivefilemanager | formatselect | strikethrough | forecolor backcolor fontselect  fontsizeselect | pastetext |",
   convert_fonts_to_spans: true,

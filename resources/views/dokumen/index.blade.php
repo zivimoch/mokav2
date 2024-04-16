@@ -19,7 +19,6 @@
           <div class="col-sm-6">
             <h1 class="m-0"><i class="nav-icon fas fa-file-alt"></i> Dokumen</h1>
           </div><!-- /.col -->
-<<<<<<< HEAD
           <div class="col-sm-6 text-right">
             <input type="checkbox" class="btn-xs" id="kontainerwidth"
             {{ Auth::user()->settings_kontainer_width == 'normal' ? 'checked' : '' }}
@@ -29,14 +28,6 @@
                   data-off-color="default" 
                   data-on-color="default">
           </div>
-=======
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
-          </div><!-- /.col -->
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
@@ -94,7 +85,6 @@
         </button>
       </div>
       <div class="modal-body">
-<<<<<<< HEAD
 
         <label>Detail Template</label>
         <div class="col-md-12" style="background-color:aliceblue; padding:10px">
@@ -142,8 +132,6 @@
             </table> 
         </div>
         <br>
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
         <div class="form-card">
           <div class="form-group">
 
@@ -160,16 +148,10 @@
             </body>
           </div>
         </div>
-<<<<<<< HEAD
         <b>Agenda Terkait :</b>
         <div id="dokumen_tl"></div>
       </div>
       <div class="modal-footer" id="buttonsDokumen"></div>
-=======
-      </div>
-      <div class="modal-footer" id="buttonsDokumen">
-      </div>
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     </div>
   </div>
 </div>
@@ -199,11 +181,7 @@
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
-<<<<<<< HEAD
       "ajax": "{{ env('APP_URL') }}/dokumen",
-=======
-      "ajax": "/dokumen",
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
       },
@@ -255,7 +233,6 @@
     });
 
     $('#tabelDokumen tbody').on('click', 'tr', function () {
-<<<<<<< HEAD
       $.get(`{{ env('APP_URL') }}/dokumen/show/`+this.id, function (data) {
           dokumen_tl = data.dokumen_tl;
           data = data.data;
@@ -283,17 +260,6 @@
           $('#buttonsDokumen').html('');
           $('#buttonsDokumen').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="saveAndPrint()"><i class="fas fa-print"></i> Print Dokumen</button>');
           $('#buttonsDokumen').append('<button type="button" onclick="window.location.assign(`'+"{{route('dokumen.edit', '')}}"+"/"+data.uuid+'`)" class="btn btn-warning btn-block" id="Edit"><i class="fas fa-edit"></i> Edit Dokumen</button>');
-=======
-      $.get(`/dokumen/show/`+this.id, function (data) {
-          $("#overlay").hide();
-          console.log(data);
-          tinymce.activeEditor.setContent(JSON.parse(data.konten));
-          $('#dokumenModal').modal('show');
-          //munculkan tombol
-          $('#buttonsDokumen').html('');
-          $('#buttonsDokumen').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="saveAndPrint()"><i class="fas fa-print"></i> Print Dokumen</button>');
-          // $('#buttons').append('<button type="button" onclick="window.location.assign(`'+"{{route('dokumen.edit', '')}}"+"/"+data.uuid+'`)" class="btn btn-warning btn-block" id="terima"><i class="fas fa-edit"></i> Edit Dokumen</button>');
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
           $('#buttonsDokumen').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Dokumen</button>');
         });
     });
@@ -355,18 +321,11 @@
       if (confirm("Apakah anda yakin ingin menghapus dokumen ini?\nDokumen yang terhapus tidak akan muncul di daftar dokumen dan di agenda") == true) {
         let token   = $("meta[name='csrf-token']").attr("content");
         $.ajax({
-<<<<<<< HEAD
         url: `{{ env('APP_URL') }}/dokumen/destroy/`+uuid,
         type: "POST",
         cache: false,
         data: {
             _method:'DELETE',
-=======
-        url: `/dokumen/destroy/`+uuid,
-        type: "DELETE",
-        cache: false,
-        data: {
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
             _token: token
         },
         success: function (response){

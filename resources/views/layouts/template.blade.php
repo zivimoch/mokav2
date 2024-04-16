@@ -33,10 +33,7 @@
 <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 {{-- toast, bikin alert yang melayang dan hilang --}}
 <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/toastr/toastr.min.css">
-<<<<<<< HEAD
 <link rel="shortcut icon" href="{{ asset('img/favicon.png') }}" >
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -49,7 +46,6 @@
 </head>
 <body class="hold-transition layout-top-nav">
 {{-- ubah ini dan style wrapper saat production  --}}
-<<<<<<< HEAD
 @php
     $url = request()->url();
     $urlSegments = explode('/', $url);
@@ -63,13 +59,6 @@
 <div class="alert" style="width:100%;"></div>
 @endif
 <!-- Site wrapper -->
-=======
-<div class="alert alert-danger" style="position: fixed; z-index:10000; width:100%;">
-  <center><b>MOKA.V2 (Alpha). Akses terbatas</b></center>
-</div>
-<div class="alert alert-danger" style="width:100%;"></div>
-  <!-- Site wrapper -->
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 <div class="wrapper">
   <!-- Navbar -->
   @include('layouts.navbar')
@@ -89,11 +78,7 @@
 <script src="{{ asset('adminlte') }}/plugins/toastr/toastr.min.js"></script>
 <div class="content-wrapper">
     <div class="content">
-<<<<<<< HEAD
       <div class="container" id="kontainer">
-=======
-      <div class="container">
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       @yield('content')
     </div>
   </div>
@@ -101,11 +86,7 @@
     
   <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
-<<<<<<< HEAD
       <b>Version</b> 2.1
-=======
-      <b>Version</b> 2.0
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     </div>
     <strong>Copyright &copy; 2022 <a href="">MOKA ONLINE</a>.</strong> All rights reserved.
   </footer>
@@ -116,11 +97,7 @@
   <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body" style="text-align: center">
-<<<<<<< HEAD
         <h4 style="font-weight:bold; background-color:rgb(174, 149, 114); color:#fff">SESI HABIS, JANGAN BIARKAN MOKA ANDA TERLALU LAMA</h4>
-=======
-        <h4 style="font-weight:bold; background-color:rgb(174, 149, 114); color:#fff">SESI HABIS, JANGAN BIARKAN MOKA ANDA DINGIN</h4>
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
       </br>
       <center>
         <img src="{{ asset('img/mocha.gif') }}" alt="" class="img-fluid">
@@ -132,7 +109,6 @@
     </div>
   </div>
 </div>
-<<<<<<< HEAD
 @if (((env('APP_URL') == 'http://127.0.0.1:8000') || ($firstSegment === 'latihan')) && isset(Auth::user()->id))
 {{-- MOKA V2.0 ANNOUCMENT BOX  --}}
 <style>
@@ -278,14 +254,6 @@
           $('#kontainer').removeClass('container');
         }
       });
-=======
-{{-- ini untuk notifikasi ketika diklik redirect --}}
-<input type="hidden" id="notif_receiver" data-notif="{{ Request::get('notif') }}" value="{{ Request::get('notif') }}">
-{{-- socket --}}
-<script src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
-<script>
-  $(function() {
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     loadnotif();
     // ketika di local
     socket = io(window.location.hostname+':'+3000);
