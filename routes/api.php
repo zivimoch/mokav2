@@ -2,11 +2,8 @@
 
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\KasusController;
-<<<<<<< HEAD
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\OpsiController;
-=======
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
 use App\Http\Controllers\WilayahController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +25,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->group(function () {
     Route::namespace('API')->group(function () {
-<<<<<<< HEAD
         // alamat
         Route::get('/kotkab', [WilayahController::class, 'getKotkab'])->name('api.v1.kotkab');
         Route::get('/kecamatan', [WilayahController::class, 'getKecamatan'])->name('api.v1.kecamatan');
@@ -44,12 +40,6 @@ Route::prefix('v1')->group(function () {
         Route::get('/jumlahkorbanklasifikasi', [MonitoringController::class, 'jumlah_korban_klasifikasi'])->name('api.v1.jumlahkorbanklasifikasi');
         Route::get('/jumlahkorbankategorilokasi', [MonitoringController::class, 'jumlah_korban_kategori_lokasi'])->name('api.v1.jumlahkorbankategorilokasi');
         Route::get('/jumlahkorbanidentitas', [MonitoringController::class, 'jumlah_korban_identitas'])->name('api.v1.jumlahkorbanidentitas');
-=======
-        Route::get('/kotkab', [WilayahController::class, 'getKotkab'])->name('api.v1.kotkab');
-    });
-    Route::namespace('API')->group(function () {
-        Route::get('/kecamatan', [WilayahController::class, 'getKecamatan'])->name('api.v1.kecamatan');
->>>>>>> a5b8b868dc63aecbff731d58b225d84c5f17745f
     });
 });
 
