@@ -2,11 +2,11 @@
 
 @section('content')
 <style>
-    .input_pelapor, .input_klien, .input_kasus {
+    .input_pelapor, .input_klien, .input_kasus, .input_rekam, .input_klasifikasi, #formTerlapor {
         display: none;
     }
 
-    .input_pelapor, #tombol_save_pelapor, .input_klien, #tombol_save_klien, .input_kasus, #tombol_save_kasus, .input_terlapor, .tombol_save_terlapor {
+    .input_pelapor, #tombol_save_pelapor, .input_klien, #tombol_save_klien, .input_kasus, #tombol_save_kasus, .input_terlapor, .tombol_save_terlapor, .input_rekam, #tombol_save_rekam, .input_klasifikasi, #tombol_save_klasifikasi {
         display: none;
     }
 
@@ -25,7 +25,12 @@
     .akses_petugas, #check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_pemantauan, #check_terminasi, .warningTerminasi {
         display: none;
     }
+
+    .cursor-disabled {
+        cursor:not-allowed;
+    }
 </style>
+
 <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
@@ -34,7 +39,7 @@
         </div>
         <div class="col-sm-6 text-right">
           <input type="checkbox" class="btn-xs" id="kontainerwidth"
-                checked
+          {{ Auth::user()->settings_kontainer_width == 'normal' ? 'checked' : '' }}
                 data-bootstrap-switch 
                 data-on-text="Normal"
                 data-off-text="Fullwidth"
@@ -78,21 +83,25 @@
 <div class="card" style="margin-top:-30px; margin-bottom:0px">
     <div id="accordionKelengkapan" style="margin-bottom:-15px">
         <div class="card card-light">
-        <div class="card-header {{ Request::get('kolom-kelengkapan') == 1 ? 'hightlighting' : '' }}">
-        <h4 class="card-title w-100">
-        <a class="d-block w-100" data-toggle="collapse" href="#collapseKelengkapan">
-        <b>Kelengkapan Kasus (<span id="kelengkapan_kasus"></span>/6) </b>
-        </a>
-        </h4>
-        </div>
+
+            <div class="card-header {{ Request::get('kolom-kelengkapan') == 1 ? 'hightlighting' : '' }}" data-toggle="collapse" data-target="#collapseKelengkapan" aria-expanded="true" aria-controls="collapseKelengkapan" style="cursor: pointer;">
+                <h3 class="card-title">
+                    <b>Kelengkapan Kasus (<span id="kelengkapan_kasus"></span>/6) </b>
+                </h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool">
+                    <i class="fas fa-chevron-down"></i>
+                  </button>
+                </div>
+              </div>
         <div id="collapseKelengkapan" class="collapse {{ Request::get('kolom-kelengkapan') == 1 ? 'show' : '' }} {{ Request::get('kolom-kelengkapan') == 1 ? 'hightlighting' : '' }}" data-parent="#accordionKelengkapan">
         <div class="card-body">
             <ol style="padding:15px; margin :-25px 0px -20px 0px">
                 <li>
                     Identifikasi <i class="fa fa-check" id="check_identifikasi"></i>
                     <ul style="margin-left: -25px">
-                        <li>
-                            Data Kasus (<span id="persen_title_data"></span>%) <i class="far fa-check-circle"></i>
+                        <li style="color: blue; cursor: pointer; font-weight:bold" onclick="alert('Field yang dibutuhkan untuk diisi :\n1. Data Kasus : \nMedia Pengagduan, Sumber Informasi, Tanggal Pelaporan, Tanggal Kejadian, Kategori Lokasi, Ringkasan, TKP\n2. Data Pelapor :\n Nama Lengkap, Jenis Kelamin\n3. Data Korban :\nNama Lengkap, Tempat Lahir, Tanggal Lahir, Jenis Kelamin, Alamat KTP, Alamat Domisili, Agama, Status Kawin, Pekerjaan, Kewargangaraan, Status Pendidikan, Pendidikan, Hubungan dengan Pelapor\n4. Data Terlapor :\nNama Lengkap, Tempat Lahir, Tanggal Lahir, Jenis Kelamin, Agama, Pekerjaan, Kewarganegaraan, Status Pendidikan, Pendidikan')">
+                            Kelengkapan Data (<span id="persen_title_data"></span>%) <i class="far fa-check-circle"></i>
                         </li>
                             <div class="progress progress-xs">
                                 <div class="progress-bar bg-success progress-bar-striped" id="persen_data" role="progressbar" aria-valuemin="0" aria-valuemax="100">
@@ -252,10 +261,230 @@
             </div>
         </div>
             
-            
+        <style> input { width: 100%; }</style>
         <div class="post clearfix" style="color:black">
-            <style> input { width: 100%; }</style>
-            <b id="anchor_pelaporan">A. IDENTITAS PELAPOR</b>
+            <b>A. DATA KASUS</b>
+            <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
+            @csrf
+            @method('put')
+            <input type="hidden" name="uuid" value="{{ $kasus->uuid }}">
+            <input type="hidden" name="data_update" value="kasus">
+            <span style="float:right" class="akses_petugas">
+                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_kasus" onclick="editdata('kasus')">
+                <i class="fas fa-edit"></i> Edit
+                </a>
+                <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_kasus">
+                <i class="fas fa-check"></i> Save
+                </button>
+            </span>
+            <span style="color: red" class="input_kasus">*merubah data ini akan merubah pula data pada kasus yang terkait</span>
+            <table class="table table-bottom table-sm">
+                <tr id="sumber_rujukan_kasus">
+                    <td style="width: 200px">Rujukan</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_kasus">{{ $kasus->sumber_rujukan }}</span> 
+                        <select name="sumber_rujukan" class="input_kasus select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($sumber_rujukan as $item_sumber_rujukan)
+                                <option value="{{ $item_sumber_rujukan }}" {{ $item_sumber_rujukan == $kasus->sumber_rujukan ? 'selected' : '' }}>{{ $item_sumber_rujukan }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                </tr>
+                <tr id="media_pengaduan_kasus">
+                    <td style="width: 200px">Media Pengaduan</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_kasus">{{ $kasus->media_pengaduan }}</span> 
+                        <select name="media_pengaduan" class="input_kasus select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($media_pengaduan as $item_media_pengaduan)
+                                <option value="{{ $item_media_pengaduan }}" {{ $item_media_pengaduan == $kasus->media_pengaduan ? 'selected' : '' }}>{{ $item_media_pengaduan }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                </tr>
+                <tr id="sumber_informasi_kasus">
+                    <td style="width: 200px">Sumber Informasi</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_kasus">{{ $kasus->sumber_informasi }}</span> 
+                        <select name="sumber_informasi" class="input_kasus select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($sumber_informasi as $item_sumber_informasi)
+                                <option value="{{ $item_sumber_informasi }}" {{ $item_sumber_informasi == $kasus->sumber_informasi ? 'selected' : '' }}>{{ $item_sumber_informasi }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                </tr>
+                <tr id="tanggal_pelaporan_kasus">
+                    <td style="width: 200px">Tanggal Pelaporan</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_kasus">
+                            {{ $kasus->tanggal_pelaporan ? date('d M Y', strtotime($kasus->tanggal_pelaporan)) : '' }}
+                        </span> 
+                        <input type="date" name="tanggal_pelaporan" value="{{ $kasus->tanggal_pelaporan }}" class="input_kasus">
+                    </td>
+                </tr>
+                <tr id="tanggal_kejadian_kasus">
+                    <td style="width: 200px">Tanggal Kejadian</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_kasus">
+                            {{ $kasus->tanggal_kejadian ? date('d M Y', strtotime($kasus->tanggal_kejadian)) : '' }}
+                        </span> 
+                        <input type="date" name="tanggal_kejadian" value="{{ $kasus->tanggal_kejadian }}" class="input_kasus">
+                    </td>
+                </tr>
+                <tr id="kategori_lokasi_kasus">
+                    <td style="width: 200px">Kategori Lokasi TKP</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_kasus">{{ $kasus->kategori_lokasi }}</span> 
+                        <select name="kategori_lokasi" class="input_kasus select2bs4" style="width: 100%;">
+                            <option value=""></option>
+                            @php
+                            $no_kategori_lokasi = 1;   
+                            @endphp
+                            @foreach ($kategori_lokasi as $group => $groupItems)
+                                <optgroup label="{{ $no_kategori_lokasi.'. '. $group }}">
+                                    @foreach ($groupItems as $item)
+                                        <option value="{{ $item }}" {{ $item == $kasus->kategori_lokasi ? 'selected' : '' }}>{{ $item }}</option>
+                                    @endforeach
+                                </optgroup>
+                                @php
+                                $no_kategori_lokasi++;
+                                @endphp
+                            @endforeach
+                        </select>
+                    </td>
+                </tr>
+                <tr id="alamat_kasus">
+                    <td style="width: 200px">Alamat TKP</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_kasus">{{ $kasus->alamat }}</span> 
+                        <input type="text" name="alamat" value="{{ $kasus->alamat }}" class="input_kasus">, 
+                        <b>Provinsi</b> <span class="data_kasus">{{ $kasus->provinsi }}</span> 
+                        <select name="provinsi_id" class="input_kasus select2bs4" id="provinsi_id_kasus" onchange="getkotkab('kasus')" style="width:100%">
+                            @foreach ($provinsi as $item)
+                                <option value="{{ $item->code }}" {{ $item->code == $kasus->provinsi_id ? 'selected' : '' }}>{{ $item->name }}</option>
+                            @endforeach
+                        </select>,
+                        <b>Kota</b> <span class="data_kasus">{{ $kasus->kota }}</span> 
+                        <select name="kotkab_id" class="input_kasus select2bs4" id="kota_id_kasus" onchange="getkecamatan('kasus')" style="width:100%">
+                        </select>, 
+                        <b>Kecamatan</b> <span class="data_kasus">{{ $kasus->kecamatan }}</span> 
+                        <select name="kecamatan_id" class="input_kasus select2bs4" id="kecamatan_id_kasus" onchange="getkelurahan('kasus')" style="width:100%">
+                            <option value="" selected></option>
+                        </select>,
+                        <b>Kelurahan</b> <span class="data_kasus">{{ $kasus->kelurahan }}</span> 
+                        <select name="kelurahan_id" class="input_kasus select2bs4" id="kelurahan_id_kasus" style="width:100%">
+                            <option value="" selected></option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="ringkasan_kasus">
+                    <td style="width: 200px">Ringkasan</td>
+                    <td>:</td>
+                    <td><span class="data_kasus">{!! nl2br($kasus->ringkasan) !!}</span> <textarea name="ringkasan" class="input_kasus" style="width:100%" rows="10">{{ $kasus->ringkasan }}</textarea></td>
+                </tr>
+            </table>
+            </form>
+        </div>
+
+        <div class="post clearfix" style="color:black">
+            <b>KLASIFIKASI KASUS</b>
+            <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
+            @csrf
+            @method('put')
+            <input type="hidden" name="uuid" value="{{ $klien->uuid }}">
+            <input type="hidden" name="data_update" value="klasifikasi">
+            <span style="float:right" class="akses_petugas">
+                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_klasifikasi" onclick="editdata('klasifikasi')">
+                <i class="fas fa-edit"></i> Edit
+                </a>
+                <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_klasifikasi">
+                <i class="fas fa-check"></i> Save
+                </button>
+            </span>
+            <table class="table table-bottom table-sm">
+                <tr id="sumber_rujukan_kasus">
+                    <td style="width: 200px">Jenis Kekerasan</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klasifikasi">
+                            @foreach ($jenis_kekerasan as $item)
+                                {{ $item->nama }}@if (!$loop->last), @endif 
+                            @endforeach
+                        </span> 
+                        <div class="input_klasifikasi">
+                            <select name="jenis_kekerasan[]" id="jenis_kekerasan" onchange="getBentukKekerasan()" multiple="multiple" style="width: 100%"  data-placeholder="Dapat dipilih lebih dari 1 jenis kekerasan" required>
+                                @foreach ($jenis_kekerasan as $item)
+                                    <option value="{{ $item->value }}" selected>{{ $item->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+                <tr id="sumber_rujukan_kasus">
+                    <td style="width: 200px">Bentuk Kekerasan</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klasifikasi">
+                            @php
+                                $no_jenis = 1;
+                            @endphp
+                            @foreach($bentuk_kekerasan_sets as $jenisNama => $bentukKekerasans)
+                                <b>{{ $no_jenis.'. '.$jenisNama }}</b><br>
+                                    @foreach($bentukKekerasans as $bentukNama)
+                                        {{ $bentukNama }}@if (!$loop->last), @endif
+                                    @endforeach
+                                <br>
+                                @php
+                                    $no_jenis++;
+                                @endphp
+                            @endforeach
+                        </span> 
+                        <div class="input_klasifikasi">
+                            <select name="bentuk_kekerasan[]" id="bentuk_kekerasan" onchange="getKategoriKasus()" multiple="multiple" style="width: 100%"  data-placeholder="Dapat dipilih lebih dari 1 bentuk kekerasan">
+                                @if (count($bentuk_kekerasan) > 0)
+                                    @foreach ($bentuk_kekerasan as $item)
+                                        <option value="{{ $item->value }}" selected>{{ $item->nama }}</option>
+                                    @endforeach
+                                @endif
+                            </select> 
+                        </div>
+                    </td>
+                </tr>
+                <tr id="sumber_rujukan_kasus">
+                    <td style="width: 200px">Kategori Kasus</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klasifikasi">
+                            @foreach ($kategori_kasus as $item)
+                                {{ $item->nama }}@if (!$loop->last), @endif 
+                            @endforeach
+                        </span> 
+                        <div class="input_klasifikasi">
+                            <select name="kategori_kasus[]" id="kategori_kasus" multiple="multiple" style="width: 100%"  data-placeholder="Dapat dipilih lebih dari 1 kategori kasus">
+                                @if (count($kategori_kasus) > 0)
+                                    @foreach ($kategori_kasus as $item)
+                                        <option value="{{ $item->value }}" selected>{{ $item->nama }}</option>
+                                    @endforeach
+                                @endif
+                            </select> 
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            </form>
+        </div>
+
+        <div class="post clearfix" style="color:black">
+            <b id="anchor_pelaporan">B. IDENTITAS PELAPOR</b>
             <br>
             <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
                 @csrf
@@ -270,17 +499,17 @@
                     <i class="fas fa-check"></i> Save
                     </button>
                 </span>
-                <span style="color: red">*merubah data ini akan merubah pula data pada kasus yang terkait</span>
+                <span style="color: red" class="input_pelapor">*merubah data ini akan merubah pula data pada kasus yang terkait</span>
                 <table class="table table-bottom table-sm">
-                    <tr id="nama_pelapor">
-                        <td style="width: 200px">Nama</td>
-                        <td>:</td>
-                        <td><span class="data_pelapor">{{ $pelapor->nama }}</span> <input type="text" name="nama" value="{{ $pelapor->nama }}" class="input_pelapor"></td>
-                    </tr>
                     <tr id="nik_pelapor">
                         <td style="width: 200px">NIK</td>
                         <td>:</td>
                         <td><span class="data_pelapor">{{ $pelapor->nik }}</span> <input type="number" name="nik" value="{{ $pelapor->nik }}" class="input_pelapor"></td>
+                    </tr>
+                    <tr id="nama_pelapor">
+                        <td style="width: 200px">Nama</td>
+                        <td>:</td>
+                        <td><span class="data_pelapor">{{ $pelapor->nama }}</span> <input type="text" name="nama" value="{{ $pelapor->nama }}" class="input_pelapor"></td>
                     </tr>
                     <tr id="tanggal_lahir_pelapor">
                         <td style="width: 200px">Tempat/Tgl Lahir</td>
@@ -294,8 +523,42 @@
                             <input type="date" name="tanggal_lahir" value="{{ $pelapor->tanggal_lahir }}" class="input_pelapor">
                         </td>
                     </tr>
+                    <tr id="jenis_kelamin_pelapor">
+                        <td style="width: 200px">Jenis Kelamin</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_pelapor">{{ $pelapor->jenis_kelamin }}</span> 
+                            <select name="jenis_kelamin" class="input_pelapor select2bs4" style="width: 100%;">
+                                <option value="perempuan" {{ "perempuan" == $pelapor->jenis_kelamin ? 'selected' : '' }}>Perempuan</option>
+                                <option value="laki-laki" {{ "laki-laki" == $pelapor->jenis_kelamin ? 'selected' : '' }}>Laki-laki</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="alamat_ktp_pelapor">
+                        <td style="width: 200px">Alamat KTP</td>
+                        <td>:</td>
+                        <td><span class="data_pelapor">{{ $pelapor->alamat_ktp }}</span> 
+                            <input type="text" name="alamat_ktp" value="{{ $pelapor->alamat_ktp }}" class="input_pelapor">, 
+                            <b>Provinsi</b> <span class="data_pelapor">{{ $pelapor->provinsi_ktp }}</span> 
+                            <select name="provinsi_id_ktp" class="input_pelapor select2bs4" id="provinsi_id_pelapor_ktp" onchange="getkotkab('pelapor_ktp')" style="width:100%">
+                                <option value=""></option>
+                                @foreach ($provinsi as $item)
+                                    <option value="{{ $item->code }}" {{ $item->code == $pelapor->provinsi_id_ktp ? 'selected' : '' }}>{{ $item->name }}</option>
+                                @endforeach
+                            </select>,
+                            <b>Kota</b> <span class="data_pelapor">{{ $pelapor->kota_ktp }}</span> 
+                            <select name="kotkab_id_ktp" class="input_pelapor select2bs4" id="kota_id_pelapor_ktp" onchange="getkecamatan('pelapor_ktp')" style="width:100%">
+                            </select>, 
+                            <b>Kecamatan</b> <span class="data_pelapor">{{ $pelapor->kecamatan_ktp }}</span> 
+                            <select name="kecamatan_id_ktp" class="input_pelapor select2bs4" id="kecamatan_id_pelapor_ktp" onchange="getkelurahan('pelapor_ktp')" style="width:100%">
+                            </select>,
+                            <b>Kelurahan</b> <span class="data_pelapor">{{ $pelapor->kelurahan_ktp }}</span> 
+                            <select name="kelurahan_id_ktp" class="input_pelapor select2bs4" id="kelurahan_id_pelapor_ktp" style="width:100%">
+                            </select>
+                        </td>
+                    </tr>
                     <tr id="alamat_pelapor">
-                        <td style="width: 200px">Alamat</td>
+                        <td style="width: 200px">Alamat Domisili</td>
                         <td>:</td>
                         <td><span class="data_pelapor">{{ $pelapor->alamat }}</span> 
                             <input type="text" name="alamat" value="{{ $pelapor->alamat }}" class="input_pelapor">, 
@@ -310,11 +573,79 @@
                             <select name="kotkab_id" class="input_pelapor select2bs4" id="kota_id_pelapor" onchange="getkecamatan('pelapor')" style="width:100%">
                             </select>, 
                             <b>Kecamatan</b> <span class="data_pelapor">{{ $pelapor->kecamatan }}</span> 
-                            <select name="kecamatan_id" class="input_pelapor select2bs4" id="kecamatan_id_pelapor" style="width:100%">
-                                <option value="" selected></option>
+                            <select name="kecamatan_id" class="input_pelapor select2bs4" id="kecamatan_id_pelapor" onchange="getkelurahan('pelapor')" style="width:100%">
                             </select>,
                             <b>Kelurahan</b> <span class="data_pelapor">{{ $pelapor->kelurahan }}</span> 
-                            <input type="text" name="kelurahan" value="{{ $pelapor->kelurahan }}" class="input_pelapor"> 
+                            <select name="kelurahan_id" class="input_pelapor select2bs4" id="kelurahan_id_pelapor" style="width:100%">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="agama_pelapor">
+                        <td style="width: 200px">Agama</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_pelapor">{{ $pelapor->agama }}</span> 
+                            <select name="agama" class="input_pelapor select2bs4" style="width: 100%;">
+                                @foreach ($agama as $item)
+                                    <option value="{{ $item }}" {{ $item == $pelapor->agama ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="status_kawin_pelapor">
+                        <td style="width: 200px">Status Perkawinan</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_pelapor">{{ $pelapor->status_kawin }}</span> 
+                            <select name="status_kawin" class="input_pelapor select2bs4" style="width: 100%;">
+                                @foreach ($status_perkawinan as $item)
+                                    <option value="{{ $item }}" {{ $item == $pelapor->status_kawin ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="pekerjaan_pelapor">
+                        <td style="width: 200px">Pekerjaan</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_pelapor">{{ $pelapor->pekerjaan }}</span> 
+                            <select name="pekerjaan" class="input_pelapor select2bs4" style="width: 100%;">
+                                @foreach ($pekerjaan as $item)
+                                    <option value="{{ $item }}" {{ $item == $pelapor->pekerjaan ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="kewarganegaraan_pelapor">
+                        <td style="width: 200px">Kewarganegaraan</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_pelapor">{{ $pelapor->kewarganegaraan }}</span> 
+                            <select name="kewarganegaraan" class="input_pelapor select2bs4" style="width: 100%;">
+                                <option value="WNI" {{ "WNI" == $pelapor->kewarganegaraan ? 'selected' : '' }}>WNI</option>
+                                <option value="WNA" {{ "WNA" == $pelapor->kewarganegaraan ? 'selected' : '' }}>WNA</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="pendidikan_pelapor">
+                        <td style="width: 200px">Pendidikan</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_pelapor">{{ $pelapor->pendidikan }}</span> 
+                            <select name="pendidikan" class="input_pelapor select2bs4" style="width: 100%;">
+                                <option value=""></option>
+                                @foreach ($pendidikan_terakhir as $item)
+                                    <option value="{{ $item }}" {{ $item == $pelapor->pendidikan ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                            (<span class="data_pelapor">{{ $pelapor->status_pendidikan }}</span> 
+                            <select name="status_pendidikan" class="input_pelapor select2bs4" style="width: 100%;">
+                                <option value=""></option>
+                                @foreach ($status_pendidikan as $item)
+                                    <option value="{{ $item }}" {{ $item == $pelapor->status_pendidikan ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                            )
                         </td>
                     </tr>
                     <tr id="no_telp_pelapor">
@@ -325,26 +656,19 @@
                             <input type="text" name="no_telp" value="{{ $pelapor->no_telp }}" class="input_pelapor">
                         </td>
                     </tr>
-                    <tr id="hubungan_pelapor_pelapor">
-                        <td style="width: 200px">Hubungan dengan klien</td>
-                        <td>:</td>
-                        <td>
-                            <span class="data_pelapor">{{ $pelapor->hubungan_pelapor }}</span> 
-                            <select name="hubungan_pelapor" class="input_pelapor select2bs4" style="width: 100%;">
-                                <option value=""></option>
-                                @foreach ($hubungan_dengan_klien as $item)
-                                    <option value="{{ $item }}" {{ $item == $pelapor->hubungan_pelapor ? 'selected' : '' }}>{{ $item }}</option>
-                                @endforeach
-                            </select>
+                    <tr class="input_pelapor">
+                        <td colspan="3">
+                            <span style="color: green">*merubah data "Hubungan dengan klien" tidak merubah data pada kasus terkait. Hubungan dengan Klien tergantung masing-masing klien </span>
                         </td>
                     </tr>
                 </table>
             </form>
         </div>
         <div class="post clearfix" style="color:black">
-            <b>B. IDENTITAS KLIEN</b>
+            <b>C. IDENTITAS KORBAN</b>
             {{-- id_klien_modal_agenda untuk modal agenda  --}}
             <input type="hidden" id="id_klien_modal_agenda" value="{{ $klien->id }}">
+            <input type="hidden" id="nama_klien_modal_agenda" value="{{ $klien->nama }}">
             <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
             @csrf
             @method('put')
@@ -359,54 +683,15 @@
                 </button>
             </span>
             <table class="table table-bottom table-sm">
-                <tr id="nama_klien">
-                    <td style="width: 200px">Nama</td>
-                    <td>:</td>
-                    {{-- nama_klien_modal_agenda untuk modal agenda  --}}
-                    <td><span class="data_klien">{{ $klien->nama }}</span> <input type="text" name="nama" value="{{ $klien->nama }}" class="input_klien" id="nama_klien_modal_agenda"></td>
-                </tr>
                 <tr id="nik_klien">
                     <td style="width: 200px">NIK</td>
                     <td>:</td>
                     <td><span class="data_klien">{{ $klien->nik }}</span> <input type="number" name="nik" value="{{ $klien->nik }}" class="input_klien"></td>
                 </tr>
-                <tr id="jenis_kelamin_klien">
-                    <td style="width: 200px">Jenis Kelamin</td>
+                <tr id="nama_klien">
+                    <td style="width: 200px">Nama</td>
                     <td>:</td>
-                    <td>
-                        <span class="data_klien">{{ $klien->jenis_kelamin }}</span> 
-                        <select name="jenis_kelamin" class="input_klien select2bs4" style="width: 100%;">
-                            <option value="perempuan" {{ 'perempuan' == $klien->jenis_kelamin ? 'selected' : '' }}>Perempuan</option>
-                            <option value="laki-laki" {{ 'laki-laki' == $klien->jenis_kelamin ? 'selected' : '' }}>Laki-laki</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr id="nik_klien">
-                    <td style="width: 200px">Kategori Kasus</td>
-                    <td>:</td>
-                    <td>
-                        <span class="data_klien">{{ $klien->kategori_kasus }}</span> 
-                    </td>
-                </tr>
-                <tr id="kondisi_khusus_klien">
-                    <td style="width: 200px">Kekhususan</td>
-                    <td>:</td>
-                    <td>
-                        <span class="data_klien">{{ $klien->kondisi_khusus }}</span> 
-                        <select name="kondisi_khusus[]" class="input_klien select2bs4" style="width: 100%;" multiple="multiple">
-                            @php
-                            $kondisi_khusus = explode(",",$klien->kondisi_khusus);
-                            @endphp
-                            @foreach ($kekhususan as $item)
-                                <option value="{{ $item }}" {{ in_array(' '.$item, $kondisi_khusus) ? 'selected' : '' }}>{{ $item }}</option>
-                            @endforeach
-                        </select>
-                    </td>
-                </tr>
-                <tr id="nik_klien">
-                    <td style="width: 200px">Tindak Kekerasan</td>
-                    <td>:</td>
-                    <td>xxx</td>
+                    <td><span class="data_klien">{{ $klien->nama }}</span> <input type="text" name="nama" value="{{ $klien->nama }}" class="input_klien"></td>
                 </tr>
                 <tr id="tanggal_lahir_klien">
                     <td style="width: 200px">Tempat/Tgl Lahir</td>
@@ -420,8 +705,45 @@
                         <input type="date" name="tanggal_lahir" value="{{ $klien->tanggal_lahir }}" class="input_klien">
                     </td>
                 </tr>
+                <tr id="jenis_kelamin_klien">
+                    <td style="width: 200px">Jenis Kelamin</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->jenis_kelamin }}</span> 
+                        <select name="jenis_kelamin" class="input_klien select2bs4" style="width: 100%;">
+                            <option value="perempuan" {{ "perempuan" == $klien->jenis_kelamin ? 'selected' : '' }}>Perempuan</option>
+                            <option value="laki-laki" {{ "laki-laki" == $klien->jenis_kelamin ? 'selected' : '' }}>Laki-laki</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="alamat_ktp_klien">
+                    <td style="width: 200px">Alamat KTP</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->alamat_ktp }}</span> 
+                        <input type="text" name="alamat_ktp" value="{{ $klien->alamat_ktp }}" class="input_klien">, 
+                        <b>Provinsi</b> <span class="data_klien">{{ $klien->provinsi_ktp }}</span> 
+                        <select name="provinsi_id_ktp" class="input_klien select2bs4" id="provinsi_id_klien_ktp" onchange="getkotkab('klien_ktp')" style="width:100%">
+                            <option value=""></option>
+                            @foreach ($provinsi as $item)
+                                <option value="{{ $item->code }}" {{ $item->code == $klien->provinsi_id_ktp ? 'selected' : '' }}>{{ $item->name }}</option>
+                            @endforeach
+                        </select>,
+                        <b>Kota</b> <span class="data_klien">{{ $klien->kota_ktp }}</span> 
+                        <select name="kotkab_id_ktp" class="input_klien select2bs4" id="kota_id_klien_ktp" onchange="getkecamatan('klien_ktp')" style="width:100%">
+                        </select>, 
+                        <b>Kecamatan</b> <span class="data_klien">{{ $klien->kecamatan_ktp }}</span> 
+                        <select name="kecamatan_id_ktp" class="input_klien select2bs4" id="kecamatan_id_klien_ktp" onchange="getkelurahan('klien_ktp')" style="width:100%">
+                            <option value="" selected></option>
+                        </select>,
+                        <b>Kelurahan</b> <span class="data_klien">{{ $klien->kelurahan_ktp }}</span> 
+                        <select name="kelurahan_id_ktp" class="input_klien select2bs4" id="kelurahan_id_klien_ktp" style="width:100%">
+                            <option value="" selected></option>
+                        </select>
+                    </td>
+                </tr>
                 <tr id="alamat_klien">
-                    <td style="width: 200px">Alamat</td>
+                    <td style="width: 200px">Alamat Domisili</td>
                     <td>:</td>
                     <td><span class="data_klien">{{ $klien->alamat }}</span> 
                         <input type="text" name="alamat" value="{{ $klien->alamat }}" class="input_klien">, 
@@ -436,11 +758,60 @@
                         <select name="kotkab_id" class="input_klien select2bs4" id="kota_id_klien" onchange="getkecamatan('klien')" style="width:100%">
                         </select>, 
                         <b>Kecamatan</b> <span class="data_klien">{{ $klien->kecamatan }}</span> 
-                        <select name="kecamatan_id" class="input_klien select2bs4" id="kecamatan_id_klien" style="width:100%">
+                        <select name="kecamatan_id" class="input_klien select2bs4" id="kecamatan_id_klien" onchange="getkelurahan('klien')" style="width:100%">
                             <option value="" selected></option>
                         </select>,
                         <b>Kelurahan</b> <span class="data_klien">{{ $klien->kelurahan }}</span> 
-                        <input type="text" name="kelurahan" value="{{ $klien->kelurahan }}" class="input_klien"> 
+                        <select name="kelurahan_id" class="input_klien select2bs4" id="kelurahan_id_klien" style="width:100%">
+                            <option value="" selected></option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="agama_klien">
+                    <td style="width: 200px">Agama</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->agama }}</span> 
+                        <select name="agama" class="input_klien select2bs4" style="width: 100%;">
+                            @foreach ($agama as $item)
+                                <option value="{{ $item }}" {{ $item == $klien->agama ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                </tr>
+                <tr id="status_kawin_klien">
+                    <td style="width: 200px">Status Perkawinan</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->status_kawin }}</span> 
+                        <select name="status_kawin" class="input_klien select2bs4" style="width: 100%;">
+                            @foreach ($status_perkawinan as $item)
+                                <option value="{{ $item }}" {{ $item == $klien->status_kawin ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                </tr>
+                <tr id="pekerjaan_klien">
+                    <td style="width: 200px">Pekerjaan</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->pekerjaan }}</span> 
+                        <select name="pekerjaan" class="input_klien select2bs4" style="width: 100%;">
+                            @foreach ($pekerjaan as $item)
+                                <option value="{{ $item }}" {{ $item == $klien->pekerjaan ? 'selected' : '' }}>{{ $item }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                </tr>
+                <tr id="kewarganegaraan_klien">
+                    <td style="width: 200px">Kewarganegaraan</td>
+                    <td>:</td>
+                    <td>
+                        <span class="data_klien">{{ $klien->kewarganegaraan }}</span> 
+                        <select name="kewarganegaraan" class="input_klien select2bs4" style="width: 100%;">
+                            <option value="WNI" {{ "WNI" == $klien->kewarganegaraan ? 'selected' : '' }}>WNI</option>
+                            <option value="WNA" {{ "WNA" == $klien->kewarganegaraan ? 'selected' : '' }}>WNA</option>
+                        </select>
                     </td>
                 </tr>
                 <tr id="pendidikan_klien">
@@ -464,128 +835,47 @@
                         )
                     </td>
                 </tr>
-                <tr id="nama_ibu_klien">
-                    <td style="width: 200px">Nama Ibu</td>
-                    <td>:</td>
-                    <td><span class="data_klien">{{ $klien->nama_ibu }}</span> <input type="text" name="nama_ibu" value="{{ $klien->nama_ibu }}" class="input_klien"></td>
-                </tr>
-                <tr id="tanggal_lahir_ibu_klien">
-                    <td style="width: 200px">Tempat/Tgl Lahir Ibu</td>
+                <tr id="no_telp_klien">
+                    <td style="width: 200px">No Telp</td>
                     <td>:</td>
                     <td>
-                        <span class="data_klien" id="tempat_lahir_ibu">{{ $klien->tempat_lahir_ibu }}</span> 
-                        <input type="text" name="tempat_lahir_ibu" value="{{ $klien->tempat_lahir_ibu }}" class="input_klien">, 
-                        <span class="data_klien">
-                            {{ $klien->tanggal_lahir_ibu ? date('d M Y', strtotime($klien->tanggal_lahir_ibu)) : '' }} ({{ $klien->tanggal_lahir_ibu ? Carbon\Carbon::parse($klien->tanggal_lahir_ibu)->age.' tahun' : ' '}})
-                        </span> 
-                        <input type="date" name="tanggal_lahir_ibu" value="{{ $klien->tanggal_lahir_ibu }}" class="input_klien">
+                        <span class="data_klien">{{ $klien->no_telp }}</span> 
+                        <input type="text" name="no_telp" value="{{ $klien->no_telp }}" class="input_klien">
                     </td>
                 </tr>
-                <tr id="nama_ayah_klien">
-                    <td style="width: 200px">Nama Ayah</td>
-                    <td>:</td>
-                    <td><span class="data_klien">{{ $klien->nama_ayah }}</span> <input type="text" name="nama_ayah" value="{{ $klien->nama_ayah }}" class="input_klien"></td>
-                </tr>
-                <tr id="tanggal_lahir_ayah_klien">
-                    <td style="width: 200px">Tempat/Tgl Lahir Ayah</td>
+                <tr id="kedisabilitasan_klien">
+                    <td style="width: 200px">Kedisabilitasan</td>
                     <td>:</td>
                     <td>
-                        <span class="data_klien" id="tempat_lahir_ayah">{{ $klien->tempat_lahir_ayah }}</span> 
-                        <input type="text" name="tempat_lahir_ayah" value="{{ $klien->tempat_lahir_ayah }}" class="input_klien">, 
-                        <span class="data_klien">
-                            {{ $klien->tanggal_lahir_ayah ? date('d M Y', strtotime($klien->tanggal_lahir_ayah)) : '' }} ({{ $klien->tanggal_lahir_ayah ? Carbon\Carbon::parse($klien->tanggal_lahir_ayah)->age.' tahun' : ' '}})
-                        </span> 
-                        <input type="date" name="tanggal_lahir_ayah" value="{{ $klien->tanggal_lahir_ayah }}" class="input_klien">
-                    </td>
-                </tr>
-                <tr id="agama_klien">
-                    <td style="width: 200px">Agama / Suku</td>
-                    <td>:</td>
-                    <td>
-                        <span class="data_klien">{{ $klien->agama }}</span> 
-                        <select name="agama" class="input_klien select2bs4" style="width: 100%;">
-                            <option value=""></option>
-                            @foreach ($agama as $item)
-                                <option value="{{ $item }}" {{ $item == $klien->agama ? 'selected' : '' }}>{{ $item }}</option>
-                            @endforeach
-                        </select> / 
-                        <span class="data_klien">{{ $klien->suku }}</span> 
-                        <select name="suku" class="input_klien select2bs4" style="width: 100%;">
-                            <option value=""></option>
-                            @foreach ($suku as $item)
-                                <option value="{{ $item }}" {{ $item == $klien->suku ? 'selected' : '' }}>{{ $item }}</option>
-                            @endforeach
+                        <span class="data_klien">{{ $klien->kedisabilitasan }}</span> 
+                        <select name="kedisabilitasan" class="input_klien select2bs4" style="width: 100%;">
+                                <option value="Non Disabilitas" {{ "Non Disabilitas" == $klien->kedisabilitasan ? 'selected' : '' }}>Non Disabilitas</option>
+                                <option value="Disabilitas" {{ "Disabilitas" == $klien->kedisabilitasan ? 'selected' : '' }}>Disabilitas</option>
+                                <option value="Tidak Diketahui" {{ "Tidak Diketahui" == $klien->kedisabilitasan ? 'selected' : '' }}>Tidak Diketahui</option>
                         </select>
-                    </td>
-                </tr>
-                <tr id="anak_ke_klien">
-                    <td style="width: 200px">Anak Ke</td>
-                    <td>:</td>
-                    <td>
-                        <span class="data_klien">{{ $klien->anak_ke }}</span> <input type="text" name="anak_ke" value="{{ $klien->anak_ke }}" class="input_klien"> 
-                        <b>dari</b> 
-                        <span class="data_klien">{{ $klien->jumlah_anak }}</span> <input type="text" name="jumlah_anak" value="{{ $klien->jumlah_anak }}" class="input_klien"> bersaudara
-                    </td>
-                </tr>
-                <tr id="hubungan_klien_klien">
-                    <td style="width: 200px">Hubungan dengan terlapor</td>
-                    <td>:</td>
-                    <td>
-                        <span class="data_klien">{{ $klien->hubungan_klien }}</span> 
-                        <select name="hubungan_klien" class="input_klien select2bs4" style="width: 100%;">
-                            <option value=""></option>
-                            @foreach ($hubungan_dengan_terlapor as $item)
-                                <option value="{{ $item }}" {{ $item == $klien->hubungan_klien ? 'selected' : '' }}>{{ $item }}</option>
-                            @endforeach
-                        </select>
-                    </td>
-                </tr>
-                <tr id="difabel_type_klien">
-                    <td style="width: 200px">Difabel Type</td>
-                    <td>:</td>
-                    <td>
-                        <span class="data_klien">{{ $klien->difabel_type }}</span> 
-                    </td>
-                </tr>
-                <tr id="kondisi_khusus_klien">
-                    <td style="width: 200px">Kekhususan</td>
-                    <td>:</td>
-                    <td>
-                        <span class="data_klien">{{ $klien->kondisi_khusus }}</span> 
-                        <select name="kondisi_khusus[]" class="input_klien select2bs4" style="width: 100%;" multiple="multiple">
-                            @php
-                            $kondisi_khusus = explode(",",$klien->kondisi_khusus);
-                            @endphp
-                            @foreach ($kekhususan as $item)
-                                <option value="{{ $item }}" {{ in_array(' '.$item, $kondisi_khusus) ? 'selected' : '' }}>{{ $item }}</option>
-                            @endforeach
-                        </select>
-                    </td>
-                </tr>
-                <tr id="program_pemerintah_klien">
-                    <td style="width: 200px">Program Pemerintah Yang Aktif</td>
-                    <td>:</td>
-                    <td>
-                        <span class="data_klien">{{ $klien->program_pemerintah }}</span> 
                     </td>
                 </tr>
             </table>
             </form>
         </div>
         <div class="post clearfix" id="data_terlapor" style="color:black">
-            <b>C. IDENTITAS TERLAPOR</b>
+            <b>D. IDENTITAS TERLAPOR</b>
             <?php $no_terlapor = 1;?>
             @foreach ($terlapor as $item_terlapor)
-            <br>
-            <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
+            <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST" id="terlapor{{ $item_terlapor->uuid }}">
             @csrf
             @method('put')
             <input type="hidden" name="uuid" value="{{ $item_terlapor->uuid }}">
+            <input type="hidden" name="klien_id" value="{{ $klien->id }}">
+            <input type="hidden" name="terlapor_id" value="{{ $item_terlapor->id }}">
             <input type="hidden" name="data_update" value="terlapor">
-            <span style="color: red">*merubah data ini akan merubah pula data pada kasus yang terkait</span>
+            <span style="color: red" class="input_terlapor">*merubah data ini akan merubah pula data pada kasus yang terkait</span>
             <br>
             <b> Terlapor {{ $no_terlapor }}</b>
             <span style="float:right" class="akses_petugas">
+                <a class="btn btn-xs bg-gradient-danger" onclick="deleteTerlapor('{{ $item_terlapor->uuid }}')">
+                <i class="fas fa-trash"></i> Delete
+                </a>
                 <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor{{ $no_terlapor }}" onclick="editdata('terlapor{{ $no_terlapor }}')">
                 <i class="fas fa-edit"></i> Edit
                 </a>
@@ -594,26 +884,15 @@
                 </button>
             </span>
                 <table class="table table-bottom table-sm">
-                    <tr id="nama_terlapor{{ $no_terlapor }}">
-                        <td style="width: 200px">Nama</td>
-                        <td>:</td>
-                        <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->nama }}</span> <input type="text" name="nama" value="{{ $item_terlapor->nama }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
-                    </tr>
                     <tr id="nik_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">NIK</td>
                         <td>:</td>
                         <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->nik }}</span> <input type="number" name="nik" value="{{ $item_terlapor->nik }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
                     </tr>
-                    <tr id="jenis_kelamin_terlapor{{ $no_terlapor }}">
-                        <td style="width: 200px">Jenis Kelamin</td>
+                    <tr id="nama_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Nama</td>
                         <td>:</td>
-                        <td>
-                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->jenis_kelamin }}</span> 
-                            <select name="jenis_kelamin" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
-                                <option value="perempuan" {{ 'perempuan' == $item_terlapor->jenis_kelamin ? 'selected' : '' }}>Perempuan</option>
-                                <option value="laki-laki" {{ 'laki-laki' == $item_terlapor->jenis_kelamin ? 'selected' : '' }}>Laki-laki</option>
-                            </select>
-                        </td>
+                        <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->nama }}</span> <input type="text" name="nama" value="{{ $item_terlapor->nama }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
                     </tr>
                     <tr id="tempat_tanggal_lahir_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Tempat/Tgl Lahir</td>
@@ -627,8 +906,44 @@
                             <input type="date" name="tanggal_lahir" value="{{ $item_terlapor->tanggal_lahir }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">
                         </td>
                     </tr>
+                    <tr id="jenis_kelamin_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Jenis Kelamin</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->jenis_kelamin }}</span> 
+                            <select name="jenis_kelamin" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                <option value="perempuan" {{ 'perempuan' == $item_terlapor->jenis_kelamin ? 'selected' : '' }}>Perempuan</option>
+                                <option value="laki-laki" {{ 'laki-laki' == $item_terlapor->jenis_kelamin ? 'selected' : '' }}>Laki-laki</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="alamat_terlapor_ktp{{ $no_terlapor }}">
+                        <td style="width: 200px">Alamat KTP</td>
+                    <td>:</td>
+                    <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->alamat_ktp }}</span> 
+                        <input type="text" name="alamat_ktp" value="{{ $item_terlapor->alamat_ktp }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">, 
+                        <b>Provinsi</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->provinsi_ktp }}</span> 
+                        <select name="provinsi_id_ktp" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="provinsi_id_terlapor_ktp{{ $no_terlapor }}" onchange="getkotkab('terlapor_ktp{{ $no_terlapor }}')" style="width:100%">
+                            <option value=""></option>
+                            @foreach ($provinsi as $item)
+                                <option value="{{ $item->code }}" {{ $item->code == $item_terlapor->provinsi_id_ktp ? 'selected' : '' }}>{{ $item->name }}</option>
+                            @endforeach
+                        </select>,
+                        <b>Kota</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->kota_ktp }}</span> 
+                        <select name="kotkab_id_ktp" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="kota_id_terlapor_ktp{{ $no_terlapor }}" onchange="getkecamatan('terlapor_ktp{{ $no_terlapor }}')" style="width:100%">
+                        </select>, 
+                        <b>Kecamatan</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->kecamatan_ktp }}</span> 
+                        <select name="kecamatan_id_ktp" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="kecamatan_id_terlapor_ktp{{ $no_terlapor }}" onchange="getkelurahan('terlapor_ktp{{ $no_terlapor }}')" style="width:100%">
+                            <option value="" selected></option>
+                        </select>,
+                        <b>Kelurahan</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->kelurahan_ktp }}</span> 
+                        <select name="kelurahan_id_ktp" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="kelurahan_id_terlapor_ktp{{ $no_terlapor }}" style="width:100%">
+                            <option value="" selected></option>
+                        </select>
+                    </td>
+                    </tr>
                     <tr id="alamat_terlapor{{ $no_terlapor }}">
-                        <td style="width: 200px">Alamat</td>
+                        <td style="width: 200px">Alamat Domisili</td>
                     <td>:</td>
                     <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->alamat }}</span> 
                         <input type="text" name="alamat" value="{{ $item_terlapor->alamat }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">, 
@@ -643,14 +958,63 @@
                         <select name="kotkab_id" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="kota_id_terlapor{{ $no_terlapor }}" onchange="getkecamatan('terlapor{{ $no_terlapor }}')" style="width:100%">
                         </select>, 
                         <b>Kecamatan</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->kecamatan }}</span> 
-                        <select name="kecamatan_id" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="kecamatan_id_terlapor{{ $no_terlapor }}" style="width:100%">
+                        <select name="kecamatan_id" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="kecamatan_id_terlapor{{ $no_terlapor }}" onchange="getkelurahan('terlapor{{ $no_terlapor }}')" style="width:100%">
                             <option value="" selected></option>
                         </select>,
                         <b>Kelurahan</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->kelurahan }}</span> 
-                        <input type="text" name="kelurahan" value="{{ $item_terlapor->kelurahan }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"> 
+                        <select name="kelurahan_id" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="kelurahan_id_terlapor{{ $no_terlapor }}" style="width:100%">
+                            <option value="" selected></option>
+                        </select>
                     </td>
                     </tr>
-                    <tr id="pendidikan_terakhir_terlapor{{ $no_terlapor }}">
+                    <tr id="agama_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Agama</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->agama }}</span> 
+                            <select name="agama" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                @foreach ($agama as $item)
+                                    <option value="{{ $item }}" {{ $item == $item_terlapor->agama ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="status_kawin_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Status Perkawinan</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->status_kawin }}</span> 
+                            <select name="status_kawin" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                @foreach ($status_perkawinan as $item)
+                                    <option value="{{ $item }}" {{ $item == $item_terlapor->status_kawin ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="pekerjaan_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Pekerjaan</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->pekerjaan }}</span> 
+                            <select name="pekerjaan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                @foreach ($pekerjaan as $item)
+                                    <option value="{{ $item }}" {{ $item == $item_terlapor->pekerjaan ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="kewarganegaraan_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">Kewarganegaraan</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->kewarganegaraan }}</span> 
+                            <select name="kewarganegaraan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                <option value="WNI" {{ "WNI" == $item_terlapor->kewarganegaraan ? 'selected' : '' }}>WNI</option>
+                                <option value="WNA" {{ "WNA" == $item_terlapor->kewarganegaraan ? 'selected' : '' }}>WNA</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="pendidikan_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Pendidikan</td>
                         <td>:</td>
                         <td>
@@ -671,84 +1035,26 @@
                             )
                         </td>
                     </tr>
-                    <tr id="agama_terlapor{{ $no_terlapor }}">
-                        <td style="width: 200px">Agama / Suku</td>
-                    <td>:</td>
-                    <td>
-                        <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->agama }}</span> 
-                        <select name="agama" class="input_klien input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
-                            <option value=""></option>
-                            @foreach ($agama as $item)
-                                <option value="{{ $item }}" {{ $item == $item_terlapor->agama ? 'selected' : '' }}>{{ $item }}</option>
-                            @endforeach
-                        </select> / 
-                        <span class="data_terlapor{{ $no_terlapor }}">{{ $klien->suku }}</span> 
-                        <select name="suku" class="input_klien input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
-                            <option value=""></option>
-                            @foreach ($suku as $item)
-                                <option value="{{ $item }}" {{ $item == $item_terlapor->suku ? 'selected' : '' }}>{{ $item }}</option>
-                            @endforeach
-                        </select>
-                    </td>
-                    </tr>
-                    <tr id="pekerjaan_terlapor{{ $no_terlapor }}">
-                        <td style="width: 200px">Pekerjaan</td>
+                    <tr id="no_telp_terlapor{{ $no_terlapor }}">
+                        <td style="width: 200px">No Telp</td>
                         <td>:</td>
                         <td>
-                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->pekerjaan }}</span> 
-                            <select name="pekerjaan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
-                                <option value=""></option>
-                                @foreach ($pekerjaan as $item)
-                                    <option value="{{ $item }}" {{ $item == $item_terlapor->pekerjaan ? 'selected' : '' }}>{{ $item }}</option>
-                                @endforeach
-                            </select>
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->no_telp }}</span> 
+                            <input type="text" name="no_telp" value="{{ $item_terlapor->no_telp }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">
                         </td>
-                    </tr>
-                    <tr id="pengahsilan_terlapor{{ $no_terlapor }}">
-                        <td style="width: 200px">Penghasilan Perbulan</td>
-                        <td>:</td>
-                        <td>Rp.<span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->penghasilan }}</span> <input type="number" name="penghasilan" value="{{ $item_terlapor->penghasilan }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
-                    </tr>
-                    <tr id="status_kawin_terlapor{{ $no_terlapor }}">
-                        <td style="width: 200px">Status Perkawinan</td>
-                        <td>:</td>
-                        <td>
-                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->status_kawin }}</span> 
-                            <select name="status_kawin" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
-                                <option value=""></option>
-                                @foreach ($status_perkawinan as $item)
-                                    <option value="{{ $item }}" {{ $item == $item_terlapor->status_kawin ? 'selected' : '' }}>{{ $item }}</option>
-                                @endforeach
-                            </select>
-                        </td>
-                    </tr>
-                    <tr id="jumlah_anak_terlapor{{ $no_terlapor }}">
-                        <td style="width: 200px">Jumlah Anak</td>
-                        <td>:</td>
-                        <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->jumlah_anak }}</span> <input type="number" name="jumlah_anak" value="{{ $item_terlapor->jumlah_anak }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
                     </tr>
                     <tr id="hubungan_terlapor{{ $no_terlapor }}">
-                        <td style="width: 200px">Hubungan dengan klien</td>
+                        <td style="width: 200px">Hubungan dengan klien (Terlapor siapanya Klien?)</td>
                         <td>:</td>
                         <td>
                             <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->hubungan_terlapor }}</span> 
-                            <select name="hubungan_terlapor" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                            <select name="hubungan_terlapor" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;" required>
                                 <option value=""></option>
                                 @foreach ($hubungan_dengan_klien as $item)
-                                    <option value="{{ $item }}" {{ $item == $item_terlapor->hubungan_terlapor ? 'selected' : '' }}>{{ $item }}</option>
+                                    <option value="{{ $item }}" {{ $item_terlapor->hubungan_terlapor == $item ? 'selected' : '' }}>{{ $item }}</option>
                                 @endforeach
                             </select>
                         </td>
-                    </tr>
-                    <tr id="masa_hukuman_terlapor{{ $no_terlapor }}">
-                        <td style="width: 200px">Masa Hukuman</td>
-                        <td>:</td>
-                        <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->masa_hukuman }}</span> <input type="text" name="masa_hukuman" value="{{ $item_terlapor->masa_hukuman }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
-                    </tr>
-                    <tr id="denda_hukuman_terlapor{{ $no_terlapor }}">
-                        <td style="width: 200px">Denda</td>
-                        <td>:</td>
-                        <td>Rp. <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->denda_hukuman }}</span> <input type="number" name="denda_hukuman" value="{{ $item_terlapor->denda_hukuman }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
                     </tr>
                 </table>
                 </form>
@@ -759,116 +1065,186 @@
                 </script>
                 <?php $no_terlapor++;?>
             @endforeach
-        </div>
-        <div class="post clearfix" style="color:black">
-            <b>D. KASUS KLIEN</b>
-            <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
-            @csrf
-            @method('put')
-            <input type="hidden" name="uuid" value="{{ $kasus->uuid }}">
-            <input type="hidden" name="data_update" value="kasus">
-            <span style="float:right" class="akses_petugas">
-                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_kasus" onclick="editdata('kasus')">
-                <i class="fas fa-edit"></i> Edit
-                </a>
-                <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_kasus">
-                <i class="fas fa-check"></i> Save
-                </button>
-            </span>
-            <span style="color: red">*merubah data ini akan merubah pula data pada kasus yang terkait</span>
-            <table class="table table-bottom table-sm">
-                <tr id="tanggal_kejadian_kasus">
-                    <td style="width: 200px">Tanggal Kejadian</td>
-                    <td>:</td>
-                    <td>
-                        <span class="data_kasus">
-                            {{ $kasus->tanggal_kejadian ? date('d M Y', strtotime($kasus->tanggal_kejadian)) : '' }}
-                        </span> 
-                        <input type="date" name="tanggal_kejadian" value="{{ $kasus->tanggal_kejadian }}" class="input_kasus">
-                    </td>
-                </tr>
-                <tr id="tempat_kejadian_kasus">
-                    <td style="width: 200px">Kategori Lokasi</td>
-                    <td>:</td>
-                    <td>
-                        <span class="data_kasus">{{ $kasus->tempat_kejadian }}</span> 
-                        <select name="tempat_kejadian" class="input_kasus select2bs4" style="width: 100%;">
-                            <option value=""></option>
-                            @foreach ($tempat_kejadian as $item_tempat_kejadian)
-                                <option value="{{ $item_tempat_kejadian }}" {{ $item_tempat_kejadian == $kasus->tempat_kejadian ? 'selected' : '' }}>{{ $item_tempat_kejadian }}</option>
-                            @endforeach
-                        </select>
-                    </td>
-                </tr>
-                <tr id="media_pengaduan_kasus">
-                    <td style="width: 200px">Media Pengaduan</td>
-                    <td>:</td>
-                    <td>
-                        <span class="data_kasus">{{ $kasus->media_pengaduan }}</span> 
-                        <select name="media_pengaduan" class="input_kasus select2bs4" style="width: 100%;">
-                            <option value=""></option>
-                            @foreach ($media_pengaduan as $item_media_pengaduan)
-                                <option value="{{ $item_media_pengaduan }}" {{ $item_media_pengaduan == $kasus->media_pengaduan ? 'selected' : '' }}>{{ $item_media_pengaduan }}</option>
-                            @endforeach
-                        </select>
-                    </td>
-                </tr>
-                <tr id="sumber_rujukan_kasus">
-                    <td style="width: 200px">Sumber Rujukan</td>
-                    <td>:</td>
-                    <td>
-                        <span class="data_kasus">{{ $kasus->sumber_rujukan }}</span> 
-                        <select name="sumber_rujukan" class="input_kasus select2bs4" style="width: 100%;">
-                            <option value=""></option>
-                            @foreach ($sumber_rujukan as $item_sumber_rujukan)
-                                <option value="{{ $item_sumber_rujukan }}" {{ $item_sumber_rujukan == $kasus->sumber_rujukan ? 'selected' : '' }}>{{ $item_sumber_rujukan }}</option>
-                            @endforeach
-                        </select>
-                    </td>
-                </tr>
-                <tr id="sumber_informasi_kasus">
-                    <td style="width: 200px">Sumber Informasi</td>
-                    <td>:</td>
-                    <td>
-                        <span class="data_kasus">{{ $kasus->sumber_informasi }}</span> 
-                        <select name="sumber_informasi" class="input_kasus select2bs4" style="width: 100%;">
-                            <option value=""></option>
-                            @foreach ($sumber_informasi as $item_sumber_informasi)
-                                <option value="{{ $item_sumber_informasi }}" {{ $item_sumber_informasi == $kasus->sumber_informasi ? 'selected' : '' }}>{{ $item_sumber_informasi }}</option>
-                            @endforeach
-                        </select>
-                    </td>
-                </tr>
-                <tr id="deskripsi_kasus">
-                    <td style="width: 200px">Deskripsi</td>
-                    <td>:</td>
-                    <td><span class="data_kasus">{{ $kasus->deskripsi }}</span> <textarea name="deskripsi" class="input_kasus" style="width:100%" rows="10">{{ $kasus->deskripsi }}</textarea></td>
-                </tr>
-                <tr id="alamat_kasus">
-                    <td style="width: 200px">Alamat</td>
-                    <td>:</td>
-                    <td>
-                        <span class="data_kasus">{{ $kasus->alamat }}</span> 
-                        <input type="text" name="alamat" value="{{ $kasus->alamat }}" class="input_kasus">, 
-                        <b>Provinsi</b> <span class="data_kasus">{{ $kasus->provinsi }}</span> 
-                        <select name="provinsi_id" class="input_kasus select2bs4" id="provinsi_id_kasus" onchange="getkotkab('kasus')" style="width:100%">
-                            @foreach ($provinsi as $item)
-                                <option value="{{ $item->code }}" {{ $item->code == $kasus->provinsi_id ? 'selected' : '' }}>{{ $item->name }}</option>
-                            @endforeach
-                        </select>,
-                        <b>Kota</b> <span class="data_kasus">{{ $kasus->kota }}</span> 
-                        <select name="kotkab_id" class="input_kasus select2bs4" id="kota_id_kasus" onchange="getkecamatan('kasus')" style="width:100%">
-                        </select>, 
-                        <b>Kecamatan</b> <span class="data_kasus">{{ $kasus->kecamatan }}</span> 
-                        <select name="kecamatan_id" class="input_kasus select2bs4" id="kecamatan_id_kasus" style="width:100%">
-                            <option value="" selected></option>
-                        </select>,
-                        <b>Kelurahan</b> <span class="data_kasus">{{ $kasus->kelurahan }}</span> 
-                        <input type="text" name="kelurahan" value="{{ $kasus->kelurahan }}" class="input_kasus"> 
-                    </td>
-                </tr>
-            </table>
-            </form>
+
+            <div class="akses_petugas" style="width:100%">
+                <button type="submit" class="btn btn-block btn-default" id="buttonTerlapor" onclick="TambahTerlapor()"><i class="fas fa-plus"></i> Tambah Terlapor</button>
+            </div>
+            <form action="{{ route('formpenerimapengaduan.store_terlapor') }}" method="POST" id="formTerlapor">
+                @csrf
+                <input type="hidden" name="klien_id" value="{{ $klien->id }}">
+                <input type="hidden" name="kasus_id" value="{{ $kasus->id }}">
+                <input type="hidden" name="data_update" value="terlapor">
+                <span style="color: red" class="input_terlapor">*merubah data ini akan merubah pula data pada kasus yang terkait</span>
+                <br>
+                <b> Terlapor {{ $no_terlapor }}</b>
+                <span style="float:right" class="akses_petugas">
+                    <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_terlapor{{ $no_terlapor }}">
+                    <i class="fas fa-check"></i> Save
+                    </button>
+                </span>
+                    <table class="table table-bottom table-sm">
+                        <tr id="nik_terlapor{{ $no_terlapor }}">
+                            <td style="width: 200px">NIK</td>
+                            <td>:</td>
+                            <td><input type="number" name="nik" class=" input_terlapor{{ $no_terlapor }}"></td>
+                        </tr>
+                        <tr id="nama_terlapor{{ $no_terlapor }}">
+                            <td style="width: 200px">Nama</td>
+                            <td>:</td>
+                            <td><input type="text" name="nama" class=" input_terlapor{{ $no_terlapor }}"></td>
+                        </tr>
+                        <tr id="tempat_tanggal_lahir_terlapor{{ $no_terlapor }}">
+                            <td style="width: 200px">Tempat/Tgl Lahir</td>
+                            <td>:</td>
+                            <td>
+                                <input type="text" name="tempat_lahir" class=" input_terlapor{{ $no_terlapor }}" placeholder="Tempat Lahir">,
+                                <input type="date" name="tanggal_lahir" class=" input_terlapor{{ $no_terlapor }}" placeholder="Tanggal Lahir">
+                            </td>
+                        </tr>
+                        <tr id="jenis_kelamin_terlapor{{ $no_terlapor }}">
+                            <td style="width: 200px">Jenis Kelamin</td>
+                            <td>:</td>
+                            <td>
+                                <select name="jenis_kelamin" class=" input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                    <option value="perempuan">Perempuan</option>
+                                    <option value="laki-laki">Laki-laki</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr id="alamat_terlapor_ktp{{ $no_terlapor }}">
+                            <td style="width: 200px">Alamat KTP</td>
+                            <td>:</td>
+                            <td>
+                                <input type="text" name="alamat_ktp" lass=" input_terlapor{{ $no_terlapor }}">, 
+                                <b>Provinsi</b> 
+                                <select name="provinsi_id_ktp" class=" input_terlapor{{ $no_terlapor }} select2bs4" id="provinsi_id_terlapor_ktp{{ $no_terlapor }}" onchange="getkotkab('terlapor_ktp{{ $no_terlapor }}')" style="width:100%">
+                                    <option value=""></option>
+                                    @foreach ($provinsi as $item)
+                                        <option value="{{ $item->code }}">{{ $item->name }}</option>
+                                    @endforeach
+                                </select>,
+                                <b>Kota</b> 
+                                <select name="kotkab_id_ktp" class=" input_terlapor{{ $no_terlapor }} select2bs4" id="kota_id_terlapor_ktp{{ $no_terlapor }}" onchange="getkecamatan('terlapor_ktp{{ $no_terlapor }}')" style="width:100%">
+                                </select>, 
+                                <b>Kecamatan</b> 
+                                <select name="kecamatan_id_ktp" class=" input_terlapor{{ $no_terlapor }} select2bs4" id="kecamatan_id_terlapor_ktp{{ $no_terlapor }}" onchange="getkelurahan('terlapor_ktp{{ $no_terlapor }}')" style="width:100%">
+                                    <option value="" selected></option>
+                                </select>,
+                                <b>Kelurahan</b> 
+                                <select name="kelurahan_id_ktp" class=" input_terlapor{{ $no_terlapor }} select2bs4" id="kelurahan_id_terlapor_ktp{{ $no_terlapor }}" style="width:100%">
+                                    <option value="" selected></option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr id="alamat_terlapor{{ $no_terlapor }}">
+                            <td style="width: 200px">Alamat Domisili</td>
+                        <td>:</td>
+                        <td>
+                            <input type="text" name="alamat" class=" input_terlapor{{ $no_terlapor }}">, 
+                            <b>Provinsi</b>
+                            <select name="provinsi_id" class=" input_terlapor{{ $no_terlapor }} select2bs4" id="provinsi_id_terlapor{{ $no_terlapor }}" onchange="getkotkab('terlapor{{ $no_terlapor }}')" style="width:100%">
+                                <option value=""></option>
+                                @foreach ($provinsi as $item)
+                                    <option value="{{ $item->code }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>,
+                            <b>Kota</b> 
+                            <select name="kotkab_id" class=" input_terlapor{{ $no_terlapor }} select2bs4" id="kota_id_terlapor{{ $no_terlapor }}" onchange="getkecamatan('terlapor{{ $no_terlapor }}')" style="width:100%">
+                            </select>, 
+                            <b>Kecamatan</b>
+                            <select name="kecamatan_id" class=" input_terlapor{{ $no_terlapor }} select2bs4" id="kecamatan_id_terlapor{{ $no_terlapor }}" onchange="getkelurahan('terlapor{{ $no_terlapor }}')" style="width:100%">
+                                <option value="" selected></option>
+                            </select>,
+                            <b>Kelurahan</b>
+                            <select name="kelurahan_id" class=" input_terlapor{{ $no_terlapor }} select2bs4" id="kelurahan_id_terlapor{{ $no_terlapor }}" style="width:100%">
+                                <option value="" selected></option>
+                            </select>
+                        </td>
+                        </tr>
+                        <tr id="agama_terlapor{{ $no_terlapor }}">
+                            <td style="width: 200px">Agama</td>
+                            <td>:</td>
+                            <td>
+                                <select name="agama" class=" input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                    @foreach ($agama as $item)
+                                        <option value="{{ $item }}">{{ $item }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                        </tr>
+                        <tr id="status_kawin_terlapor{{ $no_terlapor }}">
+                            <td style="width: 200px">Status Perkawinan</td>
+                            <td>:</td>
+                            <td>
+                                <select name="status_kawin" class=" input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                    @foreach ($status_perkawinan as $item)
+                                        <option value="{{ $item }}">{{ $item }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                        </tr>
+                        <tr id="pekerjaan_terlapor{{ $no_terlapor }}">
+                            <td style="width: 200px">Pekerjaan</td>
+                            <td>:</td>
+                            <td>
+                                <select name="pekerjaan" class=" input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                    @foreach ($pekerjaan as $item)
+                                        <option value="{{ $item }}">{{ $item }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                        </tr>
+                        <tr id="kewarganegaraan_terlapor{{ $no_terlapor }}">
+                            <td style="width: 200px">Kewarganegaraan</td>
+                            <td>:</td>
+                            <td>
+                                <select name="kewarganegaraan" class=" input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                    <option value="WNI">WNI</option>
+                                    <option value="WNA">WNA</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr id="pendidikan_terlapor{{ $no_terlapor }}">
+                            <td style="width: 200px">Pendidikan</td>
+                            <td>:</td>
+                            <td>
+                                <select name="pendidikan" class=" input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                    <option value=""></option>
+                                    @foreach ($pendidikan_terakhir as $item)
+                                        <option value="{{ $item }}">{{ $item }}</option>
+                                    @endforeach
+                                </select>
+                                (
+                                <select name="status_pendidikan" class=" input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                    <option value=""></option>
+                                    @foreach ($status_pendidikan as $item)
+                                        <option value="{{ $item }}">{{ $item }}</option>
+                                    @endforeach
+                                </select>
+                                )
+                            </td>
+                        </tr>
+                        <tr id="no_telp_terlapor{{ $no_terlapor }}">
+                            <td style="width: 200px">No Telp</td>
+                            <td>:</td>
+                            <td>
+                                <input type="text" name="no_telp" class=" input_terlapor{{ $no_terlapor }}">
+                            </td>
+                        </tr>
+                        <tr id="hubungan_terlapor{{ $no_terlapor }}">
+                            <td style="width: 200px">Hubungan dengan klien (Terlapor siapanya Klien?)</td>
+                            <td>:</td>
+                            <td>
+                                <select name="hubungan_terlapor" class=" input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
+                                    <option value=""></option>
+                                    @foreach ($hubungan_dengan_klien as $item)
+                                        <option value="{{ $item }}">{{ $item }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
         </div>
         {{-- <div class="post clearfix" style="color:black">
             <div class="row">
@@ -933,13 +1309,97 @@
             <div class="col-md-12 warningAsesmen">
                 <div class="alert alert-danger">
                 <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
-                Segera inputkan data asesmen pada MOKA.
+                Mohon melengkapi data asesmen pada MOKA.
                 </div>
             </div>
-            <div id="kolomAsesmen"></div>
+
+            <div class="post clearfix" style="color:black">
+                <b>ASESMEN</b>
+                <form action="{{ route('asesmen.update', 'uuid') }}" method="POST">
+                @csrf
+                @method('put')
+                <input type="hidden" name="uuid" value="{{ $rekam_kasus->uuid }}">
+                <input type="hidden" name="uuid_klien" value="{{ $klien->uuid }}">
+                <input type="hidden" name="data_update" value="rekam">
+                <span style="float:right" class="akses_petugas">
+                    <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_rekam" onclick="editdata('rekam')">
+                    <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_rekam">
+                    <i class="fas fa-check"></i> Save
+                    </button>
+                </span>
+                <table class="table table-bottom table-sm">
+                    <tr id="fisik_rekam">
+                        <td style="width: 200px">Kondisi Fisik</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_rekam">{!! nl2br($rekam_kasus->fisik) !!}</span> <textarea name="fisik" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->fisik }}</textarea></span> 
+                        </td>
+                    </tr>
+                    <tr id="psikis_rekam">
+                        <td style="width: 200px">Kondisi Psikologis</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_rekam">{!! nl2br($rekam_kasus->psikologis) !!}</span> <textarea name="psikologis" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->psikologis }}</textarea></span> 
+                        </td>
+                    </tr>
+                    <tr id="sosial_rekam">
+                        <td style="width: 200px">Kondisi Sosial/Ekonomi</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_rekam">{!! nl2br($rekam_kasus->sosial) !!}</span> <textarea name="sosial" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->sosial }}</textarea></span> 
+                        </td>
+                    </tr>
+                    <tr id="hukum_rekam">
+                        <td style="width: 200px">Kondisi Hukum</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_rekam">{!! nl2br($rekam_kasus->hukum) !!}</span> <textarea name="hukum" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->hukum }}</textarea></span> 
+                        </td>
+                    </tr>
+                    <tr id="upaya_rekam">
+                        <td style="width: 200px">Upaya Pemecahan Masalah</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_rekam">{!! nl2br($rekam_kasus->upaya) !!}</span> <textarea name="upaya" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->upaya }}</textarea></span> 
+                        </td>
+                    </tr>
+                    <tr id="pendukung_rekam">
+                        <td style="width: 200px">Faktor Pendukung</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_rekam">{!! nl2br($rekam_kasus->pendukung) !!}</span> <textarea name="pendukung" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->pendukung }}</textarea></span> 
+                        </td>
+                    </tr>
+                    <tr id="hambatan_rekam">
+                        <td style="width: 200px">Hambatan</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_rekam">{!! nl2br($rekam_kasus->hambatan) !!}</span> <textarea name="hambatan" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->hambatan }}</textarea></span> 
+                        </td>
+                    </tr>
+                    <tr id="harapan_rekam">
+                        <td style="width: 200px">Harapan</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_rekam">{!! nl2br($rekam_kasus->harapan) !!}</span> <textarea name="harapan" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->harapan }}</textarea></span> 
+                        </td>
+                    </tr>
+                    <tr id="lainnya_rekam">
+                        <td style="width: 200px">Informasi Lainnya</td>
+                        <td>:</td>
+                        <td>
+                            <span class="data_rekam">{!! nl2br($rekam_kasus->lainnya) !!}</span> <textarea name="lainnya" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->lainnya }}</textarea></span> 
+                        </td>
+                    </tr>
+                </table>
+                </form>
+            </div>
+            {{-- <div id="kolomAsesmen"></div>
             @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Unit Reaksi Cepat']) && $akses_petugas == 1)
             <button type="buttons" class="btn btn-block btn-default {{ Request::get('tambah-asesmen') == 1 ? 'hightlighting' : '' }}" id="modalAsesmen" data-toggle="modal" data-target="#tambahAsesmenModal"><i class="fas fa-plus"></i> Tambah Asesmen</button>
-            @endif
+            @endif --}}
         </div>
 
     </div>
@@ -951,30 +1411,14 @@
             <div class="progress-bar bg-success persen_layanan" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px" class="persen_title_layanan">100%</span></div>
         </div>
         <br>
-        <div style="overflow-x: scroll">
-            <input type="hidden" id="uuid_layanan_hightlight" value="{{ Request::get('row-layanan') }}">
-            <table id="tabelLayanan" class="table table-sm table-bordered  table-hover" style="cursor:pointer; color:black">
-                <thead>
-                <tr>
-                <th>Waktu Kegiatan</th>
-                <th>Perencanaan Intervensi</th>
-                <th>Pelaksanaan Intervensi</th>
-                <th></th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-                <tfoot>
-                <tr>
-                    <th>Waktu Kegiatan</th>
-                    <th>Perencanaan Intervensi</th>
-                    <th>Pelaksanaan Intervensi</th>
-                    <th></th>
-                </tr>
-                </tfoot>
-            </table>
-        </div>
+        {{-- include tabel intervensi --}}
+        @if (Auth::user()->settings_tabel_intervensi == 2)
+            @include('kasus.intervensiv2')
+        @else
+            @include('kasus.intervensiv1')
+        @endif
         <br>
-        <div id="accordionResumeLayanan" >
+        {{-- <div id="accordionResumeLayanan" >
             <div class="card card-light">
             <div class="card-header">
             <h4 class="card-title w-100">
@@ -1008,7 +1452,7 @@
             </div>
             </div>
         </div>
-        <br>
+        <br> --}}
         <div id="kolomPemantauan"></div>
         @if (Auth::user()->jabatan == 'Manajer Kasus' && $akses_petugas == 1)
         <button type="submit" class="btn btn-block btn-default" data-toggle="modal" data-target="#tambahPemantauanModal"><i class="fas fa-plus"></i> Tambah Laporan Pemantauan & Evaluasi</button>
@@ -1039,7 +1483,8 @@
                     @foreach ($petugas as $item)
                     <tr>
                         <td>
-                            <img alt="Avatar" class="table-avatar" src="https://adminlte.io/themes/v3/dist/img/avatar.png" style="margin-right: 10px">
+                            <img alt="Avatar" class="table-avatar" src="{{ asset('img/profile/'.$item->foto) }}" style="margin-right: 10px"
+                            onerror="this.onerror=null; this.src='{{ asset('adminlte/dist/img/default-150x150.png') }}'" >
                             {{ $item->name }}
                         </td>
                         <td>
@@ -1071,8 +1516,8 @@
                 @csrf
                 <div class="row {{ Request::get('tambah-petugas') == 1 ? 'hightlighting' : '' }}" style="padding : 15px">
                     <div class="col-md-9">
-                        <select name="user_id" class="select2bs4" style="width: 100%;">
-                            <option>Silahkan pilih petugas</option>
+                        <select name="user_id" class="select2bs4" style="width: 100%;" required>
+                            <option></option>
                             @foreach ($users as $item)
                                 <option value="{{ $item->id }}">{{ $item->name }} ({{ $item->jabatan }})</option>
                             @endforeach
@@ -1122,7 +1567,7 @@
                                     @if ($item->deleted_at)
                                         [Link Expired]
                                     @else
-                                        <input type="text" id="link-form-{{ $item->uuid }}" value="{{ route('persetujuan.show', $item->uuid) }}" hidden>
+                                        <input hidden type="text" id="link-form-{{ $item->uuid }}" value="{{ route('persetujuan.show', $item->uuid) }}">
                                         <button type="button" class="btn btn-primary" onclick="copyClipboard('{{ $item->uuid }}')"><i class="fas fa-link"></i></button>
                                     @endif
                                 </td>
@@ -1138,8 +1583,7 @@
                     @csrf
                     <div class="row {{ Request::get('tambah-persetujuan') == 1 ? 'hightlighting' : '' }}"  style="padding : 15px">
                         <div class="col-md-9">
-                            <select name="persetujuan_template_uuid" class="select2bs4" style="width: 100%;">
-                                <option>Silahkan pilih surat persetujuan</option>
+                            <select name="persetujuan_template_uuid" class="select2bs4" style="width: 100%;" required>
                                 @foreach ($persetujuan_template as $item)
                                     <option value="{{ $item->uuid }}">{{ $item->judul }}</option>
                                 @endforeach
@@ -1178,13 +1622,27 @@
                 <tr>
                     <td style="width: 200px"><b>Arsipkan Kasus<b></td>
                     <td>
-                        <input type="checkbox" class="btn-sm" id="arsipkan" 
-                        {{ $klien->arsip == 0 ? 'checked' : '' }} 
-                        data-bootstrap-switch 
-                        data-on-text="Aktif"
-                        data-off-text="Diarsipkan"
-                        data-off-color="danger" 
-                        data-on-color="success">
+                        @if (Auth::user()->jabatan == 'Penerima Pengaduan')
+                        {{-- 
+                        dibuat hanya petugas penerima pengaduan saja yang bisa mengarsipkan karena : 
+                        1. banyak kasus2 yang belum sampai supervisor kasus tapi diarsipkan dahulu
+                        2. yang mengarsipkan walau atas persetujuan spv tapi yang mengklik adalah penerima pengaduan  
+                        --}}
+                            @if (!$klien->no_klien)
+                                {{-- jika tidak ada no klien berarti belum diapprove / ditolak, jadi bisa di arsipkan --}}
+                                {{-- hanya Supervisor Kasus yang bisa mengarsipkan --}}
+                                <input type="checkbox" class="btn-sm" id="arsipkan" 
+                                {{ $klien->arsip == 0 ? 'checked' : '' }} 
+                                data-bootstrap-switch 
+                                data-on-text="Aktif"
+                                data-off-text="Diarsipkan"
+                                data-off-color="danger" 
+                                data-on-color="success">
+                            @else
+                                Tidak dapat mengarsipkan kasus yang sudah ada no regisnya. Silahkan lakukan rapat jika kasus ini ingin diarsipkan.
+                            @endif
+                        @endif
+
                         <br>
                         <span style="display: {{ $klien->arsip == 0 ? 'show' : 'none' }}" id="status_arsip_on">Status kasus saat ini aktif, akan muncul di pencarian kasus</span>
                         <span style="display: {{ $klien->arsip == 1 ? 'show' : 'none' }}" id="status_arsip_off">Status kasus saat ini diarsipkan, tidak akan muncul di pencarian kasus</span>
@@ -1194,10 +1652,17 @@
                     <td style="width: 200px"><b>Approval<b></td>
                     <td>
                         <div class="row">
-                            <div class="col-md-12 {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'hightlighting' : '' }}">
+                            <div class="col-md-12 m-0 {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'hightlighting' : '' }}">
                                 Apakah anda ingin menyetujui kasus ini?
                             </div>
-                                @if (!$klien->no_klien)
+                            @if ($klien->arsip == 1)
+                                @if (Auth::user()->jabatan == 'Supervisor Kasus')
+                                    <div class="col-md-12" style="color: red">
+                                        *Kasus sedang diarsipkan, minta Penerima Pengaduan untuk mengaktifkan kasus ini agar bisa Approve. Atau hapus diri anda dari list petugas di kasus ini agar notifikasi hilang
+                                    </div>
+                                @endif
+                            @else
+                                @if ($klien->no_klien == null)
                                 {{-- jika tidak ada no klien berarti belum diapprove / ditolak --}}
                                     @if(in_array(Auth::user()->jabatan, ['Supervisor Kasus']))
                                         @if(!($detail['kelengkapan_petugas']))
@@ -1234,6 +1699,7 @@
                                         Tidak, kasus tidak disetujui oleh Supervisor
                                     </div>
                                 @endif
+                            @endif
                         </div>
                     </td>
                 </tr>
@@ -1675,6 +2141,7 @@
                 <main>
                   <div class="centered">
                     <div class="row-editor">
+                        <div id="kontenDokumen"></div>
                       <textarea name="konten" readonly class="textarea-replace editor textarea-tinymce" id="konten">
                       </textarea>
                     </div>
@@ -1692,6 +2159,88 @@
     </div>
   </div>
 
+
+<!-- Modal Filter Layanan-->
+<div class="modal fade" id="modalFilterLayanan" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+        <div id="overlay" class="overlay dark">
+            <div class="cv-spinner">
+            <span class="spinner"></span>
+            </div>
+        </div>
+        
+        <div class="modal-header">
+            <h5 class="modal-title" id="modelHeadingCatatan">Filter Agenda</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="modal-body">
+        <input type="hidden" id="uuid_catatan">
+        <div class="col-md-12">
+            <div class="form-group">
+              <label>Agenda Layanan Berdasarkan Jabatan : </label>
+              <select multiple="multiple" style="width: 100%;" class="select-tag" id="filterJabatan">
+                <option value="Advokat">Advokat</option>
+                <option value="Paralegal">Paralegal</option>
+                <option value="Unit Reaksi Cepat">Unit Reaksi Cepat</option>
+                <option value="Psikolog">Psikolog</option>
+                <option value="Konselor">Konselor</option>
+                <option value="Manajer Kasus">Manajer Kasus</option>
+                <option value="Pendamping Kasus">Pendamping Kasus</option>
+              </select>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="">Agenda Ditindak Lanjut</label>
+                <br>
+                <div class="icheck-primary d-inline" style="margin-right:15px">
+                  <input type="radio" id="radioPrimary1a" name="filter1TL" checked value="0">
+                  <label for="radioPrimary1a">
+                      Seluruh agenda
+                  </label>
+                </div>
+                <div class="icheck-primary d-inline">
+                  <input type="radio" id="radioPrimary2a" name="filter1TL" value="1">
+                  <label for="radioPrimary2a">
+                      Agenda yang BELUM ditindak lanjuti saja
+                  </label>
+                </div>
+              </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="">Agenda Anda</label>
+                <br>
+                <div class="icheck-primary d-inline" style="margin-right:15px">
+                  <input type="radio" id="radioPrimary1b" name="filter1Anda" checked value="0">
+                  <label for="radioPrimary1b">
+                      Seluruh agenda
+                  </label>
+                </div>
+                <div class="icheck-primary d-inline">
+                  <input type="radio" id="radioPrimary2b" name="filter1Anda" value="1">
+                  <label for="radioPrimary2b">
+                      Agenda yang dilakukan oleh anda saja
+                  </label>
+                </div>
+              </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-success btn-block" onclick="submitFilterLayanan()"><i class="fa fa-check"></i> Terapkan</button>
+            <button type="button" class="btn btn-warning btn-block" onclick="resetFilterLayanan()"><i class="fas fa-undo"></i> Reset</button>
+        </div>
+        </div>
+    </div>
+</div>
+
 <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -1708,9 +2257,11 @@
 <script src="{{ asset('vendor/tinymce4/tinymce.min.js') }}"></script>
 <script>
     $(document).ready(function () {
-        getkotkab('pelapor');
-        getkotkab('klien');
         getkotkab('kasus');
+        getkotkab('pelapor');
+        getkotkab('pelapor_ktp');
+        getkotkab('klien');
+        getkotkab('klien_ktp');
         hightlighting();
         loadAsesmen();
         loadPemantauan();
@@ -1777,6 +2328,28 @@
         });
     });
     
+    function submitFilterLayanan() {
+        var jabatanValue = $('#filterJabatan').val();
+        var tl = $('input[name="filter1TL"]:checked').val();
+        var anda = $('input[name="filter1Anda"]:checked').val();
+        var url = "{{ env('APP_URL') }}/agenda/api_index?uuid={{ $klien->uuid }}&jabatan=" + encodeURIComponent(JSON.stringify(jabatanValue)) + "&tl=" + tl + "&anda=" + anda;
+        
+        $('#tabelLayanan').DataTable().ajax.url(url).load();
+
+        $('#modalFilterLayanan').modal('hide');
+    }
+
+    function resetFilterLayanan() {
+        $('#filterJabatan').val([]).change();
+        $('input[name="filter1TL"]').filter('[value="0"]').prop('checked', true);
+        $('input[name="filter1Anda"]').filter('[value="0"]').prop('checked', true);
+        var url = "{{ env('APP_URL') }}/agenda/api_index?uuid={{ $klien->uuid }}";
+        
+        $('#tabelLayanan').DataTable().ajax.url(url).load();
+
+        $('#modalFilterLayanan').modal('hide');
+    }
+
     $(function () {
 
     $('.input_pelapor').next(".select2-container").hide();
@@ -1784,179 +2357,75 @@
     $('.input_kasus').next(".select2-container").hide();
     $('.input_terlapor').next(".select2-container").hide();
 
-    $('#tabelLayanan').DataTable({
-      "ordering": false,
-      "processing": true,
-      "serverSide": true,
-      "responsive": false, 
-      "lengthChange": false, 
-      "autoWidth": false,
-      "ajax": "{{ env('APP_URL') }}/agenda/api_index?uuid={{ $klien->uuid }}",
-      "rowsGroup": [1],
-      'createdRow': function( row, data, dataIndex ) {
-          $(row).attr('id', data.uuid);
-
-          rowHightlight = $('#uuid_layanan_hightlight').val();
-          if (data.uuid == rowHightlight) {
-            $(row).attr('class', 'hightlighting');
-          }
-      },
-      "columns": [
-        {
-            "mData": "tanggal_mulai",
-            "mRender": function (data, type, row) {
-                if (row.jam_selesai != null) {
-                    jam_mulai = row.jam_mulai+' - '+row.jam_selesai;
-                }else{
-                    jam_mulai =  row.jam_mulai;
-                }
-                return row.tanggal_mulai_formatted+"<br><span style='font-size:13px'>"+jam_mulai+"</span>";
-            }
-        },
-        {
-            "mData": "judul_kegiatan",
-            "mRender": function (data, type, row) {
-                judul_kegiatan = keterangan = '';
-                if (row.judul_kegiatan != null) {
-                    judul_kegiatan = '<b>'+row.judul_kegiatan+'</b>';
-                }
-
-                if (row.keterangan != null) {
-                    keterangan = '</br>'+row.keterangan;
-                }
-
-                return judul_kegiatan+keterangan;
-            }
-        },
-        {
-            "mData": "catatan",
-            "mRender": function (data, type, row) {
-                catatan = lokasi = '';
-
-                if (row.catatan) {
-                    catatan = row.catatan+'<br>';
-                }
-
-                if (row.lokasi) {
-                    lokasi = 'Lokasi : '+row.lokasi;
-                }
-
-                if(row.judul != null){
-                    uuid_dokumen = row.uuid_dokumen;
-                    var array2 = uuid_dokumen.split(",|");
-
-                    dokumen = row.judul;
-                    dokumens = '';
-                    var array = dokumen.split(",|");
-                    for (i=1;i<array.length;i++){
-                    string = array2[i];
-                    uuid_dokumen = string.replace(/,/g, "");
-                    dokumens += '<a href="#" onclick="showModalDokumen(`'+uuid_dokumen+'`)"><span class="badge bg-primary"><i class="nav-icon fas fa-file-alt"></i> '+array[i]+'</span></a> ';
-                    };
-                }else{
-                    dokumens = '';
-                }
-
-                if (row.terlaksana) {
-                    return 'Petugas : '+row.petugas+' ('+row.jabatan+')<br>'+lokasi+'<br>'+catatan+dokumens;
-                } else {
-                    return '<span class="badge bg-danger">Dibatalkan</span>';
-                }
-            }
-        },
-        {
-            "mData": "ceklis",
-            "mRender": function (data, type, row) {
-                if (row.jam_selesai == null) {
-                    done = '';
-                    checked = '';
-                    disabled = '';
-                    selesaiLayanan = '';
-                } else {
-                    done = 'done';
-                    checked = 'checked';
-                    disabled = 'disabled';
-                    selesaiLayanan = 'layananSelesai';
-                }
-                if (row.created_by == {{ Auth::user()->id }}) {
-                    return '<div  class="icheck-primary d-inline ml-2"><input class="checkboxSelesai '+selesaiLayanan+'" type="checkbox" value="" id="todoCheck'+row.uuid+'" '+checked+' '+disabled+' onclick="showModalAgenda(`'+row.tanggal_mulai+'`,`'+row.uuid+'`)"><label for="todoCheck'+row.uuid+'"></label></div>';
-                } else {
-                    return '<div  class="icheck-primary d-inline ml-2" onclick="alert(`Anda tidak memiliki hak akses untuk menginputkan laproan tindak lanjut untuk agenda ini. Minta seseorang yang ada di agenda untuk mentag/menambahkan anda.`)"><input type="checkbox" value="" '+checked+'><label for="todoCheck'+row.uuid+'"></label></div>';
-                }
-            }
-        }
-      ],
-      "pageLength": 25,
-      "lengthMenu": [
-          [10, 25, 50, 100, -1],
-          ['10 rows', '25 rows', '50 rows', '100 rows','All'],
-      ],
-      "order": [[0, 'ASC']],
-      "dom": 'Blfrtip', // Blfrtip or Bfrtip
-      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print", 
-              {
-                className: "btn-info",
-                text: 'Tambah',
-                  action: function ( ) {
-                    showModalAgenda("{{ date('Y-m-d') }}",0);
-                  }
-              }]
-      }).buttons().container().appendTo('#tabelLayanan_wrapper .col-md-6:eq(0)');
-
       $('#tabelLayanan_filter').css({'float':'right','display':'inline-block; background-color:black'});
     });
 
-    $('#tabelLayanan tbody').on('click', 'tr', function () {
-      $("#success-message").hide();
-      $("#error-message").hide();
+    $('#tabelLayanan tbody').on('click', 'tr', function (evt) {
+        $("#success-message").hide();
+        $("#error-message").hide();
+        $("#editAgenda").hide();
+        $("#viewAgenda").show();
+        var table = $('#tabelLayanan').DataTable();
+        var rowData = table.row(this).data();
+
+        // if (($(evt.target).closest('td').index() !== 2)) {
+            showModalAgenda('',rowData.uuid_agenda, rowData.created_by);
+        // }
+
+        if (rowData.created_by == {{ Auth::user()->id }}) {
+            $('#tombol_edit_agenda').show();
+        } else {
+            $('#tombol_edit_agenda').hide();
+        }
     });
 
-    $(function () {
-        $('#tabelResumeLayanan').DataTable({
-        "ordering": false,
-        "processing": true,
-        "serverSide": true,
-        "responsive": false, 
-        "lengthChange": false, 
-        "autoWidth": false,
-        "ajax": "{{ env('APP_URL') }}/agenda/resume_layanan?uuid={{ $klien->uuid }}",
-        "columns": [
-            {
-                "mData": "tanggal_mulai",
-                "mRender": function (data, type, row) {
-                    if (row.jam_selesai != null) {
-                        jam_mulai = row.jam_mulai+' - '+row.jam_selesai;
-                    }else{
-                        jam_mulai =  row.jam_mulai;
-                    }
-                    return row.tanggal_mulai_formatted+"<br><span style='font-size:13px'>"+jam_mulai+"</span>";
-                }
-            },
-            {"data": "keyword"},
-            {"data": "name"}
-        ],
-        "pageLength": 10,
-        "lengthMenu": [
-            [10, 25, 50, 100, -1],
-            ['10 rows', '25 rows', '50 rows', '100 rows','All'],
-        ],
-        "order": [[0, 'ASC']],
-        "dom": 'Blfrtip', // Blfrtip or Bfrtip
-        "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print"]
-        }).buttons().container().appendTo('#tabelResumeLayanan_wrapper .col-md-6:eq(0)');
+    // $(function () {
+    //     $('#tabelResumeLayanan').DataTable({
+    //     "ordering": false,
+    //     "processing": true,
+    //     "serverSide": true,
+    //     "responsive": false, 
+    //     "lengthChange": false, 
+    //     "autoWidth": false,
+    //     "ajax": "{{ env('APP_URL') }}/agenda/resume_layanan?uuid={{ $klien->uuid }}",
+    //     "columns": [
+    //         {
+    //             "mData": "tanggal_mulai",
+    //             "mRender": function (data, type, row) {
+    //                 if (row.jam_selesai != null) {
+    //                     jam_mulai = row.jam_mulai+' - '+row.jam_selesai;
+    //                 }else{
+    //                     jam_mulai =  row.jam_mulai;
+    //                 }
+    //                 return '<b>'+row.hari+'</b>, '+row.tanggal_mulai_formatted+"<br><span style='font-size:13px'>"+jam_mulai+"</span>";
+    //             }
+    //         },
+    //         {"data": "keyword"},
+    //         {"data": "name"}
+    //     ],
+    //     "pageLength": 10,
+    //     "lengthMenu": [
+    //         [10, 25, 50, 100, -1],
+    //         ['10 rows', '25 rows', '50 rows', '100 rows','All'],
+    //     ],
+    //     "order": [[0, 'ASC']],
+    //     "dom": 'Blfrtip', // Blfrtip or Bfrtip
+    //     "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print"]
+    //     }).buttons().container().appendTo('#tabelResumeLayanan_wrapper .col-md-6:eq(0)');
 
-        $('#tabelResumeLayanan_filter').css({'float':'right','display':'inline-block; background-color:black'});
-    });
+    //     $('#tabelResumeLayanan_filter').css({'float':'right','display':'inline-block; background-color:black'});
+    // });
 
     function showModalDokumen(uuid) { 
         $.ajax({
-          url:'/dokumen/show/'+uuid,
+          url:"{{ env('APP_URL') }}/dokumen/show/"+uuid,
           type:'GET',
           dataType: 'json',
           success: function( data ) {
             $("#overlay").hide();
             dokumen_tl = data.dokumen_tl;
             data = data.data;
+            $('#kontenDokumen').html(data.konten);
             tinymce.activeEditor.setContent(JSON.parse(data.konten));
             $('#dokumenModal').modal('show');
             //munculkan agenda terkait
@@ -2030,7 +2499,160 @@
         tinymce.activeEditor.execCommand('mcePrint');
     }
 
+    function editdata(params) {
+        $('.data_'+params).hide();
+        $('#tombol_edit_'+params).hide();
+        $('.input_'+params).show();
+        $('.input_'+params).next(".select2-container").show();
+        $('#tombol_save_'+params).show(); 
+    }
 
+    function deleteTerlapor(terlapor_id = '') {
+        if (confirm("Apakah anda yakin ingin menghapus terlapor ini?") == true) {
+            let token   = $("meta[name='csrf-token']").attr("content");
+            $.ajax({
+            url: "{{ route('formpenerimapengaduan.deleteterlapor') }}",
+            type: "POST",
+            cache: false,
+            data: {
+                uuid: terlapor_id,
+                _token: token
+            },
+            success: function (response){
+                $('#terlapor'+terlapor_id).hide();
+                console.log(response);
+            },
+            error: function (response){
+                setTimeout(function(){
+                $("#overlay").fadeOut(300);
+                },500);
+                console.log(response);
+
+                $('#message-catatan').html(JSON.stringify(response));
+                $("#success-message-catatan").hide();
+                $("#error-message-catatan").show();
+            }
+            }).done(function() { //loading submit form
+                setTimeout(function(){
+                $("#overlay").fadeOut(300);
+                },500);
+            });
+        }
+    }
+
+    function getkotkab(field_id='') {
+        province_code = $('#provinsi_id_'+field_id).val();
+        if (field_id == 'kasus') { //kasus tkp
+            var kotkabID = '{{ $kasus->kotkab_id }}';
+        } else if (field_id == 'pelapor') { // pelapor domisili
+            var kotkabID = '{{ $pelapor->kotkab_id }}';
+        } else if (field_id == 'klien') { // klien domisili
+            var kotkabID = '{{ $klien->kotkab_id }}';
+        } else if (field_id == 'terlapor') { // terlapor domisili (bisa lebih dari 1)
+            var kotkabID = '{{ isset($terlapor[0]->kotkab_id_ktp) ? $terlapor[0]->kotkab_id_ktp : "" }}';
+        } else if (field_id == 'pelapor_ktp') { // pelapor ktp
+            var kotkabID = '{{ $pelapor->kotkab_id_ktp }}';
+        } else if (field_id == 'klien_ktp') { // klien domisili
+            var kotkabID = '{{ $klien->kotkab_id_ktp }}';
+        }  else { // terlapor domisili (bisa lebih dari 1)
+            var kotkabID = '{{ isset($terlapor[0]->kotkab_id) ? $terlapor[0]->kotkab_id : "" }}';
+        }
+        
+        $.ajax({
+          url:'{{ route("api.v1.kotkab") }}?province_code='+province_code,
+          type:'GET',
+          dataType: 'json',
+          success: function( response ) {
+                var option = '<option value="">-- Pilih Kotkab --</option>';
+                $.each(response.data, function(i, value) {
+                    var selected = ''
+                    if (kotkabID == value.code) {
+                        selected = `selected="selected"`;
+                    }
+
+                    option += `<option value="${value.code}" ${selected}>${value.name}</option>`
+                });
+                $('#kota_id_'+field_id).html(option);
+                //panggil kecamatan
+                getkecamatan(field_id);
+            }
+        });
+    };
+
+    function getkecamatan(field_id='') {
+        kota_code = $('#kota_id_'+field_id).val();
+        if (field_id == 'kasus') { //kasus tkp
+            var kecamatanID = '{{ $kasus->kecamatan_id }}';
+        } else if (field_id == 'pelapor') { // pelapor domisili
+            var kecamatanID = '{{ $pelapor->kecamatan_id }}';
+        } else if (field_id == 'klien') { // klien domisili
+            var kecamatanID = '{{ $klien->kecamatan_id }}';
+        } else if (field_id == 'terlapor') { // terlapor domisili (bisa lebih dari 1)
+            var kecamatanID = '{{ isset($terlapor[0]->kecamatan_id_ktp) ? $terlapor[0]->kecamatan_id_ktp : "" }}';
+        } else if (field_id == 'pelapor_ktp') { // pelapor ktp
+            var kecamatanID = '{{ $pelapor->kecamatan_id_ktp }}';
+        } else if (field_id == 'klien_ktp') { // klien domisili
+            var kecamatanID = '{{ $klien->kecamatan_id_ktp }}';
+        }  else { // terlapor domisili (bisa lebih dari 1)
+            var kecamatanID = '{{ isset($terlapor[0]->kecamatan_id) ? $terlapor[0]->kecamatan_id : "" }}';
+        }
+        
+        $.ajax({
+          url:'{{ route("api.v1.kecamatan") }}?kota_code='+kota_code,
+          type:'GET',
+          dataType: 'json',
+          success: function( response ) {
+                var option = '<option value="">-- Pilih Kecamatan --</option>';
+                $.each(response.data, function(i, value) {
+                    var selected = ''
+                    if (kecamatanID == value.code) {
+                        selected = `selected="selected"`
+                    }
+                    option += `<option value="${value.code}" ${selected}>${value.name}</option>`
+                });
+                $('#kecamatan_id_'+field_id).html(option);
+                //panggil kelurahan
+                getkelurahan(field_id);
+            }
+        });
+    }; 
+
+    function getkelurahan(field_id='') {
+        kecamatan_code = $('#kecamatan_id_'+field_id).val();
+        if (field_id == 'kasus') { //kasus tkp
+            var kelurahanID = '{{ $kasus->kelurahan_id }}';
+        } else if (field_id == 'pelapor') { // pelapor domisili
+            var kelurahanID = '{{ $pelapor->kelurahan_id }}';
+        } else if (field_id == 'klien') { // klien domisili
+            var kelurahanID = '{{ $klien->kelurahan_id }}';
+        } else if (field_id == 'terlapor') { // terlapor domisili (bisa lebih dari 1)
+            var kelurahanID = '{{ isset($terlapor[0]->kelurahan_id_ktp) ? $terlapor[0]->kelurahan_id_ktp : "" }}';
+        } else if (field_id == 'pelapor_ktp') { // pelapor ktp
+            var kelurahanID = '{{ $pelapor->kelurahan_id_ktp }}';
+        } else if (field_id == 'klien_ktp') { // klien domisili
+            var kelurahanID = '{{ $klien->kelurahan_id_ktp }}';
+        }  else { // terlapor domisili (bisa lebih dari 1)
+            var kelurahanID = '{{ isset($terlapor[0]->kelurahan_id) ? $terlapor[0]->kelurahan_id : "" }}';
+        }
+
+        $.ajax({
+          url:'{{ route("api.v1.kelurahan") }}?kecamatan_code='+kecamatan_code,
+          type:'GET',
+          dataType: 'json',
+          success: function( response ) {
+                var option = '<option value="">-- Pilih Kelurahan --</option>';
+                $.each(response.data, function(i, value) {
+                    var selected = ''
+                    if (kelurahanID == value.code) {
+                        selected = `selected="selected"`
+                    }
+                    option += `<option value="${value.code}" ${selected}>${value.name}</option>`
+                });
+                $('#kelurahan_id_'+field_id).html(option);
+            }
+        });
+    }; 
+    
     $(function () {
 
     $('#tabelLogActivity').DataTable({
@@ -2070,7 +2692,7 @@
                     $('#tabelLogActivity').DataTable().ajax.reload();
                   }
               }]
-      }).buttons().container().appendTo('#tabelRiwayat_wrapper .col-md-6:eq(0)');
+      }).buttons().container().appendTo('#tabelLogActivity_wrapper .col-md-6:eq(0)');
 
       $('#tabelLogActivity_filter').css({'float':'right','display':'inline-block; background-color:black'});
     
@@ -2102,7 +2724,7 @@
         {
             "mData": "keterangan",
             "mRender": function (data, type, row) {
-              return row.keterangan;
+              return row.keterangan.replace(/\n/g, '<br>');
             }
         }
       ],
@@ -2150,68 +2772,6 @@
         });
     });
 
-    function editdata(params) {
-        $('.data_'+params).hide();
-        $('#tombol_edit_'+params).hide();
-        $('.input_'+params).show();
-        $('.input_'+params).next(".select2-container").show();
-        $('#tombol_save_'+params).show(); 
-    }
-
-    function getkotkab(field_id='') {
-        province_code = $('#provinsi_id_'+field_id).val();
-        if (field_id == 'pelapor') { //pelapor
-            var kotkabID = '{{ $pelapor->kotkab_id }}';
-        } else { //klien
-            var kotkabID = '{{ $klien->kotkab_id }}';
-        }
-        
-        $.ajax({
-          url:'{{ route("api.v1.kotkab") }}?province_code='+province_code,
-          type:'GET',
-          dataType: 'json',
-          success: function( response ) {
-                var option = '<option value="">-- Pilih Kotkab --</option>';
-                $.each(response.data, function(i, value) {
-                    var selected = ''
-                    if (kotkabID == value.code) {
-                        selected = `selected="selected"`;
-                    }
-
-                    option += `<option value="${value.code}" ${selected}>${value.name}</option>`
-                });
-                $('#kota_id_'+field_id).html(option);
-                //panggil kecamatan
-                getkecamatan(field_id);
-            }
-        });
-    };
-
-    function getkecamatan(field_id='') {
-        kota_code = $('#kota_id_'+field_id).val();
-        if (field_id == 'pelapor') { //pelapor
-            var kecamatanID = '{{ $pelapor->kecamatan_id }}';
-        } else { //klien
-            var kecamatanID = '{{ $klien->kecamatan_id }}';
-        }
-        $.ajax({
-          url:'{{ route("api.v1.kecamatan") }}?kota_code='+kota_code,
-          type:'GET',
-          dataType: 'json',
-          success: function( response ) {
-                var option = '<option value="">-- Pilih Kecamatan --</option>';
-                $.each(response.data, function(i, value) {
-                    var selected = ''
-                    if (kecamatanID == value.code) {
-                        selected = `selected="selected"`
-                    }
-                    option += `<option value="${value.code}" ${selected}>${value.name}</option>`
-                });
-                $('#kecamatan_id_'+field_id).html(option);
-            }
-        });
-    }; 
-
     $('#submitRiwayatKejadian').click(function() {
         if(validateForm('riwayat')){
             let token   = $("meta[name='csrf-token']").attr("content");
@@ -2229,7 +2789,6 @@
             },
             success: function (response){
                 if (response.success != true) {
-                    console.log(response);
                     $('#message').html(JSON.stringify(response));
                     $("#success-message").hide();
                     $("#error-message").show();
@@ -2285,7 +2844,6 @@
         },
         success: function (response){
             if (response.success != true) {
-                console.log(response);
                 $('#message').html(JSON.stringify(response));
                 $("#success-message").hide();
                 $("#error-message").show();
@@ -2898,7 +3456,7 @@
         if (approval == '0') {
             alasan_approve = prompt("Masukan alasan tidak menerima pengajuan terminasi : ");
         }
-        
+        if (alasan_approve != '') {
         if (alasan_approve || approval == 1) {
             let token = $("meta[name='csrf-token']").attr("content");
             $.ajax({
@@ -2932,6 +3490,9 @@
             });
             
         }
+        }else{
+            alert('Masukan alasan tidak menerima pengajuan terminasi');
+        }
     }
 
     function hightlighting() {
@@ -2953,11 +3514,15 @@
     }
 
     function copyClipboard(uuid) {
-        // alert('hiha');
-        var copyText = document.getElementById("link-form-"+uuid);
-        copyText.select();
-        copyText.setSelectionRange(0, 99999); // For mobile devices
-        navigator.clipboard.writeText(copyText.value);
+        // Get the text field
+
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val($("#link-form-"+uuid).val()).select();
+        document.execCommand("copy");
+        temp.remove();
+
+        // Alert the copied text
         alert('Link berhasil dicopy');
     }
 
@@ -2977,28 +3542,23 @@
     }
 
     function check_kelengkapan_data(klien_id) {
-    $.ajax({
-        url: `{{ env('APP_URL') }}/check_kelengkapan_data/`+klien_id,
-        type: "GET",
-        cache: false,
-        success: function (response){
-            jml_null_kasus = response.nullKasus;
-            jml_null_klien = response.nullKlien;
-            jml_null_pelapor = response.nullPelapor;
-            total_null = jml_null_kasus.length + jml_null_klien.length + jml_null_pelapor.length;
-            total_all = parseInt(response.kolomKasus) + parseInt(response.kolomKlien) + parseInt(response.kolomPelapor);
-            total_isi = total_all - total_null;
-            persentase = (total_isi / total_all) * 100;
-            persentase = persentase.toFixed(2);
-            $('#persen_title_data').html(persentase);
-            $('#persen_data').css('width', persentase+'%');
-        },
-        error: function (response){
-            alert("Error");
-            console.log(response);
-        }
+        $.ajax({
+            url: `{{ env('APP_URL') }}/check_kelengkapan_data/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                // nol kan dulu persentasenya 
+                $('.persen_data').css('width','0%');
+                // update persentase
+                $('#persen_title_data').html(response);
+                $('#persen_data').css('width', response+'%');
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
         });
-}
+    }
 
 function check_kelengkapan_persetujuan_spv(klien_id) {
     $.ajax({
@@ -3036,10 +3596,12 @@ function check_kelengkapan_spp(klien_id) {
                     $('#check_identifikasi').show();
                     kelengkapan_kasus = kelengkapan_kasus + 1;
                     $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                    $('#tombol_edit_rekam').show();
                 }
-                $('#modalAsesmen').show();
+                // $('#modalAsesmen').show();
             }else{
                 $('.warningSPP').show();
+                $('#tombol_edit_rekam').hide();
             }
         },
         error: function (response){
@@ -3162,7 +3724,92 @@ $(function(){
     }else{
         $('.akses_petugas').css('display', 'none');
     }
+
+
+    getJenisKekerasan();
+    getBentukKekerasan();
+    getKategoriKasus();
 })
+
+function getJenisKekerasan() {
+    $("#jenis_kekerasan").select2({
+        ajax: { 
+          url: '{{ route("api.v1.jeniskekerasan") }}',
+          type: "GET",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              search: params.term, // search term
+            };
+          },
+          processResults: function (response) {
+          $("#overlay").hide();
+            return {
+              results: response
+            };
+          },
+          cache: false
+        }
+    });
+  }
+
+  function getBentukKekerasan() {
+    jenis_kekerasan = $('#jenis_kekerasan').val();
+    $("#bentuk_kekerasan").select2({
+        ajax: { 
+          url: '{{ route("api.v1.bentukkekerasan") }}',
+          type: "GET",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              jenis_kekerasan: jenis_kekerasan, // munculkan bentuk berdasarkan jenis kekerasan yang sudah dipilih
+              search: params.term, // search term
+            };
+          },
+          processResults: function (response) {
+          $("#overlay").hide();
+            return {
+              results: response
+            };
+          },
+          cache: false
+        }
+    });
+  }
+
+  function getKategoriKasus() {
+    jenis_kekerasan = $('#jenis_kekerasan').val();
+    bentuk_kekerasan = $('#bentuk_kekerasan').val();
+    $("#kategori_kasus").select2({
+        ajax: { 
+          url: '{{ route("api.v1.kategorikasus") }}',
+          type: "GET",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              jenis_kekerasan: jenis_kekerasan, // munculkan kategori kasus berdasarkan jenis kekerasan yang sudah dipilih
+              bentuk_kekerasan: bentuk_kekerasan, // munculkan kategori kasus berdasarkan jenis kekerasan yang sudah dipilih
+              search: params.term, // search term
+            };
+          },
+          processResults: function (response) {
+          $("#overlay").hide();
+            return {
+              results: response
+            };
+          },
+          cache: false
+        }
+    });
+  }
+
+  function TambahTerlapor() {
+    $('#formTerlapor').show();
+    $('#buttonTerlapor').hide();
+  }
 </script>
 {{-- include modal agenda --}}
 @include('agenda.modal')

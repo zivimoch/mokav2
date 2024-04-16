@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Laravolt\Indonesia\Models\Kabupaten;
 use Laravolt\Indonesia\Models\Kecamatan;
+use Laravolt\Indonesia\Models\Kelurahan;
 
 class WilayahController extends Controller
 {
@@ -43,6 +44,26 @@ class WilayahController extends Controller
         $response = array(
             'status' => 200,
             'data' => $kecamatan
+        );
+        
+        return response()->json($response, 200);   
+    }
+
+    public function getKelurahan()
+    {
+ 
+        if (!request()->get('kecamatan_code')) {
+            $response = array(
+                'status' => 400,
+                'data' => []
+            );
+            return response()->json($response, 400);
+        }
+        
+        $kelurahan = Kelurahan::where('district_code', request()->get('kecamatan_code'))->get();
+        $response = array(
+            'status' => 200,
+            'data' => $kelurahan
         );
         
         return response()->json($response, 200);   

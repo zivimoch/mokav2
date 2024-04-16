@@ -213,7 +213,8 @@
 <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/south-street/jquery-ui.css" rel="stylesheet"> 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{{ asset('source/js/jquery.signature.js') }}"></script>
-{{-- <link rel="stylesheet" type="text/css" href="http://keith-wood.name/css/jquery.signature.css"> --}}
+<link rel="stylesheet" type="text/css" href="http://keith-wood.name/css/jquery.signature.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js" ></script>
 
 <script src="{{ asset('/source/js/validation.js') }}"></script>
 

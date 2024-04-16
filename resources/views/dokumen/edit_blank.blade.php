@@ -3,12 +3,12 @@
 @section('content')
 <style type="text/css">
     .scroll-area {
-        height: 800px;
+        height: 500px;
         overflow-y: scroll;
     }
 
     .scroll-area::-webkit-scrollbar {
-        width: 8px;
+        width: 3px;
         background-color: #F5F5F5;
     }
 
@@ -50,7 +50,7 @@
         </div>
         <div class="col-sm-6 text-right">
           <input type="checkbox" class="btn-xs" id="kontainerwidth"
-                checked
+          {{ Auth::user()->settings_kontainer_width == 'normal' ? 'checked' : '' }}
                 data-bootstrap-switch 
                 data-on-text="Normal"
                 data-off-text="Fullwidth"
@@ -258,9 +258,9 @@
 
                             <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
                                 <main>
-                                    <div class="centered">
+                                    {{-- <div class="centered"> --}}
                                         <div class="scroll-area">
-                                            <div class="row-editor">
+                                            {{-- <div class="row-editor"> --}}
                                               <?php
                                                     $konten = json_decode($data->konten);
                                                     preg_match_all('/{{(.*?)}}/', $konten, $variable);
@@ -278,12 +278,12 @@
                                                         $konten = str_replace('<table class="editablecontent"', '<a href="#" onclick="addRow(' . $id_table . ')">[add row]</a><a href="#" onclick="deleteRow(' . $id_table . ')">[delete row]</a><table contenteditable="true" id="' . $id_table . '"', $konten);
                                                     }
                                                     ?>
-                                                <textarea name="konten" id="post_content" class="form-control editor">
+                                                <textarea name="konten" id="post_content" class="editor" hidden>
                                                   {{ $konten }}
                                                 </textarea>
-                                            </div>
+                                            {{-- </div> --}}
                                         </div>
-                                    </div>
+                                    {{-- </div> --}}
                                 </main>
                             </body>
                         </div>
@@ -297,13 +297,13 @@
 
                             <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
                                 <main>
-                                    <div class="centered">
+                                    {{-- <div class="centered"> --}}
                                         <div class="scroll-area">
-                                            <div class="row-editor">
-                                                <div class="form-control editor" id="preview"></div>
-                                            </div>
+                                            {{-- <div class="row-editor"> --}}
+                                                <div class="editor" id="preview"></div>
+                                            {{-- </div> --}}
                                         </div>
-                                    </div>
+                                    {{-- </div> --}}
                                 </main>
                             </body>
                         </div>

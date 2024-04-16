@@ -12,11 +12,11 @@ function validateForm(namaForm) {
             y[i].classList.contains("tinymce") &&
             tinymce.get(y[i].id).getContent() == ""
         ) {
-            $("#" + y[i].id).css({ "background-color": "red" });
+            // $("#" + y[i].id).css({ "background-color": "red" });
             $("#" + validshow).show();
             valid = false;
         } else if (!y[i].classList.contains("tinymce") && y[i].value == "") {
-            $("#" + y[i].id).css({ "background-color": "red" });
+            // $("#" + y[i].id).css({ "background-color": "red" });
             $("#" + validshow).show();
             valid = false;
         } else {

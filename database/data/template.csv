@@ -1,0 +1,31 @@
+id,uuid,nama_template,pemilik,konten,blank_template,created_by
+1,dbb0c218-6393-4828-9b74-9a52d9c33249,Asesmen Risiko,Psikolog,null,1,1
+2,de0b408e-f284-44e9-b78f-ea00fd13d317,Pengukuran Awal,Psikolog,null,1,1
+3,6985b712-6127-4c45-8876-30657ce8e050,Konseling Psikologi,Psikolog,null,1,1
+4,c232dac5-617c-469e-8974-e0ae529e5417,Pemeriksaan Psikologi,Psikolog,null,1,1
+5,4676210d-08b1-4b3a-b2f2-37b9d2616adc,Saksi Ahli,Psikolog,null,1,1
+6,fe2981c8-79f4-4f60-91a0-b64eec3b4a6d,BAP Ahli,Psikolog,null,1,1
+7,327b1e0f-adcc-4b9b-b5dd-53b0d19ad673,Restitusi Proyeksi,Psikolog,null,1,1
+8,20970901-acb7-4846-b28f-42dd3de1a53b,Konseling Kelompok,Psikolog,null,1,1
+9,f9578984-2b01-448a-a665-c4c0e018b8e7,Psikososial/Psikoedukasi,Psikolog,null,1,1
+10,f50edf65-745c-4ecb-90ae-f40af07722af,Penjangkauan Paralegal Pos,Paralegal,null,1,1
+11,3c58c4b6-7af0-42bb-a874-9fbeafff8a4a,Penjangkauan Paralegal URC,Paralegal,null,1,1
+12,10f778b1-0d8e-4db8-b52b-2747610baa0b,Pendampingan Di Kepolisian,Paralegal,null,1,1
+13,e661b754-d53e-41a6-9d4b-ec7af397efa1,Pendampingan Di Pengadilan Negeri,Paralegal,null,1,1
+14,e7d69e96-fe10-415b-94df-942ee1f5b67d,Pendampingan Di Pengadilan Agama,Advokat,null,1,1
+15,5ee51962-a7b7-4ea6-a051-8dda013c5764,Mediasi,Advokat,null,1,1
+16,db778f91-4e5f-4f0f-8c95-b24181274a3c,Konsultasi Hukum,Advokat,null,1,1
+17,ca514a30-e67b-4a09-84af-a2abca3dcaf6,Pendampingan Lainnya,Paralegal,null,1,1
+18,771a2313-9276-4cd4-b3ef-bfb1fb544635,Penjangkauan,Pendamping Kasus,null,1,1
+19,95d52998-6f2a-461f-b962-af9b3bd5a82d,Kunjungan Rumah,Pendamping Kasus,null,1,1
+20,aea509d4-9da1-4b4b-8ee4-3fc2c8ef1e2e,Kunjungan Sekolah,Pendamping Kasus,null,1,1
+21,2725be07-2caa-40ce-9d59-5ef64f861562,Kunjungan Rumah Sakit,Pendamping Kasus,null,1,1
+22,0f32fba6-25be-42f5-9c6c-82ee1f2054fb,Pendampingan Layanan Kesehatan,Pendamping Kasus,null,1,1
+23,6c2fcd73-a1b0-47af-8035-d45933187bf9,Pendampingan Ke Shelter,Pendamping Kasus,null,1,1
+24,e99884df-4932-4a11-ac1f-d7da745d20c6,Pemulangan Dan Reintegrasi Sosial,Pendamping Kasus,null,1,1
+25,c18ec746-cca5-438c-b11c-989d9d94d628,Rujukan Ke Lembaga,Pendamping Kasus,null,1,1
+26,e0a28394-ce66-4791-b124-5d00d733ca3f,Pendampingan Kegiatan Sehari-hari,Pendamping Kasus,null,1,1
+27,3e0d5e89-274b-4e32-a6c7-c3d1fda6f86f,Bimbingan/motivasi Individu,Pendamping Kasus,null,1,1
+28,b6650951-0691-4143-b1f6-83276bac9b87,Bimbingan/motivasi Kelompok,Pendamping Kasus,null,1,1
+29,ebf9b89f-9128-4ed7-a138-cc2a52cbb927,Pendampingan Pada Mitra Kerja,Pendamping Kasus,null,1,1
+30,ebf9b89f-9128-4ed7-a2c8-cc2a52cbb927,Laporan Hasil Konsultasi Hukum,Advokat,null,0,1

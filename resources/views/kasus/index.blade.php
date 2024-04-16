@@ -1,5 +1,7 @@
 @extends('layouts.template')
 @section('content')
+<!-- daterange picker -->
+<link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/daterangepicker/daterangepicker.css">
     <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
@@ -9,7 +11,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6 text-right">
             <input type="checkbox" class="btn-xs" id="kontainerwidth"
-                  checked
+            {{ Auth::user()->settings_kontainer_width == 'normal' ? 'checked' : '' }}
                   data-bootstrap-switch 
                   data-on-text="Normal"
                   data-off-text="Fullwidth"
@@ -22,41 +24,50 @@
     <!-- /.content-header -->
 
     <!-- Main content -->
-    @if ((Auth::user()->jabatan == 'Penerima Pengaduan') || (Auth::user()->supervisor_id == 0))
+    @if (in_array(Auth::user()->jabatan, ['Penerima Pengaduan', 'Super Admin', 'Tenaga Ahli', 'Kepala Instansi', 'Tim Data']))
     <section class="content">
-        <div class="container-fluid">
-          <div class="card">
-              <div class="card-header">
-              <h3 class="card-title">Lapor KBG (Laporan masuk dari aplikasi Lapor KBG)</h3>
+      <div class="container-fluid">
+
+      <div id="accordion1">
+        <div class="card card-light direct-chat direct-chat-light">
+            <div class="card-header">
+              <h3 class="card-title">Lapor KBG (Laporan masuk dari aplikasi Lapor KBG) <span class="badge bg-danger"><span id="jumlah_kasus_laporKBG"></span></span></h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collaps1">
+                  <i class="fas fa-chevron-down"></i>
+                </button>
               </div>
-              
+            </div>
+            
+            <div id="collapse1" class="collapse" data-parent="#accordion1">
               <div class="card-body" style="overflow-x: scroll">
-              <table id="tabelLaporKBG" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
-              <thead>
-              <tr>
-              <th>Tgl Pelaporan</th>
-              <th>Nama</th>
-              <th>Kategori Klien</th>
-              <th>Pengaduan</th>
-              <th>Status Terkahir</th>
-              </tr>
-              </thead>
-              <tbody>
-              </tbody>
-              <tfoot>
-              <tr>
-              <th>Tgl Pelaporan</th>
-              <th>Nama</th>
-              <th>Kategori Klien</th>
-              <th>Pengaduan</th>
-              <th>Status</th>
-              </tr>
-              </tfoot>
-              </table>
+                <table id="tabelLaporKBG" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
+                  <thead>
+                  <tr>
+                  <th>Tgl Pelaporan</th>
+                  <th>Nama</th>
+                  <th>Kategori Klien</th>
+                  <th>Pengaduan</th>
+                  <th>Status Terakhir</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                  <tfoot>
+                  <tr>
+                  <th>Tgl Pelaporan</th>
+                  <th>Nama</th>
+                  <th>Kategori Klien</th>
+                  <th>Pengaduan</th>
+                  <th>Status Terakhir</th>
+                  </tr>
+                  </tfoot>
+                  </table>
+                </div>
               </div>
-              
-              </div>
-        </div><!-- /.container-fluid -->
+            </div>
+        </div>
+      </div>
       </section>
       @endif
     
@@ -67,7 +78,6 @@
             {{-- <div class="card-header">
             <h3 class="card-title">DataTable with default features</h3>
             </div> --}}
-            <input type="text" id="arsip" hidden>
             <div class="card-body" style="overflow-x: scroll">
             <table id="tabelKasus" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
             <thead>
@@ -77,7 +87,7 @@
             <th>Nama</th>
             <th>Kategori Klien</th>
             <th>Pengaduan</th>
-            <th>Status Terkahir</th>
+            <th>Status Terakhir</th>
             </tr>
             </thead>
             <tbody>
@@ -89,7 +99,7 @@
             <th>Nama</th>
             <th>Kategori Klien</th>
             <th>Pengaduan</th>
-            <th>Status</th>
+            <th>Status Terakhir</th>
             </tr>
             </tfoot>
             </table>
@@ -135,26 +145,29 @@
       <div class="card" style="margin-top:-30px; margin-bottom:0px">
           <div id="accordionKelengkapan" style="margin-bottom:-15px">
               <div class="card card-light">
-              <div class="card-header">
-              <h4 class="card-title w-100">
-              <a class="d-block w-100" data-toggle="collapse" href="#collapseKelengkapan">
-              <b>Kelengkapan Kasus (<span id="kelengkapan_kasus"></span>/6) </b>
-              </a>
-              </h4>
-              </div>
+                <div class="card-header" data-toggle="collapse" data-target="#collapseKelengkapan" aria-expanded="true" aria-controls="collapseKelengkapan" style="cursor: pointer;">
+                  <h3 class="card-title">
+                      <b>Kelengkapan Kasus (<span id="kelengkapan_kasus"></span>/6) </b>
+                  </h3>
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool">
+                      <i class="fas fa-chevron-down"></i>
+                    </button>
+                  </div>
+                </div>
               <div id="collapseKelengkapan" class="collapse show" data-parent="#accordionKelengkapan">
               <div class="card-body">
                   <ol style="padding:15px; margin :-25px 0px -20px 0px">
                       <li>
                           Identifikasi <i class="fa fa-check" id="check_identifikasi"></i>
                           <ul style="margin-left: -25px">
-                              <li>
-                                  Data Kasus (<span id="persen_title_data"></span>%)
-                                  <div class="progress progress-xs">
-                                      <div class="progress-bar bg-success progress-bar-striped" id="persen_data" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                      </div>
-                                  </div>
-                              </li>
+                            <li style="color: blue; cursor: pointer; font-weight:bold" onclick="alert('Field yang dibutuhkan untuk diisi :\n1. Data Kasus : \nMedia Pengagduan, Sumber Informasi, Tanggal Pelaporan, Tanggal Kejadian, Kategori Lokasi, Ringkasan, TKP\n2. Data Pelapor :\n Nama Lengkap, Jenis Kelamin\n3. Data Korban :\nNama Lengkap, Tempat Lahir, Tanggal Lahir, Jenis Kelamin, Alamat KTP, Alamat Domisili, Agama, Status Kawin, Pekerjaan, Kewargangaraan, Status Pendidikan, Pendidikan, Hubungan dengan Pelapor\n4. Data Terlapor :\nNama Lengkap, Tempat Lahir, Tanggal Lahir, Jenis Kelamin, Agama, Pekerjaan, Kewarganegaraan, Status Pendidikan, Pendidikan')">
+                                Kelengkapan Data (<span id="persen_title_data"></span>%) <i class="far fa-check-circle"></i>
+                                <div class="progress progress-xs">
+                                    <div class="progress-bar bg-success progress-bar-striped" id="persen_data" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </li>
                               <li>
                                   Persetujuan Supervisor <i class="far fa-check-circle" id="check_persetujuan_spv"></i>
                               </li>
@@ -189,6 +202,26 @@
               </div>
               </div>
           </div>
+
+          <div style="margin-bottom:-15px">
+            <div class="card card-light">
+              <div class="card-header" data-toggle="collapse" data-target="#accordionListPetugas" aria-expanded="true" aria-controls="accordionListPetugas" style="cursor: pointer;">
+                <h3 class="card-title">
+                    <b>Petugas </b>
+                </h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool">
+                    <i class="fas fa-chevron-down"></i>
+                  </button>
+                </div>
+              </div>
+            <div id="accordionListPetugas" class="collapse" data-parent="#accordionListPetugas">
+            <div class="card-body">
+                <ol style="padding:15px; margin :-25px 0px -20px 0px" id="listPetugas"></ol>
+            </div>
+            </div>
+            </div>
+        </div>
         </div>
       </div>
       <div class="modal-footer" id="buttons">
@@ -197,8 +230,129 @@
   </div>
 </div>
 
-    {{-- DataTable --}}
+<!-- Modal Filter Kasus-->
+<div class="modal fade" id="modalFilterKasus" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+      
+      <div class="modal-header">
+          <h5 class="modal-title" id="modelHeadingCatatan">Filter Kasus</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
 
+      <div class="modal-body">
+
+
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="">Basis Tanggal</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <select id="filter1BasisTanggal" class="form-control btn-primary">
+              <option value="tanggal_pelaporan" selected>Default ( Berdasarkan Tanggal Pelaporan )</option>
+              <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+              <option value="created_at">Berdasarkan Tanggal Input</option>
+            </select>
+          </div>
+          <input type="text" class="form-control daterank" id="filter1Tanggal" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+    <div class="form-group">
+      <label for="">Basis Wilayah</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <select class="form-control btn-primary" id="filter1BasisWilayah">
+            <option value="default" selected>Default ( Semua Wilayah )</option>
+            <option value="tkp">Berdasarkan Wilayah TKP</option>
+            <option value="ktp">Berdasarkan Wilayah KTP</option>
+            <option value="satpel">Berdasarkan Wilayah Satpel</option>
+          </select>
+        </div>
+        <select class="form-control" id="filter1Wilayah">
+          <option value="default" selected>Default ( Semua Wilayah )</option>
+          @foreach ($kota as $item) 
+            <option value="{{ $item->code }}" >{{ $item->name }}</option> 
+          @endforeach 
+          <option value="luar">Luar DKI Jakarta</option>
+        </select>
+      </div>
+    </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="form-group">
+      <label for="">Kategori Klien</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <select class="form-control btn-primary" id="filter1PenghitunganUsia">
+            <option selected>Default ( Tanggal Hari Ini dikurangi Tanggal Lahir )</option>
+            <option value="lapor">Tanggal Pelaporan dikurangi Tanggal Lahir</option>
+            <option value="kejadian">Tanggal Kejadian dikurangi Tanggal Lahir</option>
+            <option value="input">Tanggal Input dikurangi Tanggal Lahir</option>
+          </select>
+        </div>
+        <select class="form-control" id="filter1Kategori">
+          <option selected value="semua">Default ( Semua Kategori Klien )</option>
+          <option value="dewasa">Klien Perempuan Dewasa</option>
+          <option value="anak">Klien Anak</option>
+        </select>
+      </div>
+    </div>
+    </div>
+
+      <div class="col-md-12">
+          <div class="form-group">
+              <label for="">Kasus Anda</label>
+              <br>
+              <div class="icheck-primary d-inline">
+                  <input type="radio" id="radioPrimary2b" name="filter1Anda" {{ !in_array(Auth::user()->jabatan, ['Kepala Instansi', 'Super Admin', 'Tenaga Ahli', 'Sekretariat', 'Tim Data']) ? 'checked' : '' }} value="0">
+                <label for="radioPrimary2b">
+                    Kasus yang anda tangani saja
+                </label>
+              </div>
+              <div class="icheck-primary d-inline" style="margin-right:15px">
+                <input type="radio" id="radioPrimary1b" name="filter1Anda" {{ in_array(Auth::user()->jabatan, ['Kepala Instansi', 'Super Admin', 'Tenaga Ahli', 'Sekretariat', 'Tim Data']) ? 'checked' : '' }} value="1">
+                <label for="radioPrimary1b">
+                    Seluruh kasus
+                </label>
+              </div>
+            </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="form-group">
+            <label for="">Arsip</label>
+            <br>
+            <div class="icheck-primary d-inline" style="margin-right:15px">
+              <input type="radio" id="radioPrimary1c" name="filter1Arsip" checked value="0">
+              <label for="radioPrimary1c">
+                  Kasus yang aktif saja
+              </label>
+            </div>
+            <div class="icheck-primary d-inline">
+              <input type="radio" id="radioPrimary2c" name="filter1Arsip" value="1">
+              <label for="radioPrimary2c">
+                  Kasus yang diarsipkan saja
+              </label>
+            </div>
+          </div>
+    </div>
+    </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-success btn-block" onclick="submitFilterKasus()"><i class="fa fa-check"></i> Terapkan</button>
+          <button type="button" class="btn btn-warning btn-block" onclick="location.reload()"><i class="fas fa-undo"></i> Reset</button>
+      </div>
+      </div>
+  </div>
+</div>
+
+
+{{-- DataTable --}}
 <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -211,10 +365,22 @@
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<!-- InputMask -->
+<script src="{{ asset('adminlte') }}/plugins/moment/moment.min.js"></script>
+<script src="{{ asset('adminlte') }}/plugins/inputmask/jquery.inputmask.min.js"></script>
+<!-- date-range-picker -->
+<script src="{{ asset('adminlte') }}/plugins/daterangepicker/daterangepicker.js"></script>
 
 <script>
+  $('.daterank').daterangepicker(
+    {
+        locale: {
+            format: 'YYYY-MM-DD'
+        }
+    }
+  );
     $(function () {
-    $('#tabelLaporKBG').DataTable({
+      $('#tabelLaporKBG').DataTable({
       "ordering": true,
       "processing": true,
       "serverSide": true,
@@ -258,19 +424,37 @@
           ['10 rows', '25 rows', '50 rows', '100 rows','All'],
       ],
       "dom": 'Blfrtip', // Blfrtip or Bfrtip
-      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print"]
+      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print"],
+      "initComplete": function(settings, json) {
+        // Check if DataTables API is available
+        if ($.fn.DataTable.isDataTable('#tabelLaporKBG')) {
+            // Get the DataTable instance
+            var table = $('#tabelLaporKBG').DataTable();
+
+            // Get the information about the current state
+            var pageInfo = table.page.info();
+
+            // Get the total number of records
+            var totalRecords = pageInfo.recordsTotal;
+
+            $('#jumlah_kasus_laporKBG').html(totalRecords+' kasus');
+        } else {
+            console.error("DataTable initialization failed.");
+        } 
+      }
       }).buttons().container().appendTo('#tabelLaporKBG_wrapper .col-md-6:eq(0)');
 
       $('#tabelLaporKBG_filter').css({'float':'right','display':'inline-block; background-color:black'});
 
     $('#tabelKasus').DataTable({
       "ordering": true,
+      "order": [],
       "processing": true,
       "serverSide": true,
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
-      "ajax": "{{ env('APP_URL') }}/kasus",
+      "ajax": "{{ env('APP_URL') }}/kasus?basis_tanggal=" + $('#filter1BasisTanggal').val() + "&basis_wilayah=" + $('#filter1BasisWilayah').val() + "&wilayah=" + $('#filter1Wilayah').val() + "&tanggal=" + $('#filter1Tanggal').val() + "&arsip=" + $('input[name="filter1Arsip"]:checked').val() + "&anda=" + $('input[name="filter1Anda"]:checked').val(),
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
       },
@@ -308,19 +492,14 @@
           ['10 rows', '25 rows', '50 rows', '100 rows','All'],
       ],
       "dom": 'Blfrtip', // Blfrtip or Bfrtip
-      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print", {
+      "buttons": ["pageLength", "copy", "excel", "pdf", {
                 className: "btn-info",
-                text: 'Lihat Kasus Diarsipkan',
+                text: 'Filter',
                 action: function (x) {
-                  arsip = $('#arsip').val();
-                  if (arsip == 1) {
-                    $('#arsip').val(0);
-                    x.currentTarget.innerText = 'Lihat Kasus Diarsipkan';
-                  } else {
-                    $('#arsip').val(1);
-                    x.currentTarget.innerText = 'Lihat Kasus Aktif';
-                  }
-                  $('#tabelKasus').DataTable().ajax.url("{{ env('APP_URL') }}/kasus?arsip=" + $('#arsip').val()).load();
+
+                  $('#modalFilterKasus').modal('show');
+                  // arsip = $('#arsip').val();
+                  // $('#tabelKasus').DataTable().ajax.url("{{ env('APP_URL') }}/kasus?arsip=" + $('#arsip').val()).load();
                   }
               }]
       }).buttons().container().appendTo('#tabelKasus_wrapper .col-md-6:eq(0)');
@@ -359,10 +538,18 @@
           if ('{{ Auth::user()->jabatan }}' == 'Penerima Pengaduan') {
             $('#buttons').append('<button type="button" class="btn btn-success btn-block" id="terima" onclick="terima_kasus(`'+data.uuid+'`)"><i class="fa fa-check"></i> Terima Kasus</button>');
           }
-          $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="window.location.assign(`'+"{{route('kasus.show', '')}}"+"/"+data.uuid+'`)"><i class="fa fa-info-circle"></i> Detail Kasus</button>');
-          if ('{{ Auth::user()->jabatan }}' == 'Manajer Kasus' || '{{ Auth::user()->jabatan }}' == 'Penerima Pengaduan' || '{{ Auth::user()->supervisor_id }}' == 0) {
+          $('#buttons').append('<a href="' + "{{ route('kasus.show', '') }}" + '/' + data.uuid + '" class="btn btn-primary btn-block" id="detail"><i class="fa fa-info-circle"></i> Detail Kasus (Bisa New Tab)</a>');
+          if ( data.no_klien == null && "{{ in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Super Admin']) }}") {
               $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
+          }else{
+            $('#buttons').append('<div>*Anda tidak memiliki akses atau kasus ini sudah ada no regisnya sehingga anda tidak dapat menghapus kasus ini</div>');
           }
+
+          // list petugas
+          listPetugas = data.list_petugas;
+          listPetugas.forEach(e => {
+            $('#listPetugas').append('<li>'+e.name+' ('+e.jabatan+')</li>')
+          });
           
           $("#overlay").hide();
         });
@@ -396,10 +583,19 @@
           
          //munculkan tombol
         $('#buttons').html('');
-        $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="window.location.assign(`'+"{{route('kasus.show', '')}}"+"/"+data.uuid+'`)"><i class="fa fa-info-circle"></i> Detail Kasus</button>');
-        if ('{{ Auth::user()->jabatan }}' == 'Manajer Kasus' || '{{ Auth::user()->jabatan }}' == 'Penerima Pengaduan' || '{{ Auth::user()->supervisor_id }}' == 0) {
+        $('#buttons').append('<a href="' + "{{ route('kasus.show', '') }}" + '/' + data.uuid + '" class="btn btn-primary btn-block" id="detail"><i class="fa fa-info-circle"></i> Detail Kasus (Bisa New Tab)</a>');
+        if ( data.no_klien == null && "{{ in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Super Admin']) }}") {
             $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
+        }else{
+          $('#buttons').append('<div btn-block>*Anda tidak memiliki akses atau kasus ini sudah ada no regisnya sehingga anda tidak dapat menghapus kasus ini</div>');
         }
+
+        // list petugas
+        $('#listPetugas').html('');
+        listPetugas = data.list_petugas;
+        listPetugas.forEach(e => {
+          $('#listPetugas').append('<li><b>'+e.name+'</b> ('+e.jabatan+')</li>')
+        });
           
           $("#overlay").hide();
         });
@@ -422,6 +618,22 @@
               $('#ajaxModal').modal('hide');
               $('#tabelLaporKBG').DataTable().ajax.reload();
               $('#tabelKasus').DataTable().ajax.reload();
+
+              // Update jumlah kasus laporKBG dalam badge
+              if ($.fn.DataTable.isDataTable('#tabelLaporKBG')) {
+                  // Get the DataTable instance
+                  var table = $('#tabelLaporKBG').DataTable();
+
+                  // Get the information about the current state
+                  var pageInfo = table.page.info();
+
+                  // Get the total number of records
+                  var totalRecords = pageInfo.recordsTotal;
+
+                  $('#jumlah_kasus_laporKBG').html(totalRecords+' kasus');
+              } else {
+                  console.error("DataTable initialization failed.");
+              } 
             }
         });
     }
@@ -435,16 +647,8 @@
                 // nol kan dulu persentasenya 
                 $('.persen_data').css('width','0%');
                 // update persentase
-                jml_null_kasus = response.nullKasus;
-                jml_null_klien = response.nullKlien;
-                jml_null_pelapor = response.nullPelapor;
-                total_null = jml_null_kasus.length + jml_null_klien.length + jml_null_pelapor.length;
-                total_all = parseInt(response.kolomKasus) + parseInt(response.kolomKlien) + parseInt(response.kolomPelapor);
-                total_isi = total_all - total_null;
-                persentase = (total_isi / total_all) * 100;
-                persentase = persentase.toFixed(2);
-                $('#persen_title_data').html(persentase);
-                $('#persen_data').css('width', persentase+'%');
+                $('#persen_title_data').html(response);
+                $('#persen_data').css('width', response+'%');
             },
             error: function (response){
                 alert("Error");
@@ -611,7 +815,7 @@
     }
 
     function hapus(uuid) {
-      if (confirm("Apakah anda yakin ingin menghapus kasus ini?") == true) {
+      if (confirm("Apakah anda yakin ingin menghapus kasus ini? Seluruh task & notifikasi terkait kasus ini akan dihapus juga.") == true) {
         let token   = $("meta[name='csrf-token']").attr("content");
         $.ajax({
         url: `{{ env('APP_URL') }}/kasus/destroy/`+uuid,
@@ -626,8 +830,10 @@
                 console.log(response);
             }else{
                 $('#tabelKasus').DataTable().ajax.reload();
+                $('#tabelLaporKBG').DataTable().ajax.reload();
                 $('#ajaxModal').modal('hide');
             }
+            loadnotif();
         },
         error: function (response){
             setTimeout(function(){
@@ -641,6 +847,22 @@
             },500);
         });
       }
+    }
+
+    function submitFilterKasus() {
+      var basisTanggal = $('#filter1BasisTanggal').val();
+      var tanggal = $('#filter1Tanggal').val();
+      var basis_wilayah = $('#filter1BasisWilayah').val();
+      var wilayah = $('#filter1Wilayah').val();
+      var anda = $('input[name="filter1Anda"]:checked').val();
+      var arsip = $('input[name="filter1Arsip"]:checked').val();
+      var penghitungan_usia = $('#filter1PenghitunganUsia').val();
+      var kategori = $('#filter1Kategori').val();
+      var url = "{{ env('APP_URL') }}/kasus?basis_tanggal=" + basisTanggal + "&tanggal=" + tanggal + "&basis_wilayah=" + basis_wilayah + "&wilayah=" + wilayah + "&arsip=" + arsip + "&anda=" + anda + "&penghitungan_usia=" + penghitungan_usia + "&kategoriklien=" + kategori;
+
+      $('#tabelKasus').DataTable().ajax.url(url).load();
+
+      $('#modalFilterKasus').modal('hide');
     }
   </script>
 {{-- 

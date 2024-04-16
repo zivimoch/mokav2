@@ -16,9 +16,14 @@ use App\Http\Controllers\PersetujuanController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\PublicUrlController;
 use App\Http\Controllers\RiwayatKejadianController;
+use App\Http\Controllers\SettingBentukKekerasanController;
+use App\Http\Controllers\SettingJenisKekerasanController;
+use App\Http\Controllers\SettingKategoriKasusController;
+use App\Http\Controllers\SettingUsersController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TerminasiController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\WebSettingsController;
 use App\Models\Agenda;
 use App\Models\Petugas;
 use Illuminate\Support\Facades\Route;
@@ -34,12 +39,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::redirect('/', '/login');
+// penerimaan pengaduan
 Route::get('formpenerimapengaduan', [FormPenerimaPengaduan::class, 'index'])->name('formpenerimapengaduan.index');
 Route::post('formpenerimapengaduan', [FormPenerimaPengaduan::class, 'store'])->name('formpenerimapengaduan.store');
+// persetujuan
 Route::get('persetujuan/show/{uuid}', [PersetujuanController::class, 'show'])->name('persetujuan.show');
 Route::post('persetujuan', [PersetujuanController::class, 'store'])->name('persetujuan.store');
 Route::get('persetujuan/donepelayanan/{uuid}', [PersetujuanController::class, 'donepelayanan'])->name('persetujuan.done');
 Route::view('blankpage','blankpage')->name('blankpage');
+// carik
+Route::get('carik/{id}', [FormPenerimaPengaduan::class, 'carik'])->name('carik');
 
 Route::middleware('auth')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -49,6 +58,8 @@ Route::middleware('auth')->group(function () {
      Route::get('pengumuman/edit/{uuid}',[PengumumanController::class, 'edit'])->name('pengumuman.edit');
      // edit data formulir / data master 
     Route::put('formpenerimapengaduan', [FormPenerimaPengaduan::class, 'update'])->name('formpenerimapengaduan.update');
+    Route::post('formpenerimapengaduan/storeterlapor', [FormPenerimaPengaduan::class, 'store_terlapor'])->name('formpenerimapengaduan.store_terlapor');
+    Route::post('formpenerimapengaduan/deleteterlapor/', [FormPenerimaPengaduan::class, 'deleteterlapor'])->name('formpenerimapengaduan.deleteterlapor');
     // kasus
     Route::get('kasus', [KasusController::class, 'index'])->name('kasus');
     Route::get('kasus/show/{uuid}', [KasusController::class, 'show'])->name('kasus.show');
@@ -72,6 +83,7 @@ Route::middleware('auth')->group(function () {
     Route::get('riwayatkejadian/edit/{id}', [RiwayatKejadianController::class, 'edit'])->name('riwayatkejadian.edit');
     Route::delete('riwayatkejadian/destroy/{id}', [RiwayatKejadianController::class, 'destroy'])->name('riwayatkejadian.destroy');
     // asesmen
+    Route::put('asesmen', [AsesmenController::class, 'update'])->name('asesmen.update');
     Route::get('asesmen/index/', [AsesmenController::class, 'index'])->name('asesmen');
     Route::post('asesmen/store/', [AsesmenController::class, 'store'])->name('asesmen.store');
     Route::delete('asesmen/destroy/{id}', [AsesmenController::class, 'destroy'])->name('asesmen.destroy');
@@ -96,7 +108,11 @@ Route::middleware('auth')->group(function () {
     // template
     Route::get('template', [TemplateController::class, 'index'])->name('template');
     Route::get('template/create', [TemplateController::class, 'create'])->name('template.create');
+    Route::get('template/edit/{uuid}',[TemplateController::class, 'edit'])->name('template.edit');
     Route::post('template/store', [TemplateController::class, 'store'])->name('template.store');
+    Route::get('template/show/{uuid}',[TemplateController::class, 'show'])->name('template.show');
+    Route::put('template/update/{uuid}',[TemplateController::class, 'update'])->name('template.update');
+    Route::delete('template/destroy/{id}', [TemplateController::class, 'destroy'])->name('template.destroy');
     // agenda & kinerja
     Route::get('agenda', [AgendaController::class, 'index'])->name('agenda');
     Route::get('agenda/api_index', [AgendaController::class, 'api_index']);
@@ -105,13 +121,15 @@ Route::middleware('auth')->group(function () {
     Route::get('agenda/showdate/{date}', [AgendaController::class, 'showdate'])->name('agenda.showdate');
     Route::post('agenda/store', [AgendaController::class, 'store'])->name('agenda.store');
     Route::get('agenda/edit/{id}', [AgendaController::class, 'edit'])->name('agenda.edit');
-    Route::view('kinerja','agenda/kinerja')->name('kinerja');
+    Route::get('agenda/pdf_kinerja', [AgendaController::class, 'pdf_kinerja'])->name('pdf_kinerja');
+    Route::post('/get_keyword', [AgendaController::class, 'get_keyword'])->name('get_keyword');
     Route::get('kinerja', [AgendaController::class, 'kinerja'])->name('kinerja');
     Route::get('kinerja/detail', [AgendaController::class, 'kinerja_detail'])->name('kinerja.detail');
-    Route::get('kinerja/ajax', [AgendaController::class, 'ajax'])->name('ajax');
+    Route::get('kinerja/ajax', [AgendaController::class, 'kinerja_ajax'])->name('kinerja_ajax');
+    Route::post('kinerja/valid', [AgendaController::class, 'kinerja_valid'])->name('kinerja_valid');
     Route::post('/get_agenda', [AgendaController::class, 'get_agenda'])->name('get_agenda');
     // terminasi
-    Route::get('terminasi/index/', [TerminasiController::class, 'index'])->name('terminasi');
+    Route::get('terminasi/index', [TerminasiController::class, 'index'])->name('terminasi');
     Route::post('terminasi/store/', [TerminasiController::class, 'store'])->name('terminasi.store');
     // catatan
     Route::get('catatan/index/', [CatatanController::class, 'index'])->name('catatan');
@@ -133,10 +151,37 @@ Route::middleware('auth')->group(function () {
     Route::get('publicurl/kasus',[PublicUrlController::class, 'kasus'])->name('publicurl.kasus');
     // pemantauan untuk statistik
     Route::get('monitoring', [MonitoringController::class, 'index'])->name('monitoring');
+    Route::get('monitoring/monitoringkasus', [MonitoringController::class, 'monitoring_kasus'])->name('monitor.monitoringkasus');
+    Route::get('monitoring/sheets', [MonitoringController::class, 'sheets'])->name('monitor.sheets');
     // log activity
     Route::get('logactivity/index/', [LogActivityControler::class, 'index'])->name('logactivity');
-    // users
+    // users, setting individual user
     Route::get('users/show/{uuid}', [UsersController::class, 'show'])->name('users.show');
+    Route::get('users/websettings/{uuid}', [UsersController::class, 'websettings'])->name('users.websettings');
+    Route::put('users', [UsersController::class, 'update'])->name('users.update');
+    Route::post('users/cropimage', [UsersController::class, 'cropImageUploadAjax']);
+    // web settings
+    Route::get('websettings', [WebSettingsController::class, 'index'])->name('websettings');
+    Route::get('websettings/kategorikasus', [WebSettingsController::class, 'kategori_kasus'])->name('websettings.kategorikasus');
+    Route::get('settingjeniskekerasan', [SettingJenisKekerasanController::class, 'index'])->name('settingjeniskekerasan');
+    Route::post('settingjeniskekerasan/store/', [SettingJenisKekerasanController::class, 'store'])->name('settingjeniskekerasan.store');
+    Route::get('settingjeniskekerasan/edit/{id}', [SettingJenisKekerasanController::class, 'edit'])->name('settingjeniskekerasan.edit');
+    Route::delete('settingjeniskekerasan/destroy/{id}', [SettingJenisKekerasanController::class, 'destroy'])->name('settingjeniskekerasan.destroy');
+    Route::get('settingbentukkekerasan', [SettingBentukKekerasanController::class, 'index'])->name('settingbentukkekerasan');
+    Route::post('settingbentukkekerasan/store/', [SettingBentukKekerasanController::class, 'store'])->name('settingbentukkekerasan.store');
+    Route::get('settingbentukkekerasan/edit/{id}', [SettingBentukKekerasanController::class, 'edit'])->name('settingbentukkekerasan.edit');
+    Route::delete('settingbentukkekerasan/destroy/{id}', [SettingBentukKekerasanController::class, 'destroy'])->name('settingbentukkekerasan.destroy');
+    Route::get('settingkategorikasus', [SettingKategoriKasusController::class, 'index'])->name('settingkategorikasus');
+    Route::post('settingkategorikasus/store/', [SettingKategoriKasusController::class, 'store'])->name('settingkategorikasus.store');
+    Route::get('settingkategorikasus/edit/{id}', [SettingKategoriKasusController::class, 'edit'])->name('settingkategorikasus.edit');
+    Route::delete('settingkategorikasus/destroy/{id}', [SettingKategoriKasusController::class, 'destroy'])->name('settingkategorikasus.destroy');
+    Route::get('websettings/users', [WebSettingsController::class, 'users'])->name('websettings.users');
+    Route::get('settingusers', [SettingUsersController::class, 'index'])->name('settingusers');
+    Route::post('settingusers/store/', [SettingUsersController::class, 'store'])->name('settingusers.store');
+    Route::get('settingusers/edit/{id}', [SettingUsersController::class, 'edit'])->name('settingusers.edit');
+    Route::delete('settingusers/destroy/{id}', [SettingUsersController::class, 'destroy'])->name('settingusers.destroy');
+    // auto fill (hapus fungsi ini kelak)
+    Route::get('autofillnokas', [KasusController::class, 'autofill_nokas'])->name('autofillnokas');
 });
 
 require __DIR__.'/auth.php';

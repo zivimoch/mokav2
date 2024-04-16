@@ -76,7 +76,11 @@
               <!-- Add the bg color to the header using any of the bg-* classes -->
               <div class="widget-user-header bg-warning">
                 <div class="widget-user-image">
-                  <img class="img-circle elevation-2" src="https://adminlte.io/themes/v3/dist/img/default-150x150.png" alt="User Avatar">
+                  {{-- <img class="img-circle elevation-2" src="{{ asset('img/profile/'.Auth::user()->foto) }}" alt="User Avatar"> --}}
+                  <img class="img-circle elevation-2 fotoProfile" 
+                src="{{ asset('img/profile/'.Auth::user()->foto) }}" 
+                onerror="this.onerror=null; this.src='{{ asset('adminlte/dist/img/default-150x150.png') }}'"  
+                alt="User Avatar">
                 </div>
                 <!-- /.widget-user-image -->
                 <h3 class="widget-user-username">{{ Auth::user()->name }}</h3>
@@ -86,17 +90,17 @@
                 <ul class="nav flex-column">
                   <li class="nav-item">
                     <a href="{{ route('kasus') }}" class="nav-link">
-                      Kasus Yang Ditangani <span class="float-right badge bg-primary">NAN</span>
+                      Kasus Yang Ditangani <span class="float-right badge bg-primary">{{ $jumlah_kasus }}</span>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="{{ route('notifikasi') }}" class="nav-link">
-                      Jumlah Agenda Kegiatan <span class="float-right badge bg-success">NAN</span>
+                      Jumlah Agenda Kegiatan <span class="float-right badge bg-success">{{ $jumlah_agenda }}</span>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="{{ route('notifikasi') }}" class="nav-link">
-                      Skor Survey Kepuasan Layanan <span class="float-right badge bg-warning">5 / 5</span>
+                      Skor Survey Kepuasan Layanan <span class="float-right badge bg-warning">NAN / NAN</span>
                     </a>
                   </li>
                 </ul>
@@ -110,7 +114,7 @@
                   Agenda hari ini, {{ date('d M Y') }}
                 </h3>
                 <div class="card-tools">
-                    <a href="{{ route('kinerja.detail') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}&user_id={{ Auth::user()->id }}" class="btn btn-tool"><i class="fas fa-tasks"></i> Laporan Kinerja</a>
+                    <a href="{{ route('kinerja.detail') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}&user_id={{ Auth::user()->uuid }}" class="btn btn-tool"><i class="fas fa-tasks"></i> Laporan Kinerja</a>
                     <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
                     </button>
                 </div>
@@ -315,6 +319,7 @@ function displayMessage(message) {
    
 loadAgenda('{{  date("Y-m-d") }}',2);
 function loadAgenda(tanggal_mulai, id) {
+  console.log(tanggal_mulai);
   $.ajax({
     type: "GET",
     url: "{{ env('APP_URL') }}/agenda/showdate/" + tanggal_mulai,
@@ -333,7 +338,7 @@ function loadAgenda(tanggal_mulai, id) {
           checked = 'checked';
           disabled = 'disabled';
         }
-        $('#agendaSaya'+id).append('<li class="'+done+'"><div  class="icheck-primary d-inline ml-2"><input type="checkbox" value="" id="todoCheck'+i+'" '+checked+' '+disabled+' onclick="showModalAgenda(`'+e.tanggal_mulai+'`,`'+e.uuid+'`)"><label for="todoCheck'+i+'"></label></div><span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span></li>');
+        $('#agendaSaya'+id).append('<li class="'+done+'"><div  class="icheck-primary d-inline ml-2"><input type="checkbox" value="" id="todoCheck'+i+'" '+checked+' '+disabled+' onclick="showModalAgenda(`'+e.tanggal_mulai+'`,`'+e.uuid+'`,{{ Auth::user()->id }})"><label for="todoCheck'+i+'"></label></div><span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span></li>');
         $('#agendaAndaHeading'+id).html('Agenda Anda ('+i+' agenda)')
         i++;
       });
@@ -361,7 +366,7 @@ function loadPengumuman() {
           
           data = response.data;
           data.forEach(e => {
-              $('#kolomPengumuman').prepend("<div class=\"callout callout-danger\" style=\"cursor: pointer;\" onclick=\"editPengumuman('"+e.uuid+"')\"><div class=\"d-flex w-100 justify-content-between\"><h6 class=\"mb-1\"><b>"+e.judul+"</b><br>Diumumkan oleh : "+e.name+"</h6><small>"+e.created_at_formatted+" lalu</small> </div><p style=\"text-align: justify\">"+e.konten+"</p></div>");
+              $('#kolomPengumuman').prepend("<div class=\"callout callout-danger\" style=\"cursor: pointer;\" onclick=\"editPengumuman('"+e.uuid+"')\"><div class=\"d-flex w-100 justify-content-between\"><h6 class=\"mb-1\"><b>"+e.judul+"</b><br>Diumumkan oleh : "+e.name+"</h6><small>"+e.created_at_formatted+" lalu</small> </div><p style=\"text-align: justify\">"+e.konten.replace(/\n/g, '<br>')+"</p></div>");
           });
       },
       error: function (response){

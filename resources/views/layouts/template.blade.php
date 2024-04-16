@@ -33,6 +33,7 @@
 <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 {{-- toast, bikin alert yang melayang dan hilang --}}
 <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/toastr/toastr.min.css">
+<link rel="shortcut icon" href="{{ asset('img/favicon.png') }}" >
 
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -45,11 +46,19 @@
 </head>
 <body class="hold-transition layout-top-nav">
 {{-- ubah ini dan style wrapper saat production  --}}
-{{-- <div class="alert alert-danger" style="position: fixed; z-index:10000; width:100%;">
-  <center><b>MOKA.V2 (BETA). Isi <a href="https://s.id/bugmokav2" target="_blank">Formulir Temuan</a></b></center>
-</div> --}}
-{{-- <div class="alert alert-danger" style="width:100%;"></div> --}}
-  <!-- Site wrapper -->
+@php
+    $url = request()->url();
+    $urlSegments = explode('/', $url);
+    $firstSegment = isset($urlSegments[3]) ? $urlSegments[3] : null;
+@endphp
+@if($firstSegment === 'latihan')
+<div class="alert alert-danger alert-dismissible" style="position: fixed; z-index:10000; width:100%;">
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+  <center><b>MOKA.V2 (LATIHAN)</b></center>
+</div>
+<div class="alert" style="width:100%;"></div>
+@endif
+<!-- Site wrapper -->
 <div class="wrapper">
   <!-- Navbar -->
   @include('layouts.navbar')
@@ -77,7 +86,7 @@
     
   <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
-      <b>Version</b> 2.0
+      <b>Version</b> 2.1
     </div>
     <strong>Copyright &copy; 2022 <a href="">MOKA ONLINE</a>.</strong> All rights reserved.
   </footer>
@@ -100,6 +109,113 @@
     </div>
   </div>
 </div>
+@if (((env('APP_URL') == 'http://127.0.0.1:8000') || ($firstSegment === 'latihan')) && isset(Auth::user()->id))
+{{-- MOKA V2.0 ANNOUCMENT BOX  --}}
+<style>
+  .chat-box {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 500px;
+    background: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    z-index: 10000000;
+  }
+
+  .chat-header {
+    background: #333;
+    color: #fff;
+    padding: 0px 15px 0px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .chat-title {
+    margin: 0;
+  }
+
+  .toggle-button,
+  .close-button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 30px;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+  }
+
+  .toggle-button {
+    margin-right: -100px !important; /* Adjust the margin as needed */
+  }
+
+  .chat-body {
+    display: block;
+    padding: 15px;
+  }
+
+  .chat-body.hidden {
+    display: none;
+  }
+</style>
+
+<div class="chat-box">
+  <div class="chat-header">
+      <div class="chat-title">Anda Login Sebagai : </div>
+      <button class="toggle-button">-</button>
+      <button class="close-button">×</button> <!-- Close button added -->
+  </div>
+  <div class="chat-body">
+      <div class="card card-widget widget-user-2">
+          <!-- Add the bg color to the header using any of the bg-* classes -->
+          <div class="widget-user-header bg-warning">
+              <div class="widget-user-image">
+                  <img class="img-circle elevation-2 fotoProfile"
+                      src="{{ asset('img/profile/'.Auth::user()->foto) }}"
+                      onerror="this.onerror=null; this.src='{{ asset('adminlte/dist/img/default-150x150.png') }}'"
+                      alt="User Avatar">
+              </div>
+              <!-- /.widget-user-image -->
+              <h3 class="widget-user-username">{{ Auth::user()->name }}</h3>
+              <h5 class="widget-user-desc">{{ Auth::user()->jabatan }}</h5>
+          </div>
+      </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      const chatBox = document.querySelector(".chat-box");
+      const chatBody = document.querySelector(".chat-body");
+      const toggleButton = document.querySelector(".toggle-button");
+      const closeButton = document.querySelector(".close-button");
+
+      toggleButton.addEventListener("click", function () {
+          chatBody.classList.toggle("hidden");
+          toggleButton.textContent = chatBody.classList.contains("hidden") ? "+" : "-";
+      });
+
+      closeButton.addEventListener("click", function () {
+          chatBox.remove(); // Remove the chat-box
+      });
+  });
+
+  $(document).ready(function () {
+      $(".toggle-button").click(function () {
+          $(".chat-body").slideToggle();
+          if ($(".toggle-button").text() === "-") {
+              $(".toggle-button").text("+");
+          } else {
+              $(".toggle-button").text("-");
+          }
+      });
+  });
+</script>
+
+{{-- END MOKA V2.0  --}}
+@endif
 {{-- ini untuk notifikasi ketika diklik redirect --}}
 <input type="hidden" id="notif_receiver" data-notif="{{ Request::get('notif') }}" value="{{ Request::get('notif') }}">
 {{-- socket --}}
@@ -108,6 +224,23 @@
 <script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
 <script>
   $(function() {
+    if ($('#kontainerwidth').length == 1) {
+     
+    if($('#kontainerwidth').is(":checked")){
+          $('#kontainer').addClass('container');
+        } else {
+          $('#kontainer').removeClass('container');
+        } 
+    }
+    // merubah semua titlecase
+    $(".titlecase").on("input", function () {
+        var text = $(this).val();
+        $(this).val(
+            text.replace(/\w\S*/g, function (txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1);
+            })
+        );
+    });
     // initialized all select2
     $( ".select2_field" ).select2();
 

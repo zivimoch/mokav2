@@ -17,13 +17,13 @@ class Klien extends Model
     protected $guarded = [];
 
 
-    public function difabel_type()
+    public function t_tipe_disabilitas()
     {
         return $this->belongsTo(DifabelType::class);
     }
 
     public function kondisi_khusus()
     {
-        return $this->belongsTo(KondisiKhusus::class);
+        return $this->belongsTo(TKedaruratan::class);
     }
 }

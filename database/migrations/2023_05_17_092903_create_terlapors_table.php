@@ -21,24 +21,24 @@ class CreateTerlaporsTable extends Migration
             $table->string('nama')->nullable();
             $table->string('tempat_lahir')->nullable();
             $table->date('tanggal_lahir')->nullable();
-            $table->integer('provinsi_id')->nullable();
-            $table->integer('kotkab_id')->nullable();
-            $table->integer('kecamatan_id')->nullable();
-            $table->string('kelurahan')->nullable();
-            $table->longText('alamat')->nullable();
             $table->enum('jenis_kelamin', ['perempuan', 'laki-laki'])->default('perempuan');
+            $table->char('provinsi_id_ktp')->nullable();
+            $table->char('kotkab_id_ktp')->nullable();
+            $table->char('kecamatan_id_ktp')->nullable();
+            $table->char('kelurahan_id_ktp')->nullable();
+            $table->longText('alamat_ktp')->nullable();
+            $table->char('provinsi_id')->nullable(); // domisili
+            $table->char('kotkab_id')->nullable(); // domisili
+            $table->char('kecamatan_id')->nullable(); // domilisi
+            $table->char('kelurahan_id')->nullable(); // domisili
+            $table->longText('alamat')->nullable(); // domisili
             $table->string('agama')->nullable();
-            $table->string('suku')->nullable();
-            $table->char('no_telp')->nullable();
+            $table->string('status_kawin')->nullable();
+            $table->string('pekerjaan')->nullable();
+            $table->string('kewarganegaraan')->nullable();
             $table->string('status_pendidikan')->nullable();
             $table->string('pendidikan')->nullable();
-            $table->string('pekerjaan')->nullable();
-            $table->string('penghasilan')->nullable();
-            $table->string('status_kawin')->nullable();
-            $table->integer('jumlah_anak')->nullable();
-            $table->string('hubungan_terlapor')->nullable();
-            $table->string('masa_hukuman')->nullable();
-            $table->char('denda_hukuman')->nullable();
+            $table->char('no_telp')->nullable();
             $table->integer('desil')->nullable();
             $table->integer('created_by')->nullable();
             $table->timestamps();

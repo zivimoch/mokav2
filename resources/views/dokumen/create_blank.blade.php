@@ -3,12 +3,12 @@
 @section('content')
 <style type="text/css">
     .scroll-area {
-        height: 800px;
+        height: 500px;
         overflow-y: scroll;
     }
 
     .scroll-area::-webkit-scrollbar {
-        width: 8px;
+        width: 3px;
         background-color: #F5F5F5;
     }
 
@@ -50,7 +50,7 @@
         </div>
         <div class="col-sm-6 text-right">
           <input type="checkbox" class="btn-xs" id="kontainerwidth"
-                checked
+          {{ Auth::user()->settings_kontainer_width == 'normal' ? 'checked' : '' }}
                 data-bootstrap-switch 
                 data-on-text="Normal"
                 data-off-text="Fullwidth"
@@ -245,13 +245,13 @@
 
                             <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
                                 <main>
-                                    <div class="centered">
+                                    {{-- <div class="centered"> --}}
                                         <div class="scroll-area">
-                                            <div class="row-editor">
-                                                <textarea name="konten" id="post_content" class="form-control editor"></textarea>
-                                            </div>
+                                            {{-- <div class="row-editor"> --}}
+                                                <textarea name="konten" id="post_content" class="editor"></textarea>
+                                            {{-- </div> --}}
                                         </div>
-                                    </div>
+                                    {{-- </div> --}}
                                 </main>
                             </body>
                         </div>
@@ -265,13 +265,13 @@
 
                             <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
                                 <main>
-                                    <div class="centered">
+                                    {{-- <div class="centered"> --}}
                                         <div class="scroll-area">
-                                            <div class="row-editor">
-                                                <div class="form-control editor" id="preview"></div>
-                                            </div>
+                                            {{-- <div class="row-editor"> --}}
+                                                <div class="editor" id="preview"></div>
+                                            {{-- </div> --}}
                                         </div>
-                                    </div>
+                                    {{-- </div> --}}
                                 </main>
                             </body>
                         </div>
@@ -386,7 +386,7 @@ tinymce.init({
     }
   ],
   content_style: "body { font-family: Cambria; }",
-  selector: "#post_content",
+  selector: ".editor",
   toolbar: '#mytoolbar',
   lineheight_formats: "8pt 9pt 10pt 11pt 12pt 14pt 16pt 18pt 20pt 22pt 24pt 26pt 36pt",
   // ukuran A4 Potrait

@@ -21,7 +21,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6 text-right">
             <input type="checkbox" class="btn-xs" id="kontainerwidth"
-                  checked
+            {{ Auth::user()->settings_kontainer_width == 'normal' ? 'checked' : '' }}
                   data-bootstrap-switch 
                   data-on-text="Normal"
                   data-off-text="Fullwidth"
@@ -85,6 +85,53 @@
         </button>
       </div>
       <div class="modal-body">
+
+        <label>Detail Template</label>
+        <div class="col-md-12" style="background-color:aliceblue; padding:10px">
+            <table>
+                <tr>
+                    <td>
+                        Nama Template
+                    </td>
+                    <td>
+                        : <span id="nama_template"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Kepemilikan Template
+                    </td>
+                    <td>
+                        : <span id="pemilik_template"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Terakhir Dirubah Oleh
+                    </td>
+                    <td>
+                        : <span id="created_by_template"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Created at
+                    </td>
+                    <td>
+                        : <span id="created_at_template"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Modified at
+                    </td>
+                    <td>
+                        : <span id="updated_at_template"></span>
+                    </td>
+                </tr>
+            </table> 
+        </div>
+        <br>
         <div class="form-card">
           <div class="form-group">
 
@@ -187,11 +234,21 @@
 
     $('#tabelDokumen tbody').on('click', 'tr', function () {
       $.get(`{{ env('APP_URL') }}/dokumen/show/`+this.id, function (data) {
-          $("#overlay").hide();
           dokumen_tl = data.dokumen_tl;
           data = data.data;
-          tinymce.activeEditor.setContent(JSON.parse(data.konten));
+          console.log(data.konten);
+          if (data.konten == 'null') {
+            tinymce.activeEditor.setContent('Template ini blank tidak ada formatnya.');
+          }else{
+            tinymce.activeEditor.setContent(JSON.parse(data.konten));
+          }
+          $("#overlay").hide();
           $('#dokumenModal').modal('show');
+          $('#nama_template').html(data.nama_template);
+          $('#pemilik_template').html(data.pemilik_template);
+          $('#created_by_template').html(data.created_by_template);
+          $('#created_at_template').html(data.created_at_template);
+          $('#updated_at_template').html(data.updated_at_template);
           //munculkan agenda terkait
           $('#dokumen_tl').html('');
           no_agenda = 1;
@@ -264,7 +321,7 @@
       if (confirm("Apakah anda yakin ingin menghapus dokumen ini?\nDokumen yang terhapus tidak akan muncul di daftar dokumen dan di agenda") == true) {
         let token   = $("meta[name='csrf-token']").attr("content");
         $.ajax({
-        url: `/dokumen/destroy/`+uuid,
+        url: `{{ env('APP_URL') }}/dokumen/destroy/`+uuid,
         type: "POST",
         cache: false,
         data: {

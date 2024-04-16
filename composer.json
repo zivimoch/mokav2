@@ -6,7 +6,9 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "codedge/laravel-fpdf": "^1.9",
         "fruitcake/laravel-cors": "^2.0",
+        "google/apiclient": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^8.75",
@@ -15,6 +17,7 @@
         "laravolt/indonesia": "^0.34.0",
         "nesbot/carbon": "^2.69",
         "ramsey/uuid": "^4.2",
+        "revolution/laravel-google-sheets": "^5.8",
         "yajra/laravel-datatables": "^1.5"
     },
     "require-dev": {

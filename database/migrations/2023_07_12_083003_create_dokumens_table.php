@@ -19,6 +19,7 @@ class CreateDokumensTable extends Migration
             $table->integer('template_id');
             $table->string('judul');
             $table->text('konten');
+            $table->boolean('blank_template')->default(0);
             $table->string('nama_template');
             $table->string('pemilik_template');
             $table->string('created_by_template');

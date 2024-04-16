@@ -25,7 +25,7 @@ class CreateNotifikasisTable extends Migration
             $table->string('from')->nullable();
             $table->text('message');
             $table->string('kasus')->nullable();
-            $table->string('url')->nullable();
+            $table->text('url')->nullable();
             $table->boolean('read')->default(0);
             $table->integer('created_by')->nullable();
             $table->timestamps();

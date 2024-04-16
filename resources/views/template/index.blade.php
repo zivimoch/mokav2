@@ -31,12 +31,13 @@
             </div> --}}
             
             <div class="card-body" style="overflow-x: scroll">
-            <table id="example1" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
+            <table id="tableTemplate" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
             <thead>
             <tr>
             <th>Nama Template</th>
+            <th>Blank</th>
             <th>Pemilik</th>
-            <th>Created By</th>
+            <th>Terakhir Dirubah</th>
             <th>Created At</th>
             <th>Modified At</th>
             </tr>
@@ -46,8 +47,9 @@
             <tfoot>
             <tr>
             <th>Nama Template</th>
+            <th>Blank</th>
             <th>Pemilik</th>
-            <th>Created By</th>
+            <th>Terakhir Dirubah</th>
             <th>Created At</th>
             <th>Modified At</th>
             </tr>
@@ -59,9 +61,9 @@
       </div><!-- /.container-fluid -->
     </section>
 
-<!-- Modal -->
-<div class="modal fade" id="ajaxModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<!-- Modal Template -->
+<div class="modal fade" id="TemplateModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
 
       <div id="overlay" class="overlay dark">
@@ -75,39 +77,73 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
-        <span id="message"></span>
-      </div>
-      <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h4><i class="icon fa fa-check"></i> Success!</h4>
-        Data berhasil disimpan.
-      </div>
       <div class="modal-body">
-        <div class="box-profile">
-          <div class="text-center">
-          <img class="profile-user-img img-fluid img-circle" src="http://127.0.0.1:8000/adminlte/dist/img/default-150x150.png" alt="User profile picture">
+        <div class="form-card">
+          <div class="form-group">
+
+            <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
+              <div id="mytoolbar" style="width: 1000px"></div>
+              <main>
+                <label>Detail Template</label>
+                  <div class="col-md-12" style="background-color:aliceblue; padding:10px">
+                      <table>
+                          <tr>
+                              <td>
+                                  Nama Template
+                              </td>
+                              <td>
+                                  : <span id="nama_template"></span>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td>
+                                  Detail Layanan / Keyword
+                              </td>
+                              <td>
+                                  : <span id="keyword"></span>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td>
+                                  Kepemilikan Template
+                              </td>
+                              <td>
+                                  : <span id="kepemilikan"></span>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td>
+                                  Terakhir Dirubah Oleh
+                              </td>
+                              <td>
+                                  : <span id="created_by"></span>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td>
+                                  Created at
+                              </td>
+                              <td>
+                                  : <span id="created_at"></span>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td>
+                                  Modified at
+                              </td>
+                              <td>
+                                  : <span id="modified_at"></span>
+                              </td>
+                          </tr>
+                      </table> 
+                  </div>
+              </main>
+            </body>
           </div>
-          <h3 class="profile-username text-center" id="nama"></h3>
-          <p class="text-muted text-center">(<span id="usia"></span>) <span id="jenis_kelamin"></span></p>
-          <p class="text-center" id="no_klien"></p>
-          <ul class="list-group list-group-unbordered mb-3">
-          <h5><span class="float-right badge bg-danger btn-block" id="status"></span></h5>
-          <li class="list-group-item">
-          <b>Layanan</b> <a class="float-right">5</a>
-          </li>
-          <li class="list-group-item">
-          <b>Intervensi</b> <a class="float-right">10</a>
-          </li>
-          <li class="list-group-item">
-          <b>Petugas</b> <a class="float-right">6</a>
-          </li>
-          </ul>
         </div>
+        <div id="konten"></div> 
       </div>
-      <div class="modal-footer" id="buttons">
+      <div class="modal-footer" id="buttonsTemplate">
       </div>
     </div>
   </div>
@@ -130,14 +166,14 @@
 
 <script>
     $(function () {
-    $('#example1').DataTable({
+    $('#tableTemplate').DataTable({
       "ordering": true,
       "processing": true,
       "serverSide": true,
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
-      "ajax": "/template",
+      "ajax": "{{ env('APP_URL') }}/template",
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
       },
@@ -146,6 +182,17 @@
             "mData": "nama_template",
             "mRender": function (data, type, row) {
               return '<i class="far fa-copy"></i> '+row.nama_template;
+            }
+        },
+        {
+            "mData": "blank_template",
+            "mRender": function (data, type, row) {
+              if (row.blank_template) {
+                blank = "Ya";
+              }else{
+                blank = "Tidak";
+              }
+              return blank;
             }
         },
         {"data": "pemilik"},
@@ -167,34 +214,74 @@
                     window.location.assign('{{ route("template.create") }}')
                   }
               }]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+      }).buttons().container().appendTo('#tableTemplate_wrapper .col-md-6:eq(0)');
 
-      $('#example1_filter').css({'float':'right','display':'inline-block; background-color:black'});
+      $('#tableTemplate_filter').css({'float':'right','display':'inline-block; background-color:black'});
     });
 
-    $('#example1 tbody').on('click', 'tr', function () {
+    $('#tableTemplate tbody').on('click', 'tr', function () {
       $("#success-message").hide();
       $("#error-message").hide();
       
-      $.get(`/kasus/show/`+this.id, function (data) {
-          dob = new Date(data.tanggal_lahir);
-          var today = new Date();
-          var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
-
+      $.get(`{{ env('APP_URL') }}/template/show/`+this.id, function (data) {
+          item = data.data;
+          if (item.blank_template) {
+            $('#konten').html('Template ini blank tidak ada formatnya.');
+          }else{
+            $('#konten').html(JSON.parse(item.konten));
+          }
+          $('#nama_template').html(item.nama_template);
+          $('#kepemilikan').html(item.pemilik);
+          $('#created_by').html(item.name);
+          $('#created_at').html(item.created_at);
+          $('#modified_at').html(item.updated_at);
           $("#overlay").hide();
-          $('#nama').html(data.nama);
-          $('#usia').html(age);
-          $('#jenis_kelamin').html(data.jenis_kelamin);
-          $('#no_klien').html(data.no_klien);
-          $('#status').html(data.status);
-          $('#ajaxModal').modal('show');
+          $('#TemplateModal').modal('show');
+
+          $('#keyword').html('');
+          keyword = data.keyword;
+          $.each(keyword, function(index, valuekeyword) {
+            $('#keyword').append(valuekeyword+', ');
+          });
           //munculkan tombol
-          $('#buttons').html('');
-          $('#buttons').append('<button type="button" class="btn btn-primary btn-block" id="detail" onclick="window.location.assign(`'+"{{route('kasus.show', '')}}"+"/"+data.uuid+'`)"><i class="fa fa-info-circle"></i> Detail Kasus</button>');
-          $('#buttons').append('<button type="button" class="btn btn-success btn-block" id="terima"><i class="fa fa-check"></i> Terima Kasus</button>');
-          $('#buttons').append('<button type="button" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
+          $('#buttonsTemplate').html('');
+          $('#buttonsTemplate').append('<button type="button" onclick="window.location.assign(`'+"{{route('template.edit', '')}}"+"/"+item.uuid+'`)" class="btn btn-warning btn-block" id="Edit"><i class="fas fa-edit"></i> Edit Template</button>');
+          $('#buttonsTemplate').append('<button type="button" class="btn btn-danger btn-block" id="hapus" onclick="hapus(`'+item.uuid+'`)"><i class="fa fa-trash"></i> Hapus Template</button>');
         });
     });
+
+    function hapus(uuid) {
+      if (confirm("Apakah anda yakin ingin menghapus Template ini?\Template yang dihapus tidak mempengaruhi dokumen yang sudah menggunakan template ini.") == true) {
+        let token   = $("meta[name='csrf-token']").attr("content");
+        $.ajax({
+        url: `{{ env('APP_URL') }}/template/destroy/`+uuid,
+        type: "POST",
+        cache: false,
+        data: {
+            _method:'DELETE',
+            _token: token
+        },
+        success: function (response){
+            if (response.success != true) {
+                console.log(response);
+            }else{
+                $('#tableTemplate').DataTable().ajax.reload();
+                $('#TemplateModal').modal('hide');
+            }
+        },
+        error: function (response){
+            setTimeout(function(){
+            $("#overlay").fadeOut(300);
+            },500);
+            console.log(response);
+        }
+        }).done(function() { //loading submit form
+            setTimeout(function(){
+            $("#overlay").fadeOut(300);
+            },500);
+        });
+      }
+    }
 
   </script>
 {{-- 

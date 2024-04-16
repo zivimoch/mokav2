@@ -3,12 +3,12 @@
 @section('content')
 <style type="text/css">
     .scroll-area {
-        height: 800px;
+        height: 500px;
         overflow-y: scroll;
     }
 
     .scroll-area::-webkit-scrollbar {
-        width: 8px;
+        width: 3px;
         background-color: #F5F5F5;
     }
 
@@ -50,7 +50,7 @@
         </div>
         <div class="col-sm-6 text-right">
           <input type="checkbox" class="btn-xs" id="kontainerwidth"
-                checked
+          {{ Auth::user()->settings_kontainer_width == 'normal' ? 'checked' : '' }}
                 data-bootstrap-switch 
                 data-on-text="Normal"
                 data-off-text="Fullwidth"
@@ -258,10 +258,11 @@
 
                             <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
                                 <main>
-                                    <div class="centered">
+                                    {{-- <div class="centered"> --}}
                                         <div class="scroll-area">
-                                            <div class="row-editor">
-                                                <div class="form-control editor" id="preview">
+                                            {{-- <div class="row-editor"> --}}
+                                                {{-- <div class="form-control editor" id="preview"> --}}
+                                                    <div class="editor" id="preview">
                                                     <?php
                                                     $konten = json_decode($data->konten);
                                                     preg_match_all('/{{(.*?)}}/', $konten, $variable);
@@ -281,10 +282,10 @@
                                                     echo $konten;
                                                     ?>
                                                 </div>
-                                                <textarea name="konten" id="konten" readonly ></textarea>
-                                            </div>
+                                                <textarea name="konten" id="konten" readonly hidden></textarea>
+                                            {{-- </div> --}}
                                         </div>
-                                    </div>
+                                    {{-- </div> --}}
                                 </main>
                             </body>
                         </div>
@@ -298,10 +299,11 @@
 
                             <body data-editor="DecoupledDocumentEditor" data-collaboration="false">
                                 <main>
-                                    <div class="centered">
+                                    {{-- <div class="centered"> --}}
                                         <div class="scroll-area">
-                                            <div class="row-editor">
-                                                <div class="form-control editor">
+                                            {{-- <div class="row-editor"> --}}
+                                                {{-- <div class="form-control editor"> --}}
+                                                    <div class="editor" id="preview">
                                                     <?php
                                                     //replace contenteditable dan tombol tabel
                                                     $konten = str_replace('[add row]', '', $konten);
@@ -310,9 +312,10 @@
                                                     $konten = preg_replace('/{{(.*?)}}/', '', $konten); ?>
                                                     <div id="last-priview"></div>
                                                 </div>
-                                            </div>
+                                                {{-- </div> --}}
+                                            {{-- </div> --}}
                                         </div>
-                                    </div>
+                                    {{-- </div> --}}
                                 </main>
                             </body>
                         </div>
@@ -335,6 +338,31 @@
 <script src="{{ asset('/source/js/validation.js') }}"></script>
 
 <script>
+// enter menjadi newline
+document.addEventListener('DOMContentLoaded', function() {
+    var inputVariables = document.querySelectorAll('.input-variable');
+
+    inputVariables.forEach(function(element) {
+        element.addEventListener('keydown', function(event) {
+            // Check if Enter key is pressed
+            if (event.key === 'Enter') {
+                // Prevent default behavior of Enter (new line in contenteditable)
+                event.preventDefault();
+
+                // Insert a newline character (<br>) at the current cursor position
+                var selection = window.getSelection();
+                var range = selection.getRangeAt(0);
+                var br = document.createElement('br');
+                range.deleteContents();
+                range.insertNode(br);
+                range.setStartAfter(br);
+                range.setEndAfter(br);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        });
+    });
+});
 
 $(document).ready(function () {
     //Initialize Select2 Elements

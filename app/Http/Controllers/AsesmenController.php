@@ -149,9 +149,66 @@ class AsesmenController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+         try {
+            $data_update = $request->data_update ;
+            $klien = Klien::where('uuid', $request->uuid_klien)->first();
+            //create post
+            $data = Asesmen::updateOrCreate(['uuid' => $request->uuid],[
+                'fisik'   => $request->fisik, 
+                'psikologis'     => $request->psikologis, 
+                'sosial'   => $request->sosial, 
+                'hukum'   => $request->hukum,
+                'upaya'   => $request->upaya,
+                'pendukung'   => $request->pendukung,
+                'hambatan'   => $request->hambatan,
+                'harapan'   => $request->harapan,
+                'lainnya'   => $request->lainnya,
+                'created_by'   => Auth::user()->id
+            ]);
+
+            $perubahan = $data->getChanges();
+
+            if (!empty($perubahan)) {
+                $perubahan['pengubah'] = Auth::user()->name;
+                $perubahan[$data_update] = '';
+            }
+
+            $perubahan = array_keys($perubahan);
+            
+            // ===========================================================================================
+            //Proses read, push notif & log activity ////////////////////////////////////////////////////
+            // jika petugas sudah membuat asesmen maka tasknya (T6) selesai
+            NotifHelper::read_notif(
+                0, // receiver_id
+                $klien->id, // klien_id
+                'T6', // kode
+                'task' // type_notif
+            );
+            //write log activity ////////////////////////////////////////////////////////////////////////
+            LogActivityHelper::push_log(
+                //message
+                Auth::user()->name.' membuat asesmen', 
+                //klien_id
+                $klien->id 
+            );
+            /////////////////////////////////////////////////////////////////////////////////////////////
+
+            // untuk menghindari dobel encoding terhadap notifjson, jadi cara returnnya seperti ini
+            $url = url('/kasus/show/' . $klien->uuid . '?tab=kasus-asesmen');
+            return redirect($url)
+                    ->with('success', true)
+                    ->with('response', $data);
+
+        } catch (Exception $e){
+            return response()->json(['msg' => $e->getMessage()], 500);
+            dd($e->getMessage());
+            return redirect()->route('kasus.show', $klien->uuid)
+                    ->with('error', true)
+                    ->with('response', $e->getMessage());
+            die();
+        }
     }
 
     /**

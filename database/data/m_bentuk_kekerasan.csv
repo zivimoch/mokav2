@@ -1,0 +1,48 @@
+id,uuid,kode,jenis_kekerasan_kode,nama,created_by
+1,ecb848a5-a736-40b5-91ff-6d2a142c0eb8,1,100,Ditonjok,10
+2,f8f2f30d-3fd5-4f7e-a9e4-926ca0574a27,11,100,Dicekik,10
+3,3a3afac0-d838-473e-9d24-287de04d11a5,21,100,Dijambak,10
+4,e0366e2b-92cc-40e5-b377-0b6215c6c1f5,31,100,Ditendang,10
+5,ac2705b3-cb98-4629-a8d4-0847c4d29b88,41,100,Dibekap,10
+6,d7faa6d3-8beb-4e8f-b043-4b8373dd9fd1,51,100,Dicubit,10
+7,481178b9-5d97-4dbc-b5b4-fdeb99308651,61,100,Dipukul Dengan Benda,10
+8,2c38f7cc-61e7-4e42-8b57-9429beca9d7e,71,100,Ditenggelamkan,10
+9,02a9efb7-3236-4939-bd45-9b724570905a,81,100,Disundut Rokok,10
+10,8eaf1319-048b-4404-b206-6ab5d3665251,91,100,Dilukai Dengan Senjata Tajam,10
+11,c5113998-0f09-4b57-b753-26072c61dfe6,101,100,Dilukai Dengan Senjata Api,10
+12,d992178a-20af-4995-865e-c8bed4f541ca,111,101,Diancam/Diintimidasi,10
+13,1fd79038-1475-467c-b424-3643b11f515a,121,101,Dikontrol/Dituntut,10
+14,20abaa77-19ab-40bb-9702-47af7b3f5c5e,131,101,Dihina,10
+15,7f41914c-dc23-490d-85fb-55feda7200a2,141,101,Dilarang/membatasi Aktivitas,10
+16,fe26b869-9321-417c-9035-1bfa6344304e,151,101,Direndahkan,10
+17,a2980928-7e8a-4cd6-8dc0-ce0c6211c57c,161,101,Pelabelan Negatif,10
+18,c9d7fd5e-96d8-41ab-9a3e-b738d9631083,171,101,Pemerasan,10
+19,40f89260-e198-49a1-8ea1-5b6954c3df79,181,101,Dimanipulasi,10
+20,5430ed52-4ec6-4f6b-9e7b-2f0634d47663,191,101,Menerima Pesan Tulisan/gambar Yang Merendahkan,10
+21,aeb6eadf-4919-401f-b9f4-351a5043f190,201,101,Menerima Pesan Tulisan/gambar Yang Mengancam,10
+22,9c6fcfc2-f222-40b5-8630-ec8e3ebfaafc,211,100,Dicambuk,10
+23,f8570e75-b217-4923-b9f1-9943c6c61129,221,102,Pelecehan Seksual,10
+24,44efc522-a87c-418d-8297-fd5afddd2eec,231,102,Pelecehan Seksual Nonfisik,10
+25,6546f5bd-62a2-41c9-aba6-12a2a6d6eac5,241,102,Persetubuhan,10
+26,9331bc83-fae2-4c8e-83c5-32772de423bf,251,102,Pemerkosaan,10
+27,b69b0119-2694-4cee-b121-8c2a7aa017dd,261,102,Pencabulan,10
+28,0d606e7c-ff3f-40bb-bab6-4820f4812988,271,102,Pemaksaan Kontrasepsi,10
+29,a99d9288-7c64-4b68-99a6-7d9100044c48,281,102,Pemaksaan Sterilisasi,10
+30,eac632d7-08d0-4616-b806-e789c57fc6bf,291,102,Merekam Video Muatan Seks,10
+31,f6f138ce-5b71-4b40-a314-3eaf4b126dd4,301,102,Mengambil Foto Muatan Seks,10
+32,9b41cbb5-3a15-4361-b1e9-565b087152a9,311,102,Penyiksaan Seksual,10
+33,16903fe9-401e-4d09-ad95-a7f3c9577abc,321,102,Imbalan Untuk Seks,10
+34,17815b0f-b0d3-4871-a96f-6bd7f28339a4,331,102,Mentransmisikan Dokumen Eletronik Bermuatan Seksual,10
+35,604f06d9-0522-476a-a65d-d452ef19c836,341,103,Pemaksaan Pelacuran/prostitusi,10
+36,4351b66d-9e74-41ec-886f-133f75954cd2,351,103,Pemaksaan Aktivitas Pornografi,10
+37,d6ed3402-23fb-47cf-a1cb-8ac092ebf297,361,103,Dimanfaatkan Untuk Mendapatkan Keuntungan,10
+38,76664e70-3ff2-4a61-bd37-7fea23a734fc,371,103,Mengalami Perbudakan Untuk Mendapatkan Keuntungan,10
+39,89a29f88-bc45-4a90-b53c-adb0626d88d4,381,103,Pengambilan Organ,10
+40,204ea0ab-f542-4460-81e0-a86286e51dc4,391,104,Tidak Memberikan Perawatan/pemeliharaan Rumah Tangga,10
+41,e72529bd-6e34-451c-b16e-2b8120da6918,401,104,Dilarang/membatasi Aktivitas,10
+42,b77e10a5-3f01-4cf8-b26d-2db1bb70cf6f,411,104,Tidak Memenuhi Kebutuhan Dasar,10
+43,cbc94cca-94b2-4569-b512-485d1fd95fbd,421,100,Lainnya,10
+44,0f752fea-b92f-4856-a057-96cd34d6d4e4,431,101,Lainnya,10
+45,57e5e58a-ec06-4781-bd36-e055c933d640,441,102,Lainnya,10
+46,70a32c2f-b966-4e2f-a1df-5d1d98bf1673,451,103,Lainnya,10
+47,ab252c5d-0074-4af1-b97b-476900817ec1,461,104,Lainnya,10

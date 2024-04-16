@@ -85,7 +85,7 @@
             <div class="form-card">
               <div class="form-group">
                 <label>Keyword / Detail Layanan (contoh : Koordinasi Internal, Pemeriksaan Psikologi, Konsultasi Hukum dll)</label>
-                <select name="keyword[]" class="form-control select-tag titlecase" id="keyword" style="width:100%" multiple="multiple" required>
+                <select name="keyword[]" class="form-control select-tag" id="keyword" style="width:100%" multiple="multiple" required>
                     @foreach ($keyword as $item)
                         <option value="{{ $item->keyword }}" >{{ $item->keyword }}</option>
                     @endforeach
@@ -258,6 +258,21 @@
       classes: 'tablerow1'
     }
   ],
+  setup: function(ed) {
+    ed.on('keydown', function(event) {
+        if (event.keyCode == 9) { // tab pressed
+          if (event.shiftKey) {
+            ed.execCommand('Outdent');
+          }
+          else {
+            ed.execCommand('Indent');
+          }
+
+          event.preventDefault();
+          return false;
+        }
+    });
+},
   
   toolbar: "insertfile undo redo | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image responsivefilemanager | formatselect | strikethrough | forecolor backcolor fontselect  fontsizeselect | pastetext |",
   convert_fonts_to_spans: true,

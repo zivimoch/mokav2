@@ -90,8 +90,14 @@ class DokumenController extends Controller
         $template = DB::table('template as a')
                         ->select('a.*', 'b.name')
                         ->leftJoin('users as b', 'a.created_by', 'b.id')
-                        ->get();
-        return view('dokumen.add')->with('template', $template);
+                        ->whereNull('a.deleted_at')
+                        ;
+
+        if (Auth::user()->jabatan != 'Super Admin') {
+            $template = $template->where('a.pemilik', Auth::user()->jabatan);
+        }
+
+        return view('dokumen.add')->with('template', $template->get());
     }
 
     /**
@@ -148,6 +154,7 @@ class DokumenController extends Controller
                 'template_id' => $template->id,
                 'judul' => $request->judul,
                 'konten' => json_encode($request->konten),
+                'blank_template' => $template->blank_template,
                 'nama_template' => $template->nama_template,
                 'pemilik_template' => $template->pemilik,
                 'created_by_template' => $template->name,
@@ -253,12 +260,11 @@ class DokumenController extends Controller
                         ->whereNull('c.deleted_at')
                         ->get();
         
-        if ($template->blank_template) {
+        if ($data->blank_template) {
             $view = 'dokumen.edit_blank';
         } else {
             $view = 'dokumen.edit';
         }
-        
 
         return view($view)
                     ->with('data', $data)
@@ -290,13 +296,14 @@ class DokumenController extends Controller
                             ->leftJoin('users as b', 'a.created_by', 'b.id')
                             ->leftJoin('template_keyword as c', 'a.id', 'c.template_id')
                             ->where('a.uuid', $request->uuid)
-                            ->groupBy('a.id')
+                            ->groupBy('a.id', 'a.uuid', 'a.nama_template', 'a.pemilik', 'a.konten', 'a.blank_template', 'a.created_by', 'a.created_at', 'a.updated_at', 'a.deleted_at', 'b.name')
                             ->first();
             //Data Dokumen
             $dokumen = Dokumen::where('id', $id)->update([
                 'template_id' => $template->id,
                 'judul' => $request->judul,
                 'konten' => json_encode($request->konten),
+                'blank_template' => $template->blank_template,
                 'nama_template' => $template->nama_template,
                 'pemilik_template' => $template->pemilik,
                 'created_by_template' => $template->name,
@@ -336,6 +343,7 @@ class DokumenController extends Controller
                     ->with('response', $response);
 
         } catch (Exception $e){
+            dd($e);
             return redirect()->route('dokumen.edit', $dokumen->uuid)
                     ->with('error', true)
                     ->with('response', $e->getMessage());

@@ -25,8 +25,13 @@ class TemplateController extends Controller
                         ->leftJoin('users as b', 'b.id', 'a.created_by')
                         ->whereNotNULL('a.konten')
                         ->whereNULL('a.deleted_at')
-                        ->get(['a.*', 'b.name as petugas']);
-            return DataTables::of($data)->make(true);
+                        ;
+
+            if (Auth::user()->jabatan != 'Super Admin') {
+                $data = $data->where('a.pemilik', Auth::user()->jabatan);
+            }
+            
+            return DataTables::of($data->get(['a.*', 'b.name as petugas']))->make(true);
        }
 
        return view('template.index');
@@ -76,8 +81,8 @@ class TemplateController extends Controller
             //simpan tindak kekerasan
             if (isset($request->keyword)) {
                 $keyword = $request->keyword;
-                foreach ($keyword as $key1 => $value) {
-                    $proses['keyword'] = TemplateKeyword::create(['template_id' => $template->id, 'keyword' => $keyword[$key1]]);
+                foreach ($keyword as $item) {
+                    TemplateKeyword::create(['template_id' => $template->id, 'keyword' => $item]);
                 }
             }
             
@@ -101,9 +106,25 @@ class TemplateController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $uuid)
     {
-        //
+        if($request->ajax()) { 
+            //dipakai di datatable di index
+            $data = DB::table('template as a')
+                        ->leftJoin('users as b', 'b.id', 'a.created_by')
+                        ->select('a.*', 'b.name')
+                        ->where('a.uuid', $uuid)
+                        ->first();
+            $keyword = TemplateKeyword::where('template_id', $data->id)->pluck('keyword');
+             //return response
+             return response()->json([
+                'success' => true,
+                'code'    => 200,
+                'message' => 'Data Berhasil Ditampilkan!',
+                'data'    => $data,
+                'keyword' => $keyword
+            ]);
+       }
     }
 
     /**
@@ -112,9 +133,18 @@ class TemplateController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($uuid)
     {
-        //
+        $data = Template::where('uuid',$uuid)->first();
+        $data_keyword = TemplateKeyword::where('template_id', $data->id)->pluck('keyword');
+        $keyword = TemplateKeyword::pluck('keyword');
+        $jabatan =  (new OpsiController)->api_jabatan();
+
+        return view('template.edit')
+                    ->with('data', $data)
+                    ->with('data_keyword', $data_keyword)
+                    ->with('keyword', $keyword)
+                    ->with('jabatan', $jabatan);
     }
 
     /**
@@ -126,7 +156,48 @@ class TemplateController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $validator = Validator::make($request->all(), [
+                'nama_template' => 'required'
+                ]);
+
+                if ($validator->fails())
+                {
+                    throw new Exception($validator->errors());
+                }
+            //Data Template
+            $template = Template::where('uuid', $request->uuid)->first();
+            $proses = Template::where('uuid', $request->uuid)
+                ->update([
+                'nama_template' => $request->nama_template,
+                'pemilik' => $request->pemilik,
+                'konten' => json_encode($request->konten),
+                'blank_template' => $request->blank_template,
+                'created_by' => Auth::user()->id
+            ]);
+            
+            // hapus keywrod
+            TemplateKeyword::where('template_id', $template->id)->delete();
+            //simpan keyword
+            if (isset($request->keyword)) {
+                $keyword = $request->keyword;
+                foreach ($keyword as $item) {
+                    TemplateKeyword::create(['template_id' => $template->id, 'keyword' => $item]);
+                }
+            }
+            
+            //return response
+            $response = "Berhasil mengupdate data";
+            return redirect()->route('template.edit', $request->uuid)
+                    ->with('success', true)
+                    ->with('response', $response);
+
+        } catch (Exception $e){
+            return redirect()->route('template.edit', $request->uuid)
+                    ->with('error', true)
+                    ->with('response', $e->getMessage());
+            die();
+        }
     }
 
     /**
@@ -135,8 +206,32 @@ class TemplateController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($uuid)
     {
-        //
+        try {
+            $proses = Template::where('uuid', $uuid)->delete();
+
+            if (!$proses) {
+                throw new Exception($proses);
+            }
+            
+            //return response
+            return response()->json([
+                'success' => true,
+                'code'    => 200,
+                'message' => 'Data Berhasil Dihapus!',
+                'data'    => $proses  
+            ]);
+
+        } catch (Exception $e){
+            return response()->json(['message' => $e->getMessage()]);
+            die();
+        }
     }
 }

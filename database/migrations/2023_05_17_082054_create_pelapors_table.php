@@ -18,16 +18,27 @@ class CreatePelaporsTable extends Migration
             $table->string('uuid');
             $table->integer('kasus_id');
             $table->char('nik')->nullable();
-            $table->string('nama');
+            $table->string('nama')->nullable();
             $table->string('tempat_lahir')->nullable();
             $table->date('tanggal_lahir')->nullable();
-            $table->integer('provinsi_id')->nullable();
-            $table->integer('kotkab_id')->nullable();
-            $table->integer('kecamatan_id')->nullable();
-            $table->string('kelurahan')->nullable();
-            $table->text('alamat')->nullable();
+            $table->enum('jenis_kelamin', ['perempuan', 'laki-laki'])->default('perempuan');
+            $table->char('provinsi_id_ktp')->nullable();
+            $table->char('kotkab_id_ktp')->nullable();
+            $table->char('kecamatan_id_ktp')->nullable();
+            $table->char('kelurahan_id_ktp')->nullable();
+            $table->longText('alamat_ktp')->nullable();
+            $table->char('provinsi_id')->nullable(); // domisili
+            $table->char('kotkab_id')->nullable(); // domisili
+            $table->char('kecamatan_id')->nullable(); // domilisi
+            $table->char('kelurahan_id')->nullable(); // domisili
+            $table->longText('alamat')->nullable(); // domisili
+            $table->string('agama')->nullable();
+            $table->string('status_kawin')->nullable();
+            $table->string('pekerjaan')->nullable();
+            $table->string('kewarganegaraan')->nullable();
+            $table->string('status_pendidikan')->nullable();
+            $table->string('pendidikan')->nullable();
             $table->char('no_telp')->nullable();
-            $table->string('hubungan_pelapor')->nullable();
             $table->integer('desil')->nullable();
             $table->integer('created_by')->nullable();
             $table->timestamps();

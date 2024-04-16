@@ -18,14 +18,14 @@ class CreateAsesmensTable extends Migration
             $table->string('uuid');
             $table->integer('klien_id')->nullable();
             $table->text('fisik')->nullable();
-            $table->text('sosial')->nullable();
             $table->text('psikologis')->nullable();
+            $table->text('sosial')->nullable();
             $table->text('hukum')->nullable();
-            $table->text('lainnya')->nullable();
             $table->text('upaya')->nullable();
             $table->text('pendukung')->nullable();
             $table->text('hambatan')->nullable();
             $table->text('harapan')->nullable();
+            $table->text('lainnya')->nullable();
             $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();

@@ -14,7 +14,11 @@
 
 @media  (max-width:960px) { .dropdown-menu { width: 360px !important; } }
 </style>
-<nav class="main-header navbar navbar-expand-md navbar-black navbar-dark">
+@if (Auth::user()->settings_navbar_bg_color == 'default')
+  <nav class="main-header navbar navbar-expand-md navbar-black navbar-dark">
+@else
+  <nav class="main-header navbar navbar-expand-md navbar-black navbar-dark" style="background-color: {{ Auth::user()->settings_navbar_bg_color }};">
+@endif
   <div class="container">
     <a href="{{ route('dashboard') }}" class="navbar-brand">
       <img src="{{ asset('img') }}/logo-moka.png" alt="MOKA Logo" class="brand-image" style="opacity: .8; max-width:150px; border-radius: 50%;">
@@ -32,11 +36,18 @@
           <a href="{{ route('kasus') }}" class="nav-link"><i class="nav-icon fas fa-search"></i> Kasus</a>
         </li>
         {{-- <li class="nav-item">
-          <a href="{{ route('agenda') }}" class="nav-link"><i class="nav-icon far fa-calendar-alt"></i> Agenda</a>
-        </li>  --}}
-        <li class="nav-item">
           <a href="{{ route('dokumen') }}" class="nav-link"><i class="nav-icon fas fa-file-alt"></i> Dokumen</a>
-        </li>
+        </li> --}}
+        @if (in_array(Auth::user()->jabatan, ['Super Admin', 'Sekretariat', 'Kepala Instansi']))
+          <li class="nav-item">
+            <a href="{{ route('kinerja') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}" class="nav-link"><i class="nav-icon fas fa-tasks"></i> LapKin</a>
+          </li>
+        @endif
+        @if (Auth::user()->jabatan == 'Super Admin')
+          <li class="nav-item">
+            <a href="{{ route('websettings') }}" class="nav-link"><i class="fas fa-cogs"></i> Web Settings</a>
+          </li>
+        @endif
       </ul>
       <div class="btn-group">
         <a href="{{ route('formpenerimapengaduan.index') }}" class="btn btn-success btn-sm">
@@ -88,12 +99,11 @@
                     <i class="far fa-user"></i>
                   </small> 
                   <h6 style="margin-bottom: -2px">
-                    Ubah Profil <b> Addzifi Mochamad Gumelar, S.Kom</b>
+                    Ubah Profil <b> {{ Auth::user()->name }}</b>
                   </h6>
                 </div> 
               </a>
-
-              <a href="{{ route('kinerja.detail') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}&user_id={{ Auth::user()->id }}" class="list-group-item list-group-item-action flex-column align-items-start"> 
+              <a href="{{ route('kinerja.detail') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}&user_id={{ Auth::user()->uuid }}" class="list-group-item list-group-item-action flex-column align-items-start"> 
                 <div class="d-flex"> 
                   <small class="mr-2">
                     <i class="fas fa-tasks"></i>
@@ -103,7 +113,27 @@
                   </h6>
                 </div> 
               </a>
-                <a href="#" class="">
+              <a href="https://s.id/usermanualmoka" target="_blank" class="list-group-item list-group-item-action flex-column align-items-start"> 
+                <div class="d-flex"> 
+                  <small class="mr-2" style="font-size:15px">
+                    <i class="fas fa-info-circle"></i>
+                  </small> 
+                  <h6 style="margin-bottom: -2px">
+                    Panduan Penggunaan
+                  </h6>
+                </div> 
+              </a>
+              <a href="https://s.id/bantumoka" target="_blank" class="list-group-item list-group-item-action flex-column align-items-start"> 
+                <div class="d-flex"> 
+                  <small class="mr-2" style="font-size:15px">
+                    <i class="fas fa-question-circle"></i>
+                  </small> 
+                  <h6 style="margin-bottom: -2px">
+                    Pusat Bantuan (Tanya Via WA)
+                  </h6>
+                </div> 
+              </a>
+              <a href="#" class="">
                   <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button style="width: 100%"
@@ -112,7 +142,7 @@
                       <i class="fas fa-arrow-alt-circle-right"></i> Logout
                     </button>
                 </form>
-                </a>
+              </a>
             </div>
         </li>
     </ul>
