@@ -695,7 +695,7 @@ class KasusController extends Controller
             ->leftJoin('r_hubungan_terlapor_klien as d', 'd.klien_id', '=', 'b.id')
             ->leftJoin('terlapor as e', 'd.terlapor_id', '=', 'e.id')
             ->whereNull('b.deleted_at')
-            ->where('b.arsip', 0)
+            // ->where('b.arsip', 0)
             ->where('b.id', $klien_id)
             ->groupBy('b.id', 'a.id', 'c.id', 'd.id', 'e.id')
             ->first();

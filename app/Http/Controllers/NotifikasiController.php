@@ -19,10 +19,18 @@ class NotifikasiController extends Controller
     public static function pull_notif()
     {   
         //tasks  
-        $tasks =  Notifikasi::where('type_notif', 'task')
-                            ->where('receiver_id', Auth::user()->id)
-                            ->where('read', 0)
-                            ->get();
+        $tasks = DB::table('notifikasi as a')
+                    ->leftJoin('klien as b', 'a.klien_id', 'b.id')
+                    ->where('a.type_notif', 'task')
+                    ->where('a.receiver_id', Auth::user()->id)
+                    ->where('a.read', 0)
+                    ->where('b.arsip', 0)
+                    ->select('a.*')
+                    ->get();
+        // $tasks =  Notifikasi::where('type_notif', 'task')
+        //                     ->where('receiver_id', Auth::user()->id)
+        //                     ->where('read', 0)
+        //                     ->get();
         foreach ($tasks as $task) {
             $task->formattedDate = Carbon::parse($task->created_at)->diffForHumans(null, true);
         }
