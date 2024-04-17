@@ -714,7 +714,13 @@ class AgendaController extends Controller
 
             } else {
                 // jika tidak ada array user / petugasnya maka hapus agenda & notifnya
-                Agenda::where('uuid', $request->uuid)->delete();
+                // tapi hanya hapus agenda ketika user receiver tinggal 1, untuk menghindari notif nyangkut
+                $jumlah_receiver = TindakLanjut::where('agenda_id', $proses_id)
+                                                ->whereNull('deleted_at')
+                                                ->count();
+                if ($jumlah_receiver == 1) {
+                    Agenda::where('uuid', $request->uuid)->delete();
+                }
                 
                 // hapus notif
                  Notifikasi::where('receiver_id', Auth::user()->id)
