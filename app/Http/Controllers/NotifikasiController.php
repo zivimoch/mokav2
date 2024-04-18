@@ -20,12 +20,13 @@ class NotifikasiController extends Controller
     {   
         //tasks  
         $tasks = DB::table('notifikasi as a')
+                    ->select('a.*')
                     ->leftJoin('klien as b', 'a.klien_id', 'b.id')
                     ->where('a.type_notif', 'task')
                     ->where('a.receiver_id', Auth::user()->id)
                     ->where('a.read', 0)
                     ->where('b.arsip', 0)
-                    ->select('a.*')
+                    ->whereNull('a.deleted_at')
                     ->get();
         // $tasks =  Notifikasi::where('type_notif', 'task')
         //                     ->where('receiver_id', Auth::user()->id)

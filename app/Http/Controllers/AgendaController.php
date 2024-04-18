@@ -723,7 +723,7 @@ class AgendaController extends Controller
                 }
                 
                 // hapus notif
-                 Notifikasi::where('receiver_id', Auth::user()->id)
+                Notifikasi::where('receiver_id', Auth::user()->id)
                             ->where('agenda_id', $proses_id)
                             ->whereIn('kode', ['T9', 'T10', 'N5', 'N7'])
                             ->delete();
