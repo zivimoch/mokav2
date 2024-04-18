@@ -160,7 +160,7 @@
     </div>
   </div>
 </div>
-<button id="tambahAgenda" class="btn btn-success btn-lg" onclick="showModalAgenda('{{ date(`Y-m-d`) }}',0)">Tambah Agenda</button>
+<button id="tambahAgenda" class="btn btn-success btn-lg" onclick="showModalAgenda('{{ now()->format('Y-m-d') }}', 0)">Tambah Agenda</button>
 <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>

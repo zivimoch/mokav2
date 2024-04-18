@@ -59,7 +59,8 @@
                   Agenda PPPA Provinsi DKI Jakarta
                 </h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
+                  <button class="btn btn-success btn-sm" onclick="showModalAgenda('{{ now()->format('Y-m-d') }}', 0)">Tambah Agenda</button>
+                  <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
                     </button>
                 </div>
               </div>
