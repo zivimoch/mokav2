@@ -798,7 +798,7 @@ class AgendaController extends Controller
     {
         try {
             $agenda_semua = DB::table('agenda as a')
-                            ->select(DB::raw('a.uuid, a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, a.keterangan, c.nama, GROUP_CONCAT(" ", d.name) as petugas'))
+                            ->select(DB::raw('a.uuid, a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, a.keterangan, c.nama, c.uuid as uuid_klien, GROUP_CONCAT(" ", d.name) as petugas'))
                             ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id') 
                             ->leftJoin('klien as c', 'c.id', 'a.klien_id')
                             ->leftJoin('users as d', 'd.id', 'b.created_by')
@@ -807,11 +807,27 @@ class AgendaController extends Controller
                             ->whereNull('a.deleted_at')
                             ->whereNull('b.deleted_at')
                             ->orderBy('a.jam_mulai')
-                            ->groupBy('a.id', 'a.uuid', 'a.judul_kegiatan', 'a.tanggal_mulai', 'a.jam_mulai', 'a.keterangan', 'c.nama')
+                            ->groupBy('a.id', 'a.uuid', 'a.judul_kegiatan', 'a.tanggal_mulai', 'a.jam_mulai', 'a.keterangan', 'c.nama', 'c.uuid')
                             ->get();
 
+            $agenda_kasus_saya = DB::table('agenda as a')
+                            ->select(DB::raw('a.uuid, a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, a.keterangan, c.nama, c.uuid as uuid_klien, GROUP_CONCAT(" ", d.name) as petugas'))
+                            ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id') 
+                            ->leftJoin('klien as c', 'c.id', 'a.klien_id')
+                            ->leftJoin('users as d', 'd.id', 'b.created_by')
+                            ->leftJoin('petugas as e', 'e.klien_id', 'c.id')
+                            ->where('a.tanggal_mulai', $date)
+                            ->whereNotNull('a.klien_id') // filter agenda layanan saya yang muncul
+                            ->whereNull('a.deleted_at')
+                            ->whereNull('b.deleted_at')
+                            ->whereNull('e.deleted_at')
+                            ->orderBy('a.jam_mulai')
+                            ->groupBy('a.id', 'a.uuid', 'a.judul_kegiatan', 'a.tanggal_mulai', 'a.jam_mulai', 'a.keterangan', 'c.nama', 'c.uuid');
+            $agenda_kasus_saya = $agenda_kasus_saya->where('e.user_id', Auth::user()->id);
+            $agenda_kasus_saya = $agenda_kasus_saya->get();
+
             $agenda_saya = DB::table('agenda as a')
-                            ->select(DB::raw('a.uuid, a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, a.keterangan, c.nama, b.lokasi, b.jam_selesai, b.catatan, b.created_by'))
+                            ->select(DB::raw('a.uuid, a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, a.keterangan, c.nama, c.uuid as uuid_klien, b.lokasi, b.jam_selesai, b.catatan, b.created_by'))
                             ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id') 
                             ->leftJoin('klien as c', 'c.id', 'a.klien_id')
                             ->where('a.tanggal_mulai', $date)
@@ -821,6 +837,7 @@ class AgendaController extends Controller
                             ->orderBy('a.jam_mulai')
                             ->get();
             $agenda = array('agenda_semua' => $agenda_semua, 
+                            'agenda_kasus_saya' => $agenda_kasus_saya, 
                             'agenda_saya' => $agenda_saya);
             //return response
             return response()->json([

@@ -64,6 +64,16 @@
                     </button>
                 </div>
               </div>
+
+              {{-- hapus ini setelah evaluasi selesai dan tercapai --}}
+              @if (Auth::user()->jabatan == 'Manajer Kasus')
+                <div class="progress" style="height: 25px;">
+                  <div class="progress-bar bg-success persen_layanan" role="progressbar" style="width: {{ $dibuatMK }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px" class="persen_title_layanan">{{ $dibuatMK }}%</span></div>
+                  <div class="progress-bar bg-danger persen_layanan" role="progressbar" style="width: {{ $takDibuatMK }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px" class="persen_title_layanan">{{ $takDibuatMK }}%</span></div>
+                </div>
+                *Hijau : agenda layanan dibuat oleh MK; Merah : agenda layanan dibuat oleh selain MK 
+              @endif
+              
               <!-- /.card-header -->
                 <div id="calendar" style="margin: 0px 5px 0px 5px"></div>
             </div>
@@ -91,7 +101,7 @@
                 <ul class="nav flex-column">
                   <li class="nav-item">
                     <a href="{{ route('kasus') }}" class="nav-link">
-                      Kasus Yang Ditangani <span class="float-right badge bg-primary">{{ $jumlah_kasus }}</span>
+                      Jumlah Kasus Terminasi / Seluruhnya <span class="float-right badge bg-primary">{{ $jumlah_terminasi }} / {{ $jumlah_kasus }}</span>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -126,6 +136,12 @@
                   <b style="font-size:20px" id="agendaAndaHeading2"></b>
                 </div>
                 <ul class="todo-list" data-widget="todo-list" id="agendaSaya2"></ul>
+
+                <div style="margin-left: 12px">
+                  <b style="font-size:20px" id="agendaKasusAndaHeading2"></b>
+                </div>
+                <ul class="todo-list" data-widget="todo-list" id="agendaKasusSaya2"></ul>
+
                 <div style="margin-left: 12px">
                   <b style="font-size:20px" id="agendaSemuaHeading2"></b>
                 </div>
@@ -143,7 +159,11 @@
 <div class="modal fade" id="ajaxModelDetail" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      
+      <div id="overlayListAgenda" class="overlay dark">
+        <div class="cv-spinner">
+        <span class="spinner"></span>
+        </div>
+      </div>
       <div class="modal-header">
         <h5 class="modal-title" id="modelHeading2"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -154,6 +174,9 @@
         <!-- /.card-header -->
         <b style="font-size:20px" id="agendaAndaHeading1"></b>
         <ul class="todo-list" data-widget="todo-list" id="agendaSaya1"></ul>
+        <br>
+        <b style="font-size:20px" id="agendaKasusAndaHeading1"></b>
+        <ul class="todo-list" data-widget="todo-list" id="agendaKasusSaya1"></ul>
         <br>
         <b style="font-size:20px" id="agendaSemuaHeading1"></b>
         <ul class="todo-list" data-widget="todo-list" id="agendaSemua1"></ul>
@@ -320,6 +343,7 @@ function displayMessage(message) {
    
 loadAgenda('{{  date("Y-m-d") }}',2);
 function loadAgenda(tanggal_mulai, id) {
+ $('#overlayListAgenda').show();
   console.log(tanggal_mulai);
   $.ajax({
     type: "GET",
@@ -329,6 +353,7 @@ function loadAgenda(tanggal_mulai, id) {
       $('#agendaSaya'+id).html('');
       agenda_saya = response.data.agenda_saya;
       i = 1;
+      $('#agendaAndaHeading'+id).html('');
       agenda_saya.forEach(e => {
         if (e.jam_selesai == null) {
           done = '';
@@ -339,20 +364,31 @@ function loadAgenda(tanggal_mulai, id) {
           checked = 'checked';
           disabled = 'disabled';
         }
-        $('#agendaSaya'+id).append('<li class="'+done+'"><div  class="icheck-primary d-inline ml-2"><input type="checkbox" value="" id="todoCheck'+i+'" '+checked+' '+disabled+' onclick="showModalAgenda(`'+e.tanggal_mulai+'`,`'+e.uuid+'`,{{ Auth::user()->id }})"><label for="todoCheck'+i+'"></label></div><span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span></li>');
+        $('#agendaSaya'+id).append('<li class="'+done+'"><div  class="icheck-primary d-inline ml-2"><input type="checkbox" value="" id="todoCheck'+i+'" '+checked+' '+disabled+' onclick="showModalAgenda(`'+e.tanggal_mulai+'`,`'+e.uuid+'`,{{ Auth::user()->id }})"><label for="todoCheck'+i+'"></label></div><span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span><br>Klien : <a href="{{ route('kasus.show', '') }}/'+e.uuid_klien+'">'+e.nama+'</a></li>');
         $('#agendaAndaHeading'+id).html('Agenda Anda ('+i+' agenda)')
         i++;
+      });
+
+      $('#agendaKasusSaya'+id).html('');
+      agenda_kasus_saya = response.data.agenda_kasus_saya;
+      x = 1;
+      $('#agendaKasusAndaHeading'+id).html('');
+      agenda_kasus_saya.forEach(e => {
+        $('#agendaKasusSaya'+id).append('<li>'+x+'. <span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span><br>Klien : <a href="{{ route('kasus.show', '') }}/'+e.uuid_klien+'">'+e.nama+'</a><br>Petugas : '+e.petugas+'</li>');
+        $('#agendaKasusAndaHeading'+id).html('Agenda Kasus Yang Anda Tangani ('+x+' agenda)');
+        x++;
       });
 
       $('#agendaSemua'+id).html('');
       agenda_semua = response.data.agenda_semua;
       y = 1;
+      $('#agendaSemuaHeading'+id).html('');
       agenda_semua.forEach(e => {
-        $('#agendaSemua'+id).append('<li>'+y+'. <span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span><br>Petugas : '+e.petugas+'</li>');
+        $('#agendaSemua'+id).append('<li>'+y+'. <span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span><br>Klien : <a href="{{ route('kasus.show', '') }}/'+e.uuid_klien+'">'+e.nama+'</a><br>Petugas : '+e.petugas+'</li>');
         $('#agendaSemuaHeading'+id).html('Agenda Seluruh Petugas ('+y+' agenda)')
         y++;
       });
-
+      $('#overlayListAgenda').hide();
     }
 });
 }
