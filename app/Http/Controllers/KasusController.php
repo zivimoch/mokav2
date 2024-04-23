@@ -6,6 +6,8 @@ use App\Helpers\LogActivityHelper;
 use App\Helpers\NotifHelper;
 use App\Helpers\StatusHelper;
 use App\Models\Asesmen;
+use App\Models\Catatan;
+use App\Models\CatatanHukum;
 use App\Models\Kasus;
 use App\Models\Klien;
 use App\Models\Notifikasi;
@@ -20,6 +22,8 @@ use App\Models\Terlapor;
 use App\Models\Terminasi;
 use App\Models\TJenisKekerasan;
 use App\Models\TKategoriKasus;
+use App\Models\TPasal;
+use App\Models\TTipeDisabilitas;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -207,6 +211,7 @@ class KasusController extends Controller
        $kekhususan =  (new OpsiController)->api_kekhususan();
        $pengadilan_negri =  (new OpsiController)->api_pengadilan_negri();
        $pasal = (new OpsiController)->api_pasal();
+       $tipe_disabilitas = (new OpsiController)->api_difabel_type();
        $media_pengaduan =  (new OpsiController)->api_media_pengaduan();
        $sumber_rujukan =  (new OpsiController)->api_sumber_rujukan();
        $sumber_informasi =  (new OpsiController)->api_sumber_infromasi();
@@ -265,6 +270,45 @@ class KasusController extends Controller
                     ->leftJoin('indonesia_villages as e', 'a.kelurahan_id', 'e.code')
                     ->where('a.id', $klien->kasus_id)
                     ->first();
+
+       // data catatan layanan hukum
+       $catatan_hukum = DB::table('catatan_hukum as a')
+            ->leftJoin('users as b', 'a.created_by', 'b.id')
+            ->select('a.*', 'b.name')
+            ->where('klien_id', $klien->id)
+            ->first();
+
+        if (!$catatan_hukum) {
+            $catatan_hukum = (object) [
+                'name' => null,
+                'no_lp' => null,
+                'pengadilan_negeri' => null,
+                'isi_putusan' => null,
+                'lpsk' => null
+            ];
+            $catatan_hukum->pasal = null;
+        } else {
+            $catatan_hukum_pasal = TPasal::where('klien_id', $klien->id)->get();
+            $catatan_hukum->pasal = $catatan_hukum_pasal;
+        }
+
+        $catatan_psikologis = DB::table('catatan_psikologis as a')
+            ->leftJoin('users as b', 'a.created_by', 'b.id')
+            ->select('a.*', 'b.name')
+            ->where('klien_id', $klien->id)
+            ->first();
+        
+        if (!$catatan_psikologis) {
+            $catatan_psikologis = (object) [
+                'name' => null,
+                'disabilitas' => 0,
+                // Add other properties with default values here
+            ];
+            $catatan_psikologis->disabilitases = null;
+        } else {
+            $catatan_psikologis_disabilitas = TTipeDisabilitas::where('klien_id', $klien->id)->get();
+            $catatan_psikologis->disabilitases = $catatan_psikologis_disabilitas;
+        }
        //data pelapor
        $pelapor = DB::table('pelapor as a')
                     ->select(DB::raw(
@@ -418,6 +462,8 @@ class KasusController extends Controller
        $detail['kelengkapan_petugas'] = $kelengkapan_petugas;
        return view('kasus.show')
                 ->with('klien', $klien)
+                ->with('catatan_hukum', $catatan_hukum)
+                ->with('catatan_psikologis', $catatan_psikologis)
                 ->with('pelapor', $pelapor)
                 ->with('terlapor', $terlapor)
                 ->with('kasus', $kasus)
@@ -439,6 +485,7 @@ class KasusController extends Controller
                 ->with('kekhususan', $kekhususan)
                 ->with('pengadilan_negri', $pengadilan_negri)
                 ->with('pasal', $pasal)
+                ->with('tipe_disabilitas', $tipe_disabilitas)
                 ->with('media_pengaduan', $media_pengaduan)
                 ->with('sumber_rujukan', $sumber_rujukan)
                 ->with('sumber_informasi', $sumber_informasi)

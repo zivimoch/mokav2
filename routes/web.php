@@ -52,7 +52,7 @@ Route::get('carik/{id}', [FormPenerimaPengaduan::class, 'carik'])->name('carik')
 
 Route::middleware('auth')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-     // catatan
+     // pengumuman
      Route::get('pengumuman/index/', [PengumumanController::class, 'index'])->name('pengumuman');
      Route::post('pengumuman/store/', [PengumumanController::class, 'store'])->name('pengumuman.store');
      Route::get('pengumuman/edit/{uuid}',[PengumumanController::class, 'edit'])->name('pengumuman.edit');
@@ -135,6 +135,8 @@ Route::middleware('auth')->group(function () {
     Route::get('catatan/index/', [CatatanController::class, 'index'])->name('catatan');
     Route::post('catatan/store/', [CatatanController::class, 'store'])->name('catatan.store');
     Route::get('catatan/edit/{uuid}',[CatatanController::class, 'edit'])->name('catatan.edit');
+    Route::post('catatan/store_hukum/',[CatatanController::class, 'store_hukum'])->name('catatan.store_hukum');
+    Route::post('catatan/store_psikologis/',[CatatanController::class, 'store_psikologis'])->name('catatan.store_psikologis');
     // check kelengkapan
     Route::get('/check_kelengkapan_data/{id}', [KasusController::class, 'check_kelengkapan_data'])->name('check_kelengkapan_data');
     Route::get('/check_kelengkapan_persetujuan_spv/{id}', [KasusController::class, 'check_kelengkapan_persetujuan_spv'])->name('check_kelengkapan_persetujuan_spv');

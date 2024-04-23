@@ -287,9 +287,9 @@
       });
   });
   //loading submit form semua form
-  $(document).ajaxSend(function() {
-    $("#overlay").fadeIn(300);　
-  });
+  // $(document).ajaxSend(function() {
+  //   $("#overlay").fadeIn(300);　
+  // });
   // TimeOut
   var activityTimeout = setTimeout(inActive, 3600000); //1 jam
   function resetActive(){

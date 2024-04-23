@@ -25,7 +25,10 @@ class NotifikasiController extends Controller
                     ->where('a.type_notif', 'task')
                     ->where('a.receiver_id', Auth::user()->id)
                     ->where('a.read', 0)
-                    ->where('b.arsip', 0)
+                    ->where(function ($query) {
+                        $query->where('b.arsip', 0)
+                              ->orWhereNull('b.arsip');
+                    })
                     ->whereNull('a.deleted_at')
                     ->get();
         // $tasks =  Notifikasi::where('type_notif', 'task')
@@ -55,6 +58,7 @@ class NotifikasiController extends Controller
                     ->select(DB::raw('a.*, b.name'))
                     ->leftJoin('users as b', 'a.receiver_id', 'b.id')
                     ->where('a.receiver_id', Auth::user()->id)
+                    ->whereNull('a.deleted_at')
                     ->orderBy('a.id');
         $data = $data->where('type_notif', $request->tipe) 
                     ->get();

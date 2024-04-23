@@ -2,11 +2,26 @@
 
 @section('content')
 <style>
-    .input_pelapor, .input_klien, .input_kasus, .input_rekam, .input_klasifikasi, #formTerlapor {
-        display: none;
-    }
-
-    .input_pelapor, #tombol_save_pelapor, .input_klien, #tombol_save_klien, .input_kasus, #tombol_save_kasus, .input_terlapor, .tombol_save_terlapor, .input_rekam, #tombol_save_rekam, .input_klasifikasi, #tombol_save_klasifikasi {
+    .input_pelapor, 
+    #tombol_save_pelapor, 
+    .input_klien, 
+    #tombol_save_klien, 
+    .input_kasus, 
+    #tombol_save_kasus, 
+    .input_terlapor, 
+    .tombol_save_terlapor, 
+    .input_rekam, 
+    #tombol_save_rekam, 
+    .input_klasifikasi, 
+    #tombol_save_klasifikasi, 
+    .input_hukum, 
+    #tombol_save_hukum, 
+    .layanan_hukum_lp, 
+    .layanan_hukum_putusan, 
+    .input_psikologi, 
+    #tombol_save_psikologi, 
+    .layanan_psikologi_disabilitas, 
+    #formTerlapor {
         display: none;
     }
 
@@ -281,7 +296,7 @@
             <table class="table table-bottom table-sm">
                 <tr id="sumber_rujukan_kasus">
                     <td style="width: 200px">Rujukan</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_kasus">{{ $kasus->sumber_rujukan }}</span> 
                         <select name="sumber_rujukan" class="input_kasus select2bs4" style="width: 100%;">
@@ -294,7 +309,7 @@
                 </tr>
                 <tr id="media_pengaduan_kasus">
                     <td style="width: 200px">Media Pengaduan</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_kasus">{{ $kasus->media_pengaduan }}</span> 
                         <select name="media_pengaduan" class="input_kasus select2bs4" style="width: 100%;">
@@ -307,7 +322,7 @@
                 </tr>
                 <tr id="sumber_informasi_kasus">
                     <td style="width: 200px">Sumber Informasi</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_kasus">{{ $kasus->sumber_informasi }}</span> 
                         <select name="sumber_informasi" class="input_kasus select2bs4" style="width: 100%;">
@@ -320,7 +335,7 @@
                 </tr>
                 <tr id="tanggal_pelaporan_kasus">
                     <td style="width: 200px">Tanggal Pelaporan</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_kasus">
                             {{ $kasus->tanggal_pelaporan ? date('d M Y', strtotime($kasus->tanggal_pelaporan)) : '' }}
@@ -330,7 +345,7 @@
                 </tr>
                 <tr id="tanggal_kejadian_kasus">
                     <td style="width: 200px">Tanggal Kejadian</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_kasus">
                             {{ $kasus->tanggal_kejadian ? date('d M Y', strtotime($kasus->tanggal_kejadian)) : '' }}
@@ -340,7 +355,7 @@
                 </tr>
                 <tr id="kategori_lokasi_kasus">
                     <td style="width: 200px">Kategori Lokasi TKP</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_kasus">{{ $kasus->kategori_lokasi }}</span> 
                         <select name="kategori_lokasi" class="input_kasus select2bs4" style="width: 100%;">
@@ -363,7 +378,7 @@
                 </tr>
                 <tr id="alamat_kasus">
                     <td style="width: 200px">Alamat TKP</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_kasus">{{ $kasus->alamat }}</span> 
                         <input type="text" name="alamat" value="{{ $kasus->alamat }}" class="input_kasus">, 
@@ -388,11 +403,224 @@
                 </tr>
                 <tr id="ringkasan_kasus">
                     <td style="width: 200px">Ringkasan</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td><span class="data_kasus">{!! nl2br($kasus->ringkasan) !!}</span> <textarea name="ringkasan" class="input_kasus" style="width:100%" rows="10">{{ $kasus->ringkasan }}</textarea></td>
                 </tr>
             </table>
             </form>
+            <div id="accordionCatatanLayananHukum" style="margin-bottom:-15px">
+                <div class="card card-light">
+                    <div class="card-header" data-toggle="collapse" data-target="#collapseCatatanLayananHukum" aria-expanded="true" aria-controls="collapseCatatanLayananHukum" style="cursor: pointer;">
+                        <h3 class="card-title">
+                            <b>Catatan Layanan Hukum</b>
+                                <br>
+                                @if ($catatan_hukum->name != null)
+                                    <span style="font-size:15px;">*Terakhir diupdate oleh {{ $catatan_hukum->name }} ({{ $catatan_hukum->updated_at }})</span>
+                                @endif
+                        </h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool">
+                            <i class="fas fa-chevron-down"></i>
+                          </button>
+                        </div>
+                      </div>
+                <div id="collapseCatatanLayananHukum" class="collapse {{ Request::get('catatan-layanan') == 'Layanan Hukum' ? 'show hightlighting' : '' }}" data-parent="#accordionCatatanLayananHukum">
+                <div class="card-body">
+                    <form action="{{ route('catatan.store_hukum') }}" method="POST">
+                    @csrf
+                    @method('post')
+                    <input type="hidden" name="uuid_klien" value="{{ $klien->uuid }}">
+                    <input type="hidden" name="nama_layanan" value="Layanan Hukum">
+                    @if (in_array(Auth::user()->jabatan, ['Advokat', 'Paralegal', 'Unit Reaksi Cepat']))
+                        <span style="float:right" class="akses_petugas">
+                            <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_hukum" onclick="editdata('hukum')">
+                            <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_hukum">
+                            <i class="fas fa-check"></i> Save
+                            </button>
+                        </span>
+                    @endif
+                    <table class="table table-bottom table-sm">
+                        <tr id="no_lp">
+                            <td style="width: 200px">Laporan Polisi / Tidak</td>
+                            <td style="width: 1%">:</td>
+                            <td>
+                                <span class="data_hukum">{{ $catatan_hukum->no_lp != null || $catatan_hukum->no_lp != '' ? 'Ya':'Tidak' }}</span>
+                                <select name="laporan_polisi" class="input_hukum" style="width: 100%;" id="input_layanan_hukum_lp" onchange="show_catatan('layanan_hukum_lp')">
+                                    <option value="1" {{ $catatan_hukum->no_lp != null || $catatan_hukum->no_lp != '' ? 'selected' : '' }}>Ya</option>
+                                    <option value="0" {{ $catatan_hukum->no_lp == null || $catatan_hukum->no_lp == ''  ? 'selected' : '' }}>Tidak</option>
+                                </select>
+                                </br> 
+                                <div class="layanan_hukum_lp">
+                                    <b>No LP : </b> <span class="data_hukum">{{ $catatan_hukum->no_lp }}</span> <input type="text" name="no_lp" value="{{ $catatan_hukum->no_lp }}" class="input_hukum"><br>
+                                    <b>Undang-Undang : </b> 
+                                    <span class="data_hukum">
+                                        @php
+                                            $hukum_pasal = $catatan_hukum->pasal;
+                                        @endphp
+                                        @if ($hukum_pasal)
+                                            <ul>
+                                                @foreach ($hukum_pasal as $item_pasal)
+                                                    <li>{{ $item_pasal->value }}</li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    </span> 
+                                    <select class="input_hukum select2bs4" id="pasal" name="pasal[]" multiple="multiple" style="width: 100%"  data-placeholder="Dapat dipilih lebih dari 1 Undang-Undang">
+                                        @php
+                                            if ($hukum_pasal) {
+                                                $hukum_pasal_values = collect($hukum_pasal)->pluck('value')->toArray();
+                                            } else {
+                                                $hukum_pasal_values = [];
+                                            }
+                                        @endphp
+                                    
+                                        @if ($hukum_pasal)
+                                            @foreach ($hukum_pasal as $item_pasal)
+                                                <option value="{{ $item_pasal->value }}" selected>{{ $item_pasal->value }}</option>
+                                            @endforeach
+                                        @endif
+                                    
+                                        @foreach ($pasal as $item_pasals)
+                                            @if (!in_array($item_pasals, $hukum_pasal_values))
+                                                <option value="{{ $item_pasals }}">{{ $item_pasals }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    <br>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="putusan">
+                            <td style="width: 200px">Ada Putusan / Tidak</td>
+                            <td style="width: 1%">:</td>
+                            <td>
+                                <span class="data_hukum">{{ $catatan_hukum->pengadilan_negeri != null || $catatan_hukum->pengadilan_negeri != '' ? 'Ya':'Tidak' }}</span>
+                                <select name="putusan" class="input_hukum" style="width: 100%;" id="input_layanan_hukum_putusan" onchange="show_catatan('layanan_hukum_putusan')">
+                                    <option value="1" {{ $catatan_hukum->pengadilan_negeri != null || $catatan_hukum->pengadilan_negeri != '' ? 'selected' : '' }}>Ya</option>
+                                    <option value="0" {{ $catatan_hukum->pengadilan_negeri == null || $catatan_hukum->pengadilan_negeri == ''  ? 'selected' : '' }}>Tidak</option>
+                                </select>
+                                </br> 
+                                <div class="layanan_hukum_putusan">
+                                    <b>Pengadilan Negeri : </b> <span class="data_hukum">{{ $catatan_hukum->pengadilan_negeri }}</span> 
+                                    <select name="pengadilan_negeri" class="input_hukum select2bs4" style="width: 100%;">
+                                        <option value=""></option>
+                                        @foreach ($pengadilan_negri as $item_pengadilan_negeri)
+                                            <option value="{{ $item_pengadilan_negeri }}" {{ $item_pengadilan_negeri == $catatan_hukum->pengadilan_negeri ? 'selected' : '' }}>{{ $item_pengadilan_negeri }}</option>
+                                        @endforeach
+                                    </select>
+                                    <br>
+                                    <b>Isi Putusan : </b> <span class="data_hukum">{{ $catatan_hukum->isi_putusan }}</span> 
+                                    <textarea name="isi_putusan" style="width: 100%" class="input_hukum">{{ $catatan_hukum->isi_putusan }}</textarea>
+                                    <br>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="lpsk">
+                            <td style="width: 200px">Klien LPSK / Bukan</td>
+                            <td style="width: 1%">:</td>
+                            <td>
+                                <span class="data_hukum">{{ $catatan_hukum->lpsk == 1 ? 'Ya':'Tidak' }}</span>
+                                <select name="lpsk" class="input_hukum" style="width: 100%;">
+                                    <option value="1" {{ $catatan_hukum->lpsk == 1 ? 'selected' : '' }}>Ya</option>
+                                    <option value="0" {{ $catatan_hukum->lpsk == 0 ? 'selected' : '' }}>Tidak</option>
+                                </select>
+                            </br> 
+                            </td>
+                        </tr>
+                    </table>
+                    </form>
+                </div>
+                </div>
+                </div>
+            </div>
+            <div id="accordionCatatanLayananPsikolog" style="margin-bottom:-15px">
+                <div class="card card-light">
+        
+                    <div class="card-header" data-toggle="collapse" data-target="#collapseCatatanLayananPsikolog" aria-expanded="true" aria-controls="collapseCatatanLayananPsikolog" style="cursor: pointer;">
+                        <h3 class="card-title">
+                            <b>Catatan Layanan Psikologi</b>
+                            <br>
+                            @if ($catatan_psikologis->name != null)
+                                <span style="font-size:15px;">*Terakhir diupdate oleh {{ $catatan_psikologis->name }} ({{ $catatan_psikologis->updated_at }})</span>
+                            @endif
+                        </h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool">
+                            <i class="fas fa-chevron-down"></i>
+                          </button>
+                        </div>
+                      </div>
+                <div id="collapseCatatanLayananPsikolog" class="collapse {{ Request::get('catatan-layanan') == 'Layanan Psikologi' ? 'show hightlighting' : '' }}" data-parent="#accordionCatatanLayananPsikolog">
+                <div class="card-body">
+                    <form action="{{ route('catatan.store_psikologis') }}" method="POST">
+                        @csrf
+                        @method('post')
+                        <input type="hidden" name="uuid_klien" value="{{ $klien->uuid }}">
+                        <input type="hidden" name="nama_layanan" value="Layanan Psikologi">
+                        @if (in_array(Auth::user()->jabatan, ['Psikolog', 'Konselor']))
+                            <span style="float:right" class="akses_petugas">
+                                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_psikologi" onclick="editdata('psikologi')">
+                                <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_psikologi">
+                                <i class="fas fa-check"></i> Save
+                                </button>
+                            </span>
+                        @endif
+                        <table class="table table-bottom table-sm">
+                            <tr id="no_lp">
+                                <td style="width: 200px">Disabilitas / Tidak</td>
+                                <td style="width: 1%">: </td>
+                                <td>
+                                    <span class="data_psikologi">{{ $catatan_psikologis->disabilitas == 1 ? 'Ya':'Tidak' }}</span>
+                                    <select name="disabilitas" class="input_psikologi" style="width: 100%;" id="input_layanan_psikologi_disabilitas" onchange="show_catatan('layanan_psikologi_disabilitas')">
+                                        <option value="1" {{ $catatan_psikologis->disabilitas == 1 ? 'selected' : '' }}>Ya</option>
+                                        <option value="0" {{ $catatan_psikologis->disabilitas == 0 ? 'selected' : '' }}>Tidak</option>
+                                    </select>
+                                    </br> 
+                                    <div class="layanan_psikologi_disabilitas">
+                                        <b>Detail Disabilitas : </b> 
+                                        <span class="data_psikologi">
+                                            @php
+                                                $psikologis_disabilitas = $catatan_psikologis->disabilitases;
+                                            @endphp
+                                            @if ($psikologis_disabilitas)
+                                                <ul>
+                                                    @foreach ($psikologis_disabilitas as $item_disabilitas)
+                                                        <li>{{ $item_disabilitas->value }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+                                        </span> 
+                                        <select class="input_psikologi select2bs4" id="tipe_disabilitas" name="tipe_disabilitas[]" multiple="multiple" style="width: 100%"  data-placeholder="Dapat dipilih lebih dari 1 Detail Disabilitas">
+                                            @php
+                                                $psikologis_disabilitas_values = $psikologis_disabilitas ? collect($psikologis_disabilitas)->pluck('value')->toArray() : [];
+                                            @endphp
+                                        
+                                            @if ($psikologis_disabilitas)
+                                                @foreach ($psikologis_disabilitas as $item_disabilitas)
+                                                    <option value="{{ $item_disabilitas->value }}" selected>{{ $item_disabilitas->value }}</option>
+                                                @endforeach
+                                            @endif
+                                        
+                                            @foreach ($tipe_disabilitas as $item_disabilitas)
+                                                @if (!in_array($item_disabilitas, $psikologis_disabilitas_values))
+                                                    <option value="{{ $item_disabilitas }}">{{ $item_disabilitas }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                        <br>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        </form>
+                </div>
+                </div>
+                </div>
+            </div>
         </div>
 
         <div class="post clearfix" style="color:black">
@@ -413,7 +641,7 @@
             <table class="table table-bottom table-sm">
                 <tr id="sumber_rujukan_kasus">
                     <td style="width: 200px">Jenis Kekerasan</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klasifikasi">
                             @foreach ($jenis_kekerasan as $item)
@@ -431,7 +659,7 @@
                 </tr>
                 <tr id="sumber_rujukan_kasus">
                     <td style="width: 200px">Bentuk Kekerasan</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klasifikasi">
                             @php
@@ -461,7 +689,7 @@
                 </tr>
                 <tr id="sumber_rujukan_kasus">
                     <td style="width: 200px">Kategori Kasus</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klasifikasi">
                             @foreach ($kategori_kasus as $item)
@@ -503,17 +731,17 @@
                 <table class="table table-bottom table-sm">
                     <tr id="nik_pelapor">
                         <td style="width: 200px">NIK</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td><span class="data_pelapor">{{ $pelapor->nik }}</span> <input type="number" name="nik" value="{{ $pelapor->nik }}" class="input_pelapor"></td>
                     </tr>
                     <tr id="nama_pelapor">
                         <td style="width: 200px">Nama</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td><span class="data_pelapor">{{ $pelapor->nama }}</span> <input type="text" name="nama" value="{{ $pelapor->nama }}" class="input_pelapor"></td>
                     </tr>
                     <tr id="tanggal_lahir_pelapor">
                         <td style="width: 200px">Tempat/Tgl Lahir</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_pelapor" id="tempat_lahir_pelapor">{{ $pelapor->tempat_lahir }}</span> 
                             <input type="text" name="tempat_lahir" value="{{ $pelapor->tempat_lahir }}" class="input_pelapor">, 
@@ -525,7 +753,7 @@
                     </tr>
                     <tr id="jenis_kelamin_pelapor">
                         <td style="width: 200px">Jenis Kelamin</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_pelapor">{{ $pelapor->jenis_kelamin }}</span> 
                             <select name="jenis_kelamin" class="input_pelapor select2bs4" style="width: 100%;">
@@ -536,7 +764,7 @@
                     </tr>
                     <tr id="alamat_ktp_pelapor">
                         <td style="width: 200px">Alamat KTP</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td><span class="data_pelapor">{{ $pelapor->alamat_ktp }}</span> 
                             <input type="text" name="alamat_ktp" value="{{ $pelapor->alamat_ktp }}" class="input_pelapor">, 
                             <b>Provinsi</b> <span class="data_pelapor">{{ $pelapor->provinsi_ktp }}</span> 
@@ -559,7 +787,7 @@
                     </tr>
                     <tr id="alamat_pelapor">
                         <td style="width: 200px">Alamat Domisili</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td><span class="data_pelapor">{{ $pelapor->alamat }}</span> 
                             <input type="text" name="alamat" value="{{ $pelapor->alamat }}" class="input_pelapor">, 
                             <b>Provinsi</b> <span class="data_pelapor">{{ $pelapor->provinsi }}</span> 
@@ -582,7 +810,7 @@
                     </tr>
                     <tr id="agama_pelapor">
                         <td style="width: 200px">Agama</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_pelapor">{{ $pelapor->agama }}</span> 
                             <select name="agama" class="input_pelapor select2bs4" style="width: 100%;">
@@ -594,7 +822,7 @@
                     </tr>
                     <tr id="status_kawin_pelapor">
                         <td style="width: 200px">Status Perkawinan</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_pelapor">{{ $pelapor->status_kawin }}</span> 
                             <select name="status_kawin" class="input_pelapor select2bs4" style="width: 100%;">
@@ -606,7 +834,7 @@
                     </tr>
                     <tr id="pekerjaan_pelapor">
                         <td style="width: 200px">Pekerjaan</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_pelapor">{{ $pelapor->pekerjaan }}</span> 
                             <select name="pekerjaan" class="input_pelapor select2bs4" style="width: 100%;">
@@ -618,7 +846,7 @@
                     </tr>
                     <tr id="kewarganegaraan_pelapor">
                         <td style="width: 200px">Kewarganegaraan</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_pelapor">{{ $pelapor->kewarganegaraan }}</span> 
                             <select name="kewarganegaraan" class="input_pelapor select2bs4" style="width: 100%;">
@@ -629,7 +857,7 @@
                     </tr>
                     <tr id="pendidikan_pelapor">
                         <td style="width: 200px">Pendidikan</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_pelapor">{{ $pelapor->pendidikan }}</span> 
                             <select name="pendidikan" class="input_pelapor select2bs4" style="width: 100%;">
@@ -650,7 +878,7 @@
                     </tr>
                     <tr id="no_telp_pelapor">
                         <td style="width: 200px">No Telp</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_pelapor">{{ $pelapor->no_telp }}</span> 
                             <input type="text" name="no_telp" value="{{ $pelapor->no_telp }}" class="input_pelapor">
@@ -685,17 +913,17 @@
             <table class="table table-bottom table-sm">
                 <tr id="nik_klien">
                     <td style="width: 200px">NIK</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td><span class="data_klien">{{ $klien->nik }}</span> <input type="number" name="nik" value="{{ $klien->nik }}" class="input_klien"></td>
                 </tr>
                 <tr id="nama_klien">
                     <td style="width: 200px">Nama</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td><span class="data_klien">{{ $klien->nama }}</span> <input type="text" name="nama" value="{{ $klien->nama }}" class="input_klien"></td>
                 </tr>
                 <tr id="tanggal_lahir_klien">
                     <td style="width: 200px">Tempat/Tgl Lahir</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klien" id="tempat_lahir_klien">{{ $klien->tempat_lahir }}</span> 
                         <input type="text" name="tempat_lahir" value="{{ $klien->tempat_lahir }}" class="input_klien">, 
@@ -707,7 +935,7 @@
                 </tr>
                 <tr id="jenis_kelamin_klien">
                     <td style="width: 200px">Jenis Kelamin</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klien">{{ $klien->jenis_kelamin }}</span> 
                         <select name="jenis_kelamin" class="input_klien select2bs4" style="width: 100%;">
@@ -718,7 +946,7 @@
                 </tr>
                 <tr id="alamat_ktp_klien">
                     <td style="width: 200px">Alamat KTP</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klien">{{ $klien->alamat_ktp }}</span> 
                         <input type="text" name="alamat_ktp" value="{{ $klien->alamat_ktp }}" class="input_klien">, 
@@ -744,7 +972,7 @@
                 </tr>
                 <tr id="alamat_klien">
                     <td style="width: 200px">Alamat Domisili</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td><span class="data_klien">{{ $klien->alamat }}</span> 
                         <input type="text" name="alamat" value="{{ $klien->alamat }}" class="input_klien">, 
                         <b>Provinsi</b> <span class="data_klien">{{ $klien->provinsi }}</span> 
@@ -769,7 +997,7 @@
                 </tr>
                 <tr id="agama_klien">
                     <td style="width: 200px">Agama</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klien">{{ $klien->agama }}</span> 
                         <select name="agama" class="input_klien select2bs4" style="width: 100%;">
@@ -781,7 +1009,7 @@
                 </tr>
                 <tr id="status_kawin_klien">
                     <td style="width: 200px">Status Perkawinan</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klien">{{ $klien->status_kawin }}</span> 
                         <select name="status_kawin" class="input_klien select2bs4" style="width: 100%;">
@@ -793,7 +1021,7 @@
                 </tr>
                 <tr id="pekerjaan_klien">
                     <td style="width: 200px">Pekerjaan</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klien">{{ $klien->pekerjaan }}</span> 
                         <select name="pekerjaan" class="input_klien select2bs4" style="width: 100%;">
@@ -805,7 +1033,7 @@
                 </tr>
                 <tr id="kewarganegaraan_klien">
                     <td style="width: 200px">Kewarganegaraan</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klien">{{ $klien->kewarganegaraan }}</span> 
                         <select name="kewarganegaraan" class="input_klien select2bs4" style="width: 100%;">
@@ -816,7 +1044,7 @@
                 </tr>
                 <tr id="pendidikan_klien">
                     <td style="width: 200px">Pendidikan</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klien">{{ $klien->pendidikan }}</span> 
                         <select name="pendidikan" class="input_klien select2bs4" style="width: 100%;">
@@ -837,7 +1065,7 @@
                 </tr>
                 <tr id="no_telp_klien">
                     <td style="width: 200px">No Telp</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klien">{{ $klien->no_telp }}</span> 
                         <input type="text" name="no_telp" value="{{ $klien->no_telp }}" class="input_klien">
@@ -845,7 +1073,7 @@
                 </tr>
                 <tr id="kedisabilitasan_klien">
                     <td style="width: 200px">Kedisabilitasan</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klien">{{ $klien->kedisabilitasan }}</span> 
                         <select name="kedisabilitasan" class="input_klien select2bs4" style="width: 100%;">
@@ -886,17 +1114,17 @@
                 <table class="table table-bottom table-sm">
                     <tr id="nik_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">NIK</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->nik }}</span> <input type="number" name="nik" value="{{ $item_terlapor->nik }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
                     </tr>
                     <tr id="nama_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Nama</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->nama }}</span> <input type="text" name="nama" value="{{ $item_terlapor->nama }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
                     </tr>
                     <tr id="tempat_tanggal_lahir_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Tempat/Tgl Lahir</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_terlapor{{ $no_terlapor }}" id="tempat_lahir_terlapor{{ $no_terlapor }}">{{ $item_terlapor->tempat_lahir }}</span> 
                             <input type="text" name="tempat_lahir" value="{{ $item_terlapor->tempat_lahir }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">, 
@@ -908,7 +1136,7 @@
                     </tr>
                     <tr id="jenis_kelamin_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Jenis Kelamin</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->jenis_kelamin }}</span> 
                             <select name="jenis_kelamin" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
@@ -919,7 +1147,7 @@
                     </tr>
                     <tr id="alamat_terlapor_ktp{{ $no_terlapor }}">
                         <td style="width: 200px">Alamat KTP</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->alamat_ktp }}</span> 
                         <input type="text" name="alamat_ktp" value="{{ $item_terlapor->alamat_ktp }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">, 
                         <b>Provinsi</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->provinsi_ktp }}</span> 
@@ -944,7 +1172,7 @@
                     </tr>
                     <tr id="alamat_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Alamat Domisili</td>
-                    <td>:</td>
+                    <td style="width: 1%">:</td>
                     <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->alamat }}</span> 
                         <input type="text" name="alamat" value="{{ $item_terlapor->alamat }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">, 
                         <b>Provinsi</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->provinsi }}</span> 
@@ -969,7 +1197,7 @@
                     </tr>
                     <tr id="agama_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Agama</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->agama }}</span> 
                             <select name="agama" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
@@ -981,7 +1209,7 @@
                     </tr>
                     <tr id="status_kawin_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Status Perkawinan</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->status_kawin }}</span> 
                             <select name="status_kawin" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
@@ -993,7 +1221,7 @@
                     </tr>
                     <tr id="pekerjaan_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Pekerjaan</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->pekerjaan }}</span> 
                             <select name="pekerjaan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
@@ -1005,7 +1233,7 @@
                     </tr>
                     <tr id="kewarganegaraan_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Kewarganegaraan</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->kewarganegaraan }}</span> 
                             <select name="kewarganegaraan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
@@ -1016,7 +1244,7 @@
                     </tr>
                     <tr id="pendidikan_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Pendidikan</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->pendidikan }}</span> 
                             <select name="pendidikan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
@@ -1037,7 +1265,7 @@
                     </tr>
                     <tr id="no_telp_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">No Telp</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->no_telp }}</span> 
                             <input type="text" name="no_telp" value="{{ $item_terlapor->no_telp }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">
@@ -1045,7 +1273,7 @@
                     </tr>
                     <tr id="hubungan_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Hubungan dengan klien (Terlapor siapanya Klien?)</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->hubungan_terlapor }}</span> 
                             <select name="hubungan_terlapor" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;" required>
@@ -1085,17 +1313,17 @@
                     <table class="table table-bottom table-sm">
                         <tr id="nik_terlapor{{ $no_terlapor }}">
                             <td style="width: 200px">NIK</td>
-                            <td>:</td>
+                            <td style="width: 1%">:</td>
                             <td><input type="number" name="nik" class=" input_terlapor{{ $no_terlapor }}"></td>
                         </tr>
                         <tr id="nama_terlapor{{ $no_terlapor }}">
                             <td style="width: 200px">Nama</td>
-                            <td>:</td>
+                            <td style="width: 1%">:</td>
                             <td><input type="text" name="nama" class=" input_terlapor{{ $no_terlapor }}"></td>
                         </tr>
                         <tr id="tempat_tanggal_lahir_terlapor{{ $no_terlapor }}">
                             <td style="width: 200px">Tempat/Tgl Lahir</td>
-                            <td>:</td>
+                            <td style="width: 1%">:</td>
                             <td>
                                 <input type="text" name="tempat_lahir" class=" input_terlapor{{ $no_terlapor }}" placeholder="Tempat Lahir">,
                                 <input type="date" name="tanggal_lahir" class=" input_terlapor{{ $no_terlapor }}" placeholder="Tanggal Lahir">
@@ -1103,7 +1331,7 @@
                         </tr>
                         <tr id="jenis_kelamin_terlapor{{ $no_terlapor }}">
                             <td style="width: 200px">Jenis Kelamin</td>
-                            <td>:</td>
+                            <td style="width: 1%">:</td>
                             <td>
                                 <select name="jenis_kelamin" class=" input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
                                     <option value="perempuan">Perempuan</option>
@@ -1113,7 +1341,7 @@
                         </tr>
                         <tr id="alamat_terlapor_ktp{{ $no_terlapor }}">
                             <td style="width: 200px">Alamat KTP</td>
-                            <td>:</td>
+                            <td style="width: 1%">:</td>
                             <td>
                                 <input type="text" name="alamat_ktp" lass=" input_terlapor{{ $no_terlapor }}">, 
                                 <b>Provinsi</b> 
@@ -1138,7 +1366,7 @@
                         </tr>
                         <tr id="alamat_terlapor{{ $no_terlapor }}">
                             <td style="width: 200px">Alamat Domisili</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <input type="text" name="alamat" class=" input_terlapor{{ $no_terlapor }}">, 
                             <b>Provinsi</b>
@@ -1163,7 +1391,7 @@
                         </tr>
                         <tr id="agama_terlapor{{ $no_terlapor }}">
                             <td style="width: 200px">Agama</td>
-                            <td>:</td>
+                            <td style="width: 1%">:</td>
                             <td>
                                 <select name="agama" class=" input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
                                     @foreach ($agama as $item)
@@ -1174,7 +1402,7 @@
                         </tr>
                         <tr id="status_kawin_terlapor{{ $no_terlapor }}">
                             <td style="width: 200px">Status Perkawinan</td>
-                            <td>:</td>
+                            <td style="width: 1%">:</td>
                             <td>
                                 <select name="status_kawin" class=" input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
                                     @foreach ($status_perkawinan as $item)
@@ -1185,7 +1413,7 @@
                         </tr>
                         <tr id="pekerjaan_terlapor{{ $no_terlapor }}">
                             <td style="width: 200px">Pekerjaan</td>
-                            <td>:</td>
+                            <td style="width: 1%">:</td>
                             <td>
                                 <select name="pekerjaan" class=" input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
                                     @foreach ($pekerjaan as $item)
@@ -1196,7 +1424,7 @@
                         </tr>
                         <tr id="kewarganegaraan_terlapor{{ $no_terlapor }}">
                             <td style="width: 200px">Kewarganegaraan</td>
-                            <td>:</td>
+                            <td style="width: 1%">:</td>
                             <td>
                                 <select name="kewarganegaraan" class=" input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
                                     <option value="WNI">WNI</option>
@@ -1206,7 +1434,7 @@
                         </tr>
                         <tr id="pendidikan_terlapor{{ $no_terlapor }}">
                             <td style="width: 200px">Pendidikan</td>
-                            <td>:</td>
+                            <td style="width: 1%">:</td>
                             <td>
                                 <select name="pendidikan" class=" input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
                                     <option value=""></option>
@@ -1226,14 +1454,14 @@
                         </tr>
                         <tr id="no_telp_terlapor{{ $no_terlapor }}">
                             <td style="width: 200px">No Telp</td>
-                            <td>:</td>
+                            <td style="width: 1%">:</td>
                             <td>
                                 <input type="text" name="no_telp" class=" input_terlapor{{ $no_terlapor }}">
                             </td>
                         </tr>
                         <tr id="hubungan_terlapor{{ $no_terlapor }}">
                             <td style="width: 200px">Hubungan dengan klien (Terlapor siapanya Klien?)</td>
-                            <td>:</td>
+                            <td style="width: 1%">:</td>
                             <td>
                                 <select name="hubungan_terlapor" class=" input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
                                     <option value=""></option>
@@ -1332,63 +1560,63 @@
                 <table class="table table-bottom table-sm">
                     <tr id="fisik_rekam">
                         <td style="width: 200px">Kondisi Fisik</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_rekam">{!! nl2br($rekam_kasus->fisik) !!}</span> <textarea name="fisik" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->fisik }}</textarea></span> 
                         </td>
                     </tr>
                     <tr id="psikis_rekam">
                         <td style="width: 200px">Kondisi Psikologis</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_rekam">{!! nl2br($rekam_kasus->psikologis) !!}</span> <textarea name="psikologis" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->psikologis }}</textarea></span> 
                         </td>
                     </tr>
                     <tr id="sosial_rekam">
                         <td style="width: 200px">Kondisi Sosial/Ekonomi</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_rekam">{!! nl2br($rekam_kasus->sosial) !!}</span> <textarea name="sosial" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->sosial }}</textarea></span> 
                         </td>
                     </tr>
                     <tr id="hukum_rekam">
                         <td style="width: 200px">Kondisi Hukum</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_rekam">{!! nl2br($rekam_kasus->hukum) !!}</span> <textarea name="hukum" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->hukum }}</textarea></span> 
                         </td>
                     </tr>
                     <tr id="upaya_rekam">
                         <td style="width: 200px">Upaya Pemecahan Masalah</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_rekam">{!! nl2br($rekam_kasus->upaya) !!}</span> <textarea name="upaya" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->upaya }}</textarea></span> 
                         </td>
                     </tr>
                     <tr id="pendukung_rekam">
                         <td style="width: 200px">Faktor Pendukung</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_rekam">{!! nl2br($rekam_kasus->pendukung) !!}</span> <textarea name="pendukung" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->pendukung }}</textarea></span> 
                         </td>
                     </tr>
                     <tr id="hambatan_rekam">
                         <td style="width: 200px">Hambatan</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_rekam">{!! nl2br($rekam_kasus->hambatan) !!}</span> <textarea name="hambatan" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->hambatan }}</textarea></span> 
                         </td>
                     </tr>
                     <tr id="harapan_rekam">
                         <td style="width: 200px">Harapan</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_rekam">{!! nl2br($rekam_kasus->harapan) !!}</span> <textarea name="harapan" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->harapan }}</textarea></span> 
                         </td>
                     </tr>
                     <tr id="lainnya_rekam">
                         <td style="width: 200px">Informasi Lainnya</td>
-                        <td>:</td>
+                        <td style="width: 1%">:</td>
                         <td>
                             <span class="data_rekam">{!! nl2br($rekam_kasus->lainnya) !!}</span> <textarea name="lainnya" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->lainnya }}</textarea></span> 
                         </td>
@@ -2267,6 +2495,9 @@
         loadPemantauan();
         loadTerminasi();
         loadCatatan();
+        show_catatan('layanan_hukum_lp');
+        show_catatan('layanan_hukum_putusan');
+        show_catatan('layanan_psikologi_disabilitas');
         // loadPublicUrl();
         check_kelengkapan_data('{{ $klien->id }}');
         check_kelengkapan_persetujuan_spv('{{ $klien->id }}');
@@ -2328,6 +2559,14 @@
         });
     });
     
+    function show_catatan(params) {
+        if ($('#input_' + params).val() == 1) {
+            $('.'+params).show();
+        } else {
+            $('.'+params).hide();
+        }
+    }
+
     function submitFilterLayanan() {
         var jabatanValue = $('#filterJabatan').val();
         var tl = $('input[name="filter1TL"]:checked').val();
@@ -2355,6 +2594,8 @@
     $('.input_pelapor').next(".select2-container").hide();
     $('.input_klien').next(".select2-container").hide();
     $('.input_kasus').next(".select2-container").hide();
+    $('.input_hukum').next(".select2-container").hide();
+    $('.input_psikologi').next(".select2-container").hide();
     $('.input_terlapor').next(".select2-container").hide();
 
       $('#tabelLayanan_filter').css({'float':'right','display':'inline-block; background-color:black'});

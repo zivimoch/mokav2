@@ -471,8 +471,8 @@ class AgendaController extends Controller
                         } else {
                             $url = url('/kinerja/detail?tahun='.$tahun.'&bulan='.$bulan.'&user_id='.$value.'&row-agenda='.$proses->uuid.'&kode=T9&type_notif=task&agenda_id='.$proses_id);
                         }
-                        
-                        NotifHelper::push_notif(
+
+                        $proeses = NotifHelper::push_notif(
                             $value , //receiver_id
                             ($klien && $klien->id) ? $klien->id : NULL, //klien_id
                             'T9', //kode

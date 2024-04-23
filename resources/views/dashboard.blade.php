@@ -105,7 +105,7 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="{{ route('notifikasi') }}" class="nav-link">
+                    <a href="{{ route('kinerja.detail') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}&user_id={{ Auth::user()->uuid }}" class="nav-link"> 
                       Jumlah Agenda Kegiatan <span class="float-right badge bg-success">{{ $jumlah_agenda }}</span>
                     </a>
                   </li>
@@ -364,7 +364,12 @@ function loadAgenda(tanggal_mulai, id) {
           checked = 'checked';
           disabled = 'disabled';
         }
-        $('#agendaSaya'+id).append('<li class="'+done+'"><div  class="icheck-primary d-inline ml-2"><input type="checkbox" value="" id="todoCheck'+i+'" '+checked+' '+disabled+' onclick="showModalAgenda(`'+e.tanggal_mulai+'`,`'+e.uuid+'`,{{ Auth::user()->id }})"><label for="todoCheck'+i+'"></label></div><span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span><br>Klien : <a href="{{ route('kasus.show', '') }}/'+e.uuid_klien+'">'+e.nama+'</a></li>');
+
+        nama_klien = '';
+        if (e.nama != null) {
+          nama_klien = '<br>Klien : <a href="{{ route('kasus.show', '') }}/'+e.uuid_klien+'">'+e.nama+'</a>';
+        }
+        $('#agendaSaya'+id).append('<li class="'+done+'"><div  class="icheck-primary d-inline ml-2"><input type="checkbox" value="" id="todoCheck'+i+'" '+checked+' '+disabled+' onclick="showModalAgenda(`'+e.tanggal_mulai+'`,`'+e.uuid+'`,{{ Auth::user()->id }})"><label for="todoCheck'+i+'"></label></div><span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span>'+nama_klien+'</li>');
         $('#agendaAndaHeading'+id).html('Agenda Anda ('+i+' agenda)')
         i++;
       });
@@ -374,7 +379,11 @@ function loadAgenda(tanggal_mulai, id) {
       x = 1;
       $('#agendaKasusAndaHeading'+id).html('');
       agenda_kasus_saya.forEach(e => {
-        $('#agendaKasusSaya'+id).append('<li>'+x+'. <span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span><br>Klien : <a href="{{ route('kasus.show', '') }}/'+e.uuid_klien+'">'+e.nama+'</a><br>Petugas : '+e.petugas+'</li>');
+        nama_klien = '';
+        if (e.nama != null) {
+          nama_klien = '<br>Klien : <a href="{{ route('kasus.show', '') }}/'+e.uuid_klien+'">'+e.nama+'</a>';
+        }
+        $('#agendaKasusSaya'+id).append('<li>'+x+'. <span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span>'+nama_klien+'<br>Petugas : '+e.petugas+'</li>');
         $('#agendaKasusAndaHeading'+id).html('Agenda Kasus Yang Anda Tangani ('+x+' agenda)');
         x++;
       });
@@ -384,7 +393,11 @@ function loadAgenda(tanggal_mulai, id) {
       y = 1;
       $('#agendaSemuaHeading'+id).html('');
       agenda_semua.forEach(e => {
-        $('#agendaSemua'+id).append('<li>'+y+'. <span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span><br>Klien : <a href="{{ route('kasus.show', '') }}/'+e.uuid_klien+'">'+e.nama+'</a><br>Petugas : '+e.petugas+'</li>');
+        nama_klien = '';
+        if (e.nama != null) {
+          nama_klien = '<br>Klien : <a href="{{ route('kasus.show', '') }}/'+e.uuid_klien+'">'+e.nama+'</a>';
+        }
+        $('#agendaSemua'+id).append('<li>'+y+'. <span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span>'+nama_klien+'<br>Petugas : '+e.petugas+'</li>');
         $('#agendaSemuaHeading'+id).html('Agenda Seluruh Petugas ('+y+' agenda)')
         y++;
       });
