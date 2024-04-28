@@ -655,7 +655,6 @@ class KasusController extends Controller
         $data = DB::table('kasus as a')
         ->select('b.id as klien_id')
         ->selectRaw('ROUND(((
-            SUM(CASE WHEN a.sumber_rujukan IS NOT NULL THEN 1 ELSE 0 END) +
             SUM(CASE WHEN a.media_pengaduan IS NOT NULL THEN 1 ELSE 0 END) +
             SUM(CASE WHEN a.sumber_informasi IS NOT NULL THEN 1 ELSE 0 END) +
             SUM(CASE WHEN a.tanggal_pelaporan IS NOT NULL THEN 1 ELSE 0 END) +
@@ -736,7 +735,7 @@ class KasusController extends Controller
             SUM(CASE WHEN e.status_pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
             SUM(CASE WHEN e.pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
             SUM(CASE WHEN e.no_telp IS NOT NULL THEN 1 ELSE 0 END)
-            ) / 81 * 100), 2) as kelengkapan_data')
+            ) / 80 * 100), 2) as kelengkapan_data')
             ->leftJoin('klien as b', 'a.id', '=', 'b.kasus_id')
             ->leftJoin('pelapor as c', 'c.kasus_id', '=', 'a.id')
             ->leftJoin('r_hubungan_terlapor_klien as d', 'd.klien_id', '=', 'b.id')

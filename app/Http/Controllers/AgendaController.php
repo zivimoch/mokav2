@@ -371,7 +371,7 @@ class AgendaController extends Controller
         if (is_numeric($request->user_id)) {
             // pakai identifier kayak gini karena dulu ada notif yang user_id nya id ada yang uuid
             $identifier = 'id';
-        }else{
+        } else {
             $identifier = 'uuid';
         }
         $user = User::where($identifier, $request->user_id)->first();

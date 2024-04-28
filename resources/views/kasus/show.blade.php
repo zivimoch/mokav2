@@ -2041,7 +2041,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label><span class="text-danger">*</span>Jam</label>
-                    <input type="text" class="form-control required-field-riwayat time-picker" id="jam">
+                    <input type="text" class="form-control required-field-riwayat time-picker" id="jam" placeholder="isi 00:00 jika tidak tahu">
                     <div class="invalid-feedback" id="valid-jam_mulai">
                         Jam Kejadian wajib diisi.
                     </div>
@@ -2050,13 +2050,15 @@
         </div>
         <div class="form-group">
             <label>Keterangan</label>
-            <textarea name="" class="form-control required-field-riwayat" id="keterangan" cols="30" rows="5"></textarea>
+            <textarea name="" class="form-control required-field-riwayat tinymce" id="keterangan" cols="30" rows="5"></textarea>
         </div>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-success btn-block" id="submitRiwayatKejadian"><i class="fa fa-check"></i> Simpan</button>
-            <button type="button" class="btn btn-danger btn-block" id="deleteRiwayatKejadian"><i class="fa fa-trash"></i> Hapus</button>
-        </div>
+        @if (Auth::user()->jabatan == 'Manajer Kasus')
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-block" id="submitRiwayatKejadian"><i class="fa fa-check"></i> Simpan</button>
+                <button type="button" class="btn btn-danger btn-block" id="deleteRiwayatKejadian"><i class="fa fa-trash"></i> Hapus</button>
+            </div>
+        @endif
         </div>
     </div>
 </div>
@@ -2965,7 +2967,8 @@
         {
             "mData": "keterangan",
             "mRender": function (data, type, row) {
-              return row.keterangan.replace(/\n/g, '<br>');
+              return $("<div/>").html(row.keterangan).text();
+            //   return row.keterangan.replace(/\n/g, '<br>');
             }
         }
       ],
@@ -2983,7 +2986,8 @@
                     $('#deleteRiwayatKejadian').hide();
                     $('#tanggal').val('');
                     $('#jam').val('');
-                    $('#keterangan').val('');
+                    tinyMCE.get('keterangan').setContent('');
+                    // $('#keterangan').val('');
                     $('#modelHeading').html("Tambah Riwayat Kejadian");
                     $('#riwayatModal').modal('show'); 
                     $("#overlay").hide();
@@ -3009,7 +3013,8 @@
             $('#uuid_riwayat').val(data.uuid);
             $('#tanggal').val(data.tanggal);
             $('#jam').val(data.jam);
-            $('#keterangan').val(data.keterangan);
+            tinyMCE.get('keterangan').setContent(data.keterangan);
+            // $('#keterangan').val(data.keterangan);
         });
     });
 
@@ -3025,7 +3030,7 @@
                 uuid_klien: '{{ $klien->uuid }}',
                 tanggal: $("#tanggal").val(),
                 jam: $("#jam").val(),
-                keterangan: $("#keterangan").val(),
+                keterangan: tinyMCE.get('keterangan').getContent(),
                 _token: token
             },
             success: function (response){
@@ -3043,7 +3048,8 @@
                     // hapus semua inputan
                     $('#tanggal').val('');
                     $('#jam').val('');
-                    $('#keterangan').val('');
+                    tinyMCE.get('keterangan').setContent('');
+                    // $('#keterangan').val('');
                     // untuk hightlight row yang baru
                     data = response.data;
                     $('#uuid_riwayat_hightlight').val(data.uuid);
@@ -3098,7 +3104,8 @@
                 // hapus semua inputan
                 $('#tanggal').val('');
                 $('#jam').val('');
-                $('#keterangan').val('');
+                tinyMCE.get('keterangan').setContent('');
+                // $('#keterangan').val('');
             }
         },
         error: function (response){
