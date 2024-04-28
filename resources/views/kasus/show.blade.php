@@ -37,7 +37,7 @@
         height: 30px !important;
     }
 
-    .akses_petugas, #check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_pemantauan, #check_terminasi, .warningTerminasi {
+    .akses_petugas, #check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningKasus, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_pemantauan, #check_terminasi, .warningTerminasi {
         display: none;
     }
 
@@ -238,7 +238,7 @@
             </div>
         <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
         <li class="nav-item">
-        <a class="nav-link {{ Request::get('tab') == 'kasus' || Request::get('tab') == '' ? 'active' : '' }}" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">Kasus</a>
+        <a class="nav-link {{ Request::get('tab') == 'kasus' || Request::get('tab') == '' ? 'active' : '' }}" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">Kasus  <i class="fas fa-exclamation-circle warningKasus" style="color: red; font-size:20px"></i></a>
         </li>
         <li class="nav-item">
             <a class="nav-link {{ Request::get('tab') == 'kasus-asesmen' ? 'active' : '' }}" id="kasus-asesmen-tab" data-toggle="pill" href="#kasus-asesmen" role="tab" aria-controls="kasus-asesmen" aria-selected="false">Asesmen <i class="fas fa-exclamation-circle warningAsesmen" style="color: red; font-size:20px"></i></a>
@@ -277,8 +277,17 @@
         </div>
             
         <style> input { width: 100%; }</style>
+
+        <div class="col-md-12 warningKasus">
+            <div class="alert alert-danger">
+            <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+            Mohon melengkapi data-data berikut : 1. Klasifikasi Kasus, 2. Hubungan Terlapor Dengan Klien dan 3. Data lainnya (minimal skor kelengkapan data adalah 50%)
+            </div>
+        </div>
+        
         <div class="post clearfix" style="color:black">
             <b>A. DATA KASUS</b>
+            
             <form action="{{ route('formpenerimapengaduan.update', 'uuid') }}" method="POST">
             @csrf
             @method('put')
@@ -3800,9 +3809,19 @@
                 // update persentase
                 $('#persen_title_data').html(response);
                 $('#persen_data').css('width', response+'%');
+
+                jenis_kekerasan = $('#jenis_kekerasan').val();
+                bentuk_kekerasan = $('#bentuk_kekerasan').val();
+                kategori_kasus = $('#kategori_kasus').val();
+
+                if (response < 50 || jenis_kekerasan == '' || bentuk_kekerasan == '' || kategori_kasus == '') {
+                    $('.warningKasus').show();
+                } else {
+                    $('.warningKasus').hide();
+                }
             },
             error: function (response){
-                alert("Error");
+                // alert("Error");
                 console.log(response);
             }
         });
@@ -3825,7 +3844,7 @@ function check_kelengkapan_persetujuan_spv(klien_id) {
             }
         },
         error: function (response){
-            alert("Error");
+            // alert("Error");
             console.log(response);
         }
         });
@@ -3853,7 +3872,7 @@ function check_kelengkapan_spp(klien_id) {
             }
         },
         error: function (response){
-            alert("Error");
+            // alert("Error");
             console.log(response);
         }
         });
@@ -3875,7 +3894,7 @@ function check_kelengkapan_asesmen(klien_id) {
             }
         },
         error: function (response){
-            alert("Error");
+            // alert("Error");
             console.log(response);
         }
         });
@@ -3895,7 +3914,7 @@ function check_kelengkapan_perencanaan(klien_id) {
             check_kelengkapan_pelaksanaan(response, '{{ $klien->id }}');
         },
         error: function (response){
-            alert("Error");
+            // alert("Error");
             console.log(response);
         }
         });
@@ -3918,7 +3937,7 @@ function check_kelengkapan_pelaksanaan(jml_perencanaan, klien_id) {
             }
         },
         error: function (response){
-            alert("Error");
+            // alert("Error");
             console.log(response);
         }
         });
@@ -3937,7 +3956,7 @@ function check_kelengkapan_pemantauan(klien_id) {
             }
         },
         error: function (response){
-            alert("Error");
+            // alert("Error");
             console.log(response);
         }
         });
@@ -3958,7 +3977,7 @@ function check_kelengkapan_terminasi(klien_id) {
             }
         },
         error: function (response){
-            alert("Error");
+            // alert("Error");
             console.log(response);
         }
         });
