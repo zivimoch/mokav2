@@ -1717,6 +1717,9 @@
                 </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $no_petugas = 1;
+                    @endphp
                     @foreach ($petugas as $item)
                     <tr>
                         <td>
@@ -1729,14 +1732,17 @@
                         </td>
                         <td>
                             @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Supervisor Kasus']))
-                            <form action="{{ route('petugas.destroy',$item->id) }}" method="post">
+                            <form id="formPetugas{{ $no_petugas }}" action="{{ route('petugas.destroy', $item->id) }}" method="post">
                                 @csrf 
                                 @method('delete')
-                                <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                <button type="button" onclick="deletePetugas({{ $no_petugas }})" class="btn btn-danger"><i class="fa fa-trash"></i></button>
                             </form>
                             @endif
                         </td>
                     </tr>
+                    @php
+                        $no_petugas++;
+                    @endphp
                     @endforeach
                 </tbody>
             </table>
@@ -1785,6 +1791,9 @@
                     </tr>
                     </thead>
                     <tbody>
+                        @php
+                            $no_persetujuan = 1;
+                        @endphp
                         @foreach ($persetujuan as $item)
                             <tr class="{{ Request::get('row-persetujuan') == $item->uuid ? 'hightlighting' : '' }}">
                                 <td>
@@ -1807,8 +1816,17 @@
                                         <input hidden type="text" id="link-form-{{ $item->uuid }}" value="{{ route('persetujuan.show', $item->uuid) }}">
                                         <button type="button" class="btn btn-primary" onclick="copyClipboard('{{ $item->uuid }}')"><i class="fas fa-link"></i></button>
                                     @endif
+
+                                    <form id="formPersetujuan{{  $no_persetujuan }}" action="{{ route('persetujuan.destroy', $item->uuid) }}" method="post">
+                                        @csrf 
+                                        @method('delete')
+                                        <button type="button" onclick="deletePersetujuan({{ $no_persetujuan }})" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                    </form>
                                 </td>
                             </tr>
+                            @php
+                                $no_persetujuan++;
+                            @endphp
                         @endforeach
                     </tbody>
                 </table>
@@ -2010,7 +2028,7 @@
 @if ($akses_petugas == 1)
 <!-- Modal Riwayat Kejadian-->
 <div class="modal fade" id="riwayatModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
 
         <div id="overlay" class="overlay dark">
@@ -2570,6 +2588,19 @@
         });
     });
     
+
+    function deletePersetujuan(id) {
+        if (confirm("Apakah anda ingin menghapus Persetujuan Ini?")) {
+            $('#formPersetujuan'+id).submit(); // Submit the form if user confirms
+        }
+    }
+
+    function deletePetugas(id) {
+        if (confirm("Apakah anda ingin menghapus Petugas Ini?")) {
+            $('#formPetugas'+id).submit(); // Submit the form if user confirms
+        }
+    }
+
     function show_catatan(params) {
         if ($('#input_' + params).val() == 1) {
             $('.'+params).show();
@@ -3814,7 +3845,7 @@
                 bentuk_kekerasan = $('#bentuk_kekerasan').val();
                 kategori_kasus = $('#kategori_kasus').val();
 
-                if (response < 50 || jenis_kekerasan == '' || bentuk_kekerasan == '' || kategori_kasus == '') {
+                if (response < 50 || jenis_kekerasan == '' || bentuk_kekerasan == '' || kategori_kasus == '' || $('select[name="hubungan_terlapor"]').val() === '') {
                     $('.warningKasus').show();
                 } else {
                     $('.warningKasus').hide();

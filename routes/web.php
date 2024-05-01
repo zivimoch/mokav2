@@ -72,6 +72,7 @@ Route::middleware('auth')->group(function () {
     Route::put('kasus/arsip/{uuid}', [KasusController::class, 'arsip'])->name('kasus.arsip');
     // persetujuan
     Route::post('persetujuan/create/{uuid}', [PersetujuanController::class, 'create'])->name('persetujuan.create');
+    Route::delete('persetujuan/destroy/{id}', [PersetujuanController::class, 'destroy'])->name(('persetujuan.destroy'));
     // persetujuan_pelayanan
     Route::get('petugas/index/', [PetugasController::class, 'index'])->name(('petugas'));
     Route::post('/get_petugas', [PetugasController::class, 'get_petugas'])->name('get_petugas');

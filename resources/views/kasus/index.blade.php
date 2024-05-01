@@ -252,6 +252,7 @@
           <div class="input-group-prepend">
             <select id="filter1BasisTanggal" class="form-control btn-primary">
               <option value="tanggal_pelaporan" selected>Default ( Berdasarkan Tanggal Pelaporan )</option>
+              <option value="tanggal_approve">Berdasarkan Tanggal Diregis</option>
               <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
               <option value="created_at">Berdasarkan Tanggal Input</option>
             </select>

@@ -51,6 +51,12 @@ class KasusController extends Controller
             $from = $daterange[0];
             $to = $daterange[1];
 
+            if ($request->basis_tanggal == 'tanggal_approve') {
+                $basis_tanggal = 'a.'.$request->basis_tanggal;
+            } else {
+                $basis_tanggal = 'b.'.$request->basis_tanggal;
+            }
+
             $data = DB::table('klien as a')
                         ->select('a.uuid', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 'a.jenis_kelamin', 'a.tanggal_lahir', 'a.status', 'd.name as petugas')
                         ->leftJoin('kasus as b', 'b.id', 'a.kasus_id')
@@ -69,7 +75,7 @@ class KasusController extends Controller
             // filter tanggal 
             if (isset($request->basis_tanggal)) {
                 # jika ada, jika tidak ada berarti untuk tabel LaporKBG (gpp itu tahun berapapun)
-                $data->whereBetween('b.'.$request->basis_tanggal, [$from, $to]);
+                $data->whereBetween($basis_tanggal, [$from, $to]);
             }
             // jika lapor KBG == 1 maka tampilkan kasus yang laporKBG
             if ($request->laporkbg == 1) {

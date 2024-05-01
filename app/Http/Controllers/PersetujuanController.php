@@ -311,4 +311,43 @@ class PersetujuanController extends Controller
         </table>';
         return $isi;
     }
+
+    public function destroy($uuid)
+    {
+        try {
+            //delete petugas
+            $persetujuan_isi = PersetujuanIsi::withTrashed()->where('uuid', $uuid)->first();
+            if (!$persetujuan_isi) {
+                return abort(404);
+            }
+            
+            $persetujuan_template = PersetujuanTemplate::where('id', $persetujuan_isi->persetujuan_template_id)->first();
+            $klien = Klien::where('id', $persetujuan_isi->klien_id)->first();
+            $proses = PersetujuanIsi::where('id', $persetujuan_isi->id)->forceDelete();
+
+            //write log activity ////////////////////////////////////////////////////////////////////////
+            LogActivityHelper::push_log(
+                //message
+                Auth::user()->name.' telah menghapus '.$persetujuan_template->judul,
+                //klien_id
+                ($klien && $klien->id)? $klien->id : NULL
+            );
+
+            //return response
+            $response =  response()->json([
+                'success' => true,
+                'code'    => 200,
+                'message' => 'Data Berhasil Disimpan!',
+                'data'    => $proses  
+            ]);
+
+            // untuk menghindari dobel encoding terhadap notifjson, jadi cara returnnya seperti ini
+            $url = url('/kasus/show/'.$klien->uuid.'?tab=kasus-persetujuan'); //url
+            return redirect($url)
+                    ->with('success', true)
+                    ->with('response', $response);
+        } catch (Exception $e){
+            return response()->json(['message' => 'Error: ' . $e->getMessage()]);
+        }
+    }
 }
