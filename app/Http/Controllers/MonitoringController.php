@@ -39,6 +39,11 @@ class MonitoringController extends Controller
                 ->with('kota', $kota);
     }
 
+    public function slide()
+    {
+        return view('monitoring.slide');
+    }
+
     public function monitoring_kasus(Request $request)
     {
          // mendapatkan periode
@@ -526,7 +531,6 @@ class MonitoringController extends Controller
     public function jumlah_korban_wilayah(Request $request) 
     {
         $attribute = $request->all();
-
         if ($request->basis_wilayah == 'ktp') {
             $basis_wilayah = 'a.kotkab_id_ktp';
         } elseif ($request->basis_wilayah == 'domisili') {
@@ -731,6 +735,7 @@ class MonitoringController extends Controller
             // untuk ditampilkan di data tabulasi
             $data_seluruh["$value->nama"] = $kategori_klien;
         }
+        // dd($data);
 
         $data = array_filter($data, function ($value) {
             return $value != 0;
@@ -867,7 +872,6 @@ class MonitoringController extends Controller
             // untuk ditampilkan di data tabulasi
             $data_seluruh["$value->nama"] = $kategori_klien;
         }
-        
         // mencegah menampilkan yang valuenya 0
         $data = array_filter($data, function ($value) {
             return $value != 0;
@@ -977,6 +981,7 @@ class MonitoringController extends Controller
             ->groupBy(DB::raw('YEAR('.$basis_tanggal.')'))
             ->orderBy('total','DESC');
         }else{
+            // identitas kategori klien
             $seluruh_klien->select(
                 DB::raw('YEAR('.$basis_tanggal.') AS PERIODE'),
                 DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') >= 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan'),
@@ -1009,7 +1014,12 @@ class MonitoringController extends Controller
             $seluruh_klien->where('a.arsip', 0);
         }
 
-        $data = $seluruh_klien->get();
+        if ($request->identitas == "usia") {
+            $data = $seluruh_klien->first();
+        } else {
+            $data = $seluruh_klien->get();
+        }
+        
         $datas = [];
         // rentang usia
         if ($request->identitas == "usia") {

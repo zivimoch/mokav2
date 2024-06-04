@@ -127,6 +127,7 @@ class OpsiController extends Controller
                 'PNS', 
                 'TNI', 
                 'POLRI', 
+                'Dokter', 
                 'Pedagang', 
                 'Petani', 
                 'Nelayan',
@@ -335,13 +336,23 @@ class OpsiController extends Controller
 
     public function api_pasal()
     {
-        $data = ['UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 12 TAHUN 2022 TENTANG TINDAK PIDANA KEKERASAN SEKSUAL',
-                'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 17 TAHUN 2016 TENTANG PENETAPAN PERATURAN PEMERINTAH PENGGANTI UNDANG-UNDANG NOMOR 1 TAHUN 2016 TENTANG PERUBAHAN KEDUA ATAS UNDANG-UNDANG NOMOR 23 TAHUN 2002 TENTANG PERLINDUNGAN ANAK MENJADI UNDANG-UNDANG',
-                'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 23 TAHUN 2004 TENTANG PENGHAPUSAN KEKERASAN DALAM RUMAH TANGGA',
-                'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 44 TAHUN 2008 TENTANG PORNOGRAFI',
-                'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 19 TAHUN 2016 TENTANG PERUBAHAN ATAS UNDANG-UNDANG NOMOR 11 TAHUN 2008 TENTANG INFORMASI DAN TRANSAKSI ELEKTRONIK',
-                'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 21 TAHUN 2007 TENTANG PEMBERANTASAN TINDAK PIDANA PERDAGANGAN ORANG',
-                'KITAB UNDANG-UNDANG HUKUM PIDANA'];
+        $data = [
+            'UU NO 12 TAHUN 2022 TENTANG TINDAK PIDANA KEKERASAN SEKSUAL',
+            'UU NO 17 TAHUN 2016 TENTANG PENETAPAN PERATURAN PEMERINTAH PENGGANTI UNDANG',
+            'UU NO 1 TAHUN 2016 TENTANG PERUBAHAN KEDUA ATAS UU NO 23 TAHUN 2002 TENTANG PERLINDUNGAN ANAK MENJADI UNDANG-UNDANG',
+            'UU NO 23 TAHUN 2004 TENTANG PENGHAPUSAN KEKERASAN DALAM RUMAH TANGGA',
+            'UU NO NOMOR 44 TAHUN 2008 TENTANG PORNOGRAFI',
+            'UU NO 19 TAHUN 2016 TENTANG PERUBAHAN ATAS UNDANG-UNDANG NOMOR 11 TAHUN 2008 TENTANG INFORMASI DAN TRANSAKSI ELEKTRONIK',
+            'UU NO 21 TAHUN 2007 TENTANG PEMBERANTASAN TINDAK PIDANA PERDAGANGAN ORANG',
+            'KUHP'
+        ];
+        // $data = ['UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 12 TAHUN 2022 TENTANG TINDAK PIDANA KEKERASAN SEKSUAL',
+        //         'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 17 TAHUN 2016 TENTANG PENETAPAN PERATURAN PEMERINTAH PENGGANTI UNDANG-UNDANG NOMOR 1 TAHUN 2016 TENTANG PERUBAHAN KEDUA ATAS UNDANG-UNDANG NOMOR 23 TAHUN 2002 TENTANG PERLINDUNGAN ANAK MENJADI UNDANG-UNDANG',
+        //         'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 23 TAHUN 2004 TENTANG PENGHAPUSAN KEKERASAN DALAM RUMAH TANGGA',
+        //         'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 44 TAHUN 2008 TENTANG PORNOGRAFI',
+        //         'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 19 TAHUN 2016 TENTANG PERUBAHAN ATAS UNDANG-UNDANG NOMOR 11 TAHUN 2008 TENTANG INFORMASI DAN TRANSAKSI ELEKTRONIK',
+        //         'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 21 TAHUN 2007 TENTANG PEMBERANTASAN TINDAK PIDANA PERDAGANGAN ORANG',
+        //         'KITAB UNDANG-UNDANG HUKUM PIDANA'];
                 
         return $data;
     }
@@ -367,6 +378,8 @@ class OpsiController extends Controller
                 'KemenPPA',
                 'Kepolisian',
                 'Masyarakat',
+                'Jakarta Siaga 112',
+                'PUSPA DPPAPP',
                 'Media Sosial',
                 'Korban / Keluarga Korban',
                 'RS Abdi Waluyo',
@@ -601,6 +614,7 @@ class OpsiController extends Controller
                 'Kepolisian',
                 'Masyarakat',
                 'Jakarta Siaga 112',
+                'PUSPA DPPAPP',
                 'Media Sosial',
                 'Korban / Keluarga Korban',
                 'RS Abdi Waluyo',
@@ -1001,5 +1015,44 @@ class OpsiController extends Controller
         ];
         // Return the results as JSON
         echo json_encode($result);
+    }
+
+    // ini nanti dihilangkan, ambil dari MOKI
+    public function api_hari_kerja()
+    {
+        $data = [
+            [
+                "tahun" => 2024,
+                "bulan" => 2,
+                "hari_kerja" => 18,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 3,
+                "hari_kerja" => 18,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 4,
+                "hari_kerja" => 16,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 5,
+                "hari_kerja" => 18,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 6,
+                "hari_kerja" => 18,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 7,
+                "hari_kerja" => 23,
+            ],
+        ];
+
+        return $data;
     }
 }

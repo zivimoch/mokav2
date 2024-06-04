@@ -71,7 +71,6 @@ class KasusController extends Controller
                         ->whereNull('c.deleted_at')
                         ->groupBy('a.uuid', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 'a.jenis_kelamin', 'a.tanggal_lahir', 'a.status', 'd.name')
                         ;
-        
             // filter tanggal 
             if (isset($request->basis_tanggal)) {
                 # jika ada, jika tidak ada berarti untuk tabel LaporKBG (gpp itu tahun berapapun)
@@ -118,9 +117,10 @@ class KasusController extends Controller
             } elseif ($request->kategoriklien == 'anak') {
                 $data->whereRaw("TIMESTAMPDIFF(YEAR, a.tanggal_lahir, ".$penguarang.") < 18"); 
             }
-            // $data->orderBy('a.updated_at');
+
+            // filter arsip
             $data->where('a.arsip', $arsip);
-            
+            // $data->orderBy('a.updated_at');
             $datas = $data->get();
             foreach ($datas as $datas2) {
                 $datas2->tanggal_pelaporan_formatted = date('d M Y', strtotime($datas2->tanggal_pelaporan));
@@ -290,7 +290,8 @@ class KasusController extends Controller
                 'no_lp' => null,
                 'pengadilan_negeri' => null,
                 'isi_putusan' => null,
-                'lpsk' => null
+                'lpsk' => null,
+                'proses_hukum' => null
             ];
             $catatan_hukum->pasal = null;
         } else {

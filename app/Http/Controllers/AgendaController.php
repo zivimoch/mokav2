@@ -231,21 +231,40 @@ class AgendaController extends Controller
         if (!in_array(Auth::user()->jabatan, ['Sekretariat', 'Kepala Instansi', 'Super Admin'])) {
             abort(404);
         }
-        $result = DB::table('agenda as a')
-                    ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
-                    ->whereNull('a.deleted_at')
-                    ->whereNull('b.deleted_at')
-                    ->whereYear('a.tanggal_mulai', $request->tahun)
-                    ->whereMonth('a.tanggal_mulai', $request->bulan)
-                    ->select(
-                        DB::raw('COUNT(*) as total'),
-                        DB::raw('SUM(CASE WHEN b.validated_by IS NOT NULL THEN 1 ELSE 0 END) as valid'),
-                        DB::raw('SUM(CASE WHEN b.validated_by IS NOT NULL THEN 1 ELSE 0 END) / COUNT(*) * 100 as percentage')
-                    )
-                    ->first();
 
-        $percentage = $result->percentage;
-        return view('agenda.kinerja')->with('persen', $percentage);
+        // untuk checkbox
+        // $result = DB::table('agenda as a')
+        //             ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
+        //             ->whereNull('a.deleted_at')
+        //             ->whereNull('b.deleted_at')
+        //             ->whereYear('a.tanggal_mulai', $request->tahun)
+        //             ->whereMonth('a.tanggal_mulai', $request->bulan)
+        //             ->select(
+        //                 DB::raw('COUNT(*) as total'),
+        //                 DB::raw('SUM(CASE WHEN b.validated_by IS NOT NULL THEN 1 ELSE 0 END) as valid'),
+        //                 DB::raw('SUM(CASE WHEN b.validated_by IS NOT NULL THEN 1 ELSE 0 END) / COUNT(*) * 100 as percentage')
+        //             )
+        //             ->first();
+
+        // $percentage = $result->percentage;
+
+        $list_hari_kerja = (new OpsiController)->api_hari_kerja();
+
+        $tahun = $request->tahun;
+        $bulan = $request->bulan;
+        $hari_kerja = null;
+
+        foreach ($list_hari_kerja as $item) {
+            if ($item['tahun'] === (int)$tahun && $item['bulan'] === (int)$bulan) {
+                $hari_kerja = $item['hari_kerja'];
+                break;
+            }
+        }
+
+        return view('agenda.kinerja')
+                // ->with('persen', $percentage)
+                ->with('hari_kerja', $hari_kerja)
+                ;
     }
 
     public function kinerja_ajax(Request $request)
@@ -258,6 +277,7 @@ class AgendaController extends Controller
                 'a.uuid',
                 'a.jabatan',
                 'a.name',
+                DB::raw('COALESCE(w.jumlah_hari, 0) AS jumlah_hari'),
                 DB::raw('COALESCE(z.sudah_ditl, 0) AS sudah_ditl'),
                 DB::raw('COALESCE(y.belum_ditl, 0) AS belum_ditl'),
                 DB::raw('COALESCE(z.sudah_ditl, 0) + COALESCE(y.belum_ditl, 0) AS total'),
@@ -302,6 +322,20 @@ class AgendaController extends Controller
                     AND a.deleted_at IS NULL AND b.deleted_at IS NULL
                 GROUP BY
                     created_by) x'), 'x.created_by', '=', 'a.id')
+            ->leftJoin(DB::raw('(SELECT
+            a.created_by,
+            COUNT(DISTINCT DATE(b.tanggal_mulai)) AS jumlah_hari
+        FROM
+            tindak_lanjut a
+        LEFT JOIN
+            agenda b ON a.agenda_id = b.id
+        WHERE
+            YEAR(b.tanggal_mulai) = ' . $tahun . '
+            AND MONTH(b.tanggal_mulai) = ' . $bulan . '
+            AND a.deleted_at IS NULL
+            AND b.deleted_at IS NULL
+        GROUP BY
+            a.created_by) w'), 'w.created_by', '=', 'a.id')
             ->whereNull('a.deleted_at')
             ->whereIn('a.jabatan', ['Tenaga Ahli', 'Manajer Kasus', 'Pendamping Kasus', 'Advokat', 'Paralegal', 'Unit Reaksi Cepat', 'Psikolog', 'Konselor'])
             ->orderBy('a.jabatan')
@@ -387,8 +421,70 @@ class AgendaController extends Controller
                         ->where('tindak_lanjut.created_by', $user->id)
                         ->selectRaw('(IFNULL(SUM(tindak_lanjut.validated_by IS NOT NULL), 0) / COUNT(*)) * 100 as percentage')
                         ->value('percentage');
+        
+        $list_hari_kerja = (new OpsiController)->api_hari_kerja();
+
+        $tahun = $request->tahun;
+        $bulan = $request->bulan;
+        $hari_kerja = null;
+
+        foreach ($list_hari_kerja as $item) {
+            if ($item['tahun'] === (int)$tahun && $item['bulan'] === (int)$bulan) {
+                $hari_kerja = $item['hari_kerja'];
+                break;
+            }
+        }
+
+        $jumlah_hari_user = DB::table('agenda as a')
+                            ->leftJoin('tindak_lanjut as b', 'a.id', '=', 'b.agenda_id')
+                            ->where('b.created_by', $user->id)
+                            ->whereNull('a.deleted_at')
+                            ->whereNull('b.deleted_at')
+                            ->whereYear('a.tanggal_mulai', $tahun)
+                            ->whereMonth('a.tanggal_mulai', $bulan)
+                            ->select(DB::raw('DATE(a.tanggal_mulai)'))
+                            ->distinct()
+                            ->count(DB::raw('DATE(a.tanggal_mulai)'));
+        $kurang_hari_kerja = $hari_kerja - $jumlah_hari_user;
+            // jika kurang kerjanya kurang dari sama dengan 0 maka aman
+            // jika bulan yang dicek kurang dari sama dengan bulan ini maka aman
+            // jika tahun yang dicek kurang dari sama dengan tahun ini maka aman
+            // Calculate the current day and the total number of days in the current month
+        $total_days_in_month = date('t');
+        $threshold_day = $total_days_in_month - 5;
+        $tanggal_muncul = (int)date('d') > $threshold_day;
+        if ($kurang_hari_kerja > 0 && ((date('j') == date('t') || $bulan < date('m')) || $tanggal_muncul)) {
+            // $kurang_hari_kerja is more than 0, and today is the last day of the month, or the selected month is not more than this month
+            $kurang_hari_kerja = $kurang_hari_kerja;
+        } else {
+            // $kurang_hari_kerja is less than or equal to 0
+            $kurang_hari_kerja = 0;
+        }
+        // dd($kurang_hari_kerja);
+        // dd($bulan >= date('m') && $tahun >= date('Y'));
+        // if ($bulan >= date('m') && $tahun >= date('Y')) {
+        //     $kurang_hari_kerja = $kurang_hari_kerja;
+        // } else {
+        //     $kurang_hari_kerja = 0;
+        // }
+        // dd($kurang_hari_kerja);
+
+        $belum_tl = DB::table('agenda as a')
+                        ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
+                        ->where('b.created_by', $user->id)
+                        ->whereYear('a.tanggal_mulai', $tahun)
+                        ->whereMonth('a.tanggal_mulai', $bulan)
+                        ->whereNull('a.deleted_at')
+                        ->whereNull('b.deleted_at')
+                        ->whereNull('b.jam_selesai')
+                        ->count();
         /////////////////////////////////////////////////////////////////////////////////////////////
-        return view('agenda.kinerja_detail')->with('user', $user)->with('persen', $persen);
+        return view('agenda.kinerja_detail')->with('user', $user)
+                        ->with('persen', $persen)
+                        ->with('hari_kerja', $hari_kerja)
+                        ->with('kurang_hari_kerja', $kurang_hari_kerja)
+                        ->with('belum_tl', $belum_tl)
+                    ;
     }
 
     /**

@@ -21,6 +21,7 @@ class CreateCatatanHukumsTable extends Migration
             $table->string('pengadilan_negeri')->nullable();
             $table->text('isi_putusan')->nullable();
             $table->boolean('lpsk')->nullable()->default(0);
+            $table->text('proses_hukum')->nullable();
             $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();

@@ -36,7 +36,6 @@
             <h3 class="card-title">DataTable with default features</h3>
             </div> --}}
               <div class="card-body" style="overflow-x: scroll">
-
                 <form action="{{ route('kinerja') }}" method="GET">
                     <div class="input-group">
                         <select name="bulan" class="custom-select">
@@ -68,13 +67,19 @@
                         </div>
                     </div>
                 </form>
+                <b style="font-size: 18px">Jumlah Hari Kerja Yang Ditetapkan Bulan Ini : {{ $hari_kerja }} hari</b> (jumlah hari kerja dapat diedit di MOKI)
+                <br>
+                <br>
+
             <input type="hidden" id="uuid_agenda_hightlight">
             <table id="tabelAgenda" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
         
                 <thead>
                   <tr>
+                      <th>No</th>
                       <th>Jabatan</th>
                       <th>Nama Petugas</th>
+                      <th>Jumlah Hari</th>
                       <th>Sudah diTL</th>
                       <th>Belum diTL</th>
                       <th>Total Agenda</th>
@@ -85,7 +90,9 @@
                   <tbody></tbody>
                     <tfoot>
                       <th colspan="6"><center>Centang Semua</center></th>
-                      <th><div class="icheck-danger d-inline d-flex justify-content-around"><input type="checkbox" id="checkAll" {{ $persen == 100? 'checked':'' }}><label for="checkAll"></label></div></th>
+                      <th>
+                        {{-- <div class="icheck-danger d-inline d-flex justify-content-around"><input type="checkbox" id="checkAll" {{ $persen == 100? 'checked':'' }}><label for="checkAll"></label></div> --}}
+                      </th>
                     </tfoot>
               </table>
             </div>
@@ -179,8 +186,15 @@ Sudah di
           }
       },
       "columns": [
+        {
+          "data": "id",
+          "mRender": function (data, type, row, meta) {
+            return meta.row + meta.settings._iDisplayStart + 1;
+          }
+        },
         {"data": "jabatan"},
         {"data": "name"},
+        {"data": "jumlah_hari"},
         {"data": "sudah_ditl"},
         {"data": "belum_ditl"},
         {"data": "total"},
@@ -221,11 +235,11 @@ Sudah di
       "buttons": ["pageLength", "copy", {
                     extend: 'excel',
                     title:
-                        'Data Monitoring Laporan Kinerja '+ I want code here
+                        "Data Monitoring Laporan Kinerja Bulan {{ request()->get('bulan') }} Tahun {{ request()->get('tahun') }}"
                 }, {
                     extend: 'pdf',
                     title:
-                        'Data Monitoring Laporan Kinerja'
+                        "Data Monitoring Laporan Kinerja Bulan {{ request()->get('bulan') }} Tahun {{ request()->get('tahun') }}"
                 }]
       }).buttons().container().appendTo('#tabelAgenda_wrapper .col-md-6:eq(0)');
 

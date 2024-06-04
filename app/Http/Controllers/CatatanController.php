@@ -200,6 +200,7 @@ class CatatanController extends Controller
                     'pengadilan_negeri'   => $request->pengadilan_negeri,
                     'isi_putusan'   => $request->isi_putusan,
                     'lpsk'   => $request->lpsk,
+                    'proses_hukum'   => $request->proses_hukum,
                     'created_by'   => Auth::user()->id
                 ]);
                 

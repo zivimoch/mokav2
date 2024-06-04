@@ -79,6 +79,15 @@
             <h3 class="card-title">DataTable with default features</h3>
             </div> --}}
             <div class="card-body" style="overflow-x: scroll">
+              Filter aktif : 
+              <span class="badge bg-primary">Basis Tanggal : <span id="filterBasisTanggal"></span> </span>
+              <span class="badge bg-warning">Periode : <span id="filterTanggal"></span>  </span>
+              <span class="badge bg-primary">Basis Wilayah : <span id="filterBasisWilayah"></span>  </span>
+              <span class="badge bg-primary">Wilayah : <span id="filterWilayah"></span>  </span>
+              <span class="badge bg-primary">Basis Perhitungan Usia : <span id="filterPenghitunganUsia"></span>  </span>
+              <span class="badge bg-primary">Kategori Klien : <span id="filterKategori"></span>  </span>
+              <span class="badge bg-primary">Tampilkan Seluruh Kasus : <span id="filterAnda"></span>  </span>
+              <span class="badge bg-primary">Arsip : <span id="filterArsip"></span>  </span>
             <table id="tabelKasus" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
             <thead>
             <tr>
@@ -381,6 +390,24 @@
     }
   );
     $(function () {
+      // initialization
+      var basisTanggal = $('#filter1BasisTanggal').val();
+      var tanggal = $('#filter1Tanggal').val();
+      var basis_wilayah = $('#filter1BasisWilayah').val();
+      var wilayah = $('#filter1Wilayah').val();
+      var anda = $('input[name="filter1Anda"]:checked').val();
+      var arsip = $('input[name="filter1Arsip"]:checked').val();
+      var penghitungan_usia = $('#filter1PenghitunganUsia').val();
+      var kategori = $('#filter1Kategori').val();
+      $('#filterBasisTanggal').html(basisTanggal);
+      $('#filterTanggal').html(tanggal);
+      $('#filterBasisWilayah').html(basis_wilayah);
+      $('#filterWilayah').html(wilayah);
+      $('#filterAnda').html(anda);
+      $('#filterArsip').html(arsip);
+      $('#filterPenghitunganUsia').html(penghitungan_usia);
+      $('#filterKategori').html(kategori);
+
       $('#tabelLaporKBG').DataTable({
       "ordering": true,
       "processing": true,
@@ -860,6 +887,15 @@
       var penghitungan_usia = $('#filter1PenghitunganUsia').val();
       var kategori = $('#filter1Kategori').val();
       var url = "{{ env('APP_URL') }}/kasus?basis_tanggal=" + basisTanggal + "&tanggal=" + tanggal + "&basis_wilayah=" + basis_wilayah + "&wilayah=" + wilayah + "&arsip=" + arsip + "&anda=" + anda + "&penghitungan_usia=" + penghitungan_usia + "&kategoriklien=" + kategori;
+
+      $('#filterBasisTanggal').html(basisTanggal);
+      $('#filterTanggal').html(tanggal);
+      $('#filterBasisWilayah').html(basis_wilayah);
+      $('#filterWilayah').html(wilayah);
+      $('#filterAnda').html(anda);
+      $('#filterArsip').html(arsip);
+      $('#filterPenghitunganUsia').html(penghitungan_usia);
+      $('#filterKategori').html(kategori);
 
       $('#tabelKasus').DataTable().ajax.url(url).load();
 

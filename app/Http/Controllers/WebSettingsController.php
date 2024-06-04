@@ -25,7 +25,7 @@ class WebSettingsController extends Controller
     // index manage kategori kasus
     public function kategori_kasus()
     {
-        if (Auth::user()->jabatan != 'Super Admin') {
+        if (!in_array(Auth::user()->jabatan, ['Super Admin','Tenaga Ahli'])) {
             return abort(404);
         }
 

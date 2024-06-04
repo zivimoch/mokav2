@@ -51,11 +51,19 @@
                 <input type="hidden" name="user_id" value="{{ request()->user_id }}">
                 <div class="input-group">
                     <select name="bulan" class="custom-select">
+                      @php
+                          $monthNameSelected = '';
+                      @endphp
                         @foreach(range(1, 12) as $monthNumber)
                             @php
                                 $monthName = date('F', mktime(0, 0, 0, $monthNumber, 1));
                                 $selected = ($monthNumber == request()->bulan) ? 'selected' : '';
+
+                              if ($monthNumber == request()->bulan){
+                                $monthNameSelected = $monthName;
+                              }
                             @endphp
+                            
                             <option value="{{ $monthNumber }}" {{ $selected }}>{{ $monthName }}</option>
                         @endforeach
                     </select>
@@ -79,7 +87,46 @@
                     </div>
                 </div>
             </form>
+            <b style="font-size: 18px">Jumlah Hari Kerja yang ditetapkan Bulan {{ $monthNameSelected }} : {{ $hari_kerja }} hari</b>
+            <br>
+            <b style="font-size: 18px">Jumlah Cuti Anda yang sudah dikonfirmasi Bulan {{ $monthNameSelected }} : - hari</b> (data dari MOKI belum tersedia)
+            <br>
+            <br>
             <input type="hidden" id="uuid_agenda_hightlight" value="{{ Request::get('row-agenda') }}">
+
+              @if ($kurang_hari_kerja > 0 || $belum_tl > 0)
+              <div class="col-md-12 warningSPP">
+                <div class="alert alert-danger">
+                <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+                Agenda anda Bulan {{ $monthNameSelected }} perlu diperbaiki :<br>
+                <ul>
+                  @if ($kurang_hari_kerja > 0) 
+                  <div style="background-color: rgb(123, 0, 0); margin-bottom:5px; margin-top:5px">
+                    <li>
+                    <b>Jumlah hari kurang {{ $kurang_hari_kerja }} hari</b> dari Jumlah Hari Kerja yang ditetapkan, silahkan cek lagi hari yang belum ada agendanya.<br>
+                    *Selama belum terkoneksi dengan MOKI maka : <br>
+                    <ol>
+                      <li>Pengecekan hari yang kosong masih manual.</li>
+                      <li>Tanggal cuti tidak akan terdeteksi, kosongkan saja bila tidak masuk kerja (sistem akan tetap membaca bahwa jumlah hari kurang, namun abaikan warning ini bila ada cuti).</li>
+                      <li>Evaluasi Kinerja Bulanan akan mengambil data dari MOKA dan disandingkan dengan data cuti di sekretariat terlebih dahulu.</li>
+                    </ol>
+                    <br>
+                    </li>
+                  </div>
+                  @endif
+                  @if ($belum_tl > 0)
+                  <div style="background-color: rgb(123, 0, 0)">
+                    <li>
+                    <b> {{ $belum_tl }} Agenda </b> Bulan {{ $monthNameSelected }} belum terisi <b>Tindak Lanjut</b>nya. 
+                    </li>
+                  </div>
+                  @endif
+                </ul>
+                *<a href="{{ request()->fullUrl() }}">Refresh Halaman</a> jika sudah menyempurnakan Laporan Kinerja bulan {{ $monthNameSelected }}
+                </div>
+              </div>
+              @endif
+
             <input type="hidden" id="belumtl">
               <table id="tabelAgenda" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
         

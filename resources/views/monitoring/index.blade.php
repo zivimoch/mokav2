@@ -166,6 +166,101 @@
 
           <div class="row">
             <div class="col-md-6">
+              <div id="accordion0">
+                <div class="card card-primary direct-chat direct-chat-primary">
+                    <div class="card-header">
+                      <h3 class="card-title">Profil PPPA DKI Jakarta</h3>
+                      <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-widget="chat-pane-toggle">
+                          <i class="fas fa-filter"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-toggle="collapse" data-target="#collapse0" aria-expanded="true" aria-controls="collapse">
+                          <i class="fas fa-chevron-down"></i>
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div class="card-body" style="overflow: hidden;">
+                      {{-- <div id="overlay0" class="overlay dark" style="position: absolute; height:100%; width:100%">
+                        <div class="cv-spinner">
+                          <span class="spinner"></span>
+                        </div>
+                      </div> --}}
+
+                      <div id="collapse0" class="collapse show" data-parent="#accordion0">
+                        
+                        {{-- <iframe src="{{ route('monitoring.slide') }}" height="500px" width="100%" title="Iframe Example"></iframe> --}}
+                        
+                        <div class="direct-chat-contacts" style="padding: 10px; height:100%; z-index:100">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <button onclick="load_data0()" type="button" class="btn btn-warning btn-xs float-right" data-widget="chat-pane-toggle">
+                                <i class="fas fa-undo"></i> Reset
+                              </button>
+                            </div>
+
+                            <div class="col-md-12">
+                              filter
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
+              <div id="accordion8">
+                <div class="card card-primary direct-chat direct-chat-primary">
+                    <div class="card-header">
+                      <h3 class="card-title">Export Data</h3>
+                      <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-widget="chat-pane-toggle">
+                          <i class="fas fa-filter"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-toggle="collapse" data-target="#collapse8" aria-expanded="true" aria-controls="collapse">
+                          <i class="fas fa-chevron-down"></i>
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div class="card-body" style="overflow: hidden;">
+                      {{-- <div id="overlay0" class="overlay dark" style="position: absolute; height:100%; width:100%">
+                        <div class="cv-spinner">
+                          <span class="spinner"></span>
+                        </div>
+                      </div> --}}
+
+                      <div id="collapse0" class="collapse show" data-parent="#accordion8">
+                        Export
+                        {{-- <iframe src="{{ route('monitoring.slide') }}" height="500px" width="100%" title="Iframe Example"></iframe> --}}
+                        
+                        <div class="direct-chat-contacts" style="padding: 10px; height:100%; z-index:100">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <button onclick="load_data0()" type="button" class="btn btn-warning btn-xs float-right" data-widget="chat-pane-toggle">
+                                <i class="fas fa-undo"></i> Reset
+                              </button>
+                            </div>
+
+                            <div class="col-md-12">
+                              filter
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
               <div id="accordion2">
                 <div class="card card-primary direct-chat direct-chat-primary">
                     <div class="card-header">
@@ -1074,6 +1169,7 @@
                                   <select class="form-control" id="filterKategoriKlien7">
                                     <option value="total" selected>Default ( Semua Kategori Klien )</option>
                                     <option value="dewasa_perempuan">Perempuan Dewasa</option>
+                                    <option value="dewasa_laki">Pria Dewasa (sudah bukan klien lagi)</option>
                                     <option value="anak_perempuan">Anak Perempuan</option>
                                     <option value="anak_laki">Anak Laki-laki</option>
                                   </select>
@@ -1917,7 +2013,7 @@ titleChart4 = $('#titleChart4').html(basisWilayah);
               var jumlah = Object.values(response.data);
               var labels = Object.keys(response.data);
 
-              if (!chart5) {
+              if (!chart6) {
                   // Create chart instance if it doesn't exist
                   var options = {
                       series: jumlah,
@@ -1959,6 +2055,7 @@ titleChart4 = $('#titleChart4').html(basisWilayah);
 
                   chart6 = new ApexCharts(document.querySelector("#chart6"), options);
                   chart6.render();
+                  
               } else {
                   // Update chart data if it exists
                   chart6.updateOptions({
@@ -1990,6 +2087,7 @@ titleChart4 = $('#titleChart4').html(basisWilayah);
               }).buttons().container().appendTo('#tabelChart6_wrapper .col-md-6:eq(0)');
 
               $('#tabelChart6_filter').css({'float':'right','display':'inline-block; background-color:black'});
+              $("#overlay6").hide();
           },
           error: function(response) {
               setTimeout(function() {

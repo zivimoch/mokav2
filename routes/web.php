@@ -154,6 +154,7 @@ Route::middleware('auth')->group(function () {
     Route::get('publicurl/kasus',[PublicUrlController::class, 'kasus'])->name('publicurl.kasus');
     // pemantauan untuk statistik
     Route::get('monitoring', [MonitoringController::class, 'index'])->name('monitoring');
+    Route::get('monitoring/slide', [MonitoringController::class, 'slide'])->name('monitoring.slide');
     Route::get('monitoring/monitoringkasus', [MonitoringController::class, 'monitoring_kasus'])->name('monitor.monitoringkasus');
     Route::get('monitoring/sheets', [MonitoringController::class, 'sheets'])->name('monitor.sheets');
     // log activity

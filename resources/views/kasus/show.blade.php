@@ -538,6 +538,15 @@
                             </br> 
                             </td>
                         </tr>
+                        <tr id="proses_hukum">
+                            <td style="width: 200px">Catatan Proses Hukum</td>
+                            <td style="width: 1%">:</td>
+                            <td>
+                                <span class="data_hukum">{!! nl2br(e($catatan_hukum->proses_hukum)) !!}</span> 
+                                <textarea name="proses_hukum" style="width: 100%" class="input_hukum" rows="5">{{ $catatan_hukum->proses_hukum }}</textarea>
+                            </br> 
+                            </td>
+                        </tr>
                     </table>
                     </form>
                 </div>
@@ -1551,7 +1560,7 @@
             </div>
 
             <div class="post clearfix" style="color:black">
-                <b>ASESMEN</b>
+                <b>ASESMEN KONDISI AWAL</b>
                 <form action="{{ route('asesmen.update', 'uuid') }}" method="POST">
                 @csrf
                 @method('put')

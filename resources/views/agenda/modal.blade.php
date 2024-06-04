@@ -902,11 +902,11 @@
     // Hide overlay after all processes are done
     setTimeout(function() {
                 $("#overlayAgenda").hide(); // Hide overlay after 1 second delay
-            }, 500);
+            }, 500);dsadsdsads
 }
 
 
-  tinymce.init({
+tinymce.init({
   table_class_list: [{
       title: 'None',
       value: ''
@@ -920,18 +920,17 @@
   content_style: "body { font-family: Arial; }",
   selector: ".tinymce",
   menubar: 'file edit insert view format',
-  toolbar: '#mytoolbar',
+  toolbar: 'forecolor backcolor fontselect fontsizeselect | insertfile | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | image responsivefilemanager | formatselect | fullscreen | ',
   lineheight_formats: "8pt 9pt 10pt 11pt 12pt 14pt 16pt 18pt 20pt 22pt 24pt 26pt 36pt",
-  // ukuran A4 Potrait
-  plugins: 'textcolor table paste',
-  font_formats: "Candara=candara;Cambria=cambria;Calibri=calibri;Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Oswald=oswald; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats",
   plugins: [
     "advlist autolink lists link charmap print preview hr anchor pagebreak",
     "searchreplace wordcount visualblocks visualchars code fullscreen",
     "insertdatetime nonbreaking save table contextmenu directionality",
     "emoticons template paste textcolor colorpicker textpattern"
   ],
-  contextmenu: 'copy',
+  contextmenu: 'copy custompaste',
+  paste_as_text: true,
+  font_formats: "Candara=candara;Cambria=cambria;Calibri=calibri;Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Oswald=oswald; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats",
   style_formats: [{
       title: 'Line height',
       items: [{
@@ -1001,8 +1000,6 @@
       ]
     }
   ],
-  
-  toolbar: "forecolor backcolor fontselect  fontsizeselect | insertfile | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | image responsivefilemanager | formatselect | fullscreen | ",
   convert_fonts_to_spans: true,
   paste_word_valid_elements: "b,strong,i,em,h1,h2,u,p,ol,ul,li,a[href],span,color,font-size,font-color,font-family,mark,table,tr,td",
   paste_retain_style_properties: "all",
@@ -1032,8 +1029,31 @@
       };
     };
     input.click();
+  },
+  setup: function (editor) {
+    // Adding custom paste menu item using the older method for TinyMCE 4.x or fallback
+    editor.addMenuItem('custompaste', {
+      text: 'Paste',
+      context: 'tools',
+      onclick: function() {
+        navigator.clipboard.readText().then(text => {
+          editor.insertContent(text);
+        }).catch(err => {
+          console.error('Failed to read clipboard contents: ', err);
+        });
+      }
+    });
+
+    // Fallback for browsers that do not support navigator.clipboard
+    editor.on('contextmenu', function (e) {
+      if (!navigator.clipboard) {
+        alert('Your browser does not support clipboard API. Please use Ctrl+V to paste.');
+        e.preventDefault();
+      }
+    });
   }
-  });
+});
+
     // Resolve conflict in jQuery UI tooltip with Bootstrap tooltip
     tinymce.PluginManager.add("editor-ruler", function(editor) {
   
