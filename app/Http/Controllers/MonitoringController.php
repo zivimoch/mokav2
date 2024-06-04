@@ -734,8 +734,8 @@ class MonitoringController extends Controller
             $count++;
             // untuk ditampilkan di data tabulasi
             $data_seluruh["$value->nama"] = $kategori_klien;
-        }
-        // dd($data);
+        dd($data);
+    }
 
         $data = array_filter($data, function ($value) {
             return $value != 0;
@@ -743,6 +743,7 @@ class MonitoringController extends Controller
         $data_seluruh_kota = array_filter($data_seluruh, function ($value) {
             return $value != 0;
         });
+
 
         $response = array(
             'status' => 200,
@@ -940,10 +941,13 @@ class MonitoringController extends Controller
         // identitas pelapor, terlapor atau korban
         if ($request->basis_identitas == "pelapor") {
             $basis_identitas = 'c.tanggal_lahir';
+            $basis_identitas_pendidikan = 'c.pendidikan';
         } elseif ($request->basis_identitas == "terlapor") {
             $basis_identitas = 'd.tanggal_lahir';
+            $basis_identitas_pendidikan = 'd.pendidikan';
         } else {
             $basis_identitas = 'a.tanggal_lahir';
+            $basis_identitas_pendidikan = 'a.pendidikan';
         }
         
         // jumlah klien berdasarkan kategori klien / korban
@@ -979,6 +983,13 @@ class MonitoringController extends Controller
                 DB::raw('COUNT(*) AS total')
             )
             ->groupBy(DB::raw('YEAR('.$basis_tanggal.')'))
+            ->orderBy('total','DESC');
+        }else if ($request->identitas == "pendidikan") {
+            $seluruh_klien->select(
+                DB::raw($basis_identitas_pendidikan.' AS pendidikan'),
+                DB::raw('COUNT(*) AS total')
+            )
+            ->groupBy($basis_identitas_pendidikan)
             ->orderBy('total','DESC');
         }else{
             // identitas kategori klien
@@ -1020,7 +1031,6 @@ class MonitoringController extends Controller
             $data = $seluruh_klien->get();
         }
         
-        $datas = [];
         // rentang usia
         if ($request->identitas == "usia") {
             if ($request->kategori_klien == 'dewasa_perempuan') {
@@ -1041,12 +1051,46 @@ class MonitoringController extends Controller
                 $datas["25 s/d 59 Tahun"] = intval($data->total_wama_malan);
                 $datas["60+"] = intval($data->total_namluh);
             }
+        }else {
+            $datas = $seluruh_klien->get();
+            $count = $lainnya = 0;
+            foreach ($datas as $key => $value) {
+                if ($request->kategori_klien == 'dewasa_perempuan') {
+                    $jumlah_pendidikan = intval($value->dewasa_perempuan);
+                } elseif ($request->kategori_klien == 'anak_perempuan'){
+                    $jumlah_pendidikan = intval($value->anak_perempuan);
+                } elseif ($request->kategori_klien == 'anak_laki') {
+                    $jumlah_pendidikan = intval($value->anak_laki);
+                } else {
+                    $jumlah_pendidikan = intval($value->total);
+                }
+
+                if ($count > 9) {
+                    $lainnya = $jumlah_pendidikan + $lainnya;
+                    $data["Lainnya"] = $lainnya;
+                }else{
+                    $data["$value->pendidikan"] = $jumlah_pendidikan;
+                }
+                dd($data);
+                $count++;
+                // untuk ditampilkan di data tabulasi
+                $data_seluruh["$value->pendidikan"] = $kategori_klien;
+            }
         }
-        
-        // mencegah menampilkan yang valuenya 0
-        $data = array_filter($datas, function ($value) {
-            return $value != 0;
-        });
+dd($data);
+        if ($request->identitas == "usia") {
+            // mencegah menampilkan yang valuenya 0
+            $data = array_filter($datas, function ($value) {
+                return $value != 0;
+            });
+        } else {
+            $data = array_filter($data, function ($value) {
+                return $value != 0;
+            });
+            $data_seluruh_kota = array_filter($data_seluruh, function ($value) {
+                return $value != 0;
+            });
+        }
 
         $response = array(
             'status' => 200,

@@ -178,7 +178,7 @@ class CatatanController extends Controller
                 // delete pasal
                 TPasal::where('klien_id', $klien->id)->delete();
 
-                if ($request->putusan == 0) {
+                if ($request->laporan_polisi == 0) {
                     $request->merge(['pengadilan_negeri' => null]);
                     $request->merge(['isi_putusan' => null]);
                 }else{
