@@ -969,24 +969,17 @@ class MonitoringController extends Controller
 
         // rentang usia
         if ($request->identitas == "usia") {
-            $seluruh_klien->select(
-                DB::raw('YEAR('.$basis_tanggal.') AS PERIODE'),
-                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 18) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 24) AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan_lapanlas_wapat'),
-                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 25) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 59) AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan_wama_malan'),
-                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 60) AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan_namluh'),
-                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 18) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 24) AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS dewasa_laki_lapanlas_wapat'),
-                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 25) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 59) AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS dewasa_laki_wama_malan'),
-                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 60) AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS dewasa_laki_namluh'),
-                DB::raw('SUM(DISTINCT CASE WHEN TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') < 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS anak_perempuan'),
-                DB::raw('SUM(DISTINCT CASE WHEN TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') < 18 AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS anak_laki'),
-                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') < 18) THEN 1 ELSE 0 END) AS total_nol_juhlas'),
-                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 18) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 24) THEN 1 ELSE 0 END) AS total_lapanlas_wapat'),
-                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 25) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 59) THEN 1 ELSE 0 END) AS total_wama_malan'),
-                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 60) THEN 1 ELSE 0 END) AS total_namluh'),
-                DB::raw('COUNT(DISTINCT '.$id_pendidikan.') AS total')
-            )
-            ->groupBy(DB::raw('YEAR('.$basis_tanggal.')'))
-            ->orderBy('total','DESC');
+            $seluruh_klien
+                    ->select(
+                        DB::raw('YEAR('.$basis_tanggal.') AS PERIODE'),
+                        DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') >= 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan'),
+                        DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS anak_perempuan'),
+                        DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS anak_laki'),
+                        DB::raw('COUNT(DISTINCT '.$id_pendidikan.') AS total')
+                    )
+                    ->selectRaw('COALESCE(TIMESTAMPDIFF(YEAR, a.tanggal_lahir, CURDATE()), "NULL (Kosong / Tidak Diisi)") AS nama')
+                    ->groupBy(DB::raw('YEAR('.$basis_tanggal.'), nama'))
+                    ->orderBy('total','DESC');
         }else if ($request->identitas == "pendidikan") {
             $seluruh_klien
             ->select(
@@ -1033,69 +1026,51 @@ class MonitoringController extends Controller
             $seluruh_klien->where('a.arsip', 0);
         }
 
-        if ($request->identitas == "usia") {
-            $data = $seluruh_klien->first();
+        if ($request->kategori_klien == 'dewasa_perempuan') {
+            $seluruh_klien->where('a.jenis_kelamin', 'perempuan')
+                          ->whereRaw('TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') >= 18');
+        } elseif ($request->kategori_klien == 'anak_perempuan'){
+            $seluruh_klien->where('a.jenis_kelamin', 'perempuan')
+                          ->whereRaw('TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18');
+        } elseif ($request->kategori_klien == 'anak_laki') {
+            $seluruh_klien->where('a.jenis_kelamin', 'laki-laki')
+                          ->whereRaw('TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18');
         }
         
-        // rentang usia
-        if ($request->identitas == "usia") {
-            if ($request->kategori_klien == 'dewasa_perempuan') {
-                $datas["18 s/d 24 Tahun"] = intval($data->dewasa_perempuan_lapanlas_wapat);
-                $datas["25 s/d 59 Tahun"] = intval($data->dewasa_perempuan_wama_malan);
-                $datas["60+"] = intval($data->dewasa_perempuan_namluh);
-            } elseif ($request->kategori_klien == 'dewasa_laki') {
-                $datas["Pria 18 s/d 24 Tahun"] = intval($data->dewasa_laki_lapanlas_wapat);
-                $datas["Pria 25 s/d 59 Tahun"] = intval($data->dewasa_laki_wama_malan);
-                $datas["Pria 60+"] = intval($data->dewasa_laki_namluh);
-            } elseif ($request->kategori_klien == 'anak_perempuan'){
-                $datas["0 s/d 17"] = intval($data->anak_perempuan);
-            } elseif ($request->kategori_klien == 'anak_laki') {
-                $datas["0 s/d 17"] = intval($data->anak_laki);
-            } else {
-                $datas["0 s/d 17 Tahun"] = intval($data->total_nol_juhlas);
-                $datas["18 s/d 24 Tahun"] = intval($data->total_lapanlas_wapat);
-                $datas["25 s/d 59 Tahun"] = intval($data->total_wama_malan);
-                $datas["60+"] = intval($data->total_namluh);
-            }
-        }else {
-            $datas = $seluruh_klien->get();
-            $count = $lainnya = 0;
-            foreach ($datas as $key => $value) {
-                if ($request->kategori_klien == 'dewasa_perempuan') {
-                    $jumlah_pendidikan = intval($value->dewasa_perempuan);
-                } elseif ($request->kategori_klien == 'anak_perempuan'){
-                    $jumlah_pendidikan = intval($value->anak_perempuan);
-                } elseif ($request->kategori_klien == 'anak_laki') {
-                    $jumlah_pendidikan = intval($value->anak_laki);
+        
+        $datas = $seluruh_klien->get();
+        $count = $lainnya = 0;
+        $data["0 s/d 17 Tahun"] = 0;
+        $data["18 s/d 24 Tahun"] = 0;
+        $data["25 s/d 59 Tahun"] = 0;
+        $data["60+ Tahun"] = 0;
+        foreach ($datas as $key => $value) {
+            $jumlah = intval($value->total);
+
+            if ($count > 9 && $request->identitas != 'usia') {
+                $lainnya = $jumlah + $lainnya;
+                $data["Lainnya"] = $lainnya;
+            }else{
+                if ($request->identitas != 'usia') {
+                    $data["$value->nama"] = $jumlah;
                 } else {
-                    $jumlah_pendidikan = intval($value->total);
+                    $data["0 s/d 17 Tahun"] = intval($value->nama) <= 17 ? $data["0 s/d 17 Tahun"] + $value->total : $data["0 s/d 17 Tahun"];
+                    $data["18 s/d 24 Tahun"] =  intval($value->nama) >= 18 && intval($value->nama) <= 24 ? $data["18 s/d 24 Tahun"] + $value->total : $data["18 s/d 24 Tahun"];
+                    $data["25 s/d 59 Tahun"] =  intval($value->nama) >= 25 && intval($value->nama) <= 59 ? $data["25 s/d 59 Tahun"] + $value->total : $data["25 s/d 59 Tahun"];
+                    $data["60+ Tahun"] =  intval($value->nama) >= 60 ? $data["60+ Tahun"] + $value->total : $data["60+ Tahun"];
                 }
-
-                if ($count > 9) {
-                    $lainnya = $jumlah_pendidikan + $lainnya;
-                    $data["Lainnya"] = $lainnya;
-                }else{
-                    $data["$value->nama"] = $jumlah_pendidikan;
-                }
-                $count++;
-                // untuk ditampilkan di data tabulasi
-                $data_seluruh["$value->nama"] = $jumlah_pendidikan;
             }
+            $count++;
+            // untuk ditampilkan di data tabulasi
+            $data_seluruh["$value->nama"] = $jumlah;
         }
-
-        if ($request->identitas == "usia") {
-            // mencegah menampilkan yang valuenya 0
-            $data = array_filter($datas, function ($value) {
-                return $value != 0;
-            });
-        } else {
-            $data = array_filter($data, function ($value) {
-                return $value != 0;
-            });
-            $data_seluruh_kota = array_filter($data_seluruh, function ($value) {
-                return $value != 0;
-            });
-        }
+        
+        $data = array_filter($data, function ($value) {
+            return $value != 0;
+        });
+        $data_seluruh_kota = array_filter($data_seluruh, function ($value) {
+            return $value != 0;
+        });
 
         $response = array(
             'status' => 200,

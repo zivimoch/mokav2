@@ -2378,7 +2378,7 @@ function load_data2() {
                   "lengthChange": false, 
                   "pageLength": 10,
                   "autoWidth": false,
-                  "order": [[1, 'desc']],
+                  "order": [[0, 'asc']],
                   "lengthMenu": [
                     [5, 10, 25, 50, 100, -1],
                     ['10 rows', '25 rows', '50 rows', '100 rows','All'],
