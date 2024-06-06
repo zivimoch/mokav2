@@ -1801,34 +1801,42 @@ class DatabaseSeeder extends Seeder
         $t_keyword = [
             [
                 "tindak_lanjut_id" => 1,
+                "jabatan" => 'Psikolog',
                 "value" => 'Pengukuran Awal'
             ],
             [
                 "tindak_lanjut_id" => 1,
+                "jabatan" => 'Hukum',
                 "value" => 'Konsultasi Hukum'
             ],
             [
                 "tindak_lanjut_id" => 2,
+                "jabatan" => 'Psikolog',
                 "value" => 'Pengukuran Awal'
             ],
             [
                 "tindak_lanjut_id" => 3,
+                "jabatan" => 'Psikolog',
                 "value" => 'Pengukuran Awal'
             ],
             [
                 "tindak_lanjut_id" => 4,
+                "jabatan" => 'Psikolog',
                 "value" => 'Pengukuran Awal'
             ],
             [
                 "tindak_lanjut_id" => 5,
+                "jabatan" => 'Psikolog',
                 "value" => 'Pengukuran Awal'
             ],
             [
                 "tindak_lanjut_id" => 6,
+                "jabatan" => 'Psikolog',
                 "value" => 'Pengukuran Awal'
             ],
             [
                 "tindak_lanjut_id" => 7,
+                "jabatan" => 'Psikolog',
                 "value" => 'Pengukuran Awal'
             ]
         ];

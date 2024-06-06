@@ -779,6 +779,7 @@ class AgendaController extends Controller
                             foreach ($request->keyword as $value_keyword) {
                                 TKeyword::create([
                                     'tindak_lanjut_id' => $tindak_lanjut->id,
+                                    'jabatan' => Auth::user()->jabatan,
                                     'value' => $value_keyword,
                                     'created_by' => Auth::user()->id
                                 ]);

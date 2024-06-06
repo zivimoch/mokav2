@@ -16,6 +16,7 @@ class CreateTKeywordsTable extends Migration
         Schema::create('t_keyword', function (Blueprint $table) {
             $table->id();
             $table->integer('tindak_lanjut_id');
+            $table->string('jabatan');
             $table->string('value');
             $table->integer('created_by')->nullable();
             $table->timestamps();

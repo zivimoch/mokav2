@@ -940,17 +940,14 @@ class MonitoringController extends Controller
         
         // identitas pelapor, terlapor atau korban
         if ($request->basis_identitas == "pelapor") {
-            $basis_identitas = 'c.tanggal_lahir';
-            $basis_identitas_pendidikan = 'c.pendidikan';
-            $id_pendidikan = 'c.id';
+            $basis_identitas = 'c.'.$request->identitas;
+            $id_basis_identitas = 'c.id';
         } elseif ($request->basis_identitas == "terlapor") {
-            $basis_identitas = 'd.tanggal_lahir';
-            $basis_identitas_pendidikan = 'd.pendidikan';
-            $id_pendidikan = 'd.id';
+            $basis_identitas = 'd.'.$request->identitas;
+            $id_basis_identitas = 'd.id';
         } else {
-            $basis_identitas = 'a.tanggal_lahir';
-            $basis_identitas_pendidikan = 'a.pendidikan';
-            $id_pendidikan = 'a.id';
+            $basis_identitas = 'a.'.$request->identitas;
+            $id_basis_identitas = 'a.id';
         }
         
         // jumlah klien berdasarkan kategori klien / korban
@@ -965,44 +962,23 @@ class MonitoringController extends Controller
                                             AND b.deleted_at IS NULL) z'), 'z.klien_id', '=', 'a.id')
                         ->whereNull('a.deleted_at')
                         // filter tanggal
-                        ->whereBetween($basis_tanggal, [$from, $to]);
+                        ->whereBetween($basis_tanggal, [$from, $to])
+                        ->select(
+                            DB::raw('YEAR('.$basis_tanggal.') AS PERIODE'),
+                            DB::raw('COUNT(DISTINCT '.$id_basis_identitas.') AS total')
+                        )
+                        ->orderBy('total','DESC');
 
-        // rentang usia
-        if ($request->identitas == "usia") {
+        if ($request->identitas != "usia") {
             $seluruh_klien
-                    ->select(
-                        DB::raw('YEAR('.$basis_tanggal.') AS PERIODE'),
-                        DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') >= 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan'),
-                        DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS anak_perempuan'),
-                        DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS anak_laki'),
-                        DB::raw('COUNT(DISTINCT '.$id_pendidikan.') AS total')
-                    )
-                    ->selectRaw('COALESCE(TIMESTAMPDIFF(YEAR, a.tanggal_lahir, CURDATE()), "NULL (Kosong / Tidak Diisi)") AS nama')
-                    ->groupBy(DB::raw('YEAR('.$basis_tanggal.'), nama'))
-                    ->orderBy('total','DESC');
-        }else if ($request->identitas == "pendidikan") {
+            ->selectRaw('COALESCE('.$basis_identitas.', "NULL (Kosong / Tidak Diisi)") AS nama')
+           ->groupBy(DB::raw('YEAR('.$basis_tanggal.'), '.$basis_identitas));
+        } else {
             $seluruh_klien
-            ->select(
-                DB::raw('YEAR('.$basis_tanggal.') AS PERIODE'),
-                DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') >= 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan'),
-                DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS anak_perempuan'),
-                DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS anak_laki'),
-                DB::raw('COUNT(DISTINCT '.$id_pendidikan.') AS total')
-            )
-            ->selectRaw('COALESCE('.$basis_identitas_pendidikan.', "NULL (Kosong / Tidak Diisi)") AS nama')
-            ->groupBy(DB::raw('YEAR('.$basis_tanggal.'), '.$basis_identitas_pendidikan))
-            ->orderBy('total','DESC');
-        }else{
-            // identitas kategori klien
-            $seluruh_klien->select(
-                DB::raw('YEAR('.$basis_tanggal.') AS PERIODE'),
-                DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') >= 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan'),
-                DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS anak_perempuan'),
-                DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS anak_laki'),
-                DB::raw('COUNT(*) AS total'))
-                ->groupBy(DB::raw('YEAR('.$basis_tanggal.')'))
-                ->orderBy('total','DESC');
+            ->selectRaw('COALESCE(TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.'), "NULL (Kosong / Tidak Diisi)") AS nama')
+            ->groupBy(DB::raw('YEAR('.$basis_tanggal.'), nama'));
         }
+
         // filter basis wilayah & wilayah
         if ($request->wilayah != 'default') {
             if ($request->basis_wilayah == 'tkp') {
@@ -1031,10 +1007,10 @@ class MonitoringController extends Controller
                           ->whereRaw('TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') >= 18');
         } elseif ($request->kategori_klien == 'anak_perempuan'){
             $seluruh_klien->where('a.jenis_kelamin', 'perempuan')
-                          ->whereRaw('TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18');
+                          ->whereRaw('TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 17');
         } elseif ($request->kategori_klien == 'anak_laki') {
             $seluruh_klien->where('a.jenis_kelamin', 'laki-laki')
-                          ->whereRaw('TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18');
+                          ->whereRaw('TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 17');
         }
         
         
@@ -1095,11 +1071,9 @@ class MonitoringController extends Controller
         // $header = $shhet->pull(0);
         // $value = Sheets::collection($header,$shhet);
         // $data = array_values($value->toArray());
-        // dd($data);
 
         // CREAD NEW SHEET
         // Sheets::spreadsheet($sheet_id)->addSheet('NamaSheet');
-        // dd('Berhasil');
 
         // ADD DATA
         // $row = [
@@ -1109,11 +1083,9 @@ class MonitoringController extends Controller
         //     ['3','name3','email3'],
         // ];
         // Sheets::spreadsheet($sheet_id)->sheet('NamaSheet')->append($row);
-        // dd('Berhasil');
 
         // DELETE SHEET
         // Sheets::spreadsheet($sheet_id)->deleteSheet('NamaSheet');
-        // dd('Berhasil');
 
         // UPDATE VALUE OF DATA
         $row = [
