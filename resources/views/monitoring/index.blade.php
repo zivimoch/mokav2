@@ -1047,7 +1047,7 @@
               <div id="accordion7">
                 <div class="card card-primary direct-chat direct-chat-primary">
                     <div class="card-header">
-                      <h3 class="card-title">Jumlah Korban Kekerasan Berdasarkan Rentang Usia</h3>
+                      <h3 class="card-title">Jumlah Berdasarkan Rentang Usia (<span id="titleChart7">korban</span>)</h3>
                       <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-widget="chat-pane-toggle">
                           <i class="fas fa-filter"></i>
@@ -1228,7 +1228,7 @@
               <div id="accordion7">
                 <div class="card card-primary direct-chat direct-chat-primary">
                     <div class="card-header">
-                      <h3 class="card-title">Jumlah Korban Kekerasan Berdasarkan Pendidikan Klien</h3>
+                      <h3 class="card-title">Jumlah Berdasarkan Pendidikan (<span id="titleChart8">korban</span>)</h3>
                       <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-widget="chat-pane-toggle">
                           <i class="fas fa-filter"></i>
@@ -1350,7 +1350,6 @@
                                   <select class="form-control" id="filterKategoriKlien8">
                                     <option value="total" selected>Default ( Semua Kategori Klien )</option>
                                     <option value="dewasa_perempuan">Perempuan Dewasa</option>
-                                    <option value="dewasa_laki">Pria Dewasa (sudah bukan klien lagi)</option>
                                     <option value="anak_perempuan">Anak Perempuan</option>
                                     <option value="anak_laki">Anak Laki-laki</option>
                                   </select>
@@ -1941,8 +1940,7 @@ function load_data2() {
       basisWilayah = $('#filterBasisWilayah4').val();
       regis = $('input[name="filterRegis4"]:checked').val();
       arsip = $('input[name="filterArsip4"]:checked').val();
-
-titleChart4 = $('#titleChart4').html(basisWilayah);
+      titleChart4 = $('#titleChart4').html(basisWilayah);
 
       $.ajax({
           url: '{{ route("api.v1.jumlahkorbanwilayah") }}?pengelompokan=' + pengelompokan + '&basis_tanggal=' + basisTanggal + '&tanggal=' + tanggal + '&basis_wilayah=' + basisWilayah + '&regis=' + regis + '&arsip=' + arsip + '&rekaptotal=1',
@@ -2301,6 +2299,7 @@ titleChart4 = $('#titleChart4').html(basisWilayah);
       regis = $('input[name="filterRegis7"]:checked').val();
       arsip = $('input[name="filterArsip7"]:checked').val();
       basisIdentitas = $('#filterBasisIdentitas7').val();
+      titleChart7 = $('#titleChart7').html(basisIdentitas);
 
       $.ajax({
           url: '{{ route("api.v1.jumlahkorbanidentitas") }}?pengelompokan=' + pengelompokan + '&basis_tanggal=' + basisTanggal + '&tanggal=' + tanggal + '&basis_wilayah=' + basisWilayah + '&wilayah=' + wilayah + '&penghitungan_usia=' + penghitunganUsia + '&kategori_klien=' + kategoriKlien + '&regis=' + regis + '&arsip=' + arsip + '&basis_identitas=' + basisIdentitas + '&identitas=usia',
@@ -2419,6 +2418,7 @@ titleChart4 = $('#titleChart4').html(basisWilayah);
       regis = $('input[name="filterRegis8"]:checked').val();
       arsip = $('input[name="filterArsip8"]:checked').val();
       basisIdentitas = $('#filterBasisIdentitas8').val();
+      titleChart8 = $('#titleChart8').html(basisIdentitas);
 
       $.ajax({
           url: '{{ route("api.v1.jumlahkorbanidentitas") }}?pengelompokan=' + pengelompokan + '&basis_tanggal=' + basisTanggal + '&tanggal=' + tanggal + '&basis_wilayah=' + basisWilayah + '&wilayah=' + wilayah + '&penghitungan_usia=' + penghitunganUsia + '&kategori_klien=' + kategoriKlien + '&regis=' + regis + '&arsip=' + arsip + '&basis_identitas=' + basisIdentitas + '&identitas=pendidikan',

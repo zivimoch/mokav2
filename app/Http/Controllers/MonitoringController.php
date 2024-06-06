@@ -713,6 +713,7 @@ class MonitoringController extends Controller
         }
 
         $datas = $seluruh_klien->get();
+
         $count = $lainnya = 0;
         foreach ($datas as $key => $value) {
             if ($request->kategori_klien == 'dewasa_perempuan') {
@@ -734,8 +735,7 @@ class MonitoringController extends Controller
             $count++;
             // untuk ditampilkan di data tabulasi
             $data_seluruh["$value->nama"] = $kategori_klien;
-        dd($data);
-    }
+        }
 
         $data = array_filter($data, function ($value) {
             return $value != 0;
@@ -942,12 +942,15 @@ class MonitoringController extends Controller
         if ($request->basis_identitas == "pelapor") {
             $basis_identitas = 'c.tanggal_lahir';
             $basis_identitas_pendidikan = 'c.pendidikan';
+            $id_pendidikan = 'c.id';
         } elseif ($request->basis_identitas == "terlapor") {
             $basis_identitas = 'd.tanggal_lahir';
             $basis_identitas_pendidikan = 'd.pendidikan';
+            $id_pendidikan = 'd.id';
         } else {
             $basis_identitas = 'a.tanggal_lahir';
             $basis_identitas_pendidikan = 'a.pendidikan';
+            $id_pendidikan = 'a.id';
         }
         
         // jumlah klien berdasarkan kategori klien / korban
@@ -968,28 +971,33 @@ class MonitoringController extends Controller
         if ($request->identitas == "usia") {
             $seluruh_klien->select(
                 DB::raw('YEAR('.$basis_tanggal.') AS PERIODE'),
-                DB::raw('SUM(CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 18) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 24) AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan_lapanlas_wapat'),
-                DB::raw('SUM(CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 25) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 59) AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan_wama_malan'),
-                DB::raw('SUM(CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 60) AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan_namluh'),
-                DB::raw('SUM(CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 18) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 24) AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS dewasa_laki_lapanlas_wapat'),
-                DB::raw('SUM(CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 25) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 59) AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS dewasa_laki_wama_malan'),
-                DB::raw('SUM(CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 60) AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS dewasa_laki_namluh'),
-                DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') < 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS anak_perempuan'),
-                DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') < 18 AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS anak_laki'),
-                DB::raw('SUM(CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') < 18) THEN 1 ELSE 0 END) AS total_nol_juhlas'),
-                DB::raw('SUM(CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 18) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 24) THEN 1 ELSE 0 END) AS total_lapanlas_wapat'),
-                DB::raw('SUM(CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 25) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 59) THEN 1 ELSE 0 END) AS total_wama_malan'),
-                DB::raw('SUM(CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 60) THEN 1 ELSE 0 END) AS total_namluh'),
-                DB::raw('COUNT(*) AS total')
+                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 18) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 24) AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan_lapanlas_wapat'),
+                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 25) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 59) AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan_wama_malan'),
+                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 60) AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan_namluh'),
+                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 18) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 24) AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS dewasa_laki_lapanlas_wapat'),
+                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 25) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 59) AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS dewasa_laki_wama_malan'),
+                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 60) AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS dewasa_laki_namluh'),
+                DB::raw('SUM(DISTINCT CASE WHEN TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') < 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS anak_perempuan'),
+                DB::raw('SUM(DISTINCT CASE WHEN TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') < 18 AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS anak_laki'),
+                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') < 18) THEN 1 ELSE 0 END) AS total_nol_juhlas'),
+                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 18) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 24) THEN 1 ELSE 0 END) AS total_lapanlas_wapat'),
+                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 25) AND (TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 59) THEN 1 ELSE 0 END) AS total_wama_malan'),
+                DB::raw('SUM(DISTINCT CASE WHEN (TIMESTAMPDIFF(YEAR, '.$basis_identitas.', '.$penguarang.') >= 60) THEN 1 ELSE 0 END) AS total_namluh'),
+                DB::raw('COUNT(DISTINCT '.$id_pendidikan.') AS total')
             )
             ->groupBy(DB::raw('YEAR('.$basis_tanggal.')'))
             ->orderBy('total','DESC');
         }else if ($request->identitas == "pendidikan") {
-            $seluruh_klien->select(
-                DB::raw($basis_identitas_pendidikan.' AS pendidikan'),
-                DB::raw('COUNT(*) AS total')
+            $seluruh_klien
+            ->select(
+                DB::raw('YEAR('.$basis_tanggal.') AS PERIODE'),
+                DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') >= 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan'),
+                DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS anak_perempuan'),
+                DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS anak_laki'),
+                DB::raw('COUNT(DISTINCT '.$id_pendidikan.') AS total')
             )
-            ->groupBy($basis_identitas_pendidikan)
+            ->selectRaw('COALESCE('.$basis_identitas_pendidikan.', "NULL (Kosong / Tidak Diisi)") AS nama')
+            ->groupBy(DB::raw('YEAR('.$basis_tanggal.'), '.$basis_identitas_pendidikan))
             ->orderBy('total','DESC');
         }else{
             // identitas kategori klien
@@ -1027,8 +1035,6 @@ class MonitoringController extends Controller
 
         if ($request->identitas == "usia") {
             $data = $seluruh_klien->first();
-        } else {
-            $data = $seluruh_klien->get();
         }
         
         // rentang usia
@@ -1069,15 +1075,14 @@ class MonitoringController extends Controller
                     $lainnya = $jumlah_pendidikan + $lainnya;
                     $data["Lainnya"] = $lainnya;
                 }else{
-                    $data["$value->pendidikan"] = $jumlah_pendidikan;
+                    $data["$value->nama"] = $jumlah_pendidikan;
                 }
-                dd($data);
                 $count++;
                 // untuk ditampilkan di data tabulasi
-                $data_seluruh["$value->pendidikan"] = $kategori_klien;
+                $data_seluruh["$value->nama"] = $jumlah_pendidikan;
             }
         }
-dd($data);
+
         if ($request->identitas == "usia") {
             // mencegah menampilkan yang valuenya 0
             $data = array_filter($datas, function ($value) {
