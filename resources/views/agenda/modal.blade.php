@@ -902,7 +902,7 @@
     // Hide overlay after all processes are done
     setTimeout(function() {
                 $("#overlayAgenda").hide(); // Hide overlay after 1 second delay
-            }, 500);dsadsdsads
+            }, 500);
 }
 
 

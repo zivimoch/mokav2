@@ -1044,7 +1044,7 @@ class AgendaController extends Controller
             $data->where('keyword', 'like', '%' .$search . '%');
         }
         
-        $data = $data->limit(100)->get();
+        $data = $data->limit(100)->orderBy('keyword')->get();
 
         $result = [];
 

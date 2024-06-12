@@ -40,6 +40,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/jumlahkorbanklasifikasi', [MonitoringController::class, 'jumlah_korban_klasifikasi'])->name('api.v1.jumlahkorbanklasifikasi');
         Route::get('/jumlahkorbankategorilokasi', [MonitoringController::class, 'jumlah_korban_kategori_lokasi'])->name('api.v1.jumlahkorbankategorilokasi');
         Route::get('/jumlahkorbanidentitas', [MonitoringController::class, 'jumlah_korban_identitas'])->name('api.v1.jumlahkorbanidentitas');
+        Route::get('/jumlahlayanan', [MonitoringController::class, 'jumlah_layanan'])->name('api.v1.jumlahlayanan');
     });
 });
 

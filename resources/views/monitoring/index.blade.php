@@ -5,6 +5,15 @@
   .apexcharts-legend-series {
     margin-top: 15px !important;
   }
+  .copy-area {
+    height: 300px;
+    overflow: scroll;
+    background-color: rgb(157, 255, 255);
+  }
+  .card-title { 
+    font-weight: bold;
+    font-size: 23px;
+  }
 </style>
  <!-- daterange picker -->
  <link rel="stylesheet" href="{{ asset('adminlte') }}/plugins/daterangepicker/daterangepicker.css">
@@ -51,14 +60,27 @@
                       </button>
                     </div>
                   </div>
-                  
-                  <div class="card-body" style="overflow: hidden;">
-                    <div id="overlay1" class="overlay dark" style="position: absolute; height:100%; width:100%">
-                      <div class="cv-spinner">
-                        <span class="spinner"></span>
-                      </div>
-                    </div>
+                  <div class="card-body" style="overflow: hide;">
                     <div id="collapse1" class="collapse" data-parent="#accordion1" style="overflow-x:scroll">
+
+                      <span style="color: red; margin:10px; font-size:20px; font-weight:bold" id="label_monitoring_kasus_mv">
+                        *Data reasltime membutuhkan waktu lebih lama untuk ditampilkan. 
+                        <a href="#" onclick="load_data1()">Tampilkan Data Terdahulu</a> 
+                      </span>
+
+                      <span style="color: red; margin:10px; font-size:20px; font-weight:bold" id="label_monitoring_kasus">
+                        *Terakhir direkap oleh sistem pukul {{ $terakhir_update_monitoring_kasus }} . 
+                        <a href="#" onclick="load_data1a()">Tampilkan data terupdate saat ini</a> (membutuhkan waktu lebih lama).
+                      </span>
+
+                      <div id="overlay1" class="overlay dark" style="position: absolute; height:100%; width:100%; font-size:25px">
+                        <div class="cv-spinner">
+                          <span style="position: absolute">
+                            Klik icon "<i class="fas fa-chevron-down"></i>" jika anda belum mengkliknya
+                          </span>
+                          <span class="spinner"></span>
+                        </div>
+                      </div>
                       <div style="padding: 10px">
                         Filter : <span id="filter1"></span>
                       </div>
@@ -182,16 +204,19 @@
                       </div>
                     </div>
                     
-                    <div class="card-body" style="overflow: hidden;">
-                      {{-- <div id="overlay0" class="overlay dark" style="position: absolute; height:100%; width:100%">
+                    <div class="card-body" style="overflow: hide;">
+                      {{-- <div id="overlay0" class="overlay dark" style="position: absolute; height:100%; width:100%; font-size:25px">
                         <div class="cv-spinner">
+                          <span style="position: absolute">
+                            Klik icon "<i class="fas fa-chevron-down"></i>" jika anda belum mengkliknya
+                          </span>
                           <span class="spinner"></span>
                         </div>
                       </div> --}}
 
                       <div id="collapse0" class="collapse show" data-parent="#accordion0">
                         
-                        {{-- <iframe src="{{ route('monitoring.slide') }}" height="500px" width="100%" title="Iframe Example"></iframe> --}}
+                        <iframe src="{{ route('monitoring.slide') }}" height="500px" width="100%" title="Iframe Example"></iframe>
                         
                         <div class="direct-chat-contacts" style="padding: 10px; height:100%; z-index:100">
                           <div class="row">
@@ -212,9 +237,8 @@
                 </div>
             </div>
 
-
             <div class="col-md-6">
-              <div id="accordion8">
+              <div id="accordion11">
                 <div class="card card-primary direct-chat direct-chat-primary">
                     <div class="card-header">
                       <h3 class="card-title">Export Data</h3>
@@ -224,33 +248,250 @@
                         </button>
                         <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
                         </button>
-                        <button type="button" class="btn btn-tool" data-toggle="collapse" data-target="#collapse0" aria-expanded="true" aria-controls="collapse">
+                        <button onclick="load_data11()" type="button" class="btn btn-tool" data-toggle="collapse" data-target="#collapse11" aria-expanded="true" aria-controls="collapse">
                           <i class="fas fa-chevron-down"></i>
                         </button>
                       </div>
                     </div>
                     
-                    <div class="card-body" style="overflow: hidden;">
-                      {{-- <div id="overlay0" class="overlay dark" style="position: absolute; height:100%; width:100%">
+                    <div class="card-body" style="overflow: hide;">
+                      {{-- <div id="overlay11" class="overlay dark" style="position: absolute; height:100%; width:100%; font-size:25px">
                         <div class="cv-spinner">
+                          <span style="position: absolute">
+                            Klik icon "<i class="fas fa-chevron-down"></i>" jika anda belum mengkliknya
+                          </span>
                           <span class="spinner"></span>
                         </div>
                       </div> --}}
 
-                      <div id="collapse0" class="collapse show" data-parent="#accordion8">
-                        Export
-                        {{-- <iframe src="{{ route('monitoring.slide') }}" height="500px" width="100%" title="Iframe Example"></iframe> --}}
-                        
+                      <div id="collapse11" class="collapse show" data-parent="#accordion11">
+                        <div style="padding: 10px">
+                          Filter : <span id="filter10"></span>
+                          <br>
+                        </div>
+                        <div style="margin: 10px">
+                          <div class="copy-area" id="rangkuman_jumlah_kasus">
+                            *[Rekap Data Jumlah Klien]*<br>
+                            08 Jun 2024 14:19:32<br>
+                            -------------------------------------------------<br>
+                            *Jumlah Seluruh Klien :* <span id="jumlah_seluruh_klien">10000</span><br>
+                            -------------------------------------------------<br>
+                            *Yang sudah diregis :* <span id="jumlah_seluruh_klien_regis">0</span><br>
+                            *Perempuan Dewasa :* <span id="jumlah_perempuan_dewasa">0</span><br>
+                            *Anak Perempuan :* <span id="jumlah_anak_perempuan">0</span><br>
+                            *Anak Laki-laki :* <span id="jumlah_anak_laki">0</span><br>
+                            -------------------------------------------------<br>
+                            *a. Kategori Kasus (5 Terbanyak) :*<br>
+                            - Anak Berkonflik Dengan Hukum : 0<br>
+                            - Anak Korban Kekerasan Seksuak : 0<br>
+                            - Perempuan Korban Kekerasan Seksuak : 0<br>
+                            *b. Jenis Kekerasan :*<br>
+                            - Fisik : 0<br>
+                            - Psikis : 0<br>
+                            - Seksual : 0<br>
+                            - Seksual : 0<br>
+                            - Eksploitasi : 0<br>
+                            - Penelantaran : 0<br>
+                            - Tidak Diketahui / Lainnya : 0<br>
+                            - Bukan Kekerasan : 0<br>
+                            ==========================================================<br>
+                            *Jumlah Klien Berdasarkan Wilayah Penugasan Satpel :* <br>
+                            *1. Jakarta Pusat* (420 Klien) <br>
+                            Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
+                            Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
+                            Anak Laki-laki : <span id="jumlah_anak_laki">0</span><br>
+                            *a. Kategori Kasus (3 Terbanyak) :*<br>
+                            - Anak Berkonflik Dengan Hukum : 0<br>
+                            - Anak Korban Kekerasan Seksuak : 0<br>
+                            - Perempuan Korban Kekerasan Seksuak : 0<br>
+                            *b. Jenis Kekerasan :*<br>
+                            - Fisik : 0<br>
+                            - Psikis : 0<br>
+                            - Seksual : 0<br>
+                            - Seksual : 0<br>
+                            - Eksploitasi : 0<br>
+                            - Penelantaran : 0<br>
+                            - Tidak Diketahui / Lainnya : 0<br>
+                            - Bukan Kekerasan : 0<br>
+                            *2. Jakarta Utara & Kep.1000* (420 Klien) <br>
+                            Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
+                            Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
+                            Anak Laki-laki : <span id="jumlah_anak_laki">0</span><br>
+                            *a. Kategori Kasus (3 Terbanyak) :*<br>
+                            - Anak Berkonflik Dengan Hukum : 0<br>
+                            - Anak Korban Kekerasan Seksuak : 0<br>
+                            - Perempuan Korban Kekerasan Seksuak : 0<br>
+                            *b. Jenis Kekerasan :*<br>
+                            - Fisik : 0<br>
+                            - Psikis : 0<br>
+                            - Seksual : 0<br>
+                            - Seksual : 0<br>
+                            - Eksploitasi : 0<br>
+                            - Penelantaran : 0<br>
+                            - Tidak Diketahui / Lainnya : 0<br>
+                            - Bukan Kekerasan : 0<br>
+                            *3. Jakarta Barat*  (420 Klien)<br>
+                            Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
+                            Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
+                            Anak Laki-laki : <span id="jumlah_anak_laki">0</span><br>
+                            *a. Kategori Kasus (3 Terbanyak) :*<br>
+                            - Anak Berkonflik Dengan Hukum : 0<br>
+                            - Anak Korban Kekerasan Seksuak : 0<br>
+                            - Perempuan Korban Kekerasan Seksuak : 0<br>
+                            *b. Jenis Kekerasan :*<br>
+                            - Fisik : 0<br>
+                            - Psikis : 0<br>
+                            - Seksual : 0<br>
+                            - Seksual : 0<br>
+                            - Eksploitasi : 0<br>
+                            - Penelantaran : 0<br>
+                            - Tidak Diketahui / Lainnya : 0<br>
+                            - Bukan Kekerasan : 0<br>
+                            *4. Jakarta Selatan*  (420 Klien)<br>
+                            Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
+                            Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
+                            Anak Laki-laki : <span id="jumlah_anak_laki">0</span><br>
+                            *a. Kategori Kasus (3 Terbanyak) :*<br>
+                            - Anak Berkonflik Dengan Hukum : 0<br>
+                            - Anak Korban Kekerasan Seksuak : 0<br>
+                            - Perempuan Korban Kekerasan Seksuak : 0<br>
+                            *b. Jenis Kekerasan :*<br>
+                            - Fisik : 0<br>
+                            - Psikis : 0<br>rangkuman_jumlah_kasus
+                            - Seksual : 0<br>
+                            - Seksual : 0<br>
+                            - Eksploitasi : 0<br>
+                            - Penelantaran : 0<br>
+                            - Tidak Diketahui / Lainnya : 0<br>
+                            - Bukan Kekerasan : 0<br>
+                            *5. Jakarta Timur*  (420 Klien)<br>
+                            Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
+                            Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
+                            Anak Laki-laki : <span id="jumlah_anak_laki">0</span><br>
+                            *a. Kategori Kasus (3 Terbanyak) :*<br>
+                            - Anak Berkonflik Dengan Hukum : 0<br>
+                            - Anak Korban Kekerasan Seksuak : 0<br>
+                            - Perempuan Korban Kekerasan Seksuak : 0<br>
+                            *b. Jenis Kekerasan :*<br>
+                            - Fisik : 0<br>
+                            - Psikis : 0<br>
+                            - Seksual : 0<br>
+                            - Seksual : 0<br>
+                            - Eksploitasi : 0<br>
+                            - Penelantaran : 0<br>
+                            - Tidak Diketahui / Lainnya : 0<br>
+                            - Bukan Kekerasan : 0<br>
+                            -------------------------------------------------<br>
+                            
+
+                          </div>
+                        <button class="copy-button" onclick="copyTextExportData('rangkuman_jumlah_kasus')">Copy Text</button>
+
+                        </div>
                         <div class="direct-chat-contacts" style="padding: 10px; height:100%; z-index:100">
                           <div class="row">
                             <div class="col-md-12">
-                              <button onclick="load_data0()" type="button" class="btn btn-warning btn-xs float-right" data-widget="chat-pane-toggle">
+                              <button onclick="load_data11()" type="button" class="btn btn-warning btn-xs float-right" data-widget="chat-pane-toggle">
                                 <i class="fas fa-undo"></i> Reset
                               </button>
                             </div>
-
+                            
                             <div class="col-md-12">
-                              filter
+                              <div class="form-group">
+                                <label for="">Basis Tanggal</label>
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <select id="filterBasisTanggal11" class="form-control btn-primary">
+                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis )</option>
+                                      <option value="tanggal_pelaporan" >Berdasarkan Tanggal Pelaporan</option>
+                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+                                      <option value="created_at">Berdasarkan Tanggal Input</option>
+                                    </select>
+                                  </div>
+                                  <input type="text" class="form-control daterank" id="filterTanggal11" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                </div>
+                              </div>
+
+                              <div class="form-group">
+                                <label for="">Basis Wilayah</label>
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <select class="form-control btn-primary" id="filterBasisWilayah11">
+                                      <option value="tkp" selected>Berdasarkan Wilayah TKP</option>
+                                      <option value="ktp">Berdasarkan Wilayah KTP</option>
+                                      <option value="domisili">Berdasarkan Wilayah Domisili</option>
+                                      <option value="satpel">Berdasarkan Wilayah Satpel</option>
+                                    </select>
+                                  </div>
+                                  <select class="form-control" id="filterWilayah11">
+                                    <option value="default" selected>Default ( Semua Wilayah )</option>
+                                    @foreach ($kota as $item) 
+                                      <option value="{{ $item->code }}" >{{ $item->name }}</option> 
+                                    @endforeach 
+                                    <option value="luar">Luar DKI Jakarta</option>
+                                  </select>
+                                </div>
+                              </div>
+
+                              <div class="form-group">
+                                <label for="">Basis Penghitungan Usia Klien</label>
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <select class="form-control btn-primary" id="filterPenghitunganUsia11">
+                                      <option value="lapor" selected>Default (Tanggal Pelaporan dikurangi Tanggal Lahir)</option>
+                                      <option value ="today" >Tanggal Hari Ini dikurangi Tanggal Lahir</option>
+                                      <option value="kejadian">Tanggal Kejadian dikurangi Tanggal Lahir</option>
+                                      <option value="input">Tanggal Input dikurangi Tanggal Lahir</option>
+                                    </select>
+                                  </div>
+                                  <select class="form-control" id="filterKategoriKlien10">
+                                    <option value="total" selected>Default ( Semua Kategori Klien )</option>
+                                    <option value="dewasa_perempuan">Perempuan Dewasa</option>
+                                    <option value="anak_perempuan">Anak Perempuan</option>
+                                    <option value="anak_laki">Anak Laki-laki</option>
+                                  </select>
+                                </div>
+                              </div>
+
+                              <div class="form-group">
+                                <label for="">Kasus yang Diregis</label>
+                                <br>
+                                <div class="icheck-primary d-inline" style="margin-right:15px">
+                                  <input type="radio" id="filterRegis11a" name="filterRegis11" checked value="0">
+                                  <label for="filterRegis11a">
+                                      Seluruh kasus
+                                  </label>
+                                </div>
+                                <div class="icheck-primary d-inline">
+                                  <input type="radio" id="filterRegis11b" name="filterRegis11" value="1">
+                                  <label for="filterRegis11b">
+                                      Kasus yang sudah diregis saja
+                                  </label>
+                                </div>
+                                <br>
+                                <span style="color: red; font-size:12px">*jika basis tanggal adalah Tanggal Diregis maka otomatis menampilkan kasus yang sudah diregis saja</span>
+                              </div>
+
+                              <div class="form-group">
+                                <label for="">Kasus yang Diarsipkan</label>
+                                <br>
+                                <div class="icheck-primary d-inline" style="margin-right:15px">
+                                  <input type="radio" id="filterArsip11a" name="filterArsip11" value="0">
+                                  <label for="filterArsip11a">
+                                      Tanpa kasus yang diarsipkan
+                                  </label>
+                                </div>
+                                <div class="icheck-primary d-inline">
+                                  <input type="radio" id="filterArsip11b" name="filterArsip11" checked value="1">
+                                  <label for="filterArsip11b">
+                                      Dengan kasus yang diarsipkan
+                                  </label>
+                                </div>
+                              </div>
+                              
+                              <button onclick="load_data11()" type="button" class="btn btn-block btn-primary mt-4" data-widget="chat-pane-toggle">
+                                <i class="fas fa-check"></i> Terapkan
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -260,7 +501,168 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
+          </div>
+
+          <div class="row" style="border-style: solid;">
+            <div class="col-md-12" style="border-bottom: solid black; padding-top:10px; margin-bottom:15px">
+              <div class="col-md-12 col-sm-12 col-12">
+                <div class="form-group">
+                    <input type="text" id="Search" class="form-control" onkeyup="search()" placeholder="Cari judul data...">
+                </div>
+            </div>
+            </div>
+            <div class="col-md-6 target">
+              <div id="accordion10">
+                <div class="card card-primary direct-chat direct-chat-primary">
+                    <div class="card-header">
+                      <h3 class="card-title">Jumlah Detail Layanan</h3>
+                      <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-widget="chat-pane-toggle">
+                          <i class="fas fa-filter"></i>
+                        </button>
+                        <button onclick="load_data10()" type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
+                        </button>
+                        <button onclick="load_data10()" type="button" class="btn btn-tool" data-toggle="collapse" data-target="#collapse10" aria-expanded="true" aria-controls="collapse">
+                          <i class="fas fa-chevron-down"></i>
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div class="card-body" style="overflow: hide;">
+                      <div id="overlay10" class="overlay dark" style="position: absolute; height:100%; width:100%; font-size:25px">
+                        <div class="cv-spinner">
+                          <span style="position: absolute">
+                            Klik icon "<i class="fas fa-chevron-down"></i>" jika anda belum mengkliknya
+                          </span>
+                          <span class="spinner"></span>
+                        </div>
+                      </div>
+
+                      <div id="collapse10" class="collapse" data-parent="#accordion10">
+                        <div style="padding: 10px">
+                          Filter : <span id="filter10"></span>
+                          <br>
+                          <div style="color: red">
+                            *Catatan : 1 agenda kegiatan dapat lebih dari 1 keyword / detail layanan. Contoh : agenda Pendampingan di Kepolisian sambil Konsultasi Hukum
+                          </div>
+                        </div>
+                        <div style="margin: 10px">
+                          <table id="tabelChart10" class="table table-sm table-bordered table-hover" style="cursor:pointer; width:100%"></table>  
+                        </div>
+                        <div class="direct-chat-contacts" style="padding: 10px; height:100%; z-index:100">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <button onclick="load_data10()" type="button" class="btn btn-warning btn-xs float-right" data-widget="chat-pane-toggle">
+                                <i class="fas fa-undo"></i> Reset
+                              </button>
+                            </div>
+                            
+                            <div class="col-md-12">
+                              <div class="form-group">
+                                <label for="">Basis Tanggal</label>
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <select id="filterBasisTanggal10" class="form-control btn-primary">
+                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis )</option>
+                                      <option value="tanggal_pelaporan" >Berdasarkan Tanggal Pelaporan</option>
+                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+                                      <option value="created_at">Berdasarkan Tanggal Input</option>
+                                    </select>
+                                  </div>
+                                  <input type="text" class="form-control daterank" id="filterTanggal10" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                </div>
+                              </div>
+
+                              <div class="form-group">
+                                <label for="">Basis Wilayah</label>
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <select class="form-control btn-primary" id="filterBasisWilayah10">
+                                      <option value="tkp" selected>Berdasarkan Wilayah TKP</option>
+                                      <option value="ktp">Berdasarkan Wilayah KTP</option>
+                                      <option value="domisili">Berdasarkan Wilayah Domisili</option>
+                                      <option value="satpel">Berdasarkan Wilayah Satpel</option>
+                                    </select>
+                                  </div>
+                                  <select class="form-control" id="filterWilayah10">
+                                    <option value="default" selected>Default ( Semua Wilayah )</option>
+                                    @foreach ($kota as $item) 
+                                      <option value="{{ $item->code }}" >{{ $item->name }}</option> 
+                                    @endforeach 
+                                    <option value="luar">Luar DKI Jakarta</option>
+                                  </select>
+                                </div>
+                              </div>
+
+                              <div class="form-group">
+                                <label for="">Basis Penghitungan Usia Klien</label>
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <select class="form-control btn-primary" id="filterPenghitunganUsia10">
+                                      <option value="lapor" selected>Default (Tanggal Pelaporan dikurangi Tanggal Lahir)</option>
+                                      <option value ="today" >Tanggal Hari Ini dikurangi Tanggal Lahir</option>
+                                      <option value="kejadian">Tanggal Kejadian dikurangi Tanggal Lahir</option>
+                                      <option value="input">Tanggal Input dikurangi Tanggal Lahir</option>
+                                    </select>
+                                  </div>
+                                  <select class="form-control" id="filterKategoriKlien10">
+                                    <option value="total" selected>Default ( Semua Kategori Klien )</option>
+                                    <option value="dewasa_perempuan">Perempuan Dewasa</option>
+                                    <option value="anak_perempuan">Anak Perempuan</option>
+                                    <option value="anak_laki">Anak Laki-laki</option>
+                                  </select>
+                                </div>
+                              </div>
+
+                              <div class="form-group">
+                                <label for="">Kasus yang Diregis</label>
+                                <br>
+                                <div class="icheck-primary d-inline" style="margin-right:15px">
+                                  <input type="radio" id="filterRegis10a" name="filterRegis10" checked value="0">
+                                  <label for="filterRegis10a">
+                                      Seluruh kasus
+                                  </label>
+                                </div>
+                                <div class="icheck-primary d-inline">
+                                  <input type="radio" id="filterRegis10b" name="filterRegis10" value="1">
+                                  <label for="filterRegis10b">
+                                      Kasus yang sudah diregis saja
+                                  </label>
+                                </div>
+                                <br>
+                                <span style="color: red; font-size:12px">*jika basis tanggal adalah Tanggal Diregis maka otomatis menampilkan kasus yang sudah diregis saja</span>
+                              </div>
+
+                              <div class="form-group">
+                                <label for="">Kasus yang Diarsipkan</label>
+                                <br>
+                                <div class="icheck-primary d-inline" style="margin-right:15px">
+                                  <input type="radio" id="filterArsip10a" name="filterArsip10" value="0">
+                                  <label for="filterArsip10a">
+                                      Tanpa kasus yang diarsipkan
+                                  </label>
+                                </div>
+                                <div class="icheck-primary d-inline">
+                                  <input type="radio" id="filterArsip10b" name="filterArsip10" checked value="1">
+                                  <label for="filterArsip10b">
+                                      Dengan kasus yang diarsipkan
+                                  </label>
+                                </div>
+                              </div>
+                              
+                              <button onclick="load_data10()" type="button" class="btn btn-block btn-primary mt-4" data-widget="chat-pane-toggle">
+                                <i class="fas fa-check"></i> Terapkan
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 target">
               <div id="accordion2">
                 <div class="card card-primary direct-chat direct-chat-primary">
                     <div class="card-header">
@@ -277,9 +679,12 @@
                       </div>
                     </div>
                     
-                    <div class="card-body" style="overflow: hidden;">
-                      <div id="overlay2" class="overlay dark" style="position: absolute; height:100%; width:100%">
+                    <div class="card-body" style="overflow: hide;">
+                      <div id="overlay2" class="overlay dark" style="position: absolute; height:100%; width:100%; font-size:25px">
                         <div class="cv-spinner">
+                          <span style="position: absolute">
+                            Klik icon "<i class="fas fa-chevron-down"></i>" jika anda belum mengkliknya
+                          </span>
                           <span class="spinner"></span>
                         </div>
                       </div>
@@ -288,8 +693,9 @@
                         <div style="padding: 10px">
                           Filter : <span id="filter2"></span>
                         </div>
-                        
-                        <div id="chart2" style="display: block; width: 100%; height: 100%; padding: 0px 20px"></div>
+                        <div style="height: 500px;">
+                          <div id="chart2" style="display: block; width: 100%; height: 100%; padding: 0px 20px"></div>
+                        </div>
                         
                         <div class="direct-chat-contacts" style="padding: 10px; height:100%; z-index:100">
                           <div class="row">
@@ -412,7 +818,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+
+            <div class="col-md-6 target">
               <div id="accordion3">
                 <div class="card card-primary direct-chat direct-chat-primary">
                     <div class="card-header">
@@ -429,9 +836,12 @@
                       </div>
                     </div>
                     
-                    <div class="card-body" style="overflow: hidden;">
-                      <div id="overlay3" class="overlay dark" style="position: absolute; height:100%; width:100%">
+                    <div class="card-body" style="overflow: hide;">
+                      <div id="overlay3" class="overlay dark" style="position: absolute; height:100%; width:100%; font-size:25px">
                         <div class="cv-spinner">
+                          <span style="position: absolute">
+                            Klik icon "<i class="fas fa-chevron-down"></i>" jika anda belum mengkliknya
+                          </span>
                           <span class="spinner"></span>
                         </div>
                       </div>
@@ -440,8 +850,9 @@
                         <div style="padding: 10px">
                           Filter : <span id="filter3"></span>
                         </div>
-                        
-                        <div id="chart3" style="display: block; width: 100%; height: 100%; padding: 0px 20px"></div>
+                        <div style="height: 500px;">
+                          <div id="chart3" style="display: block; padding: 0px 20px"></div>
+                        </div>
                         
                         <div class="direct-chat-contacts" style="padding: 10px; height:100%; z-index:100">
                           <div class="row">
@@ -547,7 +958,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+
+            <div class="col-md-6 target">
               <div id="accordion4">
                 <div class="card card-primary direct-chat direct-chat-primary">
                     <div class="card-header">
@@ -564,9 +976,12 @@
                       </div>
                     </div>
                     
-                    <div class="card-body" style="overflow: hidden;">
-                      <div id="overlay4" class="overlay dark" style="position: absolute; height:100%; width:100%">
+                    <div class="card-body" style="overflow: hide;">
+                      <div id="overlay4" class="overlay dark" style="position: absolute; height:100%; width:100%; font-size:25px">
                         <div class="cv-spinner">
+                          <span style="position: absolute">
+                            Klik icon "<i class="fas fa-chevron-down"></i>" jika anda belum mengkliknya
+                          </span>
                           <span class="spinner"></span>
                         </div>
                       </div>
@@ -576,7 +991,9 @@
                           Filter : <span id="filter4"></span>
                         </div>
                         
-                        <div id="chart4" style="display: block; width: 100%; height: 100%; padding: 0px 20px"></div>
+                        <div style="height: 500px;">
+                          <div id="chart4" style="display: block; width: 100%; height: 100%; padding: 0px 20px"></div>
+                        </div>
                         {{-- Data Tabulasi --}}
                         <div id="accordionTabelChart4" style="margin-bottom:-15px">
                           <div class="card card-light">
@@ -697,7 +1114,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 target">
               <div id="accordion5">
                 <div class="card card-primary direct-chat direct-chat-primary">
                     <div class="card-header">
@@ -714,9 +1131,12 @@
                       </div>
                     </div>
                     
-                    <div class="card-body" style="overflow: hidden;">
-                      <div id="overlay5" class="overlay dark" style="position: absolute; height:100%; width:100%">
+                    <div class="card-body" style="overflow: hide;">
+                      <div id="overlay5" class="overlay dark" style="position: absolute; height:100%; width:100%; font-size:25px">
                         <div class="cv-spinner">
+                          <span style="position: absolute">
+                            Klik icon "<i class="fas fa-chevron-down"></i>" jika anda belum mengkliknya
+                          </span>
                           <span class="spinner"></span>
                         </div>
                       </div>
@@ -725,8 +1145,9 @@
                         <div style="padding: 10px">
                           Filter : <span id="filter5"></span>
                         </div>
-                        
-                        <div id="chart5" style="display: block; width: 100%; height: 100%; padding: 0px 20px"></div>
+                        <div style="height: 500px;">
+                          <div id="chart5" style="display: block; padding: 0px 20px"></div>
+                        </div>
                         {{-- Data Tabulasi --}}
                         <div id="accordionTabelChart5" style="margin-bottom:-15px">
                           <div class="card card-light">
@@ -876,7 +1297,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 target">
               <div id="accordion6">
                 <div class="card card-primary direct-chat direct-chat-primary">
                     <div class="card-header">
@@ -893,9 +1314,12 @@
                       </div>
                     </div>
                     
-                    <div class="card-body" style="overflow: hidden;">
-                      <div id="overlay6" class="overlay dark" style="position: absolute; height:100%; width:100%">
+                    <div class="card-body" style="overflow: hide;">
+                      <div id="overlay6" class="overlay dark" style="position: absolute; height:100%; width:100%; font-size:25px">
                         <div class="cv-spinner">
+                          <span style="position: absolute">
+                            Klik icon "<i class="fas fa-chevron-down"></i>" jika anda belum mengkliknya
+                          </span>
                           <span class="spinner"></span>
                         </div>
                       </div>
@@ -904,8 +1328,9 @@
                         <div style="padding: 10px">
                           Filter : <span id="filter6"></span>
                         </div>
-                        
-                        <div id="chart6" style="display: block; width: 100%; height: 100%; padding: 0px 20px"></div>
+                        <div style="height: 500px;">
+                          <div id="chart6" style="display: block; padding: 0px 20px"></div>
+                        </div>
                         {{-- Data Tabulasi --}}
                         <div id="accordionTabelChart6" style="margin-bottom:-15px">
                           <div class="card card-light">
@@ -1042,8 +1467,7 @@
                 </div>
             </div>
 
-
-            <div class="col-md-6">
+            <div class="col-md-6 target">
               <div id="accordion7">
                 <div class="card card-primary direct-chat direct-chat-primary">
                     <div class="card-header">
@@ -1060,9 +1484,12 @@
                       </div>
                     </div>
                     
-                    <div class="card-body" style="overflow: hidden;">
-                      <div id="overlay7" class="overlay dark" style="position: absolute; height:100%; width:100%">
+                    <div class="card-body" style="overflow: hide;">
+                      <div id="overlay7" class="overlay dark" style="position: absolute; height:100%; width:100%; font-size:25px">
                         <div class="cv-spinner">
+                          <span style="position: absolute">
+                            Klik icon "<i class="fas fa-chevron-down"></i>" jika anda belum mengkliknya
+                          </span>
                           <span class="spinner"></span>
                         </div>
                       </div>
@@ -1071,8 +1498,9 @@
                         <div style="padding: 10px">
                           Filter : <span id="filter7"></span>
                         </div>
-                        
-                        <div id="chart7" style="display: block; width: 100%; height: 100%; padding: 0px 20px"></div>
+                        <div style="height: 500px;">
+                          <div id="chart7" style="display: block; padding: 0px 20px"></div>
+                        </div>
                         {{-- Data Tabulasi --}}
                         <div id="accordionTabelChart7" style="margin-bottom:-15px">
                           <div class="card card-light">
@@ -1224,7 +1652,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 target">
               <div id="accordion8">
                 <div class="card card-primary direct-chat direct-chat-primary">
                     <div class="card-header">
@@ -1241,9 +1669,12 @@
                       </div>
                     </div>
                     
-                    <div class="card-body" style="overflow: hidden;">
-                      <div id="overlay8" class="overlay dark" style="position: absolute; height:100%; width:100%">
+                    <div class="card-body" style="overflow: hide;">
+                      <div id="overlay8" class="overlay dark" style="position: absolute; height:100%; width:100%; font-size:25px">
                         <div class="cv-spinner">
+                          <span style="position: absolute">
+                            Klik icon "<i class="fas fa-chevron-down"></i>" jika anda belum mengkliknya
+                          </span>
                           <span class="spinner"></span>
                         </div>
                       </div>
@@ -1252,8 +1683,9 @@
                         <div style="padding: 10px">
                           Filter : <span id="filter8"></span>
                         </div>
-                        
-                        <div id="chart8" style="display: block; width: 100%; height: 100%; padding: 0px 20px"></div>
+                        <div style="height: 500px;">
+                          <div id="chart8" style="display: block; padding: 0px 20px"></div>
+                        </div>
                         {{-- Data Tabulasi --}}
                         <div id="accordionTabelChart8" style="margin-bottom:-15px">
                           <div class="card card-light">
@@ -1404,7 +1836,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 target">
               <div id="accordion9">
                 <div class="card card-primary direct-chat direct-chat-primary">
                     <div class="card-header">
@@ -1413,7 +1845,7 @@
                         <button type="button" class="btn btn-tool" data-widget="chat-pane-toggle">
                           <i class="fas fa-filter"></i>
                         </button>
-                        <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
+                        <button type="button" class="btn btn-tool"><i class="fas fa-expand"></i>
                         </button>
                         <button onclick="load_data9()" type="button" class="btn btn-tool" data-toggle="collapse" data-target="#collapse9" aria-expanded="true" aria-controls="collapse">
                           <i class="fas fa-chevron-down"></i>
@@ -1421,9 +1853,12 @@
                       </div>
                     </div>
                     
-                    <div class="card-body" style="overflow: hidden;">
-                      <div id="overlay9" class="overlay dark" style="position: absolute; height:100%; width:100%">
+                    <div class="card-body" style="overflow: hide;">
+                      <div id="overlay9" class="overlay dark" style="position: absolute; height:100%; width:100%; font-size:25px">
                         <div class="cv-spinner">
+                          <span style="position: absolute">
+                            Klik icon "<i class="fas fa-chevron-down"></i>" jika anda belum mengkliknya
+                          </span>
                           <span class="spinner"></span>
                         </div>
                       </div>
@@ -1432,8 +1867,9 @@
                         <div style="padding: 10px">
                           Filter : <span id="filter8"></span>
                         </div>
-                        
-                        <div id="chart9" style="display: block; width: 100%; height: 100%; padding: 0px 20px"></div>
+                        <div style="height: 500px;">
+                          <div id="chart9" style="display: block; padding: 0px 20px"></div>
+                        </div>
                         {{-- Data Tabulasi --}}
                         <div id="accordionTabelChart9" style="margin-bottom:-15px">
                           <div class="card card-light">
@@ -1584,7 +2020,6 @@
                 </div>
             </div>
 
-
           </div>
       </div>
   </section>
@@ -1723,12 +2158,27 @@
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script src="https://cdn.rawgit.com/ashl1/datatables-rowsgroup/fbd569b8768155c7a9a62568e66a64115887d7d0/dataTables.rowsGroup.js"></script>
+
 <!-- InputMask -->
 <script src="{{ asset('adminlte') }}/plugins/moment/moment.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/inputmask/jquery.inputmask.min.js"></script>
 <!-- date-range-picker -->
 <script src="{{ asset('adminlte') }}/plugins/daterangepicker/daterangepicker.js"></script>
 <script>
+  function search() {
+        var input = document.getElementById("Search");
+        var filter = input.value.toLowerCase();
+        var nodes = document.getElementsByClassName('target');
+
+        for (i = 0; i < nodes.length; i++) {
+            if (nodes[i].innerText.toLowerCase().includes(filter)) {
+                nodes[i].style.display = "block";
+            } else {
+                nodes[i].style.display = "none";
+            }
+        }
+    }
   // remove class content agar bisa lebih besar tampilannya
   $('#kontainer').removeClass('container');
   //Date range picker
@@ -1740,10 +2190,197 @@
     }
   );
 
+  function copyTextExportData(exportDataId) {
+    var text = $('#' + exportDataId)
+            .clone()
+            .find('span')
+            .each(function() {
+                $(this).replaceWith($(this).text());
+            })
+            .end()
+            .text()
+            .trim()
+            .replace(/\s*[\r\n]+\s*/g, "\n");
+      var tempInput = $('<textarea>');
+      $('body').append(tempInput);
+      tempInput.val(text).select();
+      document.execCommand('copy');
+      tempInput.remove();      
+      alert('Text berhasil dicopy ke clipboard');
+  }
+
   function load_data1() {
     // show load 
     $("#overlay1").show();
 
+    $('#label_monitoring_kasus').show();
+    $('#label_monitoring_kasus_mv').hide();
+
+    if ($.fn.DataTable.isDataTable('#tabelMonitoring')) {
+        $('#tabelMonitoring').DataTable().destroy();
+    }
+    $('#filter1').html('');
+    $('#filter1').append("<span class=\"badge bg-primary\">basis tanggal : "+$('#filter1BasisTanggal2').val()+"</span> ");
+    $('#filter1').append("<span class=\"badge bg-primary\">tanggal : "+$('#filter1Tanggal2').val()+"</span> ");
+    $('#filter1').append("<span class=\"badge bg-primary\">tampilkan seluruh kasus anda : "+$('input[name="filter2Anda"]:checked').val()+"</span> ");
+    $('#filter1').append("<span class=\"badge bg-warning\">Data ini disajikan pada : "+getCurrentDateTime()+"</span> ");
+
+    $('#tabelMonitoring').DataTable({
+      "ordering": true,
+      "order": [],
+      "processing": true,
+      "serverSide": true,
+      "responsive": false, 
+      "lengthChange": false, 
+      "autoWidth": false,
+      "ajax": {
+          "url":  "{{ env('APP_URL') }}/monitoring/monitoringkasusmv?user_id={{ Auth::user()->id }}&basis_tanggal=" + $('#filterBasisTanggal1').val() + "&tanggal=" + $('#filterTanggal1').val() + "&anda=" + $('input[name="filterAnda1"]:checked').val(),
+          "error": function(xhr, error, thrown) {
+              alert("Data rekapan belum tersedia. Anda dapat menunggu 2 menit lagi atau gunakan Data Realtime");
+              console.error("DataTables error: ", xhr.responseText);
+          }
+      },
+      'createdRow': function( row, data, dataIndex ) {
+          $(row).attr('id', data.uuid);
+        if (!data.no_klien) {
+            $(row).find('td:eq(1)').css('background-color', '#ff828c');
+        }
+        if (!data.manajer_kasus) {
+            $(row).find('td:eq(4)').css('background-color', '#ff828c');
+        }
+        if (!data.supervisor_kasus) {
+            $(row).find('td:eq(5)').css('background-color', '#ff828c');
+        }
+        // perhitungan ini ada di https://docs.google.com/spreadsheets/d/1P9OIQcoRT9pS8SllrkaAPdFXqTXGfxlIawCYiUJLYis/edit#gid=1082026075
+        // sheet 2 (DESAIN TABEL MONITORING KASUS)
+        if (data.skor < 93) {
+            $(row).find('td:eq(6)').css('background-color', '#ff828c').css('font-weight', 'bold').css('font-size', '18px');
+        }else{
+          $(row).find('td:eq(6)').css('background-color', '#82ff88').css('font-weight', 'bold').css('font-size', '18px');
+        }
+        if (data.kelengkapan_data < 40) {
+            $(row).find('td:eq(7)').css('background-color', '#ff828c');
+        }else{
+          $(row).find('td:eq(7)').css('background-color', '#82ff88');
+        }
+        if (data.data_klasifikasi < 100) {
+            $(row).find('td:eq(8)').css('background-color', '#ff828c');
+        }else{
+          $(row).find('td:eq(8)').css('background-color', '#82ff88');
+        }
+        if (data.komponen_petugas < 100) {
+            $(row).find('td:eq(9)').css('background-color', '#ff828c');
+        }else{
+          $(row).find('td:eq(9)').css('background-color', '#82ff88');
+        }
+        if (data.surat_persetujuan < 100) {
+            $(row).find('td:eq(10)').css('background-color', '#ff828c');
+        }else{
+          $(row).find('td:eq(10)').css('background-color', '#82ff88');
+        }
+        if (data.kronologis < 100) {
+            $(row).find('td:eq(11)').css('background-color', '#ff828c');
+        }else{
+          $(row).find('td:eq(11)').css('background-color', '#82ff88');
+        }
+        if (data.bpss < 100) {
+            $(row).find('td:eq(12)').css('background-color', '#ff828c');
+        }else{
+          $(row).find('td:eq(12)').css('background-color', '#82ff88');
+        }
+        if (data.progres_layanan < 100) {
+            $(row).find('td:eq(13)').css('background-color', '#ff828c');
+        }else{
+          $(row).find('td:eq(13)').css('background-color', '#82ff88');
+        } 
+        if (data.pemantauan_evaluasi < 100) {
+            $(row).find('td:eq(14)').css('background-color', '#ff828c');
+        }else{
+          $(row).find('td:eq(14)').css('background-color', '#82ff88');
+        }
+        if (data.terminasi_kasus < 100) {
+            $(row).find('td:eq(15)').css('background-color', '#ff828c');
+        }else{
+          $(row).find('td:eq(15)').css('background-color', '#82ff88');
+        }
+      },
+      "columns": [
+        {"data": "tanggal_pelaporan"},
+        {"data": "no_klien"},
+        {"data": "nama"},
+        {"data": "penerima_pengaduan"},
+        {"data": "manajer_kasus"},
+        {"data": "supervisor_kasus"},
+        {"data": "skor"},
+        {"data": "kelengkapan_data"},
+        {"data": "data_klasifikasi"},
+        {"data": "komponen_petugas"},
+        {"data": "surat_persetujuan"},
+        {"data": "kronologis"},
+        {"data": "bpss"},
+        {"data": "progres_layanan"},
+        {"data": "pemantauan_evaluasi"},
+        {"data": "terminasi_kasus"}
+      ],
+        "initComplete": function(settings, json) {
+          $("#overlay1").hide();
+        },
+      "pageLength": 25,
+      "lengthMenu": [
+          [10, 25, 50, 100, -1],
+          ['10 rows', '25 rows', '50 rows', '100 rows','All'],
+      ],
+      "dom": 'Blfrtip', // Blfrtip or Bfrtip
+      "buttons": ["pageLength", "copy", "excel", "pdf"]
+      }).buttons().container().appendTo('#tabelMonitoring_wrapper .col-md-6:eq(0)');
+      $('#tabelMonitoring_filter').css({'float':'right','display':'inline-block; background-color:black'});
+
+      $('#tabelMonitoring tbody').on('click', 'tr', function () {
+      $.get(`{{ env('APP_URL') }}/kasus/show/`+this.id, function (data) {
+        dob = new Date(data.tanggal_lahir);
+        var today = new Date();
+        var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
+
+        $('#nama').html(data.nama);
+        $('#usia').html(age);
+        $('#jenis_kelamin').html(data.jenis_kelamin);
+        $('#no_klien').html(data.no_klien);
+        $('#status').html(data.status);
+        $('#ajaxModal').modal('show');
+
+        $('#check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_pemantauan, #check_terminasi, .warningTerminasi').hide();
+        
+        check_kelengkapan_data(data.id);
+        check_kelengkapan_persetujuan_spv(data.id);
+        check_kelengkapan_spp(data.id);
+        check_kelengkapan_asesmen(data.id);
+        check_kelengkapan_perencanaan(data.id);
+        check_kelengkapan_pemantauan(data.id);
+        check_kelengkapan_terminasi(data.id);
+        kelengkapan_kasus = 0;
+        kelengkapan_identifikasi = 0;
+        $('#kelengkapan_kasus').html(kelengkapan_kasus);
+          
+         //munculkan tombol
+        $('#buttons').html('');
+        $('#buttons').append('<a href="' + "{{ route('kasus.show', '') }}" + '/' + data.uuid + '" class="btn btn-primary btn-block" id="detail"><i class="fa fa-info-circle"></i> Detail Kasus (Bisa New Tab)</a>');
+
+        // list petugas
+        $('#listPetugas').html('');
+        listPetugas = data.list_petugas;
+        listPetugas.forEach(e => {
+          $('#listPetugas').append('<li><b>'+e.name+'</b> ('+e.jabatan+')</li>')
+        });
+          
+        });
+    });
+  }
+
+  function load_data1a() {
+    // show load 
+    $("#overlay1").show();
+    $('#label_monitoring_kasus').hide();
+    $('#label_monitoring_kasus_mv').show();
     if ($.fn.DataTable.isDataTable('#tabelMonitoring')) {
         $('#tabelMonitoring').DataTable().destroy();
     }
@@ -2057,7 +2694,7 @@ function load_data2() {
             toolbar: {
             show: true
             },
-            width: '100%',
+            height: '100%',
             type: 'pie'
           },
           tooltip: {
@@ -2080,7 +2717,7 @@ function load_data2() {
           breakpoint: 500,
           options: {
             chart: {
-              width: 600
+              height: '100%'
             },
             legend: {
               position: 'bottom'
@@ -2145,7 +2782,7 @@ function load_data2() {
                           toolbar: {
                               show: true
                           },
-                          width: '100%',
+                          height: '100%',
                           type: 'pie'
                       },
                       tooltip: {
@@ -2168,7 +2805,7 @@ function load_data2() {
                           breakpoint: 500,
                           options: {
                               chart: {
-                                  width: 600
+                                height: '100%',
                               },
                               legend: {
                                   position: 'bottom'
@@ -2265,7 +2902,7 @@ function load_data2() {
                           toolbar: {
                               show: true
                           },
-                          width: '100%',
+                          height: '100%',
                           type: 'pie'
                       },
                       tooltip: {
@@ -2288,7 +2925,7 @@ function load_data2() {
                           breakpoint: 500,
                           options: {
                               chart: {
-                                  width: 600
+                                height: '100%',
                               },
                               legend: {
                                   position: 'bottom'
@@ -2382,7 +3019,7 @@ function load_data2() {
                           toolbar: {
                               show: true
                           },
-                          width: '100%',
+                          height: '100%',
                           type: 'pie'
                       },
                       tooltip: {
@@ -2405,7 +3042,7 @@ function load_data2() {
                           breakpoint: 500,
                           options: {
                               chart: {
-                                  width: 600
+                                height: '100%',
                               },
                               legend: {
                                   position: 'bottom'
@@ -2504,7 +3141,7 @@ function load_data2() {
                           toolbar: {
                               show: true
                           },
-                          width: '100%',
+                          height: '100%',
                           type: 'pie'
                       },
                       tooltip: {
@@ -2527,7 +3164,7 @@ function load_data2() {
                           breakpoint: 500,
                           options: {
                               chart: {
-                                  width: 600
+                                height: '100%',
                               },
                               legend: {
                                   position: 'bottom'
@@ -2623,7 +3260,7 @@ function load_data2() {
                           toolbar: {
                               show: true
                           },
-                          width: '100%',
+                          height: '100%',
                           type: 'pie'
                       },
                       tooltip: {
@@ -2646,7 +3283,7 @@ function load_data2() {
                           breakpoint: 500,
                           options: {
                               chart: {
-                                  width: 600
+                                height: '100%',
                               },
                               legend: {
                                   position: 'bottom'
@@ -2742,7 +3379,7 @@ function load_data2() {
                           toolbar: {
                               show: true
                           },
-                          width: '100%',
+                          height: '100%',
                           type: 'pie'
                       },
                       tooltip: {
@@ -2765,7 +3402,7 @@ function load_data2() {
                           breakpoint: 500,
                           options: {
                               chart: {
-                                  width: 600
+                                height: '100%',
                               },
                               legend: {
                                   position: 'bottom'
@@ -2820,6 +3457,138 @@ function load_data2() {
           }, 500);
       });
   }
+
+  function load_data10() {
+    $("#overlay10").show();
+    if ($.fn.DataTable.isDataTable('#tabelChart10')) {
+        $('#tabelChart10').DataTable().destroy();
+    }
+
+    // Retrieve filter values
+    const pengelompokan = 'tahun';
+    const basisTanggal = $('#filterBasisTanggal10').val();
+    const tanggal = $('#filterTanggal10').val();
+    const basisWilayah = $('#filterBasisWilayah10').val();
+    const wilayah = $('#filterWilayah10').val();
+    const penghitunganUsia = $('#filterPenghitunganUsia10').val();
+    const kategoriKlien = $('#filterKategoriKlien10').val();
+    const regis = $('input[name="filterRegis10"]:checked').val();
+    const arsip = $('input[name="filterArsip10"]:checked').val();
+
+    $.ajax({
+        url: '{{ route("api.v1.jumlahlayanan") }}',
+        type: 'GET',
+        dataType: 'json',
+        data: {
+            pengelompokan: pengelompokan,
+            basis_tanggal: basisTanggal,
+            tanggal: tanggal,
+            basis_wilayah: basisWilayah,
+            wilayah: wilayah,
+            penghitungan_usia: penghitunganUsia,
+            kategori_klien: kategoriKlien,
+            regis: regis,
+            arsip: arsip
+        },
+        success: function(response) {
+            // Clear previous filters
+            $('#filter10').html('');
+            $.each(response.filter, function(key, value) {
+                $('#filter10').append("<span class=\"badge bg-primary\">" + key.replace(/_/g, ' ') + " : " + value.toString().replace(/_/g, ' ') + "</span> ");
+            });
+            $('#filter10').append("<span class=\"badge bg-warning\">Data ini disajikan pada : " + getCurrentDateTime() + "</span> ");
+
+            // Initialize DataTable with the response data
+            let dataTable = new DataTable('#tabelChart10', {
+                data: response.data_seluruh, 
+                columns: [
+                    { "title": "Jabatan", "data": "jabatan" },
+                    { "title": "Keyword / Detail Layanan", "data": "nama" },
+                    { "title": "Jumlah", "data": "total" }
+                ],
+                dom: 'Blfrtip', // Blfrtip or Bfrtip
+                ordering: true,
+                // rowsGroup: [0],
+                responsive: false, 
+                lengthChange: false, 
+                pageLength: 10,
+                autoWidth: false,
+                order: [[0, 'asc'], [2, 'desc']],
+                lengthMenu: [
+                    [5, 10, 25, 50, 100, -1],
+                    ['10 rows', '25 rows', '50 rows', '100 rows', 'All'],
+                ],
+                buttons: ["pageLength", "copy", "csv", "excel"]
+            });
+
+            dataTable.buttons().container().appendTo('#tabelChart10_wrapper .col-md-6:eq(0)');
+            $('#tabelChart10_filter').css({'float': 'right', 'display': 'inline-block; background-color:black'});
+            $("#overlay10").hide();
+        },
+        error: function(response) {
+            setTimeout(function() {
+                $("#overlay10").fadeOut(300);
+            }, 500);
+            alert("Error: " + response.responseText);
+        }
+    }).done(function() {
+        setTimeout(function() {
+            $("#overlay10").fadeOut(300);
+        }, 500);
+    });
+}
+
+function load_data11() {
+    $("#overlay11").show();
+
+    // Retrieve filter values
+    const pengelompokan = 'tahun';
+    const basisTanggal = $('#filterBasisTanggal10').val();
+    const tanggal = $('#filterTanggal10').val();
+    const basisWilayah = $('#filterBasisWilayah10').val();
+    const wilayah = $('#filterWilayah10').val();
+    const penghitunganUsia = $('#filterPenghitunganUsia10').val();
+    const kategoriKlien = $('#filterKategoriKlien10').val();
+    const regis = $('input[name="filterRegis10"]:checked').val();
+    const arsip = $('input[name="filterArsip10"]:checked').val();
+
+    $.ajax({
+        url: '{{ route("api.v1.jumlahlayanan") }}',
+        type: 'GET',
+        dataType: 'json',
+        data: {
+            pengelompokan: pengelompokan,
+            basis_tanggal: basisTanggal,
+            tanggal: tanggal,
+            basis_wilayah: basisWilayah,
+            wilayah: wilayah,
+            penghitungan_usia: penghitunganUsia,
+            kategori_klien: kategoriKlien,
+            regis: regis,
+            arsip: arsip
+        },
+        success: function(response) {
+            // Clear previous filters
+            $('#filter11').html('');
+            $.each(response.filter, function(key, value) {
+                $('#filter11').append("<span class=\"badge bg-primary\">" + key.replace(/_/g, ' ') + " : " + value.toString().replace(/_/g, ' ') + "</span> ");
+            });
+            $('#filter11').append("<span class=\"badge bg-warning\">Data ini disajikan pada : " + getCurrentDateTime() + "</span> ");
+
+            $("#overlay11").hide();
+        },
+        error: function(response) {
+            setTimeout(function() {
+                $("#overlay11").fadeOut(300);
+            }, 500);
+            alert("Error: " + response.responseText);
+        }
+    }).done(function() {
+        setTimeout(function() {
+            $("#overlay11").fadeOut(300);
+        }, 500);
+    });
+}
 
   function check_kelengkapan_data(klien_id) {
         $.ajax({

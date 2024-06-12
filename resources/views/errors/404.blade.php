@@ -52,8 +52,8 @@
 
 <div class="header">
   <div style="font-size : 30px">404 - Halaman Yang Anda Cari Tidak Ditemukan!</div>
+  Tapi anda berhasil menemmukan halaman ini...
 </div>
-
 <script>
 
 // get a random integer between the range of [min,max]

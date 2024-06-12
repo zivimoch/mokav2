@@ -20,6 +20,9 @@
     .reveal .progress {
       height: 15px;
     }
+    .progress span {
+        background-color: red !important; /* Add !important to ensure it overrides other styles */
+    }
     .heading {
         background-color: black;
         font-size: 30px;

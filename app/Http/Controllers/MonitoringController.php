@@ -16,6 +16,8 @@ use Google_Client;
 use Google_Service_Slides;
 use Google_Service_Slides_BatchUpdatePresentationRequest;
 use Google_Service_Slides_RefreshSheetsChartRequest;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
 
 class MonitoringController extends Controller
 {
@@ -34,9 +36,35 @@ class MonitoringController extends Controller
 
     public function index()
     {
-        $kota = City::where('province_code', env('id_provinsi'))->get();
-        return view('monitoring/index')
-                ->with('kota', $kota);
+        try {
+            // Attempt to get the latest update time for case monitoring
+            $terakhir_update_monitoring_kasus = DB::table('mv_monitoring_kasus')
+                                                ->select(DB::raw('TIME(jam_input) as jam_input'))
+                                                ->first();
+
+            // Get all cities in the province specified by the environment variable 'id_provinsi'
+            $kota = City::where('province_code', env('id_provinsi'))->get();
+
+            // Return the 'monitoring/index' view with the fetched data
+            return view('monitoring/index')
+                    ->with('terakhir_update_monitoring_kasus', $terakhir_update_monitoring_kasus->jam_input)
+                    ->with('kota', $kota);
+
+        } catch (QueryException $e) {
+            // Log the error
+            Log::error('QueryException: ' . $e->getMessage());
+
+            // Set $terakhir_update_monitoring_kasus to NULL
+            $terakhir_update_monitoring_kasus = null;
+
+            // Get all cities in the province specified by the environment variable 'id_provinsi'
+            $kota = City::where('province_code', env('id_provinsi'))->get();
+
+            // Return the 'monitoring/index' view with $terakhir_update_monitoring_kasus set to NULL
+            return view('monitoring/index')
+                    ->with('terakhir_update_monitoring_kasus', $terakhir_update_monitoring_kasus)
+                    ->with('kota', $kota);
+        }
     }
 
     public function slide()
@@ -65,6 +93,7 @@ class MonitoringController extends Controller
 
         $data = DB::select("
         SELECT 
+            a.id,
             a.uuid,
             p.user_id,
             b.tanggal_pelaporan,
@@ -365,7 +394,39 @@ class MonitoringController extends Controller
             AND
             b.".$request->basis_tanggal." BETWEEN '".$from."' AND '".$to."'
             ".$anda."
+            GROUP BY a.id
         ORDER BY skor");
+        return DataTables::of($data)->make(true);
+    }
+
+    // data monitoring kasus dari tabel materialized view
+    public function monitoring_kasus_mv(Request $request)
+    {
+         // mendapatkan periode 
+         if ($request->get('tanggal') != null) {
+            $daterange = explode (" - ", $request->get('tanggal')); 
+        }else{
+            $daterange[0] = date("Y").'-01-01';
+            $daterange[1] = date("Y-m-d");
+        }
+        $from = $daterange[0];
+        $to = $daterange[1];
+        
+        // filter untuk memunculkan kasus sesuai yang login saja
+        if (!$request->anda) { 
+            $anda = "AND FIND_IN_SET('".Auth::user()->id."', user_id) > 0";
+        }else{
+            $anda = "";
+        }
+
+        $data =  DB::select("
+                SELECT 
+                * 
+                FROM
+                mv_monitoring_kasus
+                WHERE 
+                ".$request->basis_tanggal." BETWEEN '".$from."' AND '".$to."'
+                ".$anda." ORDER BY skor");
         return DataTables::of($data)->make(true);
     }
 
@@ -715,6 +776,7 @@ class MonitoringController extends Controller
         $datas = $seluruh_klien->get();
 
         $count = $lainnya = 0;
+        $data = $data_seluruh = [];
         foreach ($datas as $key => $value) {
             if ($request->kategori_klien == 'dewasa_perempuan') {
                 $kategori_klien = intval($value->dewasa_perempuan);
@@ -740,7 +802,7 @@ class MonitoringController extends Controller
         $data = array_filter($data, function ($value) {
             return $value != 0;
         });
-        $data_seluruh_kota = array_filter($data_seluruh, function ($value) {
+        $data_seluruh = array_filter($data_seluruh, function ($value) {
             return $value != 0;
         });
 
@@ -852,6 +914,7 @@ class MonitoringController extends Controller
         // filter kategori klien
         $datas = $seluruh_klien->get();
         $count = $lainnya = 0;
+        $data = $data_seluruh = [];
         foreach ($datas as $key => $value) {
             if ($request->kategori_klien == 'dewasa_perempuan') {
                 $kategori_klien = intval($value->dewasa_perempuan);
@@ -893,6 +956,274 @@ class MonitoringController extends Controller
     }
 
     public function jumlah_korban_identitas(Request $request)
+    {
+        // mendapatkan filter
+        $allAttributes = $request->all();
+        foreach ($allAttributes as $key => $value) {
+            $filter[$key] = $value;
+        }
+
+        // mendapatkan periode
+        if ($request->get('tanggal') != null) {
+            $daterange = explode (" - ", $request->get('tanggal')); 
+        }else{
+            $daterange[0] = date("Y").'-01-01';
+            $daterange[1] = date("Y-m-d");
+        }
+        $from = $daterange[0];
+        $to = $daterange[1];
+        $periode_grafik = [];
+
+        // jika pengelompokan adalah tahun maka set periode_grafiknya per tahun
+        $from_grafik = (int) date("Y", strtotime($from));
+        while ($from_grafik <= date("Y", strtotime($to))) {
+            $periode_grafik[] = $from_grafik;
+            $from_grafik++;
+        }
+        
+        $periode = $periode_grafik;
+
+
+        if ($request->basis_tanggal == 'tanggal_approve') {
+            $basis_tanggal = 'a.'.$request->basis_tanggal;
+        } else {
+            $basis_tanggal = 'b.'.$request->basis_tanggal;
+        }
+
+        // filter basis perhitungan usia klien
+        if ($request->penghitungan_usia == 'lapor') {
+            $penguarang = 'b.tanggal_pelaporan';
+        } elseif ($request->penghitungan_usia == 'kejadian') {
+            $penguarang = 'b.tanggal_kejadian';
+        } elseif ($request->penghitungan_usia == 'input') {
+            $penguarang = 'b.created_at';
+        } else {
+            $penguarang = 'CURDATE()';
+        }
+        
+        // identitas pelapor, terlapor atau korban
+        if ($request->basis_identitas == "pelapor") {
+            $basis_identitas = 'c.'.$request->identitas;
+            $id_basis_identitas = 'c.id';
+        } elseif ($request->basis_identitas == "terlapor") {
+            $basis_identitas = 'd.'.$request->identitas;
+            $id_basis_identitas = 'd.id';
+        } else {
+            $basis_identitas = 'a.'.$request->identitas;
+            $id_basis_identitas = 'a.id';
+        }
+        
+        // jumlah klien berdasarkan kategori klien / korban
+        $seluruh_klien = DB::table('klien as a')
+                        ->leftJoin('kasus as b', 'a.kasus_id', '=', 'b.id')
+                        ->leftJoin('pelapor as c', 'b.id', '=', 'c.kasus_id')
+                        ->leftJoin('terlapor as d', 'b.id', '=', 'd.kasus_id')
+                        ->leftJoin(DB::raw('(SELECT a.id, a.kotkab_id, b.klien_id  
+                                            FROM users a 
+                                            LEFT JOIN petugas b ON a.id = b.user_id
+                                            WHERE a.jabatan = "Supervisor Kasus"
+                                            AND b.deleted_at IS NULL) z'), 'z.klien_id', '=', 'a.id')
+                        ->whereNull('a.deleted_at')
+                        // filter tanggal
+                        ->whereBetween($basis_tanggal, [$from, $to])
+                        ->select(
+                            DB::raw('YEAR('.$basis_tanggal.') AS PERIODE'),
+                            DB::raw('COUNT(DISTINCT '.$id_basis_identitas.') AS total')
+                        )
+                        ->orderBy('total','DESC');
+
+        if ($request->identitas != "usia") {
+            $seluruh_klien
+            ->selectRaw('COALESCE('.$basis_identitas.', "NULL (Kosong / Tidak Diisi)") AS nama')
+           ->groupBy(DB::raw('YEAR('.$basis_tanggal.'), '.$basis_identitas));
+        } else {
+            $seluruh_klien
+            ->selectRaw('COALESCE(TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.'), "NULL (Kosong / Tidak Diisi)") AS nama')
+            ->groupBy(DB::raw('YEAR('.$basis_tanggal.'), nama'));
+        }
+
+        // filter basis wilayah & wilayah
+        if ($request->wilayah != 'default') {
+            if ($request->basis_wilayah == 'tkp') {
+                $seluruh_klien->where($request->wilayah != 'luar' ? 'b.kotkab_id' : 'b.provinsi_id', $request->wilayah != 'luar' ? $request->wilayah : '!=', env('id_provinsi'));
+            } elseif ($request->basis_wilayah == 'ktp') {
+                $seluruh_klien->where($request->wilayah != 'luar' ? 'a.kotkab_id_ktp' : 'a.provinsi_id_ktp', $request->wilayah != 'luar' ? $request->wilayah : '!=', env('id_provinsi'));
+            } elseif ($request->basis_wilayah == 'domisili') {
+                $seluruh_klien->where($request->wilayah != 'luar' ? 'a.kotkab_id' : 'a.provinsi_id', $request->wilayah != 'luar' ? $request->wilayah : '!=', env('id_provinsi'));
+            } elseif ($request->basis_wilayah == 'satpel') {
+                $seluruh_klien->where('z.kotkab_id', $request->wilayah);
+            }
+        }
+
+        // filter kasus ada no regis
+        if ($request->regis != '0') {
+            $seluruh_klien->whereNotNull('a.no_klien');
+        }
+
+        // filter arsip
+        if ($request->arsip == '0') {
+            $seluruh_klien->where('a.arsip', 0);
+        }
+
+        if ($request->kategori_klien == 'dewasa_perempuan') {
+            $seluruh_klien->where('a.jenis_kelamin', 'perempuan')
+                          ->whereRaw('TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') >= 18');
+        } elseif ($request->kategori_klien == 'anak_perempuan'){
+            $seluruh_klien->where('a.jenis_kelamin', 'perempuan')
+                          ->whereRaw('TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 17');
+        } elseif ($request->kategori_klien == 'anak_laki') {
+            $seluruh_klien->where('a.jenis_kelamin', 'laki-laki')
+                          ->whereRaw('TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 17');
+        }
+        
+        
+        $datas = $seluruh_klien->get();
+        $count = $lainnya = 0;
+        $data["0 s/d 17 Tahun"] = 0;
+        $data["18 s/d 24 Tahun"] = 0;
+        $data["25 s/d 59 Tahun"] = 0;
+        $data["60+ Tahun"] = 0;
+        foreach ($datas as $key => $value) {
+            $jumlah = intval($value->total);
+
+            if ($count > 9 && $request->identitas != 'usia') {
+                $lainnya = $jumlah + $lainnya;
+                $data["Lainnya"] = $lainnya;
+            }else{
+                if ($request->identitas != 'usia') {
+                    $data["$value->nama"] = $jumlah;
+                } else {
+                    $data["0 s/d 17 Tahun"] = intval($value->nama) <= 17 ? $data["0 s/d 17 Tahun"] + $value->total : $data["0 s/d 17 Tahun"];
+                    $data["18 s/d 24 Tahun"] =  intval($value->nama) >= 18 && intval($value->nama) <= 24 ? $data["18 s/d 24 Tahun"] + $value->total : $data["18 s/d 24 Tahun"];
+                    $data["25 s/d 59 Tahun"] =  intval($value->nama) >= 25 && intval($value->nama) <= 59 ? $data["25 s/d 59 Tahun"] + $value->total : $data["25 s/d 59 Tahun"];
+                    $data["60+ Tahun"] =  intval($value->nama) >= 60 ? $data["60+ Tahun"] + $value->total : $data["60+ Tahun"];
+                }
+            }
+            $count++;
+            // untuk ditampilkan di data tabulasi
+            $data_seluruh["$value->nama"] = $jumlah;
+        }
+        
+        $data = array_filter($data, function ($value) {
+            return $value != 0;
+        });
+        $data_seluruh_kota = array_filter($data_seluruh, function ($value) {
+            return $value != 0;
+        });
+
+        $response = array(
+            'status' => 200,
+            'data' => $data,
+            'data_seluruh' => $data,
+            'periode' => $periode,
+            'filter' => $filter
+        );
+        
+        return response()->json($response, 200); 
+    }
+
+    public function jumlah_layanan(Request $request)
+    {
+        // mendapatkan filter
+        $allAttributes = $request->all();
+        foreach ($allAttributes as $key => $value) {
+            $filter[$key] = $value;
+        }
+
+        // mendapatkan periode
+        if ($request->get('tanggal') != null) {
+            $daterange = explode (" - ", $request->get('tanggal')); 
+        }else{
+            $daterange[0] = date("Y").'-01-01';
+            $daterange[1] = date("Y-m-d");
+        }
+        $from = $daterange[0];
+        $to = $daterange[1];
+
+        if ($request->basis_tanggal == 'tanggal_approve') {
+            $basis_tanggal = 'a.'.$request->basis_tanggal;
+        } else {
+            $basis_tanggal = 'b.'.$request->basis_tanggal;
+        }
+        
+        // jumlah klien berdasarkan kategori klien / korban
+        $seluruh_klien = DB::table('klien as a')
+                        ->leftJoin('kasus as b', 'a.kasus_id', '=', 'b.id')
+                        ->leftJoin('agenda as c', 'a.id', '=', 'c.klien_id')
+                        ->leftJoin('tindak_lanjut as d', 'd.agenda_id', '=', 'c.id')
+                        ->leftJoin('t_keyword as e', 'd.id', '=', 'e.tindak_lanjut_id')
+                        ->leftJoin(DB::raw('(SELECT a.id, a.kotkab_id, b.klien_id  
+                                            FROM users a 
+                                            LEFT JOIN petugas b ON a.id = b.user_id
+                                            WHERE a.jabatan = "Supervisor Kasus"
+                                            AND b.deleted_at IS NULL) z'), 'z.klien_id', '=', 'a.id')
+                        ->whereNull('a.deleted_at')
+                        ->whereNull('d.deleted_at')
+                        ->whereNotNull('e.id')
+                        ->selectRaw('e.jabatan, e.value as nama, COUNT(*) AS total')
+                        ->groupBy(DB::raw('YEAR('.$basis_tanggal.'), e.jabatan, e.value'))
+                        ->orderBy('e.jabatan')
+                        // filter tanggal
+                        ->whereBetween($basis_tanggal, [$from, $to]);
+
+        // filter basis wilayah & wilayah
+        if ($request->wilayah != 'default') {
+            if ($request->basis_wilayah == 'tkp') {
+                $seluruh_klien->where($request->wilayah != 'luar' ? 'b.kotkab_id' : 'b.provinsi_id', $request->wilayah != 'luar' ? $request->wilayah : '!=', env('id_provinsi'));
+            } elseif ($request->basis_wilayah == 'ktp') {
+                $seluruh_klien->where($request->wilayah != 'luar' ? 'a.kotkab_id_ktp' : 'a.provinsi_id_ktp', $request->wilayah != 'luar' ? $request->wilayah : '!=', env('id_provinsi'));
+            } elseif ($request->basis_wilayah == 'domisili') {
+                $seluruh_klien->where($request->wilayah != 'luar' ? 'a.kotkab_id' : 'a.provinsi_id', $request->wilayah != 'luar' ? $request->wilayah : '!=', env('id_provinsi'));
+            } elseif ($request->basis_wilayah == 'satpel') {
+                $seluruh_klien->where('z.kotkab_id', $request->wilayah);
+            }
+        }
+
+        // filter kasus ada no regis
+        if ($request->regis != '0') {
+            $seluruh_klien->whereNotNull('a.no_klien');
+        }
+
+        // filter arsip
+        if ($request->arsip == '0') {
+            $seluruh_klien->where('a.arsip', 0);
+        }
+
+        // filter basis perhitungan usia klien
+        if ($request->penghitungan_usia == 'lapor') {
+            $penguarang = 'b.tanggal_pelaporan';
+        } elseif ($request->penghitungan_usia == 'kejadian') {
+            $penguarang = 'b.tanggal_kejadian';
+        } elseif ($request->penghitungan_usia == 'input') {
+            $penguarang = 'b.created_at';
+        } else {
+            $penguarang = 'CURDATE()';
+        }
+
+        if ($request->kategori_klien == 'dewasa_perempuan') {
+            $seluruh_klien->where('a.jenis_kelamin', 'perempuan')
+                          ->whereRaw('TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') >= 18');
+        } elseif ($request->kategori_klien == 'anak_perempuan'){
+            $seluruh_klien->where('a.jenis_kelamin', 'perempuan')
+                          ->whereRaw('TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 17');
+        } elseif ($request->kategori_klien == 'anak_laki') {
+            $seluruh_klien->where('a.jenis_kelamin', 'laki-laki')
+                          ->whereRaw('TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') <= 17');
+        }
+        
+        $data_seluruh = $seluruh_klien->get();
+        
+        // return response()->json($data_seluruh); 
+        $response = array(
+            'status' => 200,
+            'data_seluruh' => $data_seluruh,
+            'filter' => $filter
+        );
+        
+        return response()->json($response, 200); 
+    }
+
+    public function rangkuman_jumlah_kasus(Request $request)
     {
         // mendapatkan filter
         $allAttributes = $request->all();

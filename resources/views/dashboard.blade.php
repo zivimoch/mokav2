@@ -29,6 +29,25 @@
       <div class="container-fluid">
         <!-- Main row -->
         <div class="row">
+
+          @if (Auth::user()->jabatan != 'Supervisor Kasus')
+            <div class="col-md-12 warningSPP">
+              <div class="alert alert-danger">
+              <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+              Mohon Periksa Laporan Kinerja Bulan Februari, Maret, April dan Mei. Jika ada Warning mohon untuk diperbaiki sesuai instruksi di warningnya.
+              <br>
+              Cara mengecek kinerja bulan sebelumnya : <br>
+              <ol>
+                  <li>Pergi ke halaman <a href="{{ route('kinerja.detail') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}&user_id={{ Auth::user()->uuid }}">Laporan Kinerja</a></li>
+                <li>Pilih bulan yang mau dicek (Februari, Maret, April dan Mei)</li>
+                <li>Klik "Tampilkan"</li>
+                <li>Cek apakah ada warning di bulan tersebut. Jika ada mohon untuk segera ditindak lanjuti</li>
+                <li>Evaluasi Laporan Kinerja akan dilakukan setiap akhir bulan</li>
+              </ol>              
+              </div>
+            </div>
+          @endif
+
           <!-- Left col -->
           <section class="col-lg-7 connectedSortable">
             <div class="card card-danger">
@@ -59,7 +78,7 @@
                   Agenda PPPA Provinsi DKI Jakarta
                 </h3>
                 <div class="card-tools">
-                  <button class="btn btn-success btn-sm" onclick="showModalAgenda('{{ now()->format('Y-m-d') }}', 0)">Tambah Agenda</button>
+                  <button class="btn btn-success btn-sm" onclick="showModalAgenda('{{ now()->format('Y-m-d') }}', 0)"><i class="fas fa-plus"></i> Tambah Agenda</button>
                   <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
                     </button>
                 </div>
@@ -68,8 +87,8 @@
               {{-- hapus ini setelah evaluasi selesai dan tercapai --}}
               @if (Auth::user()->jabatan == 'Manajer Kasus')
                 <div class="progress" style="height: 25px;">
-                  <div class="progress-bar bg-success persen_layanan" role="progressbar" style="width: {{ $dibuatMK }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px" class="persen_title_layanan">{{ $dibuatMK }}%</span></div>
-                  <div class="progress-bar bg-danger persen_layanan" role="progressbar" style="width: {{ $takDibuatMK }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px" class="persen_title_layanan">{{ $takDibuatMK }}%</span></div>
+                  <div class="progress-bar bg-success persen_layanan" role="progressbar" style="width: {{ $dibuatMK }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px" class="persen_title_layanan2">{{ $dibuatMK }}%</span></div>
+                  <div class="progress-bar bg-danger persen_layanan" role="progressbar" style="width: {{ $takDibuatMK }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px" class="persen_title_layanan2">{{ $takDibuatMK }}%</span></div>
                 </div>
                 *Hijau : agenda layanan dibuat oleh MK; Merah : agenda layanan dibuat oleh selain MK 
               @endif
@@ -125,24 +144,26 @@
                   Agenda hari ini, {{ date('d M Y') }}
                 </h3>
                 <div class="card-tools">
-                    <a href="{{ route('kinerja.detail') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}&user_id={{ Auth::user()->uuid }}" class="btn btn-tool"><i class="fas fa-tasks"></i> Laporan Kinerja</a>
+                  <a href="{{ route('kinerja.detail') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}&user_id={{ Auth::user()->uuid }}" class="btn btn-tool">
+                    <button class="btn btn-primary btn-sm"><i class="fas fa-tasks"></i> Laporan Kinerja</button>
+                  </a>
                     <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
                     </button>
                 </div>
               </div>
               <!-- /.card-header -->
               <div style="height: 548px; overflow-y:scroll">
-                <div style="margin-left: 12px">
+                <div style="padding-left: 12px; margin-top:5px" class="bg-info color-palette">
                   <b style="font-size:20px" id="agendaAndaHeading2"></b>
                 </div>
                 <ul class="todo-list" data-widget="todo-list" id="agendaSaya2"></ul>
 
-                <div style="margin-left: 12px">
+                <div style="padding-left: 12px;" class="bg-success color-palette">
                   <b style="font-size:20px" id="agendaKasusAndaHeading2"></b>
                 </div>
                 <ul class="todo-list" data-widget="todo-list" id="agendaKasusSaya2"></ul>
 
-                <div style="margin-left: 12px">
+                <div style="padding-left: 12px;" class="bg-warning color-palette">
                   <b style="font-size:20px" id="agendaSemuaHeading2"></b>
                 </div>
                 <ul class="todo-list" data-widget="todo-list" id="agendaSemua2"></ul>
@@ -172,13 +193,19 @@
       </div>
       <div class="modal-body">
         <!-- /.card-header -->
+        <div style="padding-left: 12px; margin-top:5px" class="bg-info color-palette">
         <b style="font-size:20px" id="agendaAndaHeading1"></b>
+        </div>
         <ul class="todo-list" data-widget="todo-list" id="agendaSaya1"></ul>
         <br>
+        <div style="padding-left: 12px; margin-top:5px" class="bg-success color-palette">
         <b style="font-size:20px" id="agendaKasusAndaHeading1"></b>
+        </div>
         <ul class="todo-list" data-widget="todo-list" id="agendaKasusSaya1"></ul>
         <br>
+        <div style="padding-left: 12px; margin-top:5px" class="bg-warning color-palette">
         <b style="font-size:20px" id="agendaSemuaHeading1"></b>
+        </div>
         <ul class="todo-list" data-widget="todo-list" id="agendaSemua1"></ul>
       </div>
     </div>
