@@ -246,17 +246,21 @@
                       <div class="form-group">
                         <label>Lokasi Kegiatan<span class="text-danger">*</span></label>
                         <input type="text" class="form-control titlecase" id="lokasi">
+                        <div class="invalid-feedback2" id="valid-lokasi">
+                          Lokasi Kegiatan wajib diisi jika sedeng mengisi Jam Selesai.
+                        </div> 
                     </div>
                   </div>
                   <div class="col-md-3">
                       <div class="form-group">
-                          <label>Jam selesai<span class="text-danger">*</span></label>
+                          <label>Jam Selesai<span class="text-danger">*</span></label>
                           <?php
                             date_default_timezone_set("asia/jakarta");
                             $jam_selesai = date("h:i");
                           ?>
                           <input type="text" class="form-control time-picker" id="jam_selesai" data-precision="5" style="width: 100% !important" value="{{ $jam_selesai }}">
-                      </div>
+                          <a href="#" id="reset-jam-selesai">Reset</a>
+                        </div>
                   </div>
                   <div class="col-md-5">
                       <div class="form-group">
@@ -333,6 +337,11 @@
     // Initial setup
     $("#editAgenda, #tombol_view_agenda").hide();
     $(document).ready(function() {
+      $('#reset-jam-selesai').click(function(event) {
+          event.preventDefault(); // Prevent the default link behavior
+          $('#jam_selesai').val(''); // Set the value to null (empty string)
+      });
+
       $('.select-tag').select2({
         tags: true,
         theme: 'bootstrap4'
@@ -368,7 +377,17 @@
   
     $('#submitAgenda').click(function() {
       $("#overlayAgenda").show();
-          if (($("#klien_id_select").val() != '' && $("#klien_id_select").val() != null) && ($("#jam_selesai").val() != '' && $("#jam_selesai").val() != null)) {
+
+      if ($("#jam_selesai").val() != '' && $("#jam_selesai").val() != null) {
+        $("#lokasi").addClass("required-field-agenda");
+      } else {
+        $("#lokasi").removeClass("required-field-agenda");
+      }
+          if (
+              ($("#klien_id_select").val() != '' && $("#klien_id_select").val() != null) 
+              && 
+              ($("#jam_selesai").val() != '' && $("#jam_selesai").val() != null)
+            ) {
             // jika ada klien dan dia mau bikin TL maka harus ada deskripsi hasil dan rtl
             $("#keyword-agenda").addClass("required-field-agenda");
             $("#catatan-agenda").addClass("required-field-agenda");

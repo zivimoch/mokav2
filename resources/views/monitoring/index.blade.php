@@ -5,14 +5,17 @@
   .apexcharts-legend-series {
     margin-top: 15px !important;
   }
+
   .copy-area {
     height: 300px;
-    overflow: scroll;
+    overflow-y: scroll;
     background-color: rgb(157, 255, 255);
+    padding: 10px;
   }
+
   .card-title { 
     font-weight: bold;
-    font-size: 23px;
+    font-size: 20px;
   }
 </style>
  <!-- daterange picker -->
@@ -270,122 +273,186 @@
                           <br>
                         </div>
                         <div style="margin: 10px">
-                          <div class="copy-area" id="rangkuman_jumlah_kasus">
-                            *[Rekap Data Jumlah Klien]*<br>
-                            08 Jun 2024 14:19:32<br>
-                            -------------------------------------------------<br>
-                            *Jumlah Seluruh Klien :* <span id="jumlah_seluruh_klien">10000</span><br>
-                            -------------------------------------------------<br>
-                            *Yang sudah diregis :* <span id="jumlah_seluruh_klien_regis">0</span><br>
-                            *Perempuan Dewasa :* <span id="jumlah_perempuan_dewasa">0</span><br>
-                            *Anak Perempuan :* <span id="jumlah_anak_perempuan">0</span><br>
-                            *Anak Laki-laki :* <span id="jumlah_anak_laki">0</span><br>
-                            -------------------------------------------------<br>
-                            *a. Kategori Kasus (5 Terbanyak) :*<br>
-                            - Anak Berkonflik Dengan Hukum : 0<br>
-                            - Anak Korban Kekerasan Seksuak : 0<br>
-                            - Perempuan Korban Kekerasan Seksuak : 0<br>
-                            *b. Jenis Kekerasan :*<br>
-                            - Fisik : 0<br>
-                            - Psikis : 0<br>
-                            - Seksual : 0<br>
-                            - Seksual : 0<br>
-                            - Eksploitasi : 0<br>
-                            - Penelantaran : 0<br>
-                            - Tidak Diketahui / Lainnya : 0<br>
-                            - Bukan Kekerasan : 0<br>
-                            ==========================================================<br>
-                            *Jumlah Klien Berdasarkan Wilayah Penugasan Satpel :* <br>
-                            *1. Jakarta Pusat* (420 Klien) <br>
-                            Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
-                            Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
-                            Anak Laki-laki : <span id="jumlah_anak_laki">0</span><br>
-                            *a. Kategori Kasus (3 Terbanyak) :*<br>
-                            - Anak Berkonflik Dengan Hukum : 0<br>
-                            - Anak Korban Kekerasan Seksuak : 0<br>
-                            - Perempuan Korban Kekerasan Seksuak : 0<br>
-                            *b. Jenis Kekerasan :*<br>
-                            - Fisik : 0<br>
-                            - Psikis : 0<br>
-                            - Seksual : 0<br>
-                            - Seksual : 0<br>
-                            - Eksploitasi : 0<br>
-                            - Penelantaran : 0<br>
-                            - Tidak Diketahui / Lainnya : 0<br>
-                            - Bukan Kekerasan : 0<br>
-                            *2. Jakarta Utara & Kep.1000* (420 Klien) <br>
-                            Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
-                            Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
-                            Anak Laki-laki : <span id="jumlah_anak_laki">0</span><br>
-                            *a. Kategori Kasus (3 Terbanyak) :*<br>
-                            - Anak Berkonflik Dengan Hukum : 0<br>
-                            - Anak Korban Kekerasan Seksuak : 0<br>
-                            - Perempuan Korban Kekerasan Seksuak : 0<br>
-                            *b. Jenis Kekerasan :*<br>
-                            - Fisik : 0<br>
-                            - Psikis : 0<br>
-                            - Seksual : 0<br>
-                            - Seksual : 0<br>
-                            - Eksploitasi : 0<br>
-                            - Penelantaran : 0<br>
-                            - Tidak Diketahui / Lainnya : 0<br>
-                            - Bukan Kekerasan : 0<br>
-                            *3. Jakarta Barat*  (420 Klien)<br>
-                            Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
-                            Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
-                            Anak Laki-laki : <span id="jumlah_anak_laki">0</span><br>
-                            *a. Kategori Kasus (3 Terbanyak) :*<br>
-                            - Anak Berkonflik Dengan Hukum : 0<br>
-                            - Anak Korban Kekerasan Seksuak : 0<br>
-                            - Perempuan Korban Kekerasan Seksuak : 0<br>
-                            *b. Jenis Kekerasan :*<br>
-                            - Fisik : 0<br>
-                            - Psikis : 0<br>
-                            - Seksual : 0<br>
-                            - Seksual : 0<br>
-                            - Eksploitasi : 0<br>
-                            - Penelantaran : 0<br>
-                            - Tidak Diketahui / Lainnya : 0<br>
-                            - Bukan Kekerasan : 0<br>
-                            *4. Jakarta Selatan*  (420 Klien)<br>
-                            Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
-                            Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
-                            Anak Laki-laki : <span id="jumlah_anak_laki">0</span><br>
-                            *a. Kategori Kasus (3 Terbanyak) :*<br>
-                            - Anak Berkonflik Dengan Hukum : 0<br>
-                            - Anak Korban Kekerasan Seksuak : 0<br>
-                            - Perempuan Korban Kekerasan Seksuak : 0<br>
-                            *b. Jenis Kekerasan :*<br>
-                            - Fisik : 0<br>
-                            - Psikis : 0<br>rangkuman_jumlah_kasus
-                            - Seksual : 0<br>
-                            - Seksual : 0<br>
-                            - Eksploitasi : 0<br>
-                            - Penelantaran : 0<br>
-                            - Tidak Diketahui / Lainnya : 0<br>
-                            - Bukan Kekerasan : 0<br>
-                            *5. Jakarta Timur*  (420 Klien)<br>
-                            Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
-                            Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
-                            Anak Laki-laki : <span id="jumlah_anak_laki">0</span><br>
-                            *a. Kategori Kasus (3 Terbanyak) :*<br>
-                            - Anak Berkonflik Dengan Hukum : 0<br>
-                            - Anak Korban Kekerasan Seksuak : 0<br>
-                            - Perempuan Korban Kekerasan Seksuak : 0<br>
-                            *b. Jenis Kekerasan :*<br>
-                            - Fisik : 0<br>
-                            - Psikis : 0<br>
-                            - Seksual : 0<br>
-                            - Seksual : 0<br>
-                            - Eksploitasi : 0<br>
-                            - Penelantaran : 0<br>
-                            - Tidak Diketahui / Lainnya : 0<br>
-                            - Bukan Kekerasan : 0<br>
-                            -------------------------------------------------<br>
-                            
-
+                          <table class="datatableall table table-sm table-bordered table-hover" style="cursor:pointer; width:100%">
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%">No</th>
+                                    <th>Judul Data</th>
+                                    <th style="width: 12%">Download</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Data master kasus per klien</td>
+                                    <td><a type="button" class="btn btn-primary btn-xs" onclick="alert('fitur belum tersedia')"><i class="fas fa-download"></i></a></td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Data master kasus per terlapor</td>
+                                    <td><a type="button" class="btn btn-primary btn-xs" onclick="alert('fitur belum tersedia')"><i class="fas fa-download"></i></a></td>
+                                </tr>
+                            </tbody>
+                        </table> 
+                        <br>
+                        <div style="border-style: solid; padding:10px">
+                        <div style="border-bottom: solid black; font-size:20px">
+                          <b>Copy text untuk WhatsApp</b>
+                        </div>
+                        <div id="accordion">
+                          <br>
+                          <div class="card">
+                            <div class="card-header" id="headingOne">
+                              <h5 class="mb-0">
+                                <a href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                  Rekap Data Jumlah Klien
+                                </a>
+                              </h5>
+                            </div>
+                        
+                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                              <div class="card-body">
+                                    <div class="copy-area" id="rangkuman_jumlah_kasus">
+                                      *[Rekap Data Jumlah Klien]*<br>
+                                      08 Jun 2024 14:19:32<br>
+                                      -------------------------------------------------<br>
+                                      *Jumlah Seluruh Klien :* <span id="jumlah_seluruh_klien">10000</span><br>
+                                      -------------------------------------------------<br>
+                                      *Yang sudah diregis :* <span id="jumlah_seluruh_klien_regis">0</span><br>
+                                      *Perempuan Dewasa :* <span id="jumlah_perempuan_dewasa">0</span><br>
+                                      *Anak Perempuan :* <span id="jumlah_anak_perempuan">0</span><br>
+                                      *Anak Laki-laki :* <span id="jumlah_anak_laki">0</span><br>
+                                      -------------------------------------------------<br>
+                                      *a. Kategori Kasus (5 Terbanyak) :*<br>
+                                      - Anak Berkonflik Dengan Hukum : 0<br>
+                                      - Anak Korban Kekerasan Seksuak : 0<br>
+                                      - Perempuan Korban Kekerasan Seksuak : 0<br>
+                                      *b. Jenis Kekerasan :*<br>
+                                      - Fisik : 0<br>
+                                      - Psikis : 0<br>
+                                      - Seksual : 0<br>
+                                      - Seksual : 0<br>
+                                      - Eksploitasi : 0<br>
+                                      - Penelantaran : 0<br>
+                                      - Tidak Diketahui / Lainnya : 0<br>
+                                      - Bukan Kekerasan : 0<br>
+                                      ==========================================================<br>
+                                      *Jumlah Klien Berdasarkan Wilayah Penugasan Satpel :* <br>
+                                      *1. Jakarta Pusat* (420 Klien) <br>
+                                      Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
+                                      Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
+                                      Anak Laki-laki : <span id="jumlah_anak_laki">0</span><br>
+                                      *a. Kategori Kasus (3 Terbanyak) :*<br>
+                                      - Anak Berkonflik Dengan Hukum : 0<br>
+                                      - Anak Korban Kekerasan Seksuak : 0<br>
+                                      - Perempuan Korban Kekerasan Seksuak : 0<br>
+                                      *b. Jenis Kekerasan :*<br>
+                                      - Fisik : 0<br>
+                                      - Psikis : 0<br>
+                                      - Seksual : 0<br>
+                                      - Seksual : 0<br>
+                                      - Eksploitasi : 0<br>
+                                      - Penelantaran : 0<br>
+                                      - Tidak Diketahui / Lainnya : 0<br>
+                                      - Bukan Kekerasan : 0<br>
+                                      *2. Jakarta Utara & Kep.1000* (420 Klien) <br>
+                                      Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
+                                      Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
+                                      Anak Laki-laki : <span id="jumlah_anak_laki">0</span><br>
+                                      *a. Kategori Kasus (3 Terbanyak) :*<br>
+                                      - Anak Berkonflik Dengan Hukum : 0<br>
+                                      - Anak Korban Kekerasan Seksuak : 0<br>
+                                      - Perempuan Korban Kekerasan Seksuak : 0<br>
+                                      *b. Jenis Kekerasan :*<br>
+                                      - Fisik : 0<br>
+                                      - Psikis : 0<br>
+                                      - Seksual : 0<br>
+                                      - Seksual : 0<br>
+                                      - Eksploitasi : 0<br>
+                                      - Penelantaran : 0<br>
+                                      - Tidak Diketahui / Lainnya : 0<br>
+                                      - Bukan Kekerasan : 0<br>
+                                      *3. Jakarta Barat*  (420 Klien)<br>
+                                      Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
+                                      Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
+                                      Anak Laki-laki : <span id="jumlah_anak_laki">0</span><br>
+                                      *a. Kategori Kasus (3 Terbanyak) :*<br>
+                                      - Anak Berkonflik Dengan Hukum : 0<br>
+                                      - Anak Korban Kekerasan Seksuak : 0<br>
+                                      - Perempuan Korban Kekerasan Seksuak : 0<br>
+                                      *b. Jenis Kekerasan :*<br>
+                                      - Fisik : 0<br>
+                                      - Psikis : 0<br>
+                                      - Seksual : 0<br>
+                                      - Seksual : 0<br>
+                                      - Eksploitasi : 0<br>
+                                      - Penelantaran : 0<br>
+                                      - Tidak Diketahui / Lainnya : 0<br>
+                                      - Bukan Kekerasan : 0<br>
+                                      *4. Jakarta Selatan*  (420 Klien)<br>
+                                      Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
+                                      Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
+                                      Anak Laki-laki : <span id="jumlah_anak_laki">0</span><br>
+                                      *a. Kategori Kasus (3 Terbanyak) :*<br>
+                                      - Anak Berkonflik Dengan Hukum : 0<br>
+                                      - Anak Korban Kekerasan Seksuak : 0<br>
+                                      - Perempuan Korban Kekerasan Seksuak : 0<br>
+                                      *b. Jenis Kekerasan :*<br>
+                                      - Fisik : 0<br>
+                                      - Psikis : 0<br>rangkuman_jumlah_kasus
+                                      - Seksual : 0<br>
+                                      - Seksual : 0<br>
+                                      - Eksploitasi : 0<br>
+                                      - Penelantaran : 0<br>
+                                      - Tidak Diketahui / Lainnya : 0<br>
+                                      - Bukan Kekerasan : 0<br>
+                                      *5. Jakarta Timur*  (420 Klien)<br>
+                                      Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
+                                      Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
+                                      Anak Laki-laki : <span id="jumlah_anak_laki">0</span><br>
+                                      *a. Kategori Kasus (3 Terbanyak) :*<br>
+                                      - Anak Berkonflik Dengan Hukum : 0<br>
+                                      - Anak Korban Kekerasan Seksuak : 0<br>
+                                      - Perempuan Korban Kekerasan Seksuak : 0<br>
+                                      *b. Jenis Kekerasan :*<br>
+                                      - Fisik : 0<br>
+                                      - Psikis : 0<br>
+                                      - Seksual : 0<br>
+                                      - Seksual : 0<br>
+                                      - Eksploitasi : 0<br>
+                                      - Penelantaran : 0<br>
+                                      - Tidak Diketahui / Lainnya : 0<br>
+                                      - Bukan Kekerasan : 0<br>
+                                      -------------------------------------------------<br>
+                                    </div>
+                                  <button class="btn btn-primary copy-button" onclick="copyTextExportData('rangkuman_jumlah_kasus')">
+                                    <i class="fas fa-copy"></i> Copy Text
+                                  </button>
+                              </div>
+                            </div>
                           </div>
-                        <button class="copy-button" onclick="copyTextExportData('rangkuman_jumlah_kasus')">Copy Text</button>
+                          <div class="card">
+                            <div class="card-header" id="headingTwo">
+                              <h5 class="mb-0">
+                                <a href="#" class="collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                  Rekap Data Jumlah Layanan
+                                </a>
+                              </h5>
+                            </div>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                              <div class="card-body">
+
+                                <div class="copy-area" id="rekap_data_jumlah_layanan">
+                                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem dolore, ea alias iure in aliquam deleniti totam atque suscipit nostrum qui vel enim nihil ipsa tenetur est voluptatum, molestias maxime.
+                                </div>
+                              <button class="btn btn-primary copy-button" onclick="copyTextExportData('rekap_data_jumlah_layanan')">
+                                <i class="fas fa-copy"></i> Copy Text
+                              </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
 
                         </div>
                         <div class="direct-chat-contacts" style="padding: 10px; height:100%; z-index:100">
@@ -2166,6 +2233,9 @@
 <!-- date-range-picker -->
 <script src="{{ asset('adminlte') }}/plugins/daterangepicker/daterangepicker.js"></script>
 <script>
+  $(document).ready(function() {
+      $('.datatableall').DataTable();
+  });
   function search() {
         var input = document.getElementById("Search");
         var filter = input.value.toLowerCase();

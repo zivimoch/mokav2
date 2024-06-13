@@ -25,13 +25,13 @@ class MonitoringController extends Controller
 
     public function __construct()
     {
-        $client = new Google_Client();
-        $client->setApplicationName('Your Application Name');
-        $client->setScopes([Google_Service_Slides::PRESENTATIONS]);
-        $client->setAccessType('offline');
-        $client->setAuthConfig(storage_path('credentials.json'));
+        // $client = new Google_Client();
+        // $client->setApplicationName('Your Application Name');
+        // $client->setScopes([Google_Service_Slides::PRESENTATIONS]);
+        // $client->setAccessType('offline');
+        // $client->setAuthConfig(storage_path('credentials.json'));
 
-        $this->slidesService = new Google_Service_Slides($client);
+        // $this->slidesService = new Google_Service_Slides($client);
     }
 
     public function index()
