@@ -1829,7 +1829,7 @@
                                     <form id="formPersetujuan{{  $no_persetujuan }}" action="{{ route('persetujuan.destroy', $item->uuid) }}" method="post">
                                         @csrf 
                                         @method('delete')
-                                        <button type="button" onclick="deletePersetujuan({{ $no_persetujuan }})" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                        <button type="button" onclick="deletePersetujuan({{ $no_persetujuan }})" class="btn btn-danger akses_petugas"><i class="fa fa-trash"></i></button>
                                     </form>
                                 </td>
                             </tr>

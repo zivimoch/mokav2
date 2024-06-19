@@ -1161,7 +1161,7 @@ class DatabaseSeeder extends Seeder
             [
                 "uuid" => '5a83d123-3c86-41f8-aee1-ca22l262f462',
                 "kategori" => 'persetujuan terminasi',
-                "judul" => 'Surat Persetujuan Terminasi',
+                "judul" => 'Surat Persetujuan Terminasi (Untuk Kasus Ditutup)',
                 "konten" => 'Saya yang bertandatangan dibawah ini menyatakan setuju untuk terminasi kasus',
                 "created_by" => 1
             ]

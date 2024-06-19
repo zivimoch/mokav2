@@ -187,6 +187,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('settingusers/destroy/{id}', [SettingUsersController::class, 'destroy'])->name('settingusers.destroy');
     // auto fill (hapus fungsi ini kelak)
     Route::get('autofillnokas', [KasusController::class, 'autofill_nokas'])->name('autofillnokas');
+    // export_data_master_klien data ke excel
+    Route::get('export/', [MonitoringController::class, 'export_data_master_klien']);
 });
 
 require __DIR__.'/auth.php';

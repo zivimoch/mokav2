@@ -229,15 +229,31 @@
           $('#kontainer').removeClass('container');
         } 
     }
-    // merubah semua titlecase
-    $(".titlecase").on("input", function () {
-        var text = $(this).val();
-        $(this).val(
-            text.replace(/\w\S*/g, function (txt) {
-                return txt.charAt(0).toUpperCase() + txt.substr(1);
-            })
-        );
+    $(".titlecase").on("input", function() {
+    var originalText = $(this).val();
+    var cursorPosition = this.selectionStart; // Get cursor position
+
+    // Split the original text into parts based on cursor position
+    var textBeforeCursor = originalText.substring(0, cursorPosition);
+    var textAfterCursor = originalText.substring(cursorPosition);
+
+    // Preserve existing casing while capitalizing the first letter of each word
+    var newText = capitalizeWords(textBeforeCursor) + textAfterCursor;
+
+    // Update the input field with the modified text
+    $(this).val(newText);
+
+    // Restore cursor position after updating input field
+    var newCursorPosition = cursorPosition;
+    this.setSelectionRange(newCursorPosition, newCursorPosition);
+});
+
+function capitalizeWords(text) {
+    return text.replace(/\b\w/g, function(txt) {
+        return txt.toUpperCase();
     });
+}
+
     // initialized all select2
     $( ".select2_field" ).select2();
 

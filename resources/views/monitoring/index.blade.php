@@ -571,13 +571,128 @@
           </div>
 
           <div class="row" style="border-style: solid;">
-            <div class="col-md-12" style="border-bottom: solid black; padding-top:10px; margin-bottom:15px">
-              <div class="col-md-12 col-sm-12 col-12">
-                <div class="form-group">
-                    <input type="text" id="Search" class="form-control" onkeyup="search()" placeholder="Cari judul data...">
+            <div class="col-md-12" style="border-bottom: solid black; padding-top:10px; margin-bottom:15px; padding-bottom:10px">
+              <div class="input-group">
+                <input type="text" id="Search" class="form-control" onkeyup="search()" placeholder="Cari judul data...">
+                <div class="input-group-append">
+                  <button class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Gunakan Filter <i class="fas fa-chevron-down"></i></button>
                 </div>
+              </div>
+              <div class="collapse" id="collapseExample">
+                <div class="card card-body bg-dark">
+                  <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="">Basis Tanggal</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <select id="filterBasisTanggal10" class="form-control btn-primary">
+                            <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis )</option>
+                            <option value="tanggal_pelaporan" >Berdasarkan Tanggal Pelaporan</option>
+                            <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+                            <option value="created_at">Berdasarkan Tanggal Input</option>
+                          </select>
+                        </div>
+                        <input type="text" class="form-control daterank" id="filterTanggal10" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="">Kasus yang Diregis</label>
+                      <br>
+                      <div class="icheck-primary d-inline" style="margin-right:15px">
+                        <input type="radio" id="filterRegis10a" name="filterRegis10" checked value="0">
+                        <label for="filterRegis10a">
+                            Seluruh kasus
+                        </label>
+                      </div>
+                      <div class="icheck-primary d-inline">
+                        <input type="radio" id="filterRegis10b" name="filterRegis10" value="1">
+                        <label for="filterRegis10b">
+                            Kasus yang sudah diregis saja
+                        </label>
+                      </div>
+                      <br>
+                      <span style="color: red; font-size:12px">*jika basis tanggal adalah Tanggal Diregis maka otomatis menampilkan kasus yang sudah diregis saja</span>
+                    </div>
+                    </div>
+      
+                  <div class="col-md-6">
+                    <div class="form-group">
+                    <label for="">Basis Wilayah</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <select class="form-control btn-primary" id="filterBasisWilayah10">
+                          <option value="tkp" selected>Berdasarkan Wilayah TKP</option>
+                          <option value="ktp">Berdasarkan Wilayah KTP</option>
+                          <option value="domisili">Berdasarkan Wilayah Domisili</option>
+                          <option value="satpel">Berdasarkan Wilayah Satpel</option>
+                        </select>
+                      </div>
+                      <select class="form-control" id="filterWilayah10">
+                        <option value="default" selected>Default ( Semua Wilayah )</option>
+                        @foreach ($kota as $item) 
+                          <option value="{{ $item->code }}" >{{ $item->name }}</option> 
+                        @endforeach 
+                        <option value="luar">Luar DKI Jakarta</option>
+                      </select>
+                    </div>
+                  </div>
+                  </div>
+      
+                  <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="">Kasus yang Diarsipkan</label>
+                    <br>
+                    <div class="icheck-primary d-inline" style="margin-right:15px">
+                      <input type="radio" id="filterArsip10a" name="filterArsip10" value="0">
+                      <label for="filterArsip10a">
+                          Tanpa kasus yang diarsipkan
+                      </label>
+                    </div>
+                    <div class="icheck-primary d-inline">
+                      <input type="radio" id="filterArsip10b" name="filterArsip10" checked value="1">
+                      <label for="filterArsip10b">
+                          Dengan kasus yang diarsipkan
+                      </label>
+                    </div>
+                  </div>
+                  </div>
+      
+                  <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="">Basis Penghitungan Usia Klien</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <select class="form-control btn-primary" id="filterPenghitunganUsia10">
+                          <option value="lapor" selected>Default (Tanggal Pelaporan dikurangi Tanggal Lahir)</option>
+                          <option value ="today" >Tanggal Hari Ini dikurangi Tanggal Lahir</option>
+                          <option value="kejadian">Tanggal Kejadian dikurangi Tanggal Lahir</option>
+                          <option value="input">Tanggal Input dikurangi Tanggal Lahir</option>
+                        </select>
+                      </div>
+                      <select class="form-control" id="filterKategoriKlien10">
+                        <option value="total" selected>Default ( Semua Kategori Klien )</option>
+                        <option value="dewasa_perempuan">Perempuan Dewasa</option>
+                        <option value="anak_perempuan">Anak Perempuan</option>
+                        <option value="anak_laki">Anak Laki-laki</option>
+                      </select>
+                    </div>
+                  </div>
+                  </div>
+      
+                  <div class="col-md-6">
+                  <button onclick="load_data10()" type="button" class="btn btn-block btn-primary mt-4" data-widget="chat-pane-toggle">
+                    <i class="fas fa-check"></i> Terapkan
+                  </button>
+                  </div>
+                </div>
+                </div>
+              </div>
             </div>
-            </div>
+
             <div class="col-md-6 target">
               <div id="accordion10">
                 <div class="card card-primary direct-chat direct-chat-primary">

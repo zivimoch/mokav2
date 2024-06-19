@@ -18,6 +18,8 @@ use Google_Service_Slides_BatchUpdatePresentationRequest;
 use Google_Service_Slides_RefreshSheetsChartRequest;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\DataMasterKasus;
 
 class MonitoringController extends Controller
 {
@@ -1388,6 +1390,12 @@ class MonitoringController extends Controller
         );
         
         return response()->json($response, 200); 
+    }
+
+    public function export_data_master_klien(Request $request)
+    {
+        $data = DataMasterKasus::data_klien($request);
+        return Excel::download(new DataMasterKasus($data), 'users.xlsx');
     }
 
     public function sheets()

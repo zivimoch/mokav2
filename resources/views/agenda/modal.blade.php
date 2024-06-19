@@ -55,7 +55,7 @@
         <div class="modal-body"  style="margin-bottom: -15px">
           <table class="table table-bottom table-sm">
             <tr>
-              <td style="width: 20%"><b>Kegiatan<b></td>
+              <td style="width: 20%"><b>Judul Kegiatan<b></td>
               <td style="width:1%"><b>:</b></td>
               <td id="viewKegiatan"></td>
             </tr>
@@ -132,11 +132,12 @@
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
-              <label>Kegiatan<span class="text-danger">*</span></label>
+              <label>Judul Kegiatan<span class="text-danger">*</span> </label>
               <input type="text" class="form-control required-field-agenda titlecase" id="judul_kegiatan">
               <div class="invalid-feedback2" id="valid-judul_kegiatan">
                 Kegiatan wajib diisi.
               </div>
+              <a href="#" onclick="listLayanan()">Lihat layanan yang tersedia untuk Perencanaan Intervensi</a>
           </div>
         </div>
         <div class="col-md-3">
@@ -316,6 +317,35 @@
       </div>
 
     </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal List Layanan-->
+<div class="modal fade" id="listLayanan" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div id="overlayListLayanan" class="overlay dark">
+        <div class="cv-spinner">
+          <span class="spinner"></span>
+        </div>
+      </div>
+
+      <div class="modal-header">
+        <h5 class="modal-title">List Detail Layanan</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body"  style="margin-bottom: -15px;">
+        <h6>Klik salah 1 detail layanan untuk dimunculkan di Judul Kegiatan</h6>
+        <div id="list_layanan" style="height:400px; overflow-y:scroll"></div>
+      </div>
+
+      <div class="modal-footer"></div>
+
     </div>
   </div>
 </div>
@@ -654,6 +684,65 @@
          }
   
       });
+    }
+
+    function listLayanan() {
+      $.ajax({
+              url: "{{route('get_keyword')}}?tampilkan_semua=1", 
+              type: "post",
+              dataType: 'json',
+              delay: 250,
+              data: function (params) {
+                return {
+                    _token: token,
+                    search: params.term // search term
+                };
+              },
+              success: function (response){
+                $('#listLayanan').modal('show'); 
+                $('#list_layanan').html('');
+                response.forEach(e => {
+                    // Append the main text (e.g., "1. Konselor", "2. Psikolog", etc.)
+                    $('#list_layanan').append(`<p>${e.text}</p>`);
+
+                    // Create a new unordered list
+                    let ul = $('<ul></ul>');
+
+                    e.children.forEach(child => {
+                        // Create a list item
+                        let li = $('<li></li>');
+
+                        // Create an anchor tag
+                        let a = $('<a href="#"></a>').text(child.text);
+
+                        // Add click event listener to the anchor tag
+                        a.click(function() {
+                            // Append the text to the input field
+                            let currentValue = $('#judul_kegiatan').val();
+                            $('#judul_kegiatan').val(currentValue + ' ' + $(this).text());
+                        });
+
+                        // Append the anchor tag to the list item
+                        li.append(a);
+
+                        // Append the list item to the unordered list
+                        ul.append(li);
+                    });
+
+                    // Append the unordered list to the main container
+                    $('#list_layanan').append(ul);
+                });
+              },
+              error: function (response){
+                setTimeout(function(){
+                  $("#overlayListLayanan").fadeOut(300);
+                },500);
+              }
+        }).done(function() { //loading submit form
+          setTimeout(function(){
+            $("#overlayListLayanan").fadeOut(300);
+          },500);
+        });
     }
       
      function displayMessage(message) {

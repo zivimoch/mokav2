@@ -1029,14 +1029,13 @@ class AgendaController extends Controller
     //untuk select2 list klien, dia methodnya POST
     public function get_keyword(Request $request)
     {
-                
         $search = $request->search;       
 
         $data = DB::table('m_keyword')
             ->select('jabatan', 'keyword')
             ->whereNull('deleted_at');
             
-        if (Auth::user()->jabatan != 'Super Admin') {
+        if (Auth::user()->jabatan != 'Super Admin' && $request->tampilkan_semua != 1) {
             $data->where('jabatan', Auth::user()->jabatan);
         }
 

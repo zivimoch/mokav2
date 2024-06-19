@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '11eff74a783d96e13d5ff62ee882a8bcaefe442f',
+        'reference' => '85e309e612308d26c6f97bff0747f216b855898c',
         'name' => 'laravel/laravel',
         'dev' => true,
     ),
@@ -490,7 +490,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '11eff74a783d96e13d5ff62ee882a8bcaefe442f',
+            'reference' => '85e309e612308d26c6f97bff0747f216b855898c',
             'dev_requirement' => false,
         ),
         'laravel/sail' => array(
@@ -602,12 +602,12 @@
             'dev_requirement' => false,
         ),
         'maatwebsite/excel' => array(
-            'pretty_version' => '3.1.48',
-            'version' => '3.1.48.0',
+            'pretty_version' => '3.1.55',
+            'version' => '3.1.55.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../maatwebsite/excel',
             'aliases' => array(),
-            'reference' => '6d0fe2a1d195960c7af7bf0de760582da02a34b9',
+            'reference' => '6d9d791dcdb01a9b6fd6f48d46f0d5fff86e6260',
             'dev_requirement' => false,
         ),
         'maennchen/zipstream-php' => array(
