@@ -521,14 +521,17 @@ class AgendaController extends Controller
                 $keterangan = null;
             }
             //simpan data agenda
-            $proses = Agenda::updateOrCreate(['uuid' => $request->uuid],[
+            $data_insert = [
                 'klien_id'     => $request->klien_id, 
                 'judul_kegiatan'   => $request->judul_kegiatan, 
                 'tanggal_mulai'   => $request->tanggal_mulai,
                 'jam_mulai'   => $request->jam_mulai,
-                'keterangan'   => $keterangan,
-                'created_by'   => Auth::user()->id
-            ]);
+                'keterangan'   => $keterangan
+            ];
+            if (!isset($request->uuid)) {
+                $data_insert['created_by'] = Auth::user()->id;
+            }
+            $proses = Agenda::updateOrCreate(['uuid' => $request->uuid], $data_insert);
 
             $proses_id = $proses->id;
 

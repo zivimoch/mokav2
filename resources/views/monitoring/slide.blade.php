@@ -34,6 +34,9 @@
     .image_slide {
       width: 100%
     }
+    @page {
+      size: auto;
+    }
   </style>
 </head>
 <body>
@@ -151,6 +154,14 @@
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="{{ asset('adminlte') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
   <script>
+    var today = new Date();
+    var tahun = today.getFullYear();
+    var bulan = String(today.getMonth() + 1).padStart(2, '0');
+    var hari = String(today.getDate()).padStart(2, '0');
+    var tanggal = tahun + '-' + bulan + '-' + hari;
+
+    $('.today').html(tanggal);
+
     load_data2();
     load_data3();
     load_data4();

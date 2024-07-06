@@ -358,15 +358,20 @@
                     <td>
                         <span class="data_kasus">
                             {{ $kasus->tanggal_kejadian ? date('d M Y', strtotime($kasus->tanggal_kejadian)) : '' }}
+                            ({{ $kasus->perkiraan_tanggal_kejadian == 0 ? 'Bukan Perkiraan' : 'Perkiraan'}})
                         </span> 
                         <input type="date" name="tanggal_kejadian" value="{{ $kasus->tanggal_kejadian }}" class="input_kasus">
+                        <select name="perkiraan_tanggal_kejadian" class="input_kasus">
+                            <option value="0" {{ $kasus->perkiraan_tanggal_kejadian == 0 ?'selected':'' }}>Bukan Perkiraan</option>
+                            <option value="1" {{ $kasus->perkiraan_tanggal_kejadian == 1 ?'selected':'' }}>Perkiraan</option>
+                        </select>
                     </td>
                 </tr>
                 <tr id="kategori_lokasi_kasus">
                     <td style="width: 200px">Kategori Lokasi TKP</td>
                     <td style="width: 1%">:</td>
                     <td>
-                        <span class="data_kasus">{{ $kasus->kategori_lokasi }}</span> 
+                        <span class="data_kasus">{{ isset($kasus->kategori_lokasi) ? $kasus->kategori_lokasi : 'TIDAK DIKETAHUI' }}</span> 
                         <select name="kategori_lokasi" class="input_kasus select2bs4" style="width: 100%;">
                             <option value=""></option>
                             @php
@@ -389,7 +394,7 @@
                     <td style="width: 200px">Alamat TKP</td>
                     <td style="width: 1%">:</td>
                     <td>
-                        <span class="data_kasus">{{ $kasus->alamat }}</span> 
+                        <span class="data_kasus">{{ isset($kasus->alamat) ? $kasus->alamat : 'TIDAK DIKETAHUI' }}</span> 
                         <input type="text" name="alamat" value="{{ $kasus->alamat }}" class="input_kasus">, 
                         <b>Provinsi</b> <span class="data_kasus">{{ $kasus->provinsi }}</span> 
                         <select name="provinsi_id" class="input_kasus select2bs4" id="provinsi_id_kasus" onchange="getkotkab('kasus')" style="width:100%">
@@ -680,19 +685,23 @@
                     <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klasifikasi">
-                            @php
-                                $no_jenis = 1;
-                            @endphp
-                            @foreach($bentuk_kekerasan_sets as $jenisNama => $bentukKekerasans)
-                                <b>{{ $no_jenis.'. '.$jenisNama }}</b><br>
-                                    @foreach($bentukKekerasans as $bentukNama)
-                                        {{ $bentukNama }}@if (!$loop->last), @endif
-                                    @endforeach
-                                <br>
+                            @if (count($bentuk_kekerasan_sets)> 0)
                                 @php
-                                    $no_jenis++;
+                                    $no_jenis = 1;
                                 @endphp
-                            @endforeach
+                                @foreach($bentuk_kekerasan_sets as $jenisNama => $bentukKekerasans)
+                                    <b>{{ $no_jenis.'. '.$jenisNama }}</b><br>
+                                        @foreach($bentukKekerasans as $bentukNama)
+                                            {{ $bentukNama }}@if (!$loop->last), @endif
+                                        @endforeach
+                                    <br>
+                                    @php
+                                        $no_jenis++;
+                                    @endphp
+                                @endforeach
+                            @else
+                                <span style="background-color:red;font-weight:bold; padding:5px; color:#fff">Perhatian! Bentuk Kekerasan Mohon Untuk Diisi</span>
+                            @endif
                         </span> 
                         <div class="input_klasifikasi">
                             <select name="bentuk_kekerasan[]" id="bentuk_kekerasan" onchange="getKategoriKasus()" multiple="multiple" style="width: 100%"  data-placeholder="Dapat dipilih lebih dari 1 bentuk kekerasan">
@@ -710,9 +719,13 @@
                     <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klasifikasi">
-                            @foreach ($kategori_kasus as $item)
-                                {{ $item->nama }}@if (!$loop->last), @endif 
-                            @endforeach
+                            @if (count($kategori_kasus) > 0)
+                                @foreach ($kategori_kasus as $item)
+                                    {{ $item->nama }}@if (!$loop->last), @endif 
+                                @endforeach
+                            @else
+                                <span style="background-color:red;font-weight:bold; padding:5px; color:#fff">Perhatian! Katergori Kasus Mohon Untuk Diisi</span>
+                            @endif
                         </span> 
                         <div class="input_klasifikasi">
                             <select name="kategori_kasus[]" id="kategori_kasus" multiple="multiple" style="width: 100%"  data-placeholder="Dapat dipilih lebih dari 1 kategori kasus">
@@ -750,7 +763,7 @@
                     <tr id="nik_pelapor">
                         <td style="width: 200px">NIK</td>
                         <td style="width: 1%">:</td>
-                        <td><span class="data_pelapor">{{ $pelapor->nik }}</span> <input type="number" name="nik" value="{{ $pelapor->nik }}" class="input_pelapor"></td>
+                        <td><span class="data_pelapor">{{ isset($pelapor->nik) ? $pelapor->nik : 'TIDAK DIKETAHUI' }}</span> <input type="number" name="nik" value="{{ $pelapor->nik }}" class="input_pelapor"></td>
                     </tr>
                     <tr id="nama_pelapor">
                         <td style="width: 200px">Nama</td>
@@ -761,12 +774,17 @@
                         <td style="width: 200px">Tempat/Tgl Lahir</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_pelapor" id="tempat_lahir_pelapor">{{ $pelapor->tempat_lahir }}</span> 
+                            <span class="data_pelapor" id="tempat_lahir_pelapor">{{ isset($pelapor->tempat_lahir) ? $pelapor->tempat_lahir : 'TIDAK DIKETAHUI' }}</span> 
                             <input type="text" name="tempat_lahir" value="{{ $pelapor->tempat_lahir }}" class="input_pelapor">, 
                             <span class="data_pelapor">
-                                {{ $pelapor->tanggal_lahir ? date('d M Y', strtotime($pelapor->tanggal_lahir)) : '' }} ({{ $pelapor->tanggal_lahir ? Carbon\Carbon::parse($pelapor->tanggal_lahir)->age.' tahun' : ' '}})
+                                {{ $pelapor->tanggal_lahir ? date('d M Y', strtotime($pelapor->tanggal_lahir)) : 'TIDAK DIKETAHUI' }} {{ $pelapor->tanggal_lahir ? '('.Carbon\Carbon::parse($pelapor->tanggal_lahir)->age.' tahun)' : ' '}} 
+                                ({{ $pelapor->perkiraan_tanggal_lahir == 0 ? 'Bukan Perkiraan' : 'Perkiraan'}})
                             </span> 
                             <input type="date" name="tanggal_lahir" value="{{ $pelapor->tanggal_lahir }}" class="input_pelapor">
+                            <select name="perkiraan_tanggal_lahir" class="input_pelapor">
+                                <option value="0" {{ $pelapor->perkiraan_tanggal_lahir == 0 ?'selected':'' }}>Bukan Perkiraan</option>
+                                <option value="1" {{ $pelapor->perkiraan_tanggal_lahir == 1 ?'selected':'' }}>Perkiraan</option>
+                            </select>
                         </td>
                     </tr>
                     <tr id="jenis_kelamin_pelapor">
@@ -783,7 +801,7 @@
                     <tr id="alamat_ktp_pelapor">
                         <td style="width: 200px">Alamat KTP</td>
                         <td style="width: 1%">:</td>
-                        <td><span class="data_pelapor">{{ $pelapor->alamat_ktp }}</span> 
+                        <td><span class="data_pelapor">{{ isset($pelapor->alamat_ktp) ? $pelapor->alamat_ktp : 'TIDAK DIKETAHUI' }}</span> 
                             <input type="text" name="alamat_ktp" value="{{ $pelapor->alamat_ktp }}" class="input_pelapor">, 
                             <b>Provinsi</b> <span class="data_pelapor">{{ $pelapor->provinsi_ktp }}</span> 
                             <select name="provinsi_id_ktp" class="input_pelapor select2bs4" id="provinsi_id_pelapor_ktp" onchange="getkotkab('pelapor_ktp')" style="width:100%">
@@ -806,7 +824,7 @@
                     <tr id="alamat_pelapor">
                         <td style="width: 200px">Alamat Domisili</td>
                         <td style="width: 1%">:</td>
-                        <td><span class="data_pelapor">{{ $pelapor->alamat }}</span> 
+                        <td><span class="data_pelapor">{{ isset($pelapor->alamat) ? $pelapor->alamat : 'TIDAK DIKETAHUI' }}</span> 
                             <input type="text" name="alamat" value="{{ $pelapor->alamat }}" class="input_pelapor">, 
                             <b>Provinsi</b> <span class="data_pelapor">{{ $pelapor->provinsi }}</span> 
                             <select name="provinsi_id" class="input_pelapor select2bs4" id="provinsi_id_pelapor" onchange="getkotkab('pelapor')" style="width:100%">
@@ -830,7 +848,7 @@
                         <td style="width: 200px">Agama</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_pelapor">{{ $pelapor->agama }}</span> 
+                            <span class="data_pelapor">{{ isset($pelapor->agama) ? $pelapor->agama : 'TIDAK DIKETAHUI' }}</span> 
                             <select name="agama" class="input_pelapor select2bs4" style="width: 100%;">
                                 @foreach ($agama as $item)
                                     <option value="{{ $item }}" {{ $item == $pelapor->agama ? 'selected' : '' }}>{{ $item }}</option>
@@ -842,7 +860,7 @@
                         <td style="width: 200px">Status Perkawinan</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_pelapor">{{ $pelapor->status_kawin }}</span> 
+                            <span class="data_pelapor">{{ isset($pelapor->status_kawin) ? $pelapor->status_kawin : 'TIDAK DIKETAHUI' }}</span> 
                             <select name="status_kawin" class="input_pelapor select2bs4" style="width: 100%;">
                                 @foreach ($status_perkawinan as $item)
                                     <option value="{{ $item }}" {{ $item == $pelapor->status_kawin ? 'selected' : '' }}>{{ $item }}</option>
@@ -854,7 +872,7 @@
                         <td style="width: 200px">Pekerjaan</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_pelapor">{{ $pelapor->pekerjaan }}</span> 
+                            <span class="data_pelapor">{{ isset($pelapor->pekerjaan) ?  $pelapor->pekerjaan : 'TIDAK DIKETAHUI' }}</span> 
                             <select name="pekerjaan" class="input_pelapor select2bs4" style="width: 100%;">
                                 @foreach ($pekerjaan as $item)
                                     <option value="{{ $item }}" {{ $item == $pelapor->pekerjaan ? 'selected' : '' }}>{{ $item }}</option>
@@ -866,7 +884,7 @@
                         <td style="width: 200px">Kewarganegaraan</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_pelapor">{{ $pelapor->kewarganegaraan }}</span> 
+                            <span class="data_pelapor">{{ isset($pelapor->kewarganegaraan) ? $pelapor->kewarganegaraan : 'TIDAK DIKETAHUI' }}</span> 
                             <select name="kewarganegaraan" class="input_pelapor select2bs4" style="width: 100%;">
                                 <option value="WNI" {{ "WNI" == $pelapor->kewarganegaraan ? 'selected' : '' }}>WNI</option>
                                 <option value="WNA" {{ "WNA" == $pelapor->kewarganegaraan ? 'selected' : '' }}>WNA</option>
@@ -877,14 +895,14 @@
                         <td style="width: 200px">Pendidikan</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_pelapor">{{ $pelapor->pendidikan }}</span> 
+                            <span class="data_pelapor">{{ isset($pelapor->pendidikan) ? $pelapor->pendidikan : 'TIDAK DIKETAHUI' }}</span> 
                             <select name="pendidikan" class="input_pelapor select2bs4" style="width: 100%;">
                                 <option value=""></option>
                                 @foreach ($pendidikan_terakhir as $item)
                                     <option value="{{ $item }}" {{ $item == $pelapor->pendidikan ? 'selected' : '' }}>{{ $item }}</option>
                                 @endforeach
                             </select>
-                            (<span class="data_pelapor">{{ $pelapor->status_pendidikan }}</span> 
+                            (<span class="data_pelapor">{{ isset($pelapor->status_pendidikan) ? $pelapor->status_pendidikan : 'TIDAK DIKETAHUI' }}</span> 
                             <select name="status_pendidikan" class="input_pelapor select2bs4" style="width: 100%;">
                                 <option value=""></option>
                                 @foreach ($status_pendidikan as $item)
@@ -898,8 +916,21 @@
                         <td style="width: 200px">No Telp</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_pelapor">{{ $pelapor->no_telp }}</span> 
+                            <span class="data_pelapor">{{ isset($pelapor->no_telp) ? $pelapor->no_telp : 'TIDAK DIKETAHUI' }}</span> 
                             <input type="text" name="no_telp" value="{{ $pelapor->no_telp }}" class="input_pelapor">
+                        </td>
+                    </tr>
+                    <tr id="hubungan_pelapor">
+                        <td style="width: 200px">Hubungan dengan klien (Pelapor siapanya Klien?)</td>
+                        <td style="width: 1%">:</td>
+                        <td>
+                            <span class="data_pelapor">{{ isset($klien->hubungan_pelapor) ? $klien->hubungan_pelapor : 'TIDAK DIKETAHUI' }}</span> 
+                            <select name="hubungan_pelapor" class="input_pelapor select2bs4" style="width: 100%;" required>
+                                <option value=""></option>
+                                @foreach ($hubungan_dengan_klien as $item)
+                                    <option value="{{ $item }}" {{ $klien->hubungan_pelapor == $item ? 'selected' : '' }}>{{ $item }}</option>
+                                @endforeach
+                            </select>
                         </td>
                     </tr>
                     <tr class="input_pelapor">
@@ -932,23 +963,28 @@
                 <tr id="nik_klien">
                     <td style="width: 200px">NIK</td>
                     <td style="width: 1%">:</td>
-                    <td><span class="data_klien">{{ $klien->nik }}</span> <input type="number" name="nik" value="{{ $klien->nik }}" class="input_klien"></td>
+                    <td><span class="data_klien">{{ isset($klien->nik) ? $klien->nik : 'TIDAK DIKETAHUI' }}</span> <input type="number" name="nik" value="{{ $klien->nik }}" class="input_klien"></td>
                 </tr>
                 <tr id="nama_klien">
                     <td style="width: 200px">Nama</td>
                     <td style="width: 1%">:</td>
-                    <td><span class="data_klien">{{ $klien->nama }}</span> <input type="text" name="nama" value="{{ $klien->nama }}" class="input_klien"></td>
+                    <td><span class="data_klien">{{ $klien->nama }}</span> <input type="text" name="nama" value="{{ $klien->nama }}" class="input_klien" required></td>
                 </tr>
                 <tr id="tanggal_lahir_klien">
                     <td style="width: 200px">Tempat/Tgl Lahir</td>
                     <td style="width: 1%">:</td>
                     <td>
-                        <span class="data_klien" id="tempat_lahir_klien">{{ $klien->tempat_lahir }}</span> 
+                        <span class="data_klien" id="tempat_lahir_klien">{{ isset($klien->tempat_lahir) ? $klien->tempat_lahir : 'TIDAK DIKETAHUI' }}</span> 
                         <input type="text" name="tempat_lahir" value="{{ $klien->tempat_lahir }}" class="input_klien">, 
                         <span class="data_klien">
                             {{ $klien->tanggal_lahir ? date('d M Y', strtotime($klien->tanggal_lahir)) : '' }} ({{ $klien->tanggal_lahir ? Carbon\Carbon::parse($klien->tanggal_lahir)->age.' tahun' : ' '}})
+                            ({{ $klien->perkiraan_tanggal_lahir == 0 ? 'Bukan Perkiraan' : 'Perkiraan'}})
                         </span> 
                         <input type="date" name="tanggal_lahir" value="{{ $klien->tanggal_lahir }}" class="input_klien">
+                        <select name="perkiraan_tanggal_lahir" class="input_klien">
+                            <option value="0" {{ $klien->perkiraan_tanggal_lahir == 0 ?'selected':'' }}>Bukan Perkiraan</option>
+                            <option value="1" {{ $klien->perkiraan_tanggal_lahir == 1 ?'selected':'' }}>Perkiraan</option>
+                        </select>
                     </td>
                 </tr>
                 <tr id="jenis_kelamin_klien">
@@ -966,7 +1002,7 @@
                     <td style="width: 200px">Alamat KTP</td>
                     <td style="width: 1%">:</td>
                     <td>
-                        <span class="data_klien">{{ $klien->alamat_ktp }}</span> 
+                        <span class="data_klien">{{ isset($klien->alamat_ktp) ? $klien->alamat_ktp : 'TIDAK DIKETAHUI' }}</span> 
                         <input type="text" name="alamat_ktp" value="{{ $klien->alamat_ktp }}" class="input_klien">, 
                         <b>Provinsi</b> <span class="data_klien">{{ $klien->provinsi_ktp }}</span> 
                         <select name="provinsi_id_ktp" class="input_klien select2bs4" id="provinsi_id_klien_ktp" onchange="getkotkab('klien_ktp')" style="width:100%">
@@ -991,7 +1027,7 @@
                 <tr id="alamat_klien">
                     <td style="width: 200px">Alamat Domisili</td>
                     <td style="width: 1%">:</td>
-                    <td><span class="data_klien">{{ $klien->alamat }}</span> 
+                    <td><span class="data_klien">{{ isset($klien->alamat) ? $klien->alamat : 'TIDAK DIKETAHUI' }}</span> 
                         <input type="text" name="alamat" value="{{ $klien->alamat }}" class="input_klien">, 
                         <b>Provinsi</b> <span class="data_klien">{{ $klien->provinsi }}</span> 
                         <select name="provinsi_id" class="input_klien select2bs4" id="provinsi_id_klien" onchange="getkotkab('klien')" style="width:100%">
@@ -1017,7 +1053,7 @@
                     <td style="width: 200px">Agama</td>
                     <td style="width: 1%">:</td>
                     <td>
-                        <span class="data_klien">{{ $klien->agama }}</span> 
+                        <span class="data_klien">{{ isset($klien->agama) ? $klien->agama : 'TIDAK DIKETAHUI' }}</span> 
                         <select name="agama" class="input_klien select2bs4" style="width: 100%;">
                             @foreach ($agama as $item)
                                 <option value="{{ $item }}" {{ $item == $klien->agama ? 'selected' : '' }}>{{ $item }}</option>
@@ -1029,7 +1065,7 @@
                     <td style="width: 200px">Status Perkawinan</td>
                     <td style="width: 1%">:</td>
                     <td>
-                        <span class="data_klien">{{ $klien->status_kawin }}</span> 
+                        <span class="data_klien">{{ isset($klien->status_kawin) ? $klien->status_kawin : 'TIDAK DIKETAHUI' }}</span> 
                         <select name="status_kawin" class="input_klien select2bs4" style="width: 100%;">
                             @foreach ($status_perkawinan as $item)
                                 <option value="{{ $item }}" {{ $item == $klien->status_kawin ? 'selected' : '' }}>{{ $item }}</option>
@@ -1041,7 +1077,7 @@
                     <td style="width: 200px">Pekerjaan</td>
                     <td style="width: 1%">:</td>
                     <td>
-                        <span class="data_klien">{{ $klien->pekerjaan }}</span> 
+                        <span class="data_klien">{{ isset($klien->pekerjaan) ? $klien->pekerjaan : 'TIDAK DIKETAHUI' }}</span> 
                         <select name="pekerjaan" class="input_klien select2bs4" style="width: 100%;">
                             @foreach ($pekerjaan as $item)
                                 <option value="{{ $item }}" {{ $item == $klien->pekerjaan ? 'selected' : '' }}>{{ $item }}</option>
@@ -1053,7 +1089,7 @@
                     <td style="width: 200px">Kewarganegaraan</td>
                     <td style="width: 1%">:</td>
                     <td>
-                        <span class="data_klien">{{ $klien->kewarganegaraan }}</span> 
+                        <span class="data_klien">{{ isset($klien->kewarganegaraan) ? $klien->kewarganegaraan : 'TIDAK DIKETAHUI' }}</span> 
                         <select name="kewarganegaraan" class="input_klien select2bs4" style="width: 100%;">
                             <option value="WNI" {{ "WNI" == $klien->kewarganegaraan ? 'selected' : '' }}>WNI</option>
                             <option value="WNA" {{ "WNA" == $klien->kewarganegaraan ? 'selected' : '' }}>WNA</option>
@@ -1064,7 +1100,7 @@
                     <td style="width: 200px">Pendidikan</td>
                     <td style="width: 1%">:</td>
                     <td>
-                        <span class="data_klien">{{ $klien->pendidikan }}</span> 
+                        <span class="data_klien">{{ isset($klien->pendidikan) ? $klien->pendidikan : 'TIDAK DIKETAHUI' }}</span> 
                         <select name="pendidikan" class="input_klien select2bs4" style="width: 100%;">
                             <option value=""></option>
                             @foreach ($pendidikan_terakhir as $item)
@@ -1085,7 +1121,7 @@
                     <td style="width: 200px">No Telp</td>
                     <td style="width: 1%">:</td>
                     <td>
-                        <span class="data_klien">{{ $klien->no_telp }}</span> 
+                        <span class="data_klien">{{ isset($klien->no_telp) ? $klien->no_telp : 'TIDAK DIKETAHUI' }}</span> 
                         <input type="text" name="no_telp" value="{{ $klien->no_telp }}" class="input_klien">
                     </td>
                 </tr>
@@ -1093,7 +1129,7 @@
                     <td style="width: 200px">Kedisabilitasan</td>
                     <td style="width: 1%">:</td>
                     <td>
-                        <span class="data_klien">{{ $klien->kedisabilitasan }}</span> 
+                        <span class="data_klien">{{ isset($klien->kedisabilitasan) ? $klien->kedisabilitasan : 'TIDAK DIKETAHUI' }}</span> 
                         <select name="kedisabilitasan" class="input_klien select2bs4" style="width: 100%;">
                                 <option value="Non Disabilitas" {{ "Non Disabilitas" == $klien->kedisabilitasan ? 'selected' : '' }}>Non Disabilitas</option>
                                 <option value="Disabilitas" {{ "Disabilitas" == $klien->kedisabilitasan ? 'selected' : '' }}>Disabilitas</option>
@@ -1133,23 +1169,28 @@
                     <tr id="nik_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">NIK</td>
                         <td style="width: 1%">:</td>
-                        <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->nik }}</span> <input type="number" name="nik" value="{{ $item_terlapor->nik }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
+                        <td><span class="data_terlapor{{ $no_terlapor }}">{{ isset($item_terlapor->nik) ? $item_terlapor->nik : 'TIDAK DIKETAHUI'  }}</span> <input type="number" name="nik" value="{{ $item_terlapor->nik }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
                     </tr>
                     <tr id="nama_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Nama</td>
                         <td style="width: 1%">:</td>
-                        <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->nama }}</span> <input type="text" name="nama" value="{{ $item_terlapor->nama }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
+                        <td><span class="data_terlapor{{ $no_terlapor }}">{{ isset($item_terlapor->nama) ? $item_terlapor->nama : 'TIDAK DIKETAHUI' }}</span> <input type="text" name="nama" value="{{ $item_terlapor->nama }}" class="input_terlapor input_terlapor{{ $no_terlapor }}"></td>
                     </tr>
                     <tr id="tempat_tanggal_lahir_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Tempat/Tgl Lahir</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_terlapor{{ $no_terlapor }}" id="tempat_lahir_terlapor{{ $no_terlapor }}">{{ $item_terlapor->tempat_lahir }}</span> 
+                            <span class="data_terlapor{{ $no_terlapor }}" id="tempat_lahir_terlapor{{ $no_terlapor }}">{{ isset($item_terlapor->tempat_lahir) ? $item_terlapor->tempat_lahir : 'TIDAK DIKETAHUI' }}</span> 
                             <input type="text" name="tempat_lahir" value="{{ $item_terlapor->tempat_lahir }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">, 
                             <span class="data_terlapor{{ $no_terlapor }}">
-                                {{ $item_terlapor->tanggal_lahir ? date('d M Y', strtotime($item_terlapor->tanggal_lahir)) : '' }} ({{ $item_terlapor->tanggal_lahir ? Carbon\Carbon::parse($item_terlapor->tanggal_lahir)->age.' tahun' : ' '}})
+                                {{ $item_terlapor->tanggal_lahir ? date('d M Y', strtotime($item_terlapor->tanggal_lahir)) : 'TIDAK DIKETAHUI' }} {{ $item_terlapor->tanggal_lahir ? '('.Carbon\Carbon::parse($item_terlapor->tanggal_lahir)->age.' tahun)' : ' '}}
+                                ({{ $item_terlapor->perkiraan_tanggal_lahir == 0 ? 'Bukan Perkiraan' : 'Perkiraan'}})
                             </span> 
                             <input type="date" name="tanggal_lahir" value="{{ $item_terlapor->tanggal_lahir }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">
+                            <select name="perkiraan_tanggal_lahir" class="input_terlapor input_terlapor{{ $no_terlapor }}">
+                                <option value="0" {{ $item_terlapor->perkiraan_tanggal_lahir == 0 ?'selected':'' }}>Bukan Perkiraan</option>
+                                <option value="1" {{ $item_terlapor->perkiraan_tanggal_lahir == 1 ?'selected':'' }}>Perkiraan</option>
+                            </select>
                         </td>
                     </tr>
                     <tr id="jenis_kelamin_terlapor{{ $no_terlapor }}">
@@ -1166,7 +1207,7 @@
                     <tr id="alamat_terlapor_ktp{{ $no_terlapor }}">
                         <td style="width: 200px">Alamat KTP</td>
                     <td style="width: 1%">:</td>
-                    <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->alamat_ktp }}</span> 
+                    <td><span class="data_terlapor{{ $no_terlapor }}">{{ isset($item_terlapor->alamat_ktp) ? $item_terlapor->alamat_ktp : 'TIDAK DIKETAHUI' }}</span> 
                         <input type="text" name="alamat_ktp" value="{{ $item_terlapor->alamat_ktp }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">, 
                         <b>Provinsi</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->provinsi_ktp }}</span> 
                         <select name="provinsi_id_ktp" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="provinsi_id_terlapor_ktp{{ $no_terlapor }}" onchange="getkotkab('terlapor_ktp{{ $no_terlapor }}')" style="width:100%">
@@ -1191,7 +1232,7 @@
                     <tr id="alamat_terlapor{{ $no_terlapor }}">
                         <td style="width: 200px">Alamat Domisili</td>
                     <td style="width: 1%">:</td>
-                    <td><span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->alamat }}</span> 
+                    <td><span class="data_terlapor{{ $no_terlapor }}">{{ isset($item_terlapor->alamat) ? $item_terlapor->alamat : 'TIDAK DIKETAHUI' }}</span> 
                         <input type="text" name="alamat" value="{{ $item_terlapor->alamat }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">, 
                         <b>Provinsi</b> <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->provinsi }}</span> 
                         <select name="provinsi_id" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" id="provinsi_id_terlapor{{ $no_terlapor }}" onchange="getkotkab('terlapor{{ $no_terlapor }}')" style="width:100%">
@@ -1217,7 +1258,7 @@
                         <td style="width: 200px">Agama</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->agama }}</span> 
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ isset($item_terlapor->agama) ? $item_terlapor->agama : 'TIDAK DIKETAHUI' }}</span> 
                             <select name="agama" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
                                 @foreach ($agama as $item)
                                     <option value="{{ $item }}" {{ $item == $item_terlapor->agama ? 'selected' : '' }}>{{ $item }}</option>
@@ -1229,7 +1270,7 @@
                         <td style="width: 200px">Status Perkawinan</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->status_kawin }}</span> 
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ isset($item_terlapor->status_kawin) ? $item_terlapor->status_kawin : 'TIDAK DIKETAHUI'  }}</span> 
                             <select name="status_kawin" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
                                 @foreach ($status_perkawinan as $item)
                                     <option value="{{ $item }}" {{ $item == $item_terlapor->status_kawin ? 'selected' : '' }}>{{ $item }}</option>
@@ -1241,7 +1282,7 @@
                         <td style="width: 200px">Pekerjaan</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->pekerjaan }}</span> 
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ isset($item_terlapor->pekerjaan) ? $item_terlapor->pekerjaan : 'TIDAK DIKETAHUI'  }}</span> 
                             <select name="pekerjaan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
                                 @foreach ($pekerjaan as $item)
                                     <option value="{{ $item }}" {{ $item == $item_terlapor->pekerjaan ? 'selected' : '' }}>{{ $item }}</option>
@@ -1253,7 +1294,7 @@
                         <td style="width: 200px">Kewarganegaraan</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->kewarganegaraan }}</span> 
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ isset($item_terlapor->kewarganegaraan) ? $item_terlapor->kewarganegaraan : 'TIDAK DIKETAHUI'  }}</span> 
                             <select name="kewarganegaraan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
                                 <option value="WNI" {{ "WNI" == $item_terlapor->kewarganegaraan ? 'selected' : '' }}>WNI</option>
                                 <option value="WNA" {{ "WNA" == $item_terlapor->kewarganegaraan ? 'selected' : '' }}>WNA</option>
@@ -1264,14 +1305,14 @@
                         <td style="width: 200px">Pendidikan</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->pendidikan }}</span> 
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ isset($item_terlapor->pendidikan) ? $item_terlapor->pendidikan : 'TIDAK DIKETAHUI' }}</span> 
                             <select name="pendidikan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
                                 <option value=""></option>
                                 @foreach ($pendidikan_terakhir as $item)
                                     <option value="{{ $item }}" {{ $item == $item_terlapor->pendidikan ? 'selected' : '' }}>{{ $item }}</option>
                                 @endforeach
                             </select>
-                            (<span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->status_pendidikan }}</span> 
+                            (<span class="data_terlapor{{ $no_terlapor }}">{{ isset($item_terlapor->status_pendidikan) ? $item_terlapor->status_pendidikan : 'TIDAK DIKETAHUI' }}</span> 
                             <select name="status_pendidikan" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;">
                                 <option value=""></option>
                                 @foreach ($status_pendidikan as $item)
@@ -1285,7 +1326,7 @@
                         <td style="width: 200px">No Telp</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->no_telp }}</span> 
+                            <span class="data_terlapor{{ $no_terlapor }}">{{ isset($item_terlapor->no_telp) ? $item_terlapor->no_telp : 'TIDAK DIKETAHUI' }}</span> 
                             <input type="text" name="no_telp" value="{{ $item_terlapor->no_telp }}" class="input_terlapor input_terlapor{{ $no_terlapor }}">
                         </td>
                     </tr>
@@ -1293,7 +1334,7 @@
                         <td style="width: 200px">Hubungan dengan klien (Terlapor siapanya Klien?)</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_terlapor{{ $no_terlapor }}">{{ $item_terlapor->hubungan_terlapor }}</span> 
+                            <span class="data_terlapor{{ $no_terlapor }}">{!! isset($item_terlapor->hubungan_terlapor) ? $item_terlapor->hubungan_terlapor : '<span style="background-color:red;font-weight:bold; padding:5px; color:#fff">Perhatian! Hubungan Terlapor Dengan Klien Mohon Untuk Diisi</span>' !!}</span> 
                             <select name="hubungan_terlapor" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;" required>
                                 <option value=""></option>
                                 @foreach ($hubungan_dengan_klien as $item)
@@ -1757,7 +1798,7 @@
             </table>
             </div>
             <br>
-            @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Supervisor Kasus']) && $akses_petugas == 1)
+            @if ((in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Supervisor Kasus']) && $akses_petugas == 1) || Auth::user()->jabatan == 'Super Admin')
             {{-- <div class="col-md-12">
                 <div class="alert alert-danger">
                 <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>

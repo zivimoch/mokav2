@@ -129,11 +129,12 @@ class FormPenerimaPengaduan extends Controller
                 'sumber_informasi' => $request->sumber_informasi,
                 'tanggal_pelaporan' => $request->tanggal_pelaporan,
                 'tanggal_kejadian' => $request->tanggal_kejadian,
+                'perkiraan_tanggal_kejadian' => $request->perkiraan_tanggal_kejadian,
                 'kategori_lokasi' => $request->kategori_lokasi,
-                'provinsi_id' => $request->provinsi_id_kasus,
-                'kotkab_id' => $request->kota_id_kasus,
-                'kecamatan_id' => $request->kecamatan_id_kasus,
-                'kelurahan_id' => $request->kelurahan_id_kasus,
+                'provinsi_id' => isset($request->provinsi_id_kasus) ? $request->provinsi_id_kasus : 2,
+                'kotkab_id' => isset($request->kota_id_kasus) ? $request->kota_id_kasus : 2,
+                'kecamatan_id' =>  isset($request->kecamatan_id_kasus) ? $request->kecamatan_id_kasus : 2,
+                'kelurahan_id' => isset($request->kelurahan_id_kasus) ? $request->kelurahan_id_kasus : 2,
                 'alamat' => $request->alamat_kasus,
                 'ringkasan' => $request->ringkasan,
                 'created_by' => $created_by
@@ -146,16 +147,17 @@ class FormPenerimaPengaduan extends Controller
                 'nama' => $request->nama_pelapor,
                 'tempat_lahir' => $request->tempat_lahir_pelapor,
                 'tanggal_lahir' => $request->tanggal_lahir_pelapor,
+                'perkiraan_tanggal_lahir' => $request->perkiraan_tanggal_lahir_pelapor,
                 'jenis_kelamin' => $request->jenis_kelamin_pelapor,
-                'provinsi_id_ktp' => $request->provinsi_id_pelapor_ktp,
-                'kotkab_id_ktp' => $request->kota_id_pelapor_ktp,
-                'kecamatan_id_ktp' => $request->kecamatan_id_pelapor_ktp,
-                'kelurahan_id_ktp' => $request->kelurahan_id_pelapor_ktp,
+                'provinsi_id_ktp' => isset($request->provinsi_id_pelapor_ktp) ? $request->provinsi_id_pelapor_ktp : 2,
+                'kotkab_id_ktp' => isset($request->kota_id_pelapor_ktp) ? $request->kota_id_pelapor_ktp : 2,
+                'kecamatan_id_ktp' => isset($request->kecamatan_id_pelapor_ktp) ? $request->kecamatan_id_pelapor_ktp : 2,
+                'kelurahan_id_ktp' => isset($request->kelurahan_id_pelapor_ktp) ? $request->kelurahan_id_pelapor_ktp : 2,
                 'alamat_ktp' => $request->alamat_pelapor_ktp,
-                'provinsi_id' => $request->provinsi_id_pelapor,
-                'kotkab_id' => $request->kota_id_pelapor,
-                'kecamatan_id' => $request->kecamatan_id_pelapor,
-                'kelurahan_id' => $request->kelurahan_id_pelapor,
+                'provinsi_id' => isset($request->provinsi_id_pelapor) ? $request->provinsi_id_pelapor : 2,
+                'kotkab_id' => isset($request->kota_id_pelapor) ? $request->kota_id_pelapor : 2,
+                'kecamatan_id' => isset($request->kecamatan_id_pelapor) ? $request->kecamatan_id_pelapor : 2,
+                'kelurahan_id' => isset($request->kelurahan_id_pelapor) ? $request->kelurahan_id_pelapor : 2,
                 'alamat' => $request->alamat_pelapor,
                 'agama' => $request->agama_pelapor,
                 'status_kawin' => $request->perkawinan_pelapor,
@@ -192,16 +194,17 @@ class FormPenerimaPengaduan extends Controller
                         'nama' => $request->nama_klien[$key],  
                         'tempat_lahir' => isset($request->tempat_lahir_klien[$key]) ? $request->tempat_lahir_klien[$key] : NULL,  
                         'tanggal_lahir' => isset($request->tanggal_lahir_klien[$key]) ? $request->tanggal_lahir_klien[$key] : NULL,  
+                        'perkiraan_tanggal_lahir' => $request->perkiraan_tanggal_lahir_klien[$key],
                         'jenis_kelamin' => isset($request->jenis_kelamin_klien[$key]) ? $request->jenis_kelamin_klien[$key] : NULL,  
-                        'provinsi_id_ktp' => isset($request->provinsi_id_klien_ktp[$key]) ? $request->provinsi_id_klien_ktp[$key] : NULL,  
-                        'kotkab_id_ktp' => isset($request->kota_id_klien_ktp[$key]) ? $request->kota_id_klien_ktp[$key] : NULL,  
-                        'kecamatan_id_ktp' => isset($request->kecamatan_id_klien_ktp[$key]) ? $request->kecamatan_id_klien_ktp[$key] : NULL,  
-                        'kelurahan_id_ktp' => isset($request->kelurahan_id_klien_ktp[$key]) ? $request->kelurahan_id_klien_ktp[$key] : NULL,  
+                        'provinsi_id_ktp' => isset($request->provinsi_id_klien_ktp[$key]) ? $request->provinsi_id_klien_ktp[$key] : 2,  
+                        'kotkab_id_ktp' => isset($request->kota_id_klien_ktp[$key]) ? $request->kota_id_klien_ktp[$key] : 2,  
+                        'kecamatan_id_ktp' => isset($request->kecamatan_id_klien_ktp[$key]) ? $request->kecamatan_id_klien_ktp[$key] : 2,  
+                        'kelurahan_id_ktp' => isset($request->kelurahan_id_klien_ktp[$key]) ? $request->kelurahan_id_klien_ktp[$key] : 2,  
                         'alamat_ktp' => isset($request->alamat_klien_ktp[$key]) ? $request->alamat_klien_ktp[$key] : NULL, 
-                        'provinsi_id' => isset($request->provinsi_id_klien[$key]) ? $request->provinsi_id_klien[$key] : NULL,  
-                        'kotkab_id' => isset($request->kota_id_klien[$key]) ? $request->kota_id_klien[$key] : NULL,  
-                        'kecamatan_id' => isset($request->kecamatan_id_klien[$key]) ? $request->kecamatan_id_klien[$key] : NULL,  
-                        'kelurahan_id' => isset($request->kelurahan_id_klien[$key]) ? $request->kelurahan_id_klien[$key] : NULL,  
+                        'provinsi_id' => isset($request->provinsi_id_klien[$key]) ? $request->provinsi_id_klien[$key] : 2,  
+                        'kotkab_id' => isset($request->kota_id_klien[$key]) ? $request->kota_id_klien[$key] : 2,  
+                        'kecamatan_id' => isset($request->kecamatan_id_klien[$key]) ? $request->kecamatan_id_klien[$key] : 2,  
+                        'kelurahan_id' => isset($request->kelurahan_id_klien[$key]) ? $request->kelurahan_id_klien[$key] : 2,  
                         'alamat' => isset($request->alamat_klien[$key]) ? $request->alamat_klien[$key] : NULL, 
                         'agama' => isset($request->agama_klien[$key]) ? $request->agama_klien[$key] : NULL,  
                         'status_kawin' => isset($request->perkawinan_klien[$key]) ? $request->perkawinan_klien[$key] : NULL,  
@@ -337,16 +340,17 @@ class FormPenerimaPengaduan extends Controller
                         'nama' => $request->nama_terlapor[$key],  
                         'tempat_lahir' => isset($request->tempat_lahir_terlapor[$key]) ? $request->tempat_lahir_terlapor[$key] : NULL,  
                         'tanggal_lahir' => isset($request->tanggal_lahir_terlapor[$key]) ? $request->tanggal_lahir_terlapor[$key] : NULL,  
+                        'perkiraan_tanggal_lahir' => $request->perkiraan_tanggal_lahir_terlapor[$key],
                         'jenis_kelamin' => isset($request->jenis_kelamin_terlapor[$key]) ? $request->jenis_kelamin_terlapor[$key] : NULL,  
-                        'provinsi_id_ktp' => isset($request->provinsi_id_terlapor_ktp[$key]) ? $request->provinsi_id_terlapor_ktp[$key] : NULL,  
-                        'kotkab_id_ktp' => isset($request->kota_id_terlapor_ktp[$key]) ? $request->kota_id_terlapor_ktp[$key] : NULL,  
-                        'kecamatan_id_ktp' => isset($request->kecamatan_id_terlapor_ktp[$key]) ? $request->kecamatan_id_terlapor_ktp[$key] : NULL,  
-                        'kelurahan_id_ktp' => isset($request->kelurahan_id_terlapor_ktp[$key]) ? $request->kelurahan_id_terlapor_ktp[$key] : NULL,  
+                        'provinsi_id_ktp' => isset($request->provinsi_id_terlapor_ktp[$key]) ? $request->provinsi_id_terlapor_ktp[$key] : 2,  
+                        'kotkab_id_ktp' => isset($request->kota_id_terlapor_ktp[$key]) ? $request->kota_id_terlapor_ktp[$key] : 2,  
+                        'kecamatan_id_ktp' => isset($request->kecamatan_id_terlapor_ktp[$key]) ? $request->kecamatan_id_terlapor_ktp[$key] : 2,  
+                        'kelurahan_id_ktp' => isset($request->kelurahan_id_terlapor_ktp[$key]) ? $request->kelurahan_id_terlapor_ktp[$key] : 2,  
                         'alamat_ktp' => isset($request->alamat_terlapor_ktp[$key]) ? $request->alamat_terlapor_ktp[$key] : NULL, 
-                        'provinsi_id' => isset($request->provinsi_id_terlapor[$key]) ? $request->provinsi_id_terlapor[$key] : NULL,  
-                        'kotkab_id' => isset($request->kota_id_terlapor[$key]) ? $request->kota_id_terlapor[$key] : NULL,  
-                        'kecamatan_id' => isset($request->kecamatan_id_terlapor[$key]) ? $request->kecamatan_id_terlapor[$key] : NULL,  
-                        'kelurahan_id' => isset($request->kelurahan_id_terlapor[$key]) ? $request->kelurahan_id_terlapor[$key] : NULL,  
+                        'provinsi_id' => isset($request->provinsi_id_terlapor[$key]) ? $request->provinsi_id_terlapor[$key] : 2,  
+                        'kotkab_id' => isset($request->kota_id_terlapor[$key]) ? $request->kota_id_terlapor[$key] : 2,  
+                        'kecamatan_id' => isset($request->kecamatan_id_terlapor[$key]) ? $request->kecamatan_id_terlapor[$key] : 2,  
+                        'kelurahan_id' => isset($request->kelurahan_id_terlapor[$key]) ? $request->kelurahan_id_terlapor[$key] : 2,  
                         'alamat' => isset($request->alamat_terlapor[$key]) ? $request->alamat_terlapor[$key] : NULL, 
                         'agama' => isset($request->agama_terlapor[$key]) ? $request->agama_terlapor[$key] : NULL,  
                         'status_kawin' => isset($request->perkawinan_terlapor[$key]) ? $request->perkawinan_terlapor[$key] : NULL,  
@@ -397,6 +401,12 @@ class FormPenerimaPengaduan extends Controller
                 $kasus = Kasus::find($data->kasus_id);
                 // ambil salah 1 klien aja di kasus ini, nanti akan dipakai kasus_id nya
                 $klien = Klien::where('kasus_id', $kasus->id)->first();
+
+                // update data hubungan pelapor dengan korban
+                $klien->hubungan_pelapor = $request->hubungan_pelapor;
+                $klien->save();
+                // hapus hubungan_pelapor dari request
+                $request->request->remove('hubungan_pelapor');
             }
             if ($data_update == 'klien') {
                 $data = Klien::where('uuid', $request->uuid)->first();
@@ -439,22 +449,30 @@ class FormPenerimaPengaduan extends Controller
                 // hapus semua jenis_kekerasan kasus klien ini
                 TJenisKekerasan::where('klien_id', $klien->id)->delete();
                 // create jenis_kekerasan kasus klien ini
-                foreach ($request->jenis_kekerasan as $item_jenis) {
-                    TJenisKekerasan::create(['klien_id' => $klien->id, 'value' => $item_jenis]);
+                if (isset($request->jenis_kekerasan)) {
+                    foreach ($request->jenis_kekerasan as $item_jenis) {
+                        TJenisKekerasan::create(['klien_id' => $klien->id, 'value' => $item_jenis]);
+                    }
                 }
+
                 // Bentuk Kekerasan
                 // hapus semua bentuk_kekerasan kasus klien ini
                 TBentukKekerasan::where('klien_id', $klien->id)->delete();
                 // create jenis_kekerasan kasus klien ini
-                foreach ($request->bentuk_kekerasan as $item_bentuk) {
-                    TBentukKekerasan::create(['klien_id' => $klien->id, 'value' => $item_bentuk]);
+                if (isset($request->bentuk_kekerasan)) {
+                    foreach ($request->bentuk_kekerasan as $item_bentuk) {
+                        TBentukKekerasan::create(['klien_id' => $klien->id, 'value' => $item_bentuk]);
+                    }
                 }
                 // Kategori Kasus
+
                 // hapus semua jenis_kekerasan kasus klien ini
                 TKategoriKasus::where('klien_id', $klien->id)->delete();
                 // create jenis_kekerasan kasus klien ini
-                foreach ($request->kategori_kasus as $item) {
-                    TKategoriKasus::create(['klien_id' => $klien->id, 'value' => $item]);
+                if (isset($request->kategori_kasus)) {
+                    foreach ($request->kategori_kasus as $item) {
+                        TKategoriKasus::create(['klien_id' => $klien->id, 'value' => $item]);
+                    }
                 }
             }
 
@@ -598,15 +616,15 @@ class FormPenerimaPengaduan extends Controller
                 'tempat_lahir' => $request->tempat_lahir,  
                 'tanggal_lahir' => $request->tanggal_lahir,  
                 'jenis_kelamin' => $request->jenis_kelamin,  
-                'provinsi_id_ktp' => $request->provinsi_id_ktp,  
-                'kotkab_id_ktp' => $request->kota_id_ktp,  
-                'kecamatan_id_ktp' => $request->kecamatan_id_ktp,  
-                'kelurahan_id_ktp' => $request->kelurahan_id_ktp,  
+                'provinsi_id_ktp' => isset($request->provinsi_id_ktp) ? $request->provinsi_id_ktp : 2,  
+                'kotkab_id_ktp' => isset($request->kota_id_ktp) ? $request->kota_id_ktp : 2,  
+                'kecamatan_id_ktp' => isset($request->kecamatan_id_ktp) ? $request->kecamatan_id_ktp : 2,  
+                'kelurahan_id_ktp' => isset($request->kelurahan_id_ktp) ? $request->kelurahan_id_ktp : 2,  
                 'alamat_ktp' => $request->alamat_ktp, 
-                'provinsi_id' => $request->provinsi_id,  
-                'kotkab_id' => $request->kota_id,  
-                'kecamatan_id' => $request->kecamatan_id,  
-                'kelurahan_id' => $request->kelurahan_id,  
+                'provinsi_id' => isset($request->provinsi_id) ? $request->provinsi_id : 2,  
+                'kotkab_id' => isset($request->kota_id) ? $request->kota_id : 2,  
+                'kecamatan_id' => isset($request->kecamatan_id) ? $request->kecamatan_id : 2,  
+                'kelurahan_id' => isset($request->kelurahan_id) ? $request->kelurahan_id : 2,  
                 'alamat' => $request->alamat, 
                 'agama' => $request->agama,  
                 'status_kawin' => $request->status_kawin,  

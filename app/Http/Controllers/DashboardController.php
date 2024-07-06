@@ -48,62 +48,46 @@ class DashboardController extends Controller
             $user_id = Auth::user()->id;
 
             $rekap_agenda = "SELECT 
-                a.name, 
-                COALESCE(z.jumlah, 0) AS dibuat_MK, 
-                COALESCE(y.jumlah, 0) AS tak_dibuat_MK
+                u.name AS user_name,
+                COUNT(CASE WHEN a.created_by = u.id THEN 1 END) AS dibuat_MK,
+                COUNT(CASE WHEN a.created_by != u.id THEN 1 END) AS tak_dibuat_MK,
+                ROUND(
+                    COUNT(CASE WHEN a.created_by = u.id THEN 1 END) * 100.0 /
+                    NULLIF(COUNT(a.id), 0), 2
+                ) AS percentage_dibuatMK,
+                ROUND(
+                    COUNT(CASE WHEN a.created_by != u.id THEN 1 END) * 100.0 /
+                    NULLIF(COUNT(a.id), 0), 2
+                ) AS percentage_takDibuatMK
             FROM 
-                users a 
-            LEFT JOIN 
-                (
-                SELECT
-                    b.id, 
-                    COUNT(*) AS jumlah
-                FROM
-                    agenda a 
-                LEFT JOIN 
-                    users b ON a.created_by = b.id 
-                WHERE 
-                    b.id = $user_id
-                    AND 
-                    a.deleted_at IS NULL
-                    AND 
-                    a.klien_id IS NOT NULL 
-                GROUP BY
-                    b.id
-                ) z ON a.id = z.id
-            LEFT JOIN 
-                (
-                SELECT 
-                    d.id, 
-                    COUNT(*) AS jumlah
-                FROM
-                    agenda a 
-                LEFT JOIN 
-                    klien b ON a.klien_id = b.id
-                LEFT JOIN 
-                    petugas c ON b.id = c.klien_id
-                LEFT JOIN 
-                    users d ON d.id = c.user_id
-                WHERE 
-                    a.deleted_at IS NULL 
-                    AND 
-                    a.klien_id IS NOT NULL 
-                    AND 
-                    d.id = $user_id
-                GROUP BY
-                    d.id
-                ) y ON a.id = y.id
+                users u
+            JOIN 
+                petugas p ON p.user_id = u.id
+            JOIN 
+                agenda a ON a.klien_id = p.klien_id
             WHERE 
-                a.id = $user_id
-                AND 
-                a.deleted_at IS NULL";
+                u.jabatan = 'Manajer Kasus'
+                AND
+                                MONTH(a.created_at) > 6
+                                AND
+                                MONTH(a.tanggal_mulai) > 6
+                                AND u.id = $user_id
+            GROUP BY 
+            u.id;";
             $result = DB::selectOne(DB::raw($rekap_agenda));
-            $dibuatMK = $result->dibuat_MK;  // 1
-            $takDibuatMK = $result->tak_dibuat_MK; // 2
-            $total = $dibuatMK + $takDibuatMK; // 3
-            
-            $dibuatMK = number_format($dibuatMK / $total * 100, 2);
-            $takDibuatMK = number_format($takDibuatMK / $total * 100, 2);
+            if ($result != null) {
+                $dibuatMK = $result->dibuat_MK;  // 1
+                $takDibuatMK = $result->tak_dibuat_MK; // 2
+                // dd($takDibuatMK);
+                $total = $dibuatMK + $takDibuatMK; // 3
+                if ($total != 0) {
+                    $dibuatMK = number_format($dibuatMK / $total * 100, 2);
+                    $takDibuatMK = number_format($takDibuatMK / $total * 100, 2);
+                }
+            } else {
+                $dibuatMK = 0;
+                $takDibuatMK = 0;
+            }
         } else {
             $dibuatMK = 0;
             $takDibuatMK = 0;

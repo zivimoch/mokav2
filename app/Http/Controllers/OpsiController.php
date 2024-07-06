@@ -69,7 +69,8 @@ class OpsiController extends Controller
 
     public function api_agama()
     {
-        $data = ['Islam',
+        $data = [
+                'Islam',
                 'Kristen Katolik',
                 'Kristen Protestan',
                 'Hindu',
@@ -193,7 +194,9 @@ class OpsiController extends Controller
 
     public function api_hubungan_dengan_klien()
     {
-        $data = ['Ayah Kandung',
+        $data = [
+                'Diri Sendiri',
+                'Ayah Kandung',
                 'Ayah Tiri',
                 'Ibu Kandung',
                 'Ibu Tiri',
@@ -372,7 +375,8 @@ class OpsiController extends Controller
 
     public function api_sumber_rujukan()
     {
-        $data = ['Komnas Perempuan',
+        $data = ['Bukan Rujukan',
+                'Komnas Perempuan',
                 'KPAI',
                 'Komnas HAM',
                 'KemenPPA',

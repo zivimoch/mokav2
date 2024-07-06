@@ -1,5 +1,10 @@
 ## Install Guide
 
+-- TAMBAH OPTION
+
+1. Tambah Provinsi, Kota, Kecamatan, Kelurahan dengan id 1 buat pilihan "LUAR NEGERI"
+2. Tambah Provinsi, Kota, Kecamatan, Kelurahan dengan id 1 buat pilihan "TIDAK DIKETAHUI"
+
 -- MELIHAT SELURUH EVENT SCHEDULER
 SELECT EVENT_NAME, EVENT_SCHEMA, EVENT_DEFINITION, EVENT_BODY, EXECUTE_AT, INTERVAL_VALUE, INTERVAL_FIELD, STARTS, ENDS, STATUS
 FROM information_schema.EVENTS;

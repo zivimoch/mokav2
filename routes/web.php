@@ -188,7 +188,8 @@ Route::middleware('auth')->group(function () {
     // auto fill (hapus fungsi ini kelak)
     Route::get('autofillnokas', [KasusController::class, 'autofill_nokas'])->name('autofillnokas');
     // export_data_master_klien data ke excel
-    Route::get('export/', [MonitoringController::class, 'export_data_master_klien']);
+    Route::get('export_data_master_klien/', [MonitoringController::class, 'export_data_master_klien'])->name('export_data_master_klien');
+    Route::get('export_data_master_terlapor/', [MonitoringController::class, 'export_data_master_terlapor'])->name('export_data_master_terlapor');
 });
 
 require __DIR__.'/auth.php';

@@ -19,7 +19,8 @@ use Google_Service_Slides_RefreshSheetsChartRequest;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\DataMasterKasus;
+use App\Exports\DataMasterKlien;
+use App\Exports\DataMasterTerlapor;
 
 class MonitoringController extends Controller
 {
@@ -610,26 +611,34 @@ class MonitoringController extends Controller
                         ->orderBy('c.province_code')
                         ->get();
 
-        $luar_jkt = 0;
-        $data_seluruh_kota = [];
-        foreach ($kota as $key => $value) {
-            $attribute['basis_wilayah'] = $request->basis_wilayah;
-            $attribute['wilayah'] = $value->code;
-            $request->replace($attribute);
-            $request->merge(['jumlah_korban_wilayah' => true]);
-            $jumlah_korban = $this->jumlah_korban($request);
-
-            if ($value->province_code ==  env('id_provinsi')) {
-                $data["$value->name"] = $jumlah_korban['seluruh_klien'];
-            }else{
-                $luar_jkt = $jumlah_korban['seluruh_klien'] + $luar_jkt;
-                $data["LUAR DKI JAKARTA"] = $luar_jkt;
-            }
-
-            // untuk ditampilkan di data tabulasi
-            $data_seluruh_kota["$value->name"] = $jumlah_korban['seluruh_klien'];
-        }
-
+                        $luar_jkt = 0;
+                        $null_tidak_diisi = 0;
+                        $data = [];
+                        $data_seluruh_kota = [];
+                        
+                        foreach ($kota as $key => $value) {
+                            $attribute['basis_wilayah'] = $request->basis_wilayah;
+                            $attribute['wilayah'] = $value->code;
+                            $request->replace($attribute);
+                            $request->merge(['jumlah_korban_wilayah' => true]);
+                            $jumlah_korban = $this->jumlah_korban($request);
+                        
+                            if ($value->province_code == env('id_provinsi')) {
+                                $data["$value->name"] = $jumlah_korban['seluruh_klien'];
+                            } elseif ($value->province_code == null) {
+                                $null_tidak_diisi = $jumlah_korban['seluruh_klien'] + $null_tidak_diisi;
+                            } else {
+                                $luar_jkt = $jumlah_korban['seluruh_klien'] + $luar_jkt;
+                            }
+                        
+                            // untuk ditampilkan di data tabulasi
+                            $data_seluruh_kota["$value->name"] = $jumlah_korban['seluruh_klien'];
+                        }
+                        
+                        arsort($data);
+                        $data["LUAR DKI JAKARTA"] = $luar_jkt;
+                        $data["NULL (Kosong / Tidak Diisi)"] = $null_tidak_diisi;
+                        
         // mendapatkan filter
         $allAttributes = $request->all();
         foreach ($allAttributes as $key => $value) {
@@ -1139,6 +1148,7 @@ class MonitoringController extends Controller
             $daterange[0] = date("Y").'-01-01';
             $daterange[1] = date("Y-m-d");
         }
+
         $from = $daterange[0];
         $to = $daterange[1];
 
@@ -1359,7 +1369,7 @@ class MonitoringController extends Controller
             if ($count > 9 && $request->identitas != 'usia') {
                 $lainnya = $jumlah + $lainnya;
                 $data["Lainnya"] = $lainnya;
-            }else{
+            } else {
                 if ($request->identitas != 'usia') {
                     $data["$value->nama"] = $jumlah;
                 } else {
@@ -1394,8 +1404,14 @@ class MonitoringController extends Controller
 
     public function export_data_master_klien(Request $request)
     {
-        $data = DataMasterKasus::data_klien($request);
-        return Excel::download(new DataMasterKasus($data), 'users.xlsx');
+        $data = DataMasterKlien::data($request);
+        return Excel::download(new DataMasterKlien($data), 'Data master kasus per klien '.$request->tanggal.' ('.$request->basisTanggal.').'.$request->format);
+    }
+
+    public function export_data_master_terlapor(Request $request)
+    {
+        $data = DataMasterTerlapor::data($request);
+        return Excel::download(new DataMasterTerlapor($data), 'Data master kasus per terlapor '.$request->tanggal.' ('.$request->basisTanggal.').'.$request->format);
     }
 
     public function sheets()

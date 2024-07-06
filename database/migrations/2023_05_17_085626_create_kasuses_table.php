@@ -22,6 +22,7 @@ class CreateKasusesTable extends Migration
             $table->string('sumber_informasi')->nullable();
             $table->date('tanggal_pelaporan');
             $table->date('tanggal_kejadian')->nullable();
+            $table->boolean('perkiraan_tanggal_kejadian')->nullable()->default(0);
             $table->string('kategori_lokasi')->nullable();
             $table->text('ringkasan');
             $table->char('provinsi_id')->nullable();

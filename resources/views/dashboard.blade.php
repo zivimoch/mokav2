@@ -30,7 +30,7 @@
         <!-- Main row -->
         <div class="row">
 
-          @if (Auth::user()->jabatan != 'Supervisor Kasus')
+          {{-- @if (Auth::user()->jabatan != 'Supervisor Kasus')
             <div class="col-md-12 warningSPP">
               <div class="alert alert-danger">
               <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
@@ -46,7 +46,7 @@
               </ol>              
               </div>
             </div>
-          @endif
+          @endif --}}
 
           <!-- Left col -->
           <section class="col-lg-7 connectedSortable">
@@ -90,7 +90,8 @@
                   <div class="progress-bar bg-success persen_layanan" role="progressbar" style="width: {{ $dibuatMK }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px" class="persen_title_layanan2">{{ $dibuatMK }}%</span></div>
                   <div class="progress-bar bg-danger persen_layanan" role="progressbar" style="width: {{ $takDibuatMK }}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px" class="persen_title_layanan2">{{ $takDibuatMK }}%</span></div>
                 </div>
-                *Hijau : agenda layanan dibuat oleh MK; Merah : agenda layanan dibuat oleh selain MK 
+                *Hijau : agenda layanan dibuat oleh MK; Merah : agenda layanan dibuat oleh selain MK <br>
+                *Data dari Periode Tanggal Dibuat & Tanggal Agenda
               @endif
               
               <!-- /.card-header -->

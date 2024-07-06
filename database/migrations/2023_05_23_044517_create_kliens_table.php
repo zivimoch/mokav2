@@ -25,6 +25,7 @@ class CreateKliensTable extends Migration
             $table->string('nama')->nullable();
             $table->string('tempat_lahir')->nullable();
             $table->date('tanggal_lahir')->nullable();
+            $table->boolean('perkiraan_tanggal_lahir')->nullable()->default(0);
             $table->enum('jenis_kelamin', ['perempuan', 'laki-laki'])->default('perempuan');
             $table->char('provinsi_id_ktp')->nullable();
             $table->char('kotkab_id_ktp')->nullable();

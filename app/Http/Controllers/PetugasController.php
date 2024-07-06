@@ -106,7 +106,15 @@ class PetugasController extends Controller
                     'task' // type_notif
                 );
             }
+
             $receiver = User::where('id', $request->user_id)->first();
+
+            if ($receiver->jabatan == 'Penerima Pengaduan') {
+                // jika yang ditambah adalah peneria pengaduan maka ubah created by di kasus dan kliennya
+                $klien->created_by = $request->user_id;
+                $klien->save();
+            }
+
             $check_kelengkapan_spp = (new KasusController)->check_kelengkapan_spp($klien->id);
             $check_kelengkapan_asesmen = (new KasusController)->check_kelengkapan_asesmen($klien->id);
             if (($receiver->jabatan == 'Supervisor Kasus') && ($klien->no_klien == NULL)) {

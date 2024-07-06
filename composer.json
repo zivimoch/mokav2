@@ -19,6 +19,7 @@
         "nesbot/carbon": "^2.69",
         "ramsey/uuid": "^4.2",
         "revolution/laravel-google-sheets": "^5.8",
+        "spatie/laravel-backup": "^6.16",
         "tymon/jwt-auth": "^1.0",
         "yajra/laravel-datatables": "^1.5"
     },

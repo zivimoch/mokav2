@@ -150,7 +150,7 @@
                                 <div class="input-group-prepend">
                                   <select id="filterBasisTanggal1" class="form-control btn-primary">
                                     <option value="tanggal_pelaporan" selected>Default ( Berdasarkan Tanggal Pelaporan )</option>
-                                    <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+                                    <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian (Hanya yang ada Tanggal Kejadiannya)</option>
                                     <option value="created_at">Berdasarkan Tanggal Input</option>
                                   </select>
                                 </div>
@@ -196,6 +196,9 @@
                     <div class="card-header">
                       <h3 class="card-title">Profil PPPA DKI Jakarta</h3>
                       <div class="card-tools">
+                        <a href="https://docs.google.com/presentation/d/13j15lcCEjjWa8gwZYjeGqU0yKe6SFr8x64vgCnzBuNQ/edit#slide=id.g274b6836c81_20_0">
+                          <button class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Download</button>
+                        </a>
                         <button type="button" class="btn btn-tool" data-widget="chat-pane-toggle">
                           <i class="fas fa-filter"></i>
                         </button>
@@ -219,8 +222,9 @@
 
                       <div id="collapse0" class="collapse show" data-parent="#accordion0">
                         
-                        <iframe src="{{ route('monitoring.slide') }}" height="500px" width="100%" title="Iframe Example"></iframe>
-                        
+                        {{-- <iframe src="{{ route('monitoring.slide') }}" height="500px" width="100%" title="Iframe Example"></iframe> --}}
+                        <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSO5M1ckIC8xy5Cm1GVQLKkns9lyHr_AdmwMbHu83O_P0K_dLFIfZ_X4oiadxlesgXHxs-3bbFQzeYF/embed?start=false&loop=true&delayms=60000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
                         <div class="direct-chat-contacts" style="padding: 10px; height:100%; z-index:100">
                           <div class="row">
                             <div class="col-md-12">
@@ -269,7 +273,7 @@
 
                       <div id="collapse11" class="collapse show" data-parent="#accordion11">
                         <div style="padding: 10px">
-                          Filter : <span id="filter10"></span>
+                          Filter : <span id="filter11"></span>
                           <br>
                         </div>
                         <div style="margin: 10px">
@@ -277,7 +281,7 @@
                             <thead>
                                 <tr>
                                     <th style="width: 8%">No</th>
-                                    <th>Judul Data</th>
+                                    <th>Judul Rejap Data</th>
                                     <th style="width: 12%">Download</th>
                                 </tr>
                             </thead>
@@ -285,13 +289,13 @@
                                 <tr>
                                     <td>1</td>
                                     <td>Data master kasus per klien</td>
-                                    <td><a type="button" class="btn btn-primary btn-xs" onclick="alert('fitur belum tersedia')"><i class="fas fa-download"></i></a></td>
+                                    <td><a href="{{ route('export_data_master_klien') }}?format=xlsx" class="btn btn-primary btn-xs export-link">Excel</a> <a href="{{ route('export_data_master_klien') }}?format=csv" class="btn btn-primary btn-xs export-link">CSV</a></td>
                                 </tr>
                                 <tr>
                                     <td>2</td>
                                     <td>Data master kasus per terlapor</td>
-                                    <td><a type="button" class="btn btn-primary btn-xs" onclick="alert('fitur belum tersedia')"><i class="fas fa-download"></i></a></td>
-                                </tr>
+                                    <td><a href="{{ route('export_data_master_terlapor') }}?format=xlsx" class="btn btn-primary btn-xs export-link">Excel</a> <a href="{{ route('export_data_master_terlapor') }}?format=csv" class="btn btn-primary btn-xs export-link">CSV</a></td>
+                                  </tr>
                             </tbody>
                         </table> 
                         <br>
@@ -314,27 +318,27 @@
                               <div class="card-body">
                                     <div class="copy-area" id="rangkuman_jumlah_kasus">
                                       *[Rekap Data Jumlah Klien]*<br>
-                                      08 Jun 2024 14:19:32<br>
+                                      27 Jun 2024 09:49:32<br>
                                       -------------------------------------------------<br>
-                                      *Jumlah Seluruh Klien :* <span id="jumlah_seluruh_klien">10000</span><br>
+                                      *Jumlah Seluruh Klien :* <span id="jumlah_seluruh_klien">943</span><br>
                                       -------------------------------------------------<br>
-                                      *Yang sudah diregis :* <span id="jumlah_seluruh_klien_regis">0</span><br>
-                                      *Perempuan Dewasa :* <span id="jumlah_perempuan_dewasa">0</span><br>
-                                      *Anak Perempuan :* <span id="jumlah_anak_perempuan">0</span><br>
-                                      *Anak Laki-laki :* <span id="jumlah_anak_laki">0</span><br>
+                                      *Yang sudah diregis :* <span id="jumlah_seluruh_klien_regis">938</span><br>
+                                      *Perempuan Dewasa :* <span id="jumlah_perempuan_dewasa">406</span><br>
+                                      *Anak Perempuan :* <span id="jumlah_anak_perempuan">370</span><br>
+                                      *Anak Laki-laki :* <span id="jumlah_anak_laki">177</span><br>
                                       -------------------------------------------------<br>
                                       *a. Kategori Kasus (5 Terbanyak) :*<br>
-                                      - Anak Berkonflik Dengan Hukum : 0<br>
-                                      - Anak Korban Kekerasan Seksuak : 0<br>
-                                      - Perempuan Korban Kekerasan Seksuak : 0<br>
+                                      - Anak Korban Kekerasan Seksual : 267<br>
+                                      - Kekerasan Dalam Rumah Tangga (KDRT) : 245<br>
+                                      - Perempuan Korban Kekerasan Fisik : 190<br>
                                       *b. Jenis Kekerasan :*<br>
-                                      - Fisik : 0<br>
-                                      - Psikis : 0<br>
-                                      - Seksual : 0<br>
-                                      - Seksual : 0<br>
-                                      - Eksploitasi : 0<br>
-                                      - Penelantaran : 0<br>
-                                      - Tidak Diketahui / Lainnya : 0<br>
+                                      - Fisik : 210<br>
+                                      - Psikis : 123<br>
+                                      - Seksual : 321<br>
+                                      - Seksual : 287<br>
+                                      - Eksploitasi : 542<br>
+                                      - Penelantaran : 653<br>
+                                      - Tidak Diketahui / Lainnya : 125<br>
                                       - Bukan Kekerasan : 0<br>
                                       ==========================================================<br>
                                       *Jumlah Klien Berdasarkan Wilayah Penugasan Satpel :* <br>
@@ -469,9 +473,9 @@
                                 <div class="input-group">
                                   <div class="input-group-prepend">
                                     <select id="filterBasisTanggal11" class="form-control btn-primary">
-                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis )</option>
+                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis. Hanya yang sudah dregis )</option>
                                       <option value="tanggal_pelaporan" >Berdasarkan Tanggal Pelaporan</option>
-                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian (Hanya yang ada Tanggal Kejadiannya)</option>
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
@@ -505,13 +509,13 @@
                                 <div class="input-group">
                                   <div class="input-group-prepend">
                                     <select class="form-control btn-primary" id="filterPenghitunganUsia11">
-                                      <option value="lapor" selected>Default (Tanggal Pelaporan dikurangi Tanggal Lahir)</option>
+                                      <option value="lapor">Default (Tanggal Pelaporan dikurangi Tanggal Lahir)</option>
                                       <option value ="today" >Tanggal Hari Ini dikurangi Tanggal Lahir</option>
                                       <option value="kejadian">Tanggal Kejadian dikurangi Tanggal Lahir</option>
                                       <option value="input">Tanggal Input dikurangi Tanggal Lahir</option>
                                     </select>
                                   </div>
-                                  <select class="form-control" id="filterKategoriKlien10">
+                                  <select class="form-control" id="filterKategoriKlien11">
                                     <option value="total" selected>Default ( Semua Kategori Klien )</option>
                                     <option value="dewasa_perempuan">Perempuan Dewasa</option>
                                     <option value="anak_perempuan">Anak Perempuan</option>
@@ -543,13 +547,13 @@
                                 <label for="">Kasus yang Diarsipkan</label>
                                 <br>
                                 <div class="icheck-primary d-inline" style="margin-right:15px">
-                                  <input type="radio" id="filterArsip11a" name="filterArsip11" value="0">
+                                  <input type="radio" id="filterArsip11a" name="filterArsip11" checked value="0">
                                   <label for="filterArsip11a">
                                       Tanpa kasus yang diarsipkan
                                   </label>
                                 </div>
                                 <div class="icheck-primary d-inline">
-                                  <input type="radio" id="filterArsip11b" name="filterArsip11" checked value="1">
+                                  <input type="radio" id="filterArsip11b" name="filterArsip11" value="1">
                                   <label for="filterArsip11b">
                                       Dengan kasus yang diarsipkan
                                   </label>
@@ -586,14 +590,14 @@
                       <label for="">Basis Tanggal</label>
                       <div class="input-group">
                         <div class="input-group-prepend">
-                          <select id="filterBasisTanggal10" class="form-control btn-primary">
-                            <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis )</option>
+                          <select id="filterBasisTanggal11" class="form-control btn-primary">
+                            <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis. Hanya yang sudah dregis )</option>
                             <option value="tanggal_pelaporan" >Berdasarkan Tanggal Pelaporan</option>
-                            <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+                            <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian (Hanya yang ada Tanggal Kejadiannya)</option>
                             <option value="created_at">Berdasarkan Tanggal Input</option>
                           </select>
                         </div>
-                        <input type="text" class="form-control daterank" id="filterTanggal10" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                        <input type="text" class="form-control daterank" id="filterTanggal11" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                       </div>
                     </div>
                   </div>
@@ -603,14 +607,14 @@
                       <label for="">Kasus yang Diregis</label>
                       <br>
                       <div class="icheck-primary d-inline" style="margin-right:15px">
-                        <input type="radio" id="filterRegis10a" name="filterRegis10" checked value="0">
-                        <label for="filterRegis10a">
+                        <input type="radio" id="filterRegis11a" name="filterRegis11" checked value="0">
+                        <label for="filterRegis11a">
                             Seluruh kasus
                         </label>
                       </div>
                       <div class="icheck-primary d-inline">
-                        <input type="radio" id="filterRegis10b" name="filterRegis10" value="1">
-                        <label for="filterRegis10b">
+                        <input type="radio" id="filterRegis11b" name="filterRegis11" value="1">
+                        <label for="filterRegis11b">
                             Kasus yang sudah diregis saja
                         </label>
                       </div>
@@ -624,14 +628,14 @@
                     <label for="">Basis Wilayah</label>
                     <div class="input-group">
                       <div class="input-group-prepend">
-                        <select class="form-control btn-primary" id="filterBasisWilayah10">
+                        <select class="form-control btn-primary" id="filterBasisWilayah11">
                           <option value="tkp" selected>Berdasarkan Wilayah TKP</option>
                           <option value="ktp">Berdasarkan Wilayah KTP</option>
                           <option value="domisili">Berdasarkan Wilayah Domisili</option>
                           <option value="satpel">Berdasarkan Wilayah Satpel</option>
                         </select>
                       </div>
-                      <select class="form-control" id="filterWilayah10">
+                      <select class="form-control" id="filterWilayah11">
                         <option value="default" selected>Default ( Semua Wilayah )</option>
                         @foreach ($kota as $item) 
                           <option value="{{ $item->code }}" >{{ $item->name }}</option> 
@@ -647,14 +651,14 @@
                     <label for="">Kasus yang Diarsipkan</label>
                     <br>
                     <div class="icheck-primary d-inline" style="margin-right:15px">
-                      <input type="radio" id="filterArsip10a" name="filterArsip10" value="0">
-                      <label for="filterArsip10a">
+                      <input type="radio" id="filterArsip10a" name="filterArsip11" value="0">
+                      <label for="filterArsip11a">
                           Tanpa kasus yang diarsipkan
                       </label>
                     </div>
                     <div class="icheck-primary d-inline">
-                      <input type="radio" id="filterArsip10b" name="filterArsip10" checked value="1">
-                      <label for="filterArsip10b">
+                      <input type="radio" id="filterArsip11b" name="filterArsip11" checked value="1">
+                      <label for="filterArsip11b">
                           Dengan kasus yang diarsipkan
                       </label>
                     </div>
@@ -666,14 +670,14 @@
                     <label for="">Basis Penghitungan Usia Klien</label>
                     <div class="input-group">
                       <div class="input-group-prepend">
-                        <select class="form-control btn-primary" id="filterPenghitunganUsia10">
+                        <select class="form-control btn-primary" id="filterPenghitunganUsia11">
                           <option value="lapor" selected>Default (Tanggal Pelaporan dikurangi Tanggal Lahir)</option>
                           <option value ="today" >Tanggal Hari Ini dikurangi Tanggal Lahir</option>
                           <option value="kejadian">Tanggal Kejadian dikurangi Tanggal Lahir</option>
                           <option value="input">Tanggal Input dikurangi Tanggal Lahir</option>
                         </select>
                       </div>
-                      <select class="form-control" id="filterKategoriKlien10">
+                      <select class="form-control" id="filterKategoriKlien11">
                         <option value="total" selected>Default ( Semua Kategori Klien )</option>
                         <option value="dewasa_perempuan">Perempuan Dewasa</option>
                         <option value="anak_perempuan">Anak Perempuan</option>
@@ -745,9 +749,9 @@
                                 <div class="input-group">
                                   <div class="input-group-prepend">
                                     <select id="filterBasisTanggal10" class="form-control btn-primary">
-                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis )</option>
+                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis. Hanya yang sudah dregis )</option>
                                       <option value="tanggal_pelaporan" >Berdasarkan Tanggal Pelaporan</option>
-                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian (Hanya yang ada Tanggal Kejadiannya)</option>
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
@@ -910,9 +914,9 @@
                                 <div class="input-group">
                                   <div class="input-group-prepend">
                                     <select id="filterBasisTanggal2" class="form-control btn-primary">
-                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis )</option>
+                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis. Hanya yang sudah dregis )</option>
                                       <option value="tanggal_pelaporan" >Berdasarkan Tanggal Pelaporan</option>
-                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian (Hanya yang ada Tanggal Kejadiannya)</option>
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
@@ -1050,9 +1054,9 @@
                                 <div class="input-group">
                                   <div class="input-group-prepend">
                                     <select id="filterBasisTanggal3" class="form-control btn-primary">
-                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis )</option>
+                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis. Hanya yang sudah dregis )</option>
                                       <option value="tanggal_pelaporan" >Berdasarkan Tanggal Pelaporan</option>
-                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian (Hanya yang ada Tanggal Kejadiannya)</option>
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
@@ -1228,9 +1232,9 @@
                                 <div class="input-group">
                                   <div class="input-group-prepend">
                                     <select id="filterBasisTanggal4" class="form-control btn-primary">
-                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis )</option>
+                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis. Hanya yang sudah dregis )</option>
                                       <option value="tanggal_pelaporan" >Berdasarkan Tanggal Pelaporan</option>
-                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian (Hanya yang ada Tanggal Kejadiannya)</option>
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
@@ -1380,9 +1384,9 @@
                                 <div class="input-group">
                                   <div class="input-group-prepend">
                                     <select id="filterBasisTanggal5" class="form-control btn-primary">
-                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis )</option>
+                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis. Hanya yang sudah dregis )</option>
                                       <option value="tanggal_pelaporan" >Berdasarkan Tanggal Pelaporan</option>
-                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian (Hanya yang ada Tanggal Kejadiannya)</option>
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
@@ -1550,9 +1554,9 @@
                                 <div class="input-group">
                                   <div class="input-group-prepend">
                                     <select id="filterBasisTanggal6" class="form-control btn-primary">
-                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis )</option>
+                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis. Hanya yang sudah dregis )</option>
                                       <option value="tanggal_pelaporan" >Berdasarkan Tanggal Pelaporan</option>
-                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian (Hanya yang ada Tanggal Kejadiannya)</option>
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
@@ -1734,9 +1738,9 @@
                                 <div class="input-group">
                                   <div class="input-group-prepend">
                                     <select id="filterBasisTanggal7" class="form-control btn-primary">
-                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis )</option>
+                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis. Hanya yang sudah dregis )</option>
                                       <option value="tanggal_pelaporan" >Berdasarkan Tanggal Pelaporan</option>
-                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian (Hanya yang ada Tanggal Kejadiannya)</option>
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
@@ -1919,9 +1923,9 @@
                                 <div class="input-group">
                                   <div class="input-group-prepend">
                                     <select id="filterBasisTanggal8" class="form-control btn-primary">
-                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis )</option>
+                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis. Hanya yang sudah dregis )</option>
                                       <option value="tanggal_pelaporan" >Berdasarkan Tanggal Pelaporan</option>
-                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian (Hanya yang ada Tanggal Kejadiannya)</option>
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
@@ -2103,9 +2107,9 @@
                                 <div class="input-group">
                                   <div class="input-group-prepend">
                                     <select id="filterBasisTanggal9" class="form-control btn-primary">
-                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis )</option>
+                                      <option value="tanggal_approve" selected>Default ( Berdasarkan Tanggal Diregis. Hanya yang sudah dregis )</option>
                                       <option value="tanggal_pelaporan" >Berdasarkan Tanggal Pelaporan</option>
-                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian</option>
+                                      <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian (Hanya yang ada Tanggal Kejadiannya)</option>
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
@@ -2350,6 +2354,7 @@
 <script>
   $(document).ready(function() {
       $('.datatableall').DataTable();
+      load_data11();
   });
   function search() {
         var input = document.getElementById("Search");
@@ -2985,7 +2990,7 @@ function load_data2() {
                           fontSize: "20px"
                       },
                       labels: labels,
-                      colors: ['#080708', '#fc03be', '#fcba03', '#36a2eb', '#36eb6f', '#7e36eb', '#eb3636'],
+                      colors: ['#080708', '#fc03be', '#fcba03', '#36a2eb', '#36eb6f', '#7e36eb', '#eb3636', '#eb8a36'],
                       responsive: [{
                           breakpoint: 500,
                           options: {
@@ -3723,57 +3728,41 @@ function load_data2() {
     });
 }
 
-function load_data11() {
-    $("#overlay11").show();
+    function load_data11() {
+        $("#overlay11").show();
+        $("#overlay11").hide();
 
-    // Retrieve filter values
-    const pengelompokan = 'tahun';
-    const basisTanggal = $('#filterBasisTanggal10').val();
-    const tanggal = $('#filterTanggal10').val();
-    const basisWilayah = $('#filterBasisWilayah10').val();
-    const wilayah = $('#filterWilayah10').val();
-    const penghitunganUsia = $('#filterPenghitunganUsia10').val();
-    const kategoriKlien = $('#filterKategoriKlien10').val();
-    const regis = $('input[name="filterRegis10"]:checked').val();
-    const arsip = $('input[name="filterArsip10"]:checked').val();
-
-    $.ajax({
-        url: '{{ route("api.v1.jumlahlayanan") }}',
-        type: 'GET',
-        dataType: 'json',
-        data: {
-            pengelompokan: pengelompokan,
-            basis_tanggal: basisTanggal,
-            tanggal: tanggal,
-            basis_wilayah: basisWilayah,
-            wilayah: wilayah,
-            penghitungan_usia: penghitunganUsia,
-            kategori_klien: kategoriKlien,
-            regis: regis,
-            arsip: arsip
-        },
-        success: function(response) {
-            // Clear previous filters
-            $('#filter11').html('');
-            $.each(response.filter, function(key, value) {
-                $('#filter11').append("<span class=\"badge bg-primary\">" + key.replace(/_/g, ' ') + " : " + value.toString().replace(/_/g, ' ') + "</span> ");
+        // Retrieve filter values
+        const params = {
+                basisTanggal: $('#filterBasisTanggal11').val(),
+                tanggal: $('#filterTanggal11').val(),
+                basisWilayah: $('#filterBasisWilayah11').val(),
+                wilayah: $('#filterWilayah11').val(),
+                penghitunganUsia: $('#filterPenghitunganUsia11').val(),
+                kategoriKlien: $('#filterKategoriKlien11').val(),
+                regis: $('input[name="filterRegis11"]:checked').val(),
+                arsip: $('input[name="filterArsip11"]:checked').val()
+            };
+            // Update the href attributes for all links with class .export-link
+            $('.export-link').each(function() {
+                var href = $(this).attr('href');
+                var newHref = updateUrlParameters(href, params);
+                $(this).attr('href', newHref);
             });
-            $('#filter11').append("<span class=\"badge bg-warning\">Data ini disajikan pada : " + getCurrentDateTime() + "</span> ");
 
-            $("#overlay11").hide();
-        },
-        error: function(response) {
-            setTimeout(function() {
-                $("#overlay11").fadeOut(300);
-            }, 500);
-            alert("Error: " + response.responseText);
+    }
+
+    function updateUrlParameters(url, newParams) {
+        var [baseUrl, queryString] = url.split('?');
+        var queryParams = new URLSearchParams(queryString);
+
+        // Merge new parameters with existing ones
+        for (const key in newParams) {
+            queryParams.set(key, newParams[key]);
         }
-    }).done(function() {
-        setTimeout(function() {
-            $("#overlay11").fadeOut(300);
-        }, 500);
-    });
-}
+
+        return baseUrl + '?' + queryParams.toString();
+    }
 
   function check_kelengkapan_data(klien_id) {
         $.ajax({
