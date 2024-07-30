@@ -17,6 +17,7 @@ class CreateAgendasTable extends Migration
             $table->id();
             $table->string('uuid');
             $table->string('klien_id')->nullable();
+            $table->integer('intervensi_ke')->nullable()->default(1);
             $table->text('judul_kegiatan');
             $table->date('tanggal_mulai');
             $table->time('jam_mulai');

@@ -17,9 +17,11 @@ class CreatePemantauansTable extends Migration
             $table->id();
             $table->string('uuid');
             $table->integer('klien_id')->nullable();
+            $table->integer('intervensi_ke')->nullable()->default(1);
             $table->text('kemajuan')->nullable();
             $table->text('tujuan')->nullable();
             $table->text('rencana')->nullable();
+            $table->string('action_pemantauan')->nullable();
             $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();

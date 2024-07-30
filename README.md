@@ -1,5 +1,14 @@
 ## Install Guide
 
+-- DAILY BACKUP DATABASE
+nyalakan schedule dengan command : "php artisan schedule:work" untuk ngetes commandnya "php artisan schedule:run". liat command apa aja di /app/console/Karnel.php
+untuk menjalankan php artisan schedule:work di daemond biar pas close terminal tetep jalan, maka gunakan 'nohup' :
+nohup php artisan schedule:work > /dev/null 2>&1 &
+untuk liat statusnya :
+pergi ke directory /v2 terus :
+ps aux | grep 'php artisan schedule:work' | grep -v grep
+untuk liat dia ngeksekusi didirekori mana : pwdx id_actionnya
+
 -- TAMBAH OPTION
 
 1. Tambah Provinsi, Kota, Kecamatan, Kelurahan dengan id 1 buat pilihan "LUAR NEGERI"

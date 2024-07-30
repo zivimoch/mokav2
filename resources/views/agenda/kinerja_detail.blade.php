@@ -231,6 +231,12 @@
 <script src="{{ asset('vendor/tinymce4/tinymce.min.js') }}"></script>
 
 <script>
+  $(function () {
+    $('.select2').select2()
+    $('.select2bs4').select2({
+      theme: 'bootstrap4'
+    })
+});
   window.onscroll = function() {scrollFunction()};
   function scrollFunction() {
     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {

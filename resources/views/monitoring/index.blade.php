@@ -196,14 +196,14 @@
                     <div class="card-header">
                       <h3 class="card-title">Profil PPPA DKI Jakarta</h3>
                       <div class="card-tools">
-                        <a href="https://docs.google.com/presentation/d/13j15lcCEjjWa8gwZYjeGqU0yKe6SFr8x64vgCnzBuNQ/edit#slide=id.g274b6836c81_20_0">
-                          <button class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Download</button>
+                        <a href="https://docs.google.com/presentation/d/1-JZxiRPzt-ndAyCNZauT63gjvnqn9Pd5nhZ5jf0XVMU/export/pptx">
+                          <button class="btn btn-warning btn-sm"><i class="fas fa-download"></i> Download PPTX</button>
                         </a>
-                        <button type="button" class="btn btn-tool" data-widget="chat-pane-toggle">
-                          <i class="fas fa-filter"></i>
-                        </button>
-                        <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i>
-                        </button>
+                        <a href="https://docs.google.com/presentation/d/1-JZxiRPzt-ndAyCNZauT63gjvnqn9Pd5nhZ5jf0XVMU/export/pdf">
+                          <button class="btn btn-warning btn-sm"><i class="fas fa-download"></i> Download PDF</button>
+                        </a>
+                        <button onclick="$('#slidesIframe').get(0).requestFullscreen?.();"  class="btn btn-warning btn-sm"><i class="fas fa-expand"></i> Full Screen</button>
+
                         <button type="button" class="btn btn-tool" data-toggle="collapse" data-target="#collapse0" aria-expanded="true" aria-controls="collapse">
                           <i class="fas fa-chevron-down"></i>
                         </button>
@@ -223,7 +223,7 @@
                       <div id="collapse0" class="collapse show" data-parent="#accordion0">
                         
                         {{-- <iframe src="{{ route('monitoring.slide') }}" height="500px" width="100%" title="Iframe Example"></iframe> --}}
-                        <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSO5M1ckIC8xy5Cm1GVQLKkns9lyHr_AdmwMbHu83O_P0K_dLFIfZ_X4oiadxlesgXHxs-3bbFQzeYF/embed?start=false&loop=true&delayms=60000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+                          <iframe id="slidesIframe" src="https://docs.google.com/presentation/d/e/2PACX-1vSCBRdBkphe1pMUbNscNCUPMTjBwvmGVSm-GTgd4jDV0i-tQ95VZuXJIShG_QhqbtHyKuboZ5ZdzHS0/embed?start=false&loop=false&delayms=60000" frameborder="0" width="100%" height="500px" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
                         <div class="direct-chat-contacts" style="padding: 10px; height:100%; z-index:100">
                           <div class="row">
@@ -3901,23 +3901,29 @@ function load_data2() {
     }
 
     function check_kelengkapan_pemantauan(klien_id) {
-        $.ajax({
-            url: `{{ env('APP_URL') }}/check_kelengkapan_pemantauan/`+klien_id,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                if (response > 0) {
-                    $('#check_pemantauan').show();
-                    kelengkapan_kasus = kelengkapan_kasus + 1;
-                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
-                }
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
+    $.ajax({
+        url: `{{ env('APP_URL') }}/check_kelengkapan_pemantauan/`+klien_id,
+        type: "GET",
+        cache: false,
+        success: function (response){
+            if (response.deadline_pemantauan <= 10 || response.terakhir_pemantauan == null) {
+                // kalau deadlinenya kurang dari 10 hari berarti harusnya udah dilakukan Pemantauan & Evaluasi lagi
+                $('.warningIntervensi').show();
+            } else {
+                $('.warningIntervensi').hide();
+                $('#check_pemantauan').show();
+                kelengkapan_kasus = kelengkapan_kasus + 1;
+                $('#kelengkapan_kasus').html(kelengkapan_kasus);
+
+                $('#messagePemantauan').html(response.message);
             }
-            });
-    }
+        },
+        error: function (response){
+            // alert("Error");
+            console.log(response);
+        }
+        });
+}
 
     function check_kelengkapan_terminasi(klien_id) {
         $.ajax({

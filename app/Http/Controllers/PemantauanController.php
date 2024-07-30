@@ -25,6 +25,7 @@ class PemantauanController extends Controller
         $data = DB::table('pemantauan as a')
                     ->leftJoin('users as b', 'b.id', 'a.created_by')
                     ->where('a.klien_id', $klien->id)
+                    ->where('a.intervensi_ke', $request->intervensi_ke)
                     ->whereNull('a.deleted_at')
                     ->orderBy('a.id')
                     ->get(['a.*', 'b.name as petugas', 'b.jabatan']);
@@ -64,11 +65,19 @@ class PemantauanController extends Controller
                 //create post
                 $proses = Pemantauan::updateOrCreate(['uuid' => $request->uuid],[
                     'klien_id'   => $klien->id, 
+                    'intervensi_ke'   => $klien->intervensi_ke, 
                     'kemajuan'     => $request->kemajuan, 
                     'tujuan'   => $request->tujuan, 
                     'rencana'   => $request->rencana,
+                    'action_pemantauan'   => $request->action_pemantauan,
                     'created_by'   => Auth::user()->id
                 ]);
+
+                if ($request->action_pemantauan == 'intervensi_selanjutnya') {
+                    // jika diputuskan untuk lanjut intervensi maka ubah status intervensi_ke di tabel klien jadi +1
+                    $klien->intervensi_ke = $klien->intervensi_ke + 1;
+                    $klien->save();
+                }
 
             // ===========================================================================================
             //Proses read, push notif & log activity ////////////////////////////////////////////////////

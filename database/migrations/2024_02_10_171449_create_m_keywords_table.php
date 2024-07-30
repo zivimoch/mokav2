@@ -18,6 +18,7 @@ class CreateMKeywordsTable extends Migration
             $table->string('uuid');
             $table->string('jabatan');
             $table->string('keyword');
+            $table->enum('jenis_agenda', ['Layanan', 'Manajemen Layanan']);
             $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();

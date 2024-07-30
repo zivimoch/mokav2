@@ -803,23 +803,29 @@
     }
 
     function check_kelengkapan_pemantauan(klien_id) {
-        $.ajax({
-            url: `{{ env('APP_URL') }}/check_kelengkapan_pemantauan/`+klien_id,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                if (response > 0) {
-                    $('#check_pemantauan').show();
-                    kelengkapan_kasus = kelengkapan_kasus + 1;
-                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
-                }
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
+    $.ajax({
+        url: `{{ env('APP_URL') }}/check_kelengkapan_pemantauan/`+klien_id,
+        type: "GET",
+        cache: false,
+        success: function (response){
+            if (response.deadline_pemantauan <= 10 || response.terakhir_pemantauan == null) {
+                // kalau deadlinenya kurang dari 10 hari berarti harusnya udah dilakukan Pemantauan & Evaluasi lagi
+                $('.warningIntervensi').show();
+            } else {
+                $('.warningIntervensi').hide();
+                $('#check_pemantauan').show();
+                kelengkapan_kasus = kelengkapan_kasus + 1;
+                $('#kelengkapan_kasus').html(kelengkapan_kasus);
+
+                $('#messagePemantauan').html(response.message);
             }
-            });
-    }
+        },
+        error: function (response){
+            // alert("Error");
+            console.log(response);
+        }
+        });
+}
 
     function check_kelengkapan_terminasi(klien_id) {
         $.ajax({

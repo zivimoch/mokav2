@@ -178,7 +178,7 @@ class KasusController extends Controller
 
     public function show(Request $request, $uuid)
     {
-        if($request->ajax()) { //dipakai di datatable
+        if($request->ajax()) { //dipakai di datatable buat liat hightlight kasus
             $data = DB::table('klien as a')
                         ->leftJoin('kasus as b', 'b.id', 'a.kasus_id')
                         ->leftJoin('petugas as c', 'a.id', 'c.klien_id')
@@ -194,7 +194,7 @@ class KasusController extends Controller
 
             $data = $data->first(['a.id', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 
             'a.jenis_kelamin', 'a.tanggal_lahir', 'a.jenis_kelamin', 
-            'a.status', 'a.uuid', 'd.name as petugas', 'a.arsip']);
+            'a.status', 'a.intervensi_ke', 'a.uuid', 'd.name as petugas', 'a.arsip']);
 
             $data->list_petugas = DB::table('petugas as a')
                                     ->leftJoin('users as b', 'a.user_id', 'b.id')
@@ -253,7 +253,6 @@ class KasusController extends Controller
        ->where('a.uuid', $uuid)
        ->limit(1)
        ->first();
-   
 
         // hanya petugas yang ada di list petugas yang dapat mengakses
         // $akses = Petugas::where('klien_id', $klien->id)->where('user_id', Auth::user()->id)->first();
@@ -805,9 +804,12 @@ class KasusController extends Controller
     public function check_kelengkapan_perencanaan($klien_id)
     {
         // perencanaan intervensi
+        $klien = Klien::find($klien_id);
+        // dapatkan jumlah perencanan berdasarkan intervensi yang sedang berlangsung sekarang
         $perencanaan = DB::table(('agenda as a'))
                             ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
                             ->where('a.klien_id', $klien_id)
+                            ->where('a.intervensi_ke', $klien->intervensi_ke)
                             ->whereNull('a.deleted_at')
                             ->whereNull('b.deleted_at')
                             ->whereNotNull('b.id')
@@ -819,9 +821,12 @@ class KasusController extends Controller
     public function check_kelengkapan_pelaksanaan($klien_id)
     {
         // pelaksanaan intervensi
+        $klien = Klien::find($klien_id);
+        // dapatkan jumlah perencanan berdasarkan intervensi yang sedang berlangsung sekarang
         $pelaksanaan = DB::table(('agenda as a'))
                         ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id')
                         ->where('a.klien_id', $klien_id)
+                        ->where('a.intervensi_ke', $klien->intervensi_ke)
                         ->whereNull('a.deleted_at')
                         ->whereNull('b.deleted_at')
                         ->whereNotNull('b.jam_selesai')
@@ -834,7 +839,26 @@ class KasusController extends Controller
     public function check_kelengkapan_pemantauan($klien_id)
     {
         // pelaksanaan pemantauan
-        $pemantauan = Pemantauan::where('klien_id', $klien_id)->count();
+        $klien = Klien::where('id', $klien_id)->first();
+        $pemantauan = [];
+        $terakhir_pemantauan = Pemantauan::where('klien_id', $klien->id)->orderBy('created_at', 'DESC')->first();
+        $pemantauan['terakhir_pemantauan'] = $terakhir_pemantauan
+                                            ? Carbon::parse($terakhir_pemantauan->created_at)->format('d-m-Y H:i')
+                                            : null;
+
+        $dateMonitoring = Carbon::parse($pemantauan['terakhir_pemantauan']);
+        $today = Carbon::today();
+        $expirationDate = $dateMonitoring->copy()->addMonths(6);
+        $daysUntilExpiration = $today->diffInDays($expirationDate, false);
+        $message_pemantauan = '';
+        if ($daysUntilExpiration > 0 && $daysUntilExpiration <= 10) {
+            $message_pemantauan = 'Batas waktu Pemantauan & Evaluasi selanjutnya adalah ' . $daysUntilExpiration . ' hari lagi';
+        } elseif ($daysUntilExpiration <= 0) {
+            $message_pemantauan = 'Sudah lebih dari 6 bulan sejak Pemantauan & Evaluasi terakhir dibuat. Segera dibuat Laporan Pemantauan & Evaluasi!';
+        }
+
+        $pemantauan['deadline_pemantauan'] = $daysUntilExpiration;
+        $pemantauan['message_pemantauan'] = $message_pemantauan;
         // return jumlah pemantauan
         return $pemantauan;
     }

@@ -37,7 +37,7 @@
         height: 30px !important;
     }
 
-    .akses_petugas, #check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningKasus, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_pemantauan, #check_terminasi, .warningTerminasi {
+    .akses_petugas, #check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningKasus, .warningAsesmen, .warningIntervensi, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_pemantauan, #check_terminasi, .warningTerminasi {
         display: none;
     }
 
@@ -187,7 +187,7 @@
         <li>
         <a href="" class="btn-link text-secondary"><i class="far fa-fw fa-file"></i>No Kasus : {{ $kasus_terkait->no_reg }}</a>
         </li>
-        <li>
+        <li>                                                                              
         <a href="" class="btn-link text-secondary"><i class="fa fa-user-secret"></i> Terlapor :
             @php
                 $no_terlapor = 1;
@@ -244,7 +244,7 @@
             <a class="nav-link {{ Request::get('tab') == 'kasus-asesmen' ? 'active' : '' }}" id="kasus-asesmen-tab" data-toggle="pill" href="#kasus-asesmen" role="tab" aria-controls="kasus-asesmen" aria-selected="false">Asesmen <i class="fas fa-exclamation-circle warningAsesmen" style="color: red; font-size:20px"></i></a>
         </li>
         <li class="nav-item">
-        <a class="nav-link {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan-tab" data-toggle="pill" href="#kasus-layanan" role="tab" aria-controls="kasus-layanan" aria-selected="false">Intervensi</a>
+        <a class="nav-link {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan-tab" data-toggle="pill" href="#kasus-layanan" role="tab" aria-controls="kasus-layanan" aria-selected="false">Intervensi <i class="fas fa-exclamation-circle warningIntervensi" style="color: red; font-size:20px"></i></a>
         </li>
         <li class="nav-item">
             <a class="nav-link {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas-tab" data-toggle="pill" href="#kasus-petugas" role="tab" aria-controls="kasus-petugas" aria-selected="false">Petugas @if(!($detail['kelengkapan_petugas']))<i class="fas fa-exclamation-circle" style="color: red; font-size:20px"></i>@endif</a>
@@ -309,7 +309,7 @@
                     <td>
                         <span class="data_kasus">{{ $kasus->sumber_rujukan }}</span> 
                         <select name="sumber_rujukan" class="input_kasus select2bs4" style="width: 100%;">
-                            <option value=""></option>
+                            <option value="Bukan Rujukan" {{ $kasus->sumber_rujukan == 'Bukan Rujukan' ? 'selected' : '' }}>Bukan Rujukan</option>
                             @foreach ($sumber_rujukan as $item_sumber_rujukan)
                                 <option value="{{ $item_sumber_rujukan }}" {{ $item_sumber_rujukan == $kasus->sumber_rujukan ? 'selected' : '' }}>{{ $item_sumber_rujukan }}</option>
                             @endforeach
@@ -1569,182 +1569,239 @@
         <button type="button" class="btn btn-block btn-primary akses_petugas" onclick="submitPublicURL('url-kasus')"><i class="fas fa-link"></i> Generate URL</button> --}}
         </div>
         <div class="tab-pane {{ Request::get('tab') == 'kasus-asesmen' ? 'active' : '' }}" id="kasus-asesmen" role="tabpanel" aria-labelledby="kasus-asesmen-tab">
-            
-        <div class="post clearfix" style="margin: 0px">
-            <b>RIWAYAT KEJADIAN</b>
-            </br>
-            </br>
-            <div style="overflow-x: scroll">
-            <input type="hidden" id="uuid_riwayat_hightlight" value="{{ Request::get('row-riwayat') }}">
-            <table id="tabelRiwayat" class="table table-sm table-bordered table-hover" style="cursor:pointer; color:black">
-                <thead>
-                <tr>
-                <th>Waktu Kejadian</th>
-                <th>Detail Pristiwa</th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            </div>
-            <br>
-            <div class="col-md-12 warningSPP">
-                <div class="alert alert-danger">
-                <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
-                Surat Persetujuan Pelayanan perlu ditanda tangani terlebih dahulu sebelum menambahkan asesmen.
-                </div>
-            </div>
-            <div class="col-md-12 warningAsesmen">
-                <div class="alert alert-danger">
-                <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
-                Mohon melengkapi data asesmen pada MOKA.
-                </div>
-            </div>
+            <div class="col-md-12">
 
-            <div class="post clearfix" style="color:black">
-                <b>ASESMEN KONDISI AWAL</b>
-                <form action="{{ route('asesmen.update', 'uuid') }}" method="POST">
-                @csrf
-                @method('put')
-                <input type="hidden" name="uuid" value="{{ $rekam_kasus->uuid }}">
-                <input type="hidden" name="uuid_klien" value="{{ $klien->uuid }}">
-                <input type="hidden" name="data_update" value="rekam">
-                <span style="float:right" class="akses_petugas">
-                    <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_rekam" onclick="editdata('rekam')">
-                    <i class="fas fa-edit"></i> Edit
-                    </a>
-                    <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_rekam">
-                    <i class="fas fa-check"></i> Save
-                    </button>
-                </span>
-                <table class="table table-bottom table-sm">
-                    <tr id="fisik_rekam">
-                        <td style="width: 200px">Kondisi Fisik</td>
-                        <td style="width: 1%">:</td>
-                        <td>
-                            <span class="data_rekam">{!! nl2br($rekam_kasus->fisik) !!}</span> <textarea name="fisik" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->fisik }}</textarea></span> 
-                        </td>
-                    </tr>
-                    <tr id="psikis_rekam">
-                        <td style="width: 200px">Kondisi Psikologis</td>
-                        <td style="width: 1%">:</td>
-                        <td>
-                            <span class="data_rekam">{!! nl2br($rekam_kasus->psikologis) !!}</span> <textarea name="psikologis" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->psikologis }}</textarea></span> 
-                        </td>
-                    </tr>
-                    <tr id="sosial_rekam">
-                        <td style="width: 200px">Kondisi Sosial/Ekonomi</td>
-                        <td style="width: 1%">:</td>
-                        <td>
-                            <span class="data_rekam">{!! nl2br($rekam_kasus->sosial) !!}</span> <textarea name="sosial" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->sosial }}</textarea></span> 
-                        </td>
-                    </tr>
-                    <tr id="hukum_rekam">
-                        <td style="width: 200px">Kondisi Hukum</td>
-                        <td style="width: 1%">:</td>
-                        <td>
-                            <span class="data_rekam">{!! nl2br($rekam_kasus->hukum) !!}</span> <textarea name="hukum" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->hukum }}</textarea></span> 
-                        </td>
-                    </tr>
-                    <tr id="upaya_rekam">
-                        <td style="width: 200px">Upaya Pemecahan Masalah</td>
-                        <td style="width: 1%">:</td>
-                        <td>
-                            <span class="data_rekam">{!! nl2br($rekam_kasus->upaya) !!}</span> <textarea name="upaya" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->upaya }}</textarea></span> 
-                        </td>
-                    </tr>
-                    <tr id="pendukung_rekam">
-                        <td style="width: 200px">Faktor Pendukung</td>
-                        <td style="width: 1%">:</td>
-                        <td>
-                            <span class="data_rekam">{!! nl2br($rekam_kasus->pendukung) !!}</span> <textarea name="pendukung" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->pendukung }}</textarea></span> 
-                        </td>
-                    </tr>
-                    <tr id="hambatan_rekam">
-                        <td style="width: 200px">Hambatan</td>
-                        <td style="width: 1%">:</td>
-                        <td>
-                            <span class="data_rekam">{!! nl2br($rekam_kasus->hambatan) !!}</span> <textarea name="hambatan" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->hambatan }}</textarea></span> 
-                        </td>
-                    </tr>
-                    <tr id="harapan_rekam">
-                        <td style="width: 200px">Harapan</td>
-                        <td style="width: 1%">:</td>
-                        <td>
-                            <span class="data_rekam">{!! nl2br($rekam_kasus->harapan) !!}</span> <textarea name="harapan" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->harapan }}</textarea></span> 
-                        </td>
-                    </tr>
-                    <tr id="lainnya_rekam">
-                        <td style="width: 200px">Informasi Lainnya</td>
-                        <td style="width: 1%">:</td>
-                        <td>
-                            <span class="data_rekam">{!! nl2br($rekam_kasus->lainnya) !!}</span> <textarea name="lainnya" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->lainnya }}</textarea></span> 
-                        </td>
-                    </tr>
-                </table>
-                </form>
+                <div class="card card-primary card-outline card-outline-tabs">
+                    <div class="card-header p-0 border-bottom-0">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="pill" href="#asesmen_awal" role="tab">Asesmen Awal</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="pill" href="#asesmen_lanjutan" role="tab">Asesmen Lanjutan</a>
+                        </li>
+
+                    </ul>
+                    </div>
+                    <div class="card-body">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="asesmen_awal" role="tabpanel">
+                            <div class="post clearfix" style="margin: 0px">
+                                <b>RIWAYAT KEJADIAN</b>
+                                </br>
+                                </br>
+                                <div style="overflow-x: scroll">
+                                <input type="hidden" id="uuid_riwayat_hightlight" value="{{ Request::get('row-riwayat') }}">
+                                <table id="tabelRiwayat" class="table table-sm table-bordered table-hover" style="cursor:pointer; color:black">
+                                    <thead>
+                                    <tr>
+                                    <th>Waktu Kejadian</th>
+                                    <th>Detail Pristiwa</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                                </div>
+                                <br>
+                                <div class="col-md-12 warningSPP">
+                                    <div class="alert alert-danger">
+                                    <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+                                    Surat Persetujuan Pelayanan perlu ditanda tangani terlebih dahulu sebelum menambahkan asesmen.
+                                    </div>
+                                </div>
+                                <div class="col-md-12 warningAsesmen">
+                                    <div class="alert alert-danger">
+                                    <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+                                    Mohon melengkapi data asesmen pada MOKA.
+                                    </div>
+                                </div>
+                    
+                                <div class="post clearfix" style="color:black">
+                                    <b>ASESMEN KONDISI AWAL</b>
+                                    <form action="{{ route('asesmen.update', 'uuid') }}" method="POST">
+                                    @csrf
+                                    @method('put')
+                                    <input type="hidden" name="uuid" value="{{ $rekam_kasus->uuid }}">
+                                    <input type="hidden" name="uuid_klien" value="{{ $klien->uuid }}">
+                                    <input type="hidden" name="data_update" value="rekam">
+                                    <span style="float:right" class="akses_petugas">
+                                        <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_rekam" onclick="editdata('rekam')">
+                                        <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_rekam">
+                                        <i class="fas fa-check"></i> Save
+                                        </button>
+                                    </span>
+                                    <table class="table table-bottom table-sm">
+                                        <tr id="fisik_rekam">
+                                            <td style="width: 200px">Kondisi Fisik</td>
+                                            <td style="width: 1%">:</td>
+                                            <td>
+                                                <span class="data_rekam">{!! nl2br($rekam_kasus->fisik) !!}</span> <textarea name="fisik" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->fisik }}</textarea></span> 
+                                            </td>
+                                        </tr>
+                                        <tr id="psikis_rekam">
+                                            <td style="width: 200px">Kondisi Psikologis</td>
+                                            <td style="width: 1%">:</td>
+                                            <td>
+                                                <span class="data_rekam">{!! nl2br($rekam_kasus->psikologis) !!}</span> <textarea name="psikologis" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->psikologis }}</textarea></span> 
+                                            </td>
+                                        </tr>
+                                        <tr id="sosial_rekam">
+                                            <td style="width: 200px">Kondisi Sosial/Ekonomi</td>
+                                            <td style="width: 1%">:</td>
+                                            <td>
+                                                <span class="data_rekam">{!! nl2br($rekam_kasus->sosial) !!}</span> <textarea name="sosial" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->sosial }}</textarea></span> 
+                                            </td>
+                                        </tr>
+                                        <tr id="hukum_rekam">
+                                            <td style="width: 200px">Kondisi Hukum</td>
+                                            <td style="width: 1%">:</td>
+                                            <td>
+                                                <span class="data_rekam">{!! nl2br($rekam_kasus->hukum) !!}</span> <textarea name="hukum" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->hukum }}</textarea></span> 
+                                            </td>
+                                        </tr>
+                                        <tr id="upaya_rekam">
+                                            <td style="width: 200px">Upaya Pemecahan Masalah</td>
+                                            <td style="width: 1%">:</td>
+                                            <td>
+                                                <span class="data_rekam">{!! nl2br($rekam_kasus->upaya) !!}</span> <textarea name="upaya" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->upaya }}</textarea></span> 
+                                            </td>
+                                        </tr>
+                                        <tr id="pendukung_rekam">
+                                            <td style="width: 200px">Faktor Pendukung</td>
+                                            <td style="width: 1%">:</td>
+                                            <td>
+                                                <span class="data_rekam">{!! nl2br($rekam_kasus->pendukung) !!}</span> <textarea name="pendukung" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->pendukung }}</textarea></span> 
+                                            </td>
+                                        </tr>
+                                        <tr id="hambatan_rekam">
+                                            <td style="width: 200px">Hambatan</td>
+                                            <td style="width: 1%">:</td>
+                                            <td>
+                                                <span class="data_rekam">{!! nl2br($rekam_kasus->hambatan) !!}</span> <textarea name="hambatan" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->hambatan }}</textarea></span> 
+                                            </td>
+                                        </tr>
+                                        <tr id="harapan_rekam">
+                                            <td style="width: 200px">Harapan</td>
+                                            <td style="width: 1%">:</td>
+                                            <td>
+                                                <span class="data_rekam">{!! nl2br($rekam_kasus->harapan) !!}</span> <textarea name="harapan" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->harapan }}</textarea></span> 
+                                            </td>
+                                        </tr>
+                                        <tr id="lainnya_rekam">
+                                            <td style="width: 200px">Informasi Lainnya</td>
+                                            <td style="width: 1%">:</td>
+                                            <td>
+                                                <span class="data_rekam">{!! nl2br($rekam_kasus->lainnya) !!}</span> <textarea name="lainnya" class="input_rekam" style="width:100%" rows="10">{{ $rekam_kasus->lainnya }}</textarea></span> 
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="asesmen_lanjutan" role="tabpanel">
+                            <div class="post clearfix" style="margin: 0px">
+                                <b>ASESMEN LANJUTAN</b>
+                                </br>
+                                Asesmen Lanjutan diambil otomatis dari agenda Manajer Kasus dengan keyword / detail layanan : "Asesmen Lanjutan"  
+                                </br>
+                                <div style="overflow-x: scroll">
+                                    <table id="tabelAsesmenLanjutan" class=" table table-sm table-bordered table-hover" style="cursor:pointer; color:black">
+                                        <thead>
+                                        <tr>
+                                        <th>Waktu Kegiatan</th>
+                                        <th>Perencanaan Intervensi</th>
+                                        <th>Pelaksanaan Intervensi</th>
+                                        <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <th>Waktu Kegiatan</th>
+                                            <th>Perencanaan Intervensi</th>
+                                            <th>Pelaksanaan Intervensi</th>
+                                            <th></th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    </div>
+                    
             </div>
-            {{-- <div id="kolomAsesmen"></div>
-            @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Unit Reaksi Cepat']) && $akses_petugas == 1)
-            <button type="buttons" class="btn btn-block btn-default {{ Request::get('tambah-asesmen') == 1 ? 'hightlighting' : '' }}" id="modalAsesmen" data-toggle="modal" data-target="#tambahAsesmenModal"><i class="fas fa-plus"></i> Tambah Asesmen</button>
-            @endif --}}
-        </div>
+            </div>
 
     </div>
     
     <div class="tab-pane {{ Request::get('tab') == 'kasus-layanan' ? 'active' : '' }}" id="kasus-layanan" role="tabpanel" aria-labelledby="kasus-layanan-tab">
-        <div class="post clearfix" style="margin: 0px">
-        <b id="anchor_pelaporan">PROGRES INTERVENSI / LAYANAN</b>
-        <div class="progress" style="height: 25px;">
-            <div class="progress-bar bg-success persen_layanan" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px" class="persen_title_layanan">100%</span></div>
-        </div>
-        <br>
-        {{-- include tabel intervensi --}}
-        @if (Auth::user()->settings_tabel_intervensi == 2)
-            @include('kasus.intervensiv2')
-        @else
-            @include('kasus.intervensiv1')
-        @endif
-        <br>
-        {{-- <div id="accordionResumeLayanan" >
-            <div class="card card-light">
-            <div class="card-header">
-            <h4 class="card-title w-100">
-            <a class="d-block w-100" data-toggle="collapse" href="#collapseResumeLayanan">
-            <b>Resume Intervensi / Layanan</b>
-            </a>
-            </h4>
-            </div>
-            <div id="collapseResumeLayanan" class="collapse" data-parent="#accordionResumeLayanan">
-            <div class="card-body">
-                <div style="overflow-x: scroll">
-                    <table id="tabelResumeLayanan" class="table table-sm table-bordered  table-hover" style="cursor:pointer; color:black">
-                        <thead>
-                        <tr>
-                        <th>Waktu Kegiatan</th>
-                        <th>Keyword</th>
-                        <th>Petugas</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Waktu Kegiatan</th>
-                            <th>Keyword</th>
-                            <th>Petugas</th>
-                        </tr>
-                        </tfoot>
-                    </table>
+        <div class="col-md-12">
+
+            <div class="card card-primary card-outline card-outline-tabs">
+                <div class="card-header p-0 border-bottom-0">
+                <ul class="nav nav-tabs" role="tablist">
+                    @for ($i_tab = 1; $i_tab <= $klien->intervensi_ke; $i_tab++)
+                        <li class="nav-item">
+                            <a class="nav-link {{ $i_tab == $klien->intervensi_ke ? 'active' : '' }}" data-toggle="pill" href="#intervensi_ke_{{ $i_tab }}" role="tab">Intervensi ke-{{ $i_tab }} 
+                                @if ($i_tab == $klien->intervensi_ke)
+                                    <i class="fas fa-exclamation-circle warningIntervensi" style="color: red; font-size:20px"></i>
+                                @endif
+                            </a>
+                        </li>
+                    @endfor
+                </ul>
                 </div>
-            </div>
-            </div>
-            </div>
+                <div class="card-body">
+                <div class="tab-content">
+                @for ($i_tab_konten = 1; $i_tab_konten <= $klien->intervensi_ke; $i_tab_konten++)
+                    <div class="tab-pane fade {{ $i_tab_konten == $klien->intervensi_ke ? 'active show' : '' }}" id="intervensi_ke_{{ $i_tab_konten }}" role="tabpanel">
+                        <b id="anchor_pelaporan">PROGRES INTERVENSI KE-{{ $i_tab_konten }}</b>
+                        <div class="progress" style="height: 25px;">
+                            <div class="{{ $i_tab_konten == $klien->intervensi_ke ? 'persen_layanan' : '' }} progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> <span style="font-size:30px" class="{{ $i_tab_konten == $klien->intervensi_ke ? 'persen_title_layanan' : '' }}">100%</span></div>
+                        </div>
+                        <br>
+                        {{-- include tabel intervensi --}}
+                        @if (Auth::user()->settings_tabel_intervensi == 2)
+                            @include('kasus.intervensiv2', ['intervensi_ke' => $i_tab_konten])
+                        @else
+                            @include('kasus.intervensiv1', ['intervensi_ke' => $i_tab_konten])
+                        @endif
+                        <b>Keterangan : </b><br>
+                        <div style="background-color: #28A745; width: 100px; height: 20px; display: inline-block; vertical-align: middle;"></div> 
+                        Tag Warna hijau artinya Agenda Layanan. <br>
+                        <div style="background-color: #FFC107; width: 100px; height: 20px; display: inline-block; vertical-align: middle;"></div> 
+                        Tag Warna kuning artinya Agenda Manajemen Layanan. <br>
+                        Gunakan <a href="#" onclick="$('#filter_intervensi').val({{ $i_tab_konten }}); $('#modalFilterLayanan').modal('show'); return false;"><b>Filter</b></a> untuk menampilkan hanya agenda layanan saja.
+
+                        <hr style="border: 1px solid #000; margin: 20px 0;">
+
+                        <div id="kolomPemantauan{{ $i_tab_konten }}"></div>
+                        <div class="row warningIntervensi">
+                            <div class="col-md-12">
+                                <div class="alert alert-danger">
+                                    <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+                                    <span id="terakhirPemantauan"></span>
+                                    <br>
+                                    <span id="messagePemantauan"></span>
+                                </div>
+                            </div>
+                        </div>
+                        @if ((Auth::user()->jabatan == 'Manajer Kasus' && $akses_petugas == 1) && ($i_tab_konten == $klien->intervensi_ke))
+                            <button type="submit" class="btn btn-block btn-success btn-sm" id="tambah_laporan_pemantauan" data-toggle="modal" data-target="#tambahPemantauanModal" disabled="true"><i class="fas fa-plus"></i> Tambah Laporan Pemantauan & Evaluasi</button>
+                            <span style="color: red" id="alert-pemantauan">*Laporan Pemantauan & Evaluasi hanya dapat dibuat ketika Progres Intervensi sudah 100%</span>
+                        @endif
+                    </div>
+                @endfor
+                </div>
+                </div>
+                
         </div>
-        <br> --}}
-        <div id="kolomPemantauan"></div>
-        @if (Auth::user()->jabatan == 'Manajer Kasus' && $akses_petugas == 1)
-        <button type="submit" class="btn btn-block btn-default" data-toggle="modal" data-target="#tambahPemantauanModal"><i class="fas fa-plus"></i> Tambah Laporan Pemantauan & Evaluasi</button>
-        @endif
-    </div>
+        </div>
     </div>
     <div class="tab-pane {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas" role="tabpanel" aria-labelledby="kasus-petugas-tab">
         <b id="anchor_petugas">PETUGAS PADA KASUS</b>
@@ -2012,13 +2069,13 @@
                     <td style="width: 200px"><b>Terminasi Kasus<b></td>
                     <td>
                         <div id="kolomTerminasi"></div>
-                        @if (in_array(Auth::user()->jabatan, ['Manajer Kasus']))
+                        {{-- @if (in_array(Auth::user()->jabatan, ['Manajer Kasus']))
                             <div id="accordionTerminasi">
                                 <div class="card card-danger">
                                 <div class="card-header">
                                 <h4 class="card-title w-100">
                                 <a class="d-block w-100" data-toggle="collapse" href="#collapseTerminasi">
-                                Ajukan Terminasi
+                                Ajukan Terminasi Kasus
                                 </a>
                                 </h4>
                                 </div>
@@ -2061,7 +2118,7 @@
                                 </div>
                                 </div>
                             </div>
-                        @endif
+                        @endif --}}
                     </td>
                 </tr>
             </table>
@@ -2313,6 +2370,7 @@
         </div>
         <div class="modal-body">
         <input type="hidden" id="uuid_pemantauan">
+        *Isi Formulir Pemantauan & Evaluasi hanya ketika semua intervensi sudah dilakukan
         <div class="col-md-12">
             <div class="form-group">
             <label>Kemajuan yang Dicapai / Kondisi Klien Saat Pemantauan : </label>
@@ -2329,6 +2387,61 @@
             <div class="form-group">
             <label>Rencana Tindak Lanjut : </label>
                 <textarea class="form-control required-field-pemantauan" id="pemantauan_rencana" aria-label="With textarea" style="resize: none;"></textarea>
+            </div>
+        </div>
+        <div class="form-group clearfix">
+            <div class="icheck-primary d-inline" style="margin-right:15px">
+            <input type="radio" id="radioaction_pemantauan1" name="action_pemantauan" checked value="intervensi_selanjutnya">
+            <label for="radioaction_pemantauan1">
+                Membutuhkan Perencanaan Intervensi Selanjutnya 
+            </label>
+            </div>
+            <div class="icheck-primary d-inline">
+            <input type="radio" id="radioaction_pemantauan2" name="action_pemantauan" value="ajukan_terminasi">
+            <label for="radioaction_pemantauan2">
+                Cukup, Ajukan Terminasi Kasus
+            </label>
+            </div>
+        </div>
+        <div class="card card-danger" id="form_terminasi" style="display: none">
+            <div class="card-header">
+            <h4 class="card-title w-100">
+            <a class="d-block w-100">
+            Ajukan Terminasi Kasus
+            </a>
+            </h4>
+            </div>
+            <div id="collapseTerminasi" class="collapse show">
+            <div class="card-body">
+                <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message-terminasi">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
+                    <span id="message-terminasi"></span>
+                </div>
+                <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message-terminasi">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-check"></i> Success!</h4>
+                    Data berhasil disimpan.
+                </div>
+                <div class="form-group clearfix">
+                    <div class="icheck-primary d-inline" style="margin-right:15px">
+                    <input type="radio" id="radioPrimary1" name="jenis_terminasi" checked value="selesai">
+                    <label for="radioPrimary1">
+                        Terminasi Kasus Selesai
+                    </label>
+                    </div>
+                    <div class="icheck-primary d-inline">
+                    <input type="radio" id="radioPrimary2" name="jenis_terminasi" value="ditutup">
+                    <label for="radioPrimary2">
+                        Terminasi Kasus Ditutup
+                    </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Alasan Terminasi </label>
+                    <textarea class="form-control required-field-terminasi" id="terminasi_alasan" aria-label="With textarea" style="resize: none;" rows="5"></textarea>
+                </div>
+            </div>
             </div>
         </div>
         </div>
@@ -2486,6 +2599,7 @@
         </div>
 
         <div class="modal-body">
+        <input type="hidden" id="filter_intervensi">
         <input type="hidden" id="uuid_catatan">
         <div class="col-md-12">
             <div class="form-group">
@@ -2500,6 +2614,25 @@
                 <option value="Pendamping Kasus">Pendamping Kasus</option>
               </select>
             </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="">Jenis Agenda</label>
+                <br>
+                <div class="icheck-primary d-inline" style="margin-right:15px">
+                  <input type="radio" id="radioPrimary1c" name="filter1JenisAgenda" checked value="0">
+                  <label for="radioPrimary1c">
+                      Seluruh agenda
+                  </label>
+                </div>
+                <div class="icheck-primary d-inline">
+                  <input type="radio" id="radioPrimary2c" name="filter1JenisAgenda" value="1">
+                  <label for="radioPrimary2c">
+                      Agenda yang ada layanan / intervensi nya saja
+                  </label>
+                </div>
+              </div>
         </div>
 
         <div class="col-md-12">
@@ -2571,7 +2704,7 @@
         getkotkab('klien_ktp');
         hightlighting();
         loadAsesmen();
-        loadPemantauan();
+        // loadPemantauan();
         loadTerminasi();
         loadCatatan();
         show_catatan('layanan_hukum_lp');
@@ -2661,11 +2794,13 @@
 
     function submitFilterLayanan() {
         var jabatanValue = $('#filterJabatan').val();
+        var jenis_agenda = $('input[name="filter1JenisAgenda"]:checked').val();
         var tl = $('input[name="filter1TL"]:checked').val();
         var anda = $('input[name="filter1Anda"]:checked').val();
-        var url = "{{ env('APP_URL') }}/agenda/api_index?uuid={{ $klien->uuid }}&jabatan=" + encodeURIComponent(JSON.stringify(jabatanValue)) + "&tl=" + tl + "&anda=" + anda;
+        var filter_intervensi = $('#filter_intervensi').val();
+        var url = "{{ env('APP_URL') }}/agenda/api_index?uuid={{ $klien->uuid }}&jabatan=" + encodeURIComponent(JSON.stringify(jabatanValue)) + "&jenis_agenda=" + jenis_agenda + "&tl=" + tl + "&anda=" + anda + "&intervensi_ke="+filter_intervensi;
         
-        $('#tabelLayanan').DataTable().ajax.url(url).load();
+        $('#tabelLayanan'+filter_intervensi).DataTable().ajax.url(url).load();
 
         $('#modalFilterLayanan').modal('hide');
     }
@@ -2674,9 +2809,10 @@
         $('#filterJabatan').val([]).change();
         $('input[name="filter1TL"]').filter('[value="0"]').prop('checked', true);
         $('input[name="filter1Anda"]').filter('[value="0"]').prop('checked', true);
-        var url = "{{ env('APP_URL') }}/agenda/api_index?uuid={{ $klien->uuid }}";
+        var filter_intervensi = $('#filter_intervensi').val();
+        var url = "{{ env('APP_URL') }}/agenda/api_index?uuid={{ $klien->uuid }}" + "&intervensi_ke="+filter_intervensi;
         
-        $('#tabelLayanan').DataTable().ajax.url(url).load();
+        $('#tabelLayanan'+filter_intervensi).DataTable().ajax.url(url).load();
 
         $('#modalFilterLayanan').modal('hide');
     }
@@ -2690,26 +2826,6 @@
     $('.input_psikologi').next(".select2-container").hide();
     $('.input_terlapor').next(".select2-container").hide();
 
-      $('#tabelLayanan_filter').css({'float':'right','display':'inline-block; background-color:black'});
-    });
-
-    $('#tabelLayanan tbody').on('click', 'tr', function (evt) {
-        $("#success-message").hide();
-        $("#error-message").hide();
-        $("#editAgenda").hide();
-        $("#viewAgenda").show();
-        var table = $('#tabelLayanan').DataTable();
-        var rowData = table.row(this).data();
-
-        // if (($(evt.target).closest('td').index() !== 2)) {
-            showModalAgenda('',rowData.uuid_agenda, rowData.created_by);
-        // }
-
-        if (rowData.created_by == {{ Auth::user()->id }}) {
-            $('#tombol_edit_agenda').show();
-        } else {
-            $('#tombol_edit_agenda').hide();
-        }
     });
 
     // $(function () {
@@ -3068,7 +3184,7 @@
           ['10 rows', '25 rows', '50 rows', '100 rows','All'],
       ],
       "dom": 'Blfrtip', // Blfrtip or Bfrtip
-      "buttons": ["pageLength", "copy", "csv", "excel", "pdf", "print",
+      "buttons": ["pageLength", "copy", "csv", "excel", "pdf",
               {
                 className: "btn-info",
                 text: 'Tambah',
@@ -3216,6 +3332,132 @@
     }
     });
 
+
+$(function () {
+$("#tabelAsesmenLanjutan").DataTable({
+      "ordering": false,
+      "processing": true,
+      "serverSide": true,
+      "responsive": false, 
+      "lengthChange": false, 
+      "autoWidth": false,
+      "ajax": "{{ env('APP_URL') }}/agenda/api_index?uuid={{ $klien->uuid }}&jabatan="+encodeURIComponent($('#filterJabatan').val())+"&asesmen_lanjutan=1",
+      "rowsGroup": [1],
+      'createdRow': function( row, data, dataIndex ) {
+          $(row).attr('id', data.uuid);
+
+          rowHightlight = $('#uuid_layanan_hightlight').val();
+          if (data.uuid == rowHightlight) {
+            $(row).attr('class', 'hightlighting');
+          }
+      },
+      "columns": [
+        {
+            "mData": "tanggal_mulai",
+            "mRender": function (data, type, row) {
+                if (row.jam_selesai != null) {
+                    jam_mulai = row.jam_mulai+' - '+row.jam_selesai;
+                }else{
+                    jam_mulai =  row.jam_mulai;
+                }
+                return '<b>'+row.hari+'</b>, '+row.tanggal_mulai_formatted+"<br><span style='font-size:13px'>"+jam_mulai+"</span>";
+            }
+        },
+        {
+            "mData": "judul_kegiatan",
+            "mRender": function (data, type, row) {
+              judul_kegiatan = deskripsi_proses = '';
+              if (row.judul_kegiatan != null) {
+                judul_kegiatan = '<b>'+row.judul_kegiatan+'</b>';
+              }
+
+              return judul_kegiatan;
+            }
+        },
+        {
+            "mData": "catatan",
+            "mRender": function (data, type, row) {
+              if(row.keywords != null ){
+                detail_layanans = '';
+                detail_layanan = row.keywords;
+                detail_layanan.forEach(e => {
+                    if (e .jenis_agenda == 'Layanan') {
+                      detail_layanans += '<span class="badge bg-success" style="font-size:15px"><i class="nav-icon fas fa-tag"></i> '+e.keyword+'</span> ';
+                    } else {
+                      detail_layanans += '<span class="badge bg-warning" style="font-size:15px"><i class="nav-icon fas fa-tag"></i> '+e.keyword+'</span> ';
+                    }
+                  });
+              } else {
+                detail_layanans = '';
+              }
+
+              if (row.terlaksana) {
+                return '<b>Petugas : </b><br><span style="color:blue; font-weight:bold">'+row.petugas+'</span> ('+row.jabatan+')<br>'+dokumens+detail_layanans;
+              } else {
+                return '<b>Petugas : </b><br><span style="color:blue; font-weight:bold">'+row.petugas+'</span> ('+row.jabatan+')<br><span class="badge bg-danger">Dibatalkan</span>';
+              }
+            }
+        },
+        {
+            "mData": "ceklis",
+            "mRender": function (data, type, row) {
+                if (row.jam_selesai == null) {
+                    done = '';
+                    checked = '';
+                    disabled = '';
+                    selesaiLayanan = '';
+                } else {
+                    done = 'done';
+                    checked = 'checked';
+                    disabled = 'disabled';
+                    selesaiLayanan = 'layananSelesai';
+                }
+                if (row.created_by == {{ Auth::user()->id }}) {
+                    return '<div  class="icheck-success d-inline ml-2"><input type="checkbox" value="" '+checked+'><label for="todoCheck'+row.uuid+'"></label></div>';
+                    // return '<div  class="icheck-success d-inline ml-2"><input class="checkboxSelesai '+selesaiLayanan+'" type="checkbox" value="" id="todoCheck'+row.uuid+'" '+checked+' '+disabled+' onclick="showModalAgenda(`'+row.tanggal_mulai+'`,`'+row.uuid+'`,`'+row.created_by+'`)"><label for="todoCheck'+row.uuid+'"></label></div>';
+                    $('#tombol_edit_agenda').show();
+                } else {
+                    return '<div  class="icheck-success d-inline ml-2" onclick="alert(`Anda tidak memiliki hak akses untuk menginputkan laproan tindak lanjut untuk agenda ini. Minta seseorang yang ada di agenda untuk mentag/menambahkan anda.`)"><input type="checkbox" value="" '+checked+'><label for="todoCheck'+row.uuid+'"></label></div>';
+                    $('#tombol_edit_agenda').hide();
+                }
+            }
+        }
+      ],
+      "pageLength": 25,
+    //   "columnDefs": [
+    //     { className: "cursor-disabled", "targets": [ 2 ] }
+    //   ],
+      "lengthMenu": [
+          [10, 25, 50, 100, -1],
+          ['10 rows', '25 rows', '50 rows', '100 rows','All'],
+      ],
+      "order": [[0, 'ASC']],
+      "dom": 'Blfrtip', // Blfrtip or Bfrtip
+      "buttons": ["pageLength", "copy", "excel", "pdf", "print"]
+      }).buttons().container().appendTo('#tabelAsesmenLanjutan_wrapper .col-md-6:eq(0)');
+
+      $('#tabelAsesmenLanjutan_filter').css({'float':'right','display':'inline-block; background-color:black'});
+
+      $('#tabelAsesmenLanjutan tbody').on('click', 'tr', function (evt) {
+          $("#success-message").hide();
+          $("#error-message").hide();
+          $("#editAgenda").hide();
+          $("#viewAgenda").show();
+          var table = $('#tabelAsesmenLanjutan').DataTable();
+          var rowData = table.row(this).data();
+
+          // if (($(evt.target).closest('td').index() !== 2)) {
+              showModalAgenda('',rowData.uuid_agenda, rowData.created_by);
+          // }
+
+          if (rowData.created_by == {{ Auth::user()->id }}) {
+              $('#tombol_edit_agenda').hide();
+            } else {
+              $('#tombol_edit_agenda').show();
+          }
+      });
+    });
+
     function loadAsesmen() {
         $('#deleteAsesmen').hide();
         $.ajax({
@@ -3343,119 +3585,124 @@
         }
     }
 
-    function loadPemantauan() {
-        $('#deletePemantauan').hide();
-        $.ajax({
-            url: `{{ env('APP_URL') }}/pemantauan/index?uuid={{ $klien->uuid }}`,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                $('#kolomPemantauan').html('');
-                
-                data = response.data;
-                i=1;
-                data.forEach(e => {
-                    tombolHapus = '';
-                    if (e.created_by == '{{ Auth::user()->id }}' || '{{ Auth::user()->jabatan }}' == 'Manajer Kasus') {
-                        tombolHapus = '<button type="button" class="btn btn-danger btn-block" id="deletePemantauan" onclick="deletePemantauan(`'+e.uuid+'`)"><i class="fa fa-trash"></i> Hapus</button>';
-                    }
-                    $('#kolomPemantauan').prepend('<div class=\"card collapsed-card target\"> <div class=\"card-header\" data-card-widget=\"collapse\" style=\"cursor: pointer;\"> <h3 class=\"card-title\"><b>Pemantauan & Evaluasi tanggal '+e.created_at_formatted+' oleh '+e.petugas+' ('+e.jabatan+')</b></h3> <div class=\"card-tools\"> <button type=\"button\" class=\"btn btn-tool\"><i class=\"fa fa-chevron-down\"></i> </button> </div> </div> <div class=\"card-body\"> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Kemajuan yang Dicapai / Kondisi Klien Saat Pemantauan & Evaluasi : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\" >'+e.kemajuan+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Tujuan yang Belum Tercapai : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.tujuan+'</textarea> </div> </div> <div class=\"col-md-12\"> <div class=\"form-group\"> <label>Rencana Tindak Lanjut : </label> <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.rencana+'</textarea> </div> '+tombolHapus+' </div> </div> </div>');
-                    i++;
-                });
-            },
-            error: function (response){
-                console.log(response);
-            }
-            });
-    }
-
-    $('#submitPemantauan').click(function() {
-        if(validateForm('pemantauan')){
-            let token   = $("meta[name='csrf-token']").attr("content");
-            $.ajax({
-            url: "{{ route('pemantauan.store') }}",
-            type: "POST",
-            cache: false,
-            data: {
-                uuid: $('#uuid_pemantauan').val(),
-                uuid_klien: '{{ $klien->uuid }}',
-                kemajuan: $("#pemantauan_kemajuan").val(),
-                tujuan: $("#pemantauan_tujuan").val(),
-                rencana: $("#pemantauan_rencana").val(),
-                _token: token
-            },
-            success: function (response){
-                if (response.success != true) {
-                    $('#message-pemantauan').html(JSON.stringify(response));
-                    $("#success-message-pemantauan").hide();
-                    $("#error-message-pemantauan").show();
-                }else{
-                    $('#message-pemantauan').html(response.message);
-                    $("#success-message-pemantauan").show();
-                    $("#error-message-pemantauan").hide();
-                    loadPemantauan();
-
-                    // hapus semua inputan
-                    $('#uuid_pemantauan').val('');
-                    $("#pemantauan_kemajuan").val('');
-                    $("#pemantauan_tujuan").val('');
-                    $("#pemantauan_rencana").val('');
-                    $('#tambahPemantauanModal').scrollTop(0);
-                }
-            },
-            error: function (response){
-                setTimeout(function(){
-                $("#overlay").fadeOut(300);
-                },500);
-                console.log(response);
-
-                $('#message-pemantauan').html(JSON.stringify(response));
-                $("#success-message-pemantauan").hide();
-                $("#error-message-pemantauan").show();
-            }
-            }).done(function() { //loading submit form
-                setTimeout(function(){
-                $("#overlay").fadeOut(300);
-                },500);
-            });
-        }else{
-            $('#message-pemantauan').html('Mohon cek ulang data yang wajib diinput.');
-            $("#success-message-pemantauan").hide();
-            $("#error-message-pemantauan").show();
+    $('input[name="action_pemantauan"]').click(function() {
+        if ($("input[name=action_pemantauan]:checked").val() == 'intervensi_selanjutnya') {
+            $('#form_terminasi').hide();
+        } else {
+            $('#form_terminasi').show();
         }
     });
 
-    function deletePemantauan(uuid) {
-        if (confirm("Apakah anda yakin ingin menghapus laporan pemantauan ini?") == true) {
-            let token   = $("meta[name='csrf-token']").attr("content");
-            $.ajax({
-            url: `{{ env('APP_URL') }}/pemantauan/destroy/`+uuid,
-            type: "POST",
-            cache: false,
-            data: {
-                _method:'DELETE',
-                _token: token
-            },
-            success: function (response){
-                if (response.success != true) {
-                    console.log(response);
-                }else{
-                    loadPemantauan();
+    $('#submitPemantauan').click(function() {
+            action = true;
+            if(validateForm('pemantauan')){
+                if ($("input[name=action_pemantauan]:checked").val() == 'ajukan_terminasi') {
+                    submit_terminasi();
+                    if(!validateForm('terminasi')){
+                        action = false;
+                    }
                 }
-            },
-            error: function (response){
-                setTimeout(function(){
-                $("#overlay").fadeOut(300);
-                },500);
-                console.log(response);
-            }
-            }).done(function() { //loading submit form
-                setTimeout(function(){
-                $("#overlay").fadeOut(300);
-                },500);
-            });
+
+                if (action) {
+        if ($("input[name=action_pemantauan]:checked").val() == 'ajukan_terminasi') {
+            message = 'Apakah anda yakin dengan data yang anda inputkan dan anda mengajukan terminasi? \nPengajuan terminasi tidak dapat ditarik / dihapus, hanya dapat ditolak / disetujui oleh supervisor kasus'
+        } else {
+            message = 'Apakah anda yakin dengan data yang anda inputkan dan anda makan melakukan intervensi selanjutnya? \n- Intervensi selanjutnya tidak dapat dihapus, dan tidak dapat mundur ke intervensi sebelumnya. \n- Pastikan tidak ada lagi agenda yang akan dilakukan perencanaan intervensi ini.\n- Jika anda ingin terminasi, pilih opsi "Ajukan Terminasi Kasus"'
         }
-    }
+        if (confirm(message) == true) {
+                    let token   = $("meta[name='csrf-token']").attr("content");
+                    $.ajax({
+                    url: "{{ route('pemantauan.store') }}",
+                    type: "POST",
+                    cache: false,
+                    data: {
+                        uuid: $('#uuid_pemantauan').val(),
+                        uuid_klien: '{{ $klien->uuid }}',
+                        kemajuan: $("#pemantauan_kemajuan").val(),
+                        tujuan: $("#pemantauan_tujuan").val(),
+                        rencana: $("#pemantauan_rencana").val(),
+                        action_pemantauan: $("input[name=action_pemantauan]:checked").val(),
+                        _token: token
+                    },
+                    success: function (response){
+                        if (response.success != true) {
+                            $('#message-pemantauan').html(JSON.stringify(response));
+                            $("#success-message-pemantauan").hide();
+                            $("#error-message-pemantauan").show();
+                        }else{
+                            $('#message-pemantauan').html(response.message);
+                            $("#success-message-pemantauan").show();
+                            $("#error-message-pemantauan").hide();
+                            loadPemantauan();
+
+                            // hapus semua inputan
+                            $('#uuid_pemantauan').val('');
+                            $("#pemantauan_kemajuan").val('');
+                            $("#pemantauan_tujuan").val('');
+                            $("#pemantauan_rencana").val('');
+                            $('#tambahPemantauanModal').scrollTop(0);
+                            
+                            // reload halaman
+                            var url = new URL(window.location.href);
+                            url.searchParams.set('tab', 'kasus-layanan');
+                            window.location.href = url.toString();
+                        }
+                    },
+                    error: function (response){
+                        setTimeout(function(){
+                        $("#overlay").fadeOut(300);
+                        },500);
+                        console.log(response);
+
+                        $('#message-pemantauan').html(JSON.stringify(response));
+                        $("#success-message-pemantauan").hide();
+                        $("#error-message-pemantauan").show();
+                    }
+                    }).done(function() { //loading submit form
+                        setTimeout(function(){
+                        $("#overlay").fadeOut(300);
+                        },500);
+                    });
+        }
+                }
+            }else{
+                $('#message-pemantauan').html('Mohon cek ulang data yang wajib diinput.');
+                $("#success-message-pemantauan").hide();
+                $("#error-message-pemantauan").show();
+            }
+    });
+
+    // function deletePemantauan(uuid) {
+    //     if (confirm("Apakah anda yakin ingin menghapus laporan pemantauan ini?") == true) {
+    //         let token   = $("meta[name='csrf-token']").attr("content");
+    //         $.ajax({
+    //         url: `{{ env('APP_URL') }}/pemantauan/destroy/`+uuid,
+    //         type: "POST",
+    //         cache: false,
+    //         data: {
+    //             _method:'DELETE',
+    //             _token: token
+    //         },
+    //         success: function (response){
+    //             if (response.success != true) {
+    //                 console.log(response);
+    //             }else{
+    //                 loadPemantauan();
+    //             }
+    //         },
+    //         error: function (response){
+    //             setTimeout(function(){
+    //             $("#overlay").fadeOut(300);
+    //             },500);
+    //             console.log(response);
+    //         }
+    //         }).done(function() { //loading submit form
+    //             setTimeout(function(){
+    //             $("#overlay").fadeOut(300);
+    //             },500);
+    //         });
+    //     }
+    // }
 
     function loadTerminasi() {
         $.ajax({
@@ -3492,7 +3739,7 @@
             });
     }
 
-    $('#submitTerminasi').click(function() {
+    function submit_terminasi() {
         if(validateForm('terminasi')){
             let token   = $("meta[name='csrf-token']").attr("content");
             $.ajax({
@@ -3513,7 +3760,7 @@
                     $("#error-message-terminasi").show();
                 }else{
                     $('#message-terminasi').html(response.message);
-                    $("#success-message-terminasi").show();
+                    // $("#success-message-terminasi").show();
                     $("#error-message-terminasi").hide();
                     loadTerminasi();                    
                     
@@ -3547,7 +3794,7 @@
             $("#success-message-terminasi").hide();
             $("#error-message-terminasi").show();
         }
-    });
+    }
 
     function loadCatatan() {
         $.ajax({
@@ -4015,6 +4262,13 @@ function check_kelengkapan_pelaksanaan(jml_perencanaan, klien_id) {
                 $('#check_pelaksanaan').show();
                 kelengkapan_kasus = kelengkapan_kasus + 1;
                 $('#kelengkapan_kasus').html(kelengkapan_kasus);
+
+                // enable / disable tombol pemantauan & evaluasi
+                $('#tambah_laporan_pemantauan').prop('disabled', false);
+                $('#alert-pemantauan').hide();
+            } else {
+                $('#tambah_laporan_pemantauan').prop('disabled', true);
+                $('#alert-pemantauan').show();
             }
         },
         error: function (response){
@@ -4030,7 +4284,14 @@ function check_kelengkapan_pemantauan(klien_id) {
         type: "GET",
         cache: false,
         success: function (response){
-            if (response > 0) {
+
+            if (response.deadline_pemantauan <= 10) {
+                // kalau deadlinenya kurang dari 10 hari berarti harusnya udah dilakukan Pemantauan & Evaluasi lagi
+                $('.warningIntervensi').show();
+                $('#terakhirPemantauan').html('Terakhir dilakukan Pemantauan & Evaluasi adalah pada tanggal '+response.terakhir_pemantauan);
+                $('#messagePemantauan').html(response.message_pemantauan);
+            } else {
+                $('.warningIntervensi').hide();
                 $('#check_pemantauan').show();
                 kelengkapan_kasus = kelengkapan_kasus + 1;
                 $('#kelengkapan_kasus').html(kelengkapan_kasus);
@@ -4065,8 +4326,6 @@ function check_kelengkapan_terminasi(klien_id) {
 }
 
 $(function(){
-    $('.dt-buttons').addClass('akses_petugas');
-    
     if ('{{ $akses_petugas }}' == 1) {
         $('.akses_petugas').css('display', 'inline-flex');
     }else{

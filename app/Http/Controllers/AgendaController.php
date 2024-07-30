@@ -132,22 +132,22 @@ class AgendaController extends Controller
                     {
                     $join->on('z.tindak_lanjut_id', '=', 'b.id');
                     })
-                    ->leftJoin(DB::raw('(
-                        SELECT 
-                        tindak_lanjut_id, GROUP_CONCAT(CONCAT(",|"),value) AS keyword
-                        FROM t_keyword
-                        GROUP BY tindak_lanjut_id) y'), 
-                    function($join)
-                    {
-                    $join->on('y.tindak_lanjut_id', '=', 'b.id');
-                    })
+                    // ->leftJoin(DB::raw('(
+                    //     SELECT 
+                    //     tindak_lanjut_id, GROUP_CONCAT(CONCAT(",|"),value) AS keyword
+                    //     FROM t_keyword
+                    //     GROUP BY tindak_lanjut_id) y'), 
+                    // function($join)
+                    // {
+                    // $join->on('y.tindak_lanjut_id', '=', 'b.id');
+                    // })
                     ->whereNull('a.deleted_at')
                     ->whereNull('b.deleted_at')
                     ->whereNotNull('b.id')
                     ->orderBy('a.tanggal_mulai')
                     ->orderBy('a.jam_mulai')
-                    ->select(DB::raw('a.uuid as uuid_agenda, b.uuid, a.tanggal_mulai, a.jam_mulai, a.klien_id, b.tanggal_selesai, 
-                    b.jam_selesai, a.judul_kegiatan, a.keterangan, b.lokasi, b.catatan, b.rtl, b.terlaksana, c.name, b.created_by, z.judul, z.uuid_dokumen, y.keyword, d.name as petugas, d.jabatan, b.validated_by')
+                    ->select(DB::raw('a.uuid as uuid_agenda, b.uuid, b.id as tindak_lanjut_id, a.tanggal_mulai, a.jam_mulai, a.klien_id, b.tanggal_selesai, 
+                    b.jam_selesai, a.judul_kegiatan, a.keterangan, b.lokasi, b.catatan, b.rtl, b.terlaksana, c.name, b.created_by, z.judul, z.uuid_dokumen, d.name as petugas, d.jabatan, b.validated_by')
                     , DB::raw('DATE_FORMAT(a.tanggal_mulai, "%W") as day'));
 
                     if ($request->belumtl == 1) { 
@@ -158,6 +158,12 @@ class AgendaController extends Controller
                     if ($request->uuid) { //ini untuk di halaman map klien digital
                         $klien = Klien::where('uuid', $request->uuid)->first();
                         $data = $data->where('a.klien_id', $klien->id);
+                        if ($request->intervensi_ke) {
+                            // jika ada intervensi_ke nya berarti tampilkan per intervensi. 
+                            // contoh di tabel intevensi.
+                            // contoh yang gak pake intervensi_ke di asesmen lanjutan
+                            $data = $data->where('a.intervensi_ke', $request->intervensi_ke);
+                        }
                     } else { //ini untuk di halaman kinerja masing2 user
                         $data =  $data->where('b.created_by', $user_id)
                             ->whereYear('a.tanggal_mulai', $request->tahun)
@@ -189,6 +195,26 @@ class AgendaController extends Controller
             $datas2->tanggal_mulai_formatted = date('d M Y', strtotime($datas2->tanggal_mulai));
             // Translate the day of the week to Indonesian
             $datas2->hari = $this->translateDayToIndonesian($datas2->day);
+
+            // update keyword
+            $datas2->keywords = DB::table('t_keyword as a')
+                                    ->leftJoin('m_keyword as b', 'a.value', 'b.id')
+                                    ->where('a.tindak_lanjut_id', $datas2->tindak_lanjut_id)
+                                    ->select('b.keyword', 'b.jenis_agenda')->get();
+        }
+
+        if ($request->asesmen_lanjutan) {  
+            // Filter di halaman detail kasus untuk jenis agenda
+            $datas = $datas->filter(function($item) {
+                return $item->keywords->where('keyword', '=', 'Asesmen Lanjutan')->isNotEmpty();
+            });
+        }
+
+        if ($request->jenis_agenda) {  
+            // Filter di halaman detail kasus untuk asesmen lanjutan
+            $datas = $datas->filter(function($item) {
+                return $item->keywords->where('jenis_agenda', '=', 'Layanan')->isNotEmpty();
+            });
         }
 
         return DataTables::of($datas)->make(true);
@@ -495,6 +521,7 @@ class AgendaController extends Controller
      */
     public function store(Request $request)
     {
+
         try {
             $notif_receiver = NULL;
             $validator = Validator::make($request->all(), [
@@ -523,6 +550,7 @@ class AgendaController extends Controller
             //simpan data agenda
             $data_insert = [
                 'klien_id'     => $request->klien_id, 
+                'intervensi_ke'     => $request->intervensi_ke, 
                 'judul_kegiatan'   => $request->judul_kegiatan, 
                 'tanggal_mulai'   => $request->tanggal_mulai,
                 'jam_mulai'   => $request->jam_mulai,
@@ -729,7 +757,7 @@ class AgendaController extends Controller
                             //message
                             Auth::user()->name.' menghapus dirinya dari agenda "'.$request->judul_kegiatan.'" tanggal '.$request->tanggal_mulai,
                             //klien_id
-                            ($klien && $klien->id)? $klien->id : NULL
+                            ($klien && $klien->iStored)? $klien->id : NULL
                         );
                     }
                     // proses update tindak lanjut
@@ -758,7 +786,7 @@ class AgendaController extends Controller
                             // jika ada jam selesainya maka T9 dan T10 read = 1
                             // jika ngisi tindak lanjut buat penanganan layanan maka sudah di handle di front end, harus ada dokumennya
                             NotifHelper::read_notif(
-                                $value, // receiver_id
+                                $value, // receStoreiver_id
                                 ($klien && $klien->id)? $klien->id : NULL, // klien_id
                                 'T9', // kode ini request dari link 
                                 'task', // type_notif
@@ -773,17 +801,18 @@ class AgendaController extends Controller
                                 $proses_id // agenda_id
                             );
                         }
-
                         if (isset($request->keyword)) {
                             $tindak_lanjut = TindakLanjut::where('created_by', $value)->where('agenda_id', $proses_id)->first();
                             // hapus dulu dokumen_tl pada tindak lanjut ini, kemudian tambahkan lagi
                             TKeyword::where('tindak_lanjut_id', $tindak_lanjut->id)->delete();
-    
+
                             foreach ($request->keyword as $value_keyword) {
+                                // sementara yg di save valuenya dulu
+                                $m_keyword = MKeyword::where('id', $value_keyword)->first();
                                 TKeyword::create([
                                     'tindak_lanjut_id' => $tindak_lanjut->id,
                                     'jabatan' => Auth::user()->jabatan,
-                                    'value' => $value_keyword,
+                                    'value' => $m_keyword->id,
                                     'created_by' => Auth::user()->id
                                 ]);
                             }
@@ -967,7 +996,7 @@ class AgendaController extends Controller
                     // ->where('b.created_by', Auth::user()->id)
                     ->where('a.uuid', $uuid)
                     ->whereNull('b.deleted_at')
-                    ->select(DB::raw('a.id, b.id as tindak_lanjut_id, a.tanggal_mulai, a.jam_mulai, a.klien_id, d.nama, a.uuid, b.tanggal_selesai, b.jam_selesai, a.judul_kegiatan, a.keterangan, b.lokasi, b.catatan, b.rtl, c.name, b.created_by'))
+                    ->select(DB::raw('a.id, b.id as tindak_lanjut_id, a.tanggal_mulai, a.jam_mulai, a.klien_id, a.intervensi_ke, d.nama, a.uuid, b.tanggal_selesai, b.jam_selesai, a.judul_kegiatan, a.keterangan, b.lokasi, b.catatan, b.rtl, c.name, b.created_by'))
                     ->first();
                     
         $data_tindak_lanjut = DB::table('agenda as a')
@@ -989,9 +1018,10 @@ class AgendaController extends Controller
                         ->get();
         $data->user_id = $user_id;
 
-        $keyword = DB::table('t_keyword')
-                    ->where('tindak_lanjut_id', $data_tindak_lanjut->tindak_lanjut_id)
-                    ->select('value')
+        $keyword = DB::table('t_keyword as a')
+                    ->leftJoin('m_keyword as b', 'a.value', 'b.id')
+                    ->where('a.tindak_lanjut_id', $data_tindak_lanjut->tindak_lanjut_id)
+                    ->select('b.id', 'b.keyword')
                     ->get();
         $data->keyword = $keyword;
 
@@ -1035,7 +1065,7 @@ class AgendaController extends Controller
         $search = $request->search;       
 
         $data = DB::table('m_keyword')
-            ->select('jabatan', 'keyword')
+            ->select('id', 'jabatan', 'keyword', 'jenis_agenda')
             ->whereNull('deleted_at');
             
         if (Auth::user()->jabatan != 'Super Admin' && $request->tampilkan_semua != 1) {
@@ -1054,8 +1084,9 @@ class AgendaController extends Controller
         foreach ($data as $row) {
             $jabatan = $row->jabatan;
             $keyword = [
-                'id'   => $row->keyword,
+                'id'   => $row->id,
                 'text' => $row->keyword,
+                'jenis_agenda' => $row->jenis_agenda
             ];
 
             if (isset($result[$jabatan])) {
@@ -1063,7 +1094,7 @@ class AgendaController extends Controller
             } else {
                 $result[$jabatan] = [
                     'text'     => $no.'. '.$row->jabatan,
-                    'children' => [$keyword],
+                    'children' => [$keyword]
                 ];
                 $no++;
             }

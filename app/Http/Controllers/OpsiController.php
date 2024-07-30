@@ -18,7 +18,7 @@ class OpsiController extends Controller
     {
         $data = [
             'Ranah Online' => ['MiChat', 'Facebook', 'Twitter', 'Instagram', 'WhatsApp', 'Tiktok', 'Snapchat', 'Bigo'],
-            'Tempat Tinggal' => ['Rumah Tinggal', 'Apartemen', 'Kos-kosan'],
+            'Tempat Tinggal' => ['Rumah', 'Apartemen', 'Kos-kosan', 'Kontrakan'],
             'Tempat Pendidikan' => ['Sekolah', 'Kampus', 'Tempat Les', 'Pondok Pesantren'],
             'Tempat Ibadah' => ['Mesjid', 'Mushola', 'Gereja', 'Pura', 'Vihara', 'Kelenteng'],
             'Penginapan' => ['Hotel', 'Motel', 'Villa'],
@@ -375,8 +375,7 @@ class OpsiController extends Controller
 
     public function api_sumber_rujukan()
     {
-        $data = ['Bukan Rujukan',
-                'Komnas Perempuan',
+        $data = ['Komnas Perempuan',
                 'KPAI',
                 'Komnas HAM',
                 'KemenPPA',
@@ -539,9 +538,10 @@ class OpsiController extends Controller
                 'RSUD Jagakarsa',
                 'RSUD Kalideres',
                 'RSUD Kramat Jati',
-                'RSUD Matraman',
-                'RS Olahraga Nasional',
-                'RS Cilandak',
+                'RS Abdi Waluyo',
+                'RS Agung',
+                'RS Asri',
+                'RS Atmajaya',
                 'RS Satya Negara',
                 'RS Setia Mitra',
                 'RS Siaga Raya',
@@ -603,7 +603,8 @@ class OpsiController extends Controller
                 'PUSKESMAS Kec. Kepulauan Seribu Utara',
                 'PUSKESMAS Kec. Kepulauan Seribu Selatan',
                 'PUSKESMAS Kec. Jagakarsa',
-                'UPTD PPA Tangsel'
+                'UPTD PPA Tangsel',
+                'UPT PPA Jawa Tengah'
             ];
                 
         return $data;

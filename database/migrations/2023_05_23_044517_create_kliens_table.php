@@ -46,6 +46,7 @@ class CreateKliensTable extends Migration
             $table->char('no_telp')->nullable();
             $table->string('kedisabilitasan')->default('Non Disabilitas');
             $table->string('hubungan_pelapor'); // hubungan klien dengan pelapor
+            $table->integer('intervensi_ke')->nullable()->default(1);
             $table->integer('desil')->nullable();
             $table->boolean('arsip')->nullable()->default(0);
             $table->integer('created_by')->nullable();
