@@ -1776,7 +1776,7 @@
                         Tag Warna hijau artinya Agenda Layanan. <br>
                         <div style="background-color: #FFC107; width: 100px; height: 20px; display: inline-block; vertical-align: middle;"></div> 
                         Tag Warna kuning artinya Agenda Manajemen Layanan. <br>
-                        Gunakan <a href="#" onclick="$('#filter_intervensi').val({{ $i_tab_konten }}); $('#modalFilterLayanan').modal('show'); return false;"><b>Filter</b></a> untuk menampilkan hanya agenda layanan saja.
+                        Gunakan <a href="#" onclick="$('#filter_intervensi').val({{ $i_tab_konten }}); $('#modalFilterLayanan').modal('show'); return false;"><b>Filter</b></a> untuk menampilkan agenda yang ada layanan / intervensi nya.
 
                         <hr style="border: 1px solid #000; margin: 20px 0;">
 

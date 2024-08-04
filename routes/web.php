@@ -117,6 +117,7 @@ Route::middleware('auth')->group(function () {
     // agenda & kinerja
     Route::get('agenda', [AgendaController::class, 'index'])->name('agenda');
     Route::get('agenda/api_index', [AgendaController::class, 'api_index']);
+    // Route::get('agenda/ubah_value_keyword', [AgendaController::class, 'ubah_value_keyword']);
     Route::get('agenda/resume_layanan', [AgendaController::class, 'resume_layanan']);
     Route::get('agenda/show/{uuid}', [AgendaController::class, 'show'])->name('agenda.show');
     Route::get('agenda/showdate/{date}', [AgendaController::class, 'showdate'])->name('agenda.showdate');

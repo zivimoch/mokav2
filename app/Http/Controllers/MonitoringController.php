@@ -801,7 +801,7 @@ class MonitoringController extends Controller
 
             if ($count > 9) {
                 $lainnya = $kategori_klien + $lainnya;
-                $data["Lainnya"] = $lainnya;
+                $data["Diluar 10 terbanyak"] = $lainnya;
             }else{
                 $data["$value->nama"] = $kategori_klien;
             }
@@ -816,7 +816,6 @@ class MonitoringController extends Controller
         $data_seluruh = array_filter($data_seluruh, function ($value) {
             return $value != 0;
         });
-
 
         $response = array(
             'status' => 200,
@@ -1164,6 +1163,7 @@ class MonitoringController extends Controller
                         ->leftJoin('agenda as c', 'a.id', '=', 'c.klien_id')
                         ->leftJoin('tindak_lanjut as d', 'd.agenda_id', '=', 'c.id')
                         ->leftJoin('t_keyword as e', 'd.id', '=', 'e.tindak_lanjut_id')
+                        ->leftJoin('m_keyword as f', 'f.id', '=', 'e.value')
                         ->leftJoin(DB::raw('(SELECT a.id, a.kotkab_id, b.klien_id  
                                             FROM users a 
                                             LEFT JOIN petugas b ON a.id = b.user_id
@@ -1172,7 +1172,7 @@ class MonitoringController extends Controller
                         ->whereNull('a.deleted_at')
                         ->whereNull('d.deleted_at')
                         ->whereNotNull('e.id')
-                        ->selectRaw('e.jabatan, e.value as nama, COUNT(*) AS total')
+                        ->selectRaw('e.jabatan, f.keyword as nama, COUNT(*) AS total')
                         ->groupBy(DB::raw('YEAR('.$basis_tanggal.'), e.jabatan, e.value'))
                         ->orderBy('e.jabatan')
                         // filter tanggal

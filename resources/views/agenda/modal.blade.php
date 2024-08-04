@@ -636,7 +636,6 @@
            };
          },
          processResults: function (response) {
-          $("#overlayAgenda").hide();
            return {
              results: response
            };
@@ -773,8 +772,9 @@
               var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
               $('#detail_data_klien').html(`<a href="{{ env('APP_URL') }}/kasus/show/`+response.uuid+`" target="_blank">`+response.nama+` (`+age+`)</a> `+response.no_klien);
 
-              if ($('#uuid').val() == '') {
+              if ($('#uuid').val() == '' || $('#jumlah_intervensi_ke').val() == '') {
                 // jika kosong alias actionnya tambah, maka setting intervensi ke nya adalah yang terbaru
+                // atau jika edit tapi sebelumnya adalah agenda non layanan menjadi agenda layanan
                 $("#jumlah_intervensi_ke").val('');
                 $("#jumlah_intervensi_ke").val(response.intervensi_ke);
               }
@@ -911,6 +911,7 @@
 
           if (data.klien_id != null) {
             // jika agenda layanan
+            console.log(data);
             $('#jumlah_intervensi_ke').val(data.intervensi_ke);
             $('input[name="penjadwalan_layanan"][value="1"]').prop('checked', true);
             $("#klien_id_select").append('<option value="'+data.klien_id+'" selected>'+data.nama+'</option>');

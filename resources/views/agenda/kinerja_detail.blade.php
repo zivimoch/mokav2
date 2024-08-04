@@ -363,14 +363,17 @@
                 dokumens = '';
               }
 
-              if(row.keyword != null){
-                detail_layanan = row.keyword;
+              if(row.keywords != null ){
                 detail_layanans = '';
-                var array = detail_layanan.split(",|");
-                for (i=1;i<array.length;i++){
-                detail_layanans += '<span class="badge bg-success" style="font-size:15px"><i class="nav-icon fas fa-tag"></i> '+array[i].replace(/,/g, '')+'</span> ';
-                };
-              }else{
+                detail_layanan = row.keywords;
+                detail_layanan.forEach(e => {
+                    if (e .jenis_agenda == 'Layanan') {
+                      detail_layanans += '<span class="badge bg-success" style="font-size:15px"><i class="nav-icon fas fa-tag"></i> '+e.keyword+'</span> ';
+                    } else {
+                      detail_layanans += '<span class="badge bg-warning" style="font-size:15px"><i class="nav-icon fas fa-tag"></i> '+e.keyword+'</span> ';
+                    }
+                  });
+              } else {
                 detail_layanans = '';
               }
 

@@ -641,6 +641,24 @@ class AgendaController extends Controller
                                         ->where('agenda_id', $proses_id)
                                         ->whereIn('kode', ['T9','T10'])
                                         ->delete();
+                            
+                            // kemudian buat ulang notifikasinya
+                            NotifHelper::push_notif(
+                                $value , //receiver_id
+                                ($klien && $klien->id) ? $klien->id : NULL, //klien_id
+                                'T9', //kode
+                                'task', //type_notif
+                                ($klien && $klien->no_klien) ? $klien->no_klien : NULL, //noregis
+                                Auth::user()->name, //from
+                                $message_notif, //message
+                                ($klien && $klien->nama) ? $klien->nama : NULL,  //nama korban 
+                                ($klien && $klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
+                                $url,
+                                0, // kirim ke diri sendiri 0 / 1
+                                Auth::user()->id, // created_by
+                                $proses_id // agenda_id
+                            );
+
                         }
     
                         // jika perubahannya adalah list petugas dan ada petugas baru yang ditambahkan, maka create 
@@ -784,7 +802,6 @@ class AgendaController extends Controller
     
                         if ($request->jam_selesai) {
                             // jika ada jam selesainya maka T9 dan T10 read = 1
-                            // jika ngisi tindak lanjut buat penanganan layanan maka sudah di handle di front end, harus ada dokumennya
                             NotifHelper::read_notif(
                                 $value, // receStoreiver_id
                                 ($klien && $klien->id)? $klien->id : NULL, // klien_id
@@ -996,7 +1013,7 @@ class AgendaController extends Controller
                     // ->where('b.created_by', Auth::user()->id)
                     ->where('a.uuid', $uuid)
                     ->whereNull('b.deleted_at')
-                    ->select(DB::raw('a.id, b.id as tindak_lanjut_id, a.tanggal_mulai, a.jam_mulai, a.klien_id, a.intervensi_ke, d.nama, a.uuid, b.tanggal_selesai, b.jam_selesai, a.judul_kegiatan, a.keterangan, b.lokasi, b.catatan, b.rtl, c.name, b.created_by'))
+                    ->select(DB::raw('a.id, b.id as tindak_lanjut_id, a.tanggal_mulai, a.jam_mulai, a.klien_id, a.intervensi_ke, d.nama, d.intervensi_ke, a.uuid, b.tanggal_selesai, b.jam_selesai, a.judul_kegiatan, a.keterangan, b.lokasi, b.catatan, b.rtl, c.name, b.created_by'))
                     ->first();
                     
         $data_tindak_lanjut = DB::table('agenda as a')
@@ -1255,5 +1272,28 @@ public function pdf_kinerja(Request $request)
     $this->fpdf->Output();
     exit;
 }
+
+// public function ubah_value_keyword()
+// {
+//     $m_keyword = MKeyword::whereNull('deleted_at')->orderBy('jabatan')->get();
+//     $no = 1;
+//     foreach ($m_keyword as $key => $value) {
+//         echo '<b>'.$no. '. ' .$value->jabatan.' - '.$value->keyword.'</b></br>';
+
+//         $t_keyword = TKeyword::where('jabatan', $value->jabatan)->where('value', $value->keyword)->get();
+//         foreach ($t_keyword as $key2 => $value2) {
+//             echo 'id : '.$value2->id.'; Jabatan : '.$value2->value. '; value : ' .$value2->value.'; menjadi : '.$value->id.'</br>';
+            
+//             $t_keyword_ganti = TKeyword::where('id', $value2->id)->first();
+//             if ($t_keyword_ganti) {
+//                 $t_keyword_ganti->value = $value->id;
+//                 $t_keyword_ganti->save();
+//             } else {
+//                 echo $value2->id.' gak ada';
+//             }
+//         }
+//         $no++;
+//     }    
+// }
 
 }

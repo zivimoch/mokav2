@@ -194,12 +194,12 @@
               <div id="accordion0">
                 <div class="card card-primary direct-chat direct-chat-primary">
                     <div class="card-header">
-                      <h3 class="card-title">Profil PPPA DKI Jakarta</h3>
+                      <h3 class="card-title">Profil PPPA DKI Jakarta (Data Update 1 Jam Sekali)</h3>
                       <div class="card-tools">
-                        <a href="https://docs.google.com/presentation/d/1-JZxiRPzt-ndAyCNZauT63gjvnqn9Pd5nhZ5jf0XVMU/export/pptx">
+                        <a href="https://docs.google.com/presentation/d/1Jkn6WhCSE2fTev3kxwWYvkzEA509z7EFcczsVProJe4/export/pptx">
                           <button class="btn btn-warning btn-sm"><i class="fas fa-download"></i> Download PPTX</button>
                         </a>
-                        <a href="https://docs.google.com/presentation/d/1-JZxiRPzt-ndAyCNZauT63gjvnqn9Pd5nhZ5jf0XVMU/export/pdf">
+                        <a href="https://docs.google.com/presentation/d/1Jkn6WhCSE2fTev3kxwWYvkzEA509z7EFcczsVProJe4/export/pdf">
                           <button class="btn btn-warning btn-sm"><i class="fas fa-download"></i> Download PDF</button>
                         </a>
                         <button onclick="$('#slidesIframe').get(0).requestFullscreen?.();"  class="btn btn-warning btn-sm"><i class="fas fa-expand"></i> Full Screen</button>
@@ -223,9 +223,10 @@
                       <div id="collapse0" class="collapse show" data-parent="#accordion0">
                         
                         {{-- <iframe src="{{ route('monitoring.slide') }}" height="500px" width="100%" title="Iframe Example"></iframe> --}}
-                          <iframe id="slidesIframe" src="https://docs.google.com/presentation/d/e/2PACX-1vSCBRdBkphe1pMUbNscNCUPMTjBwvmGVSm-GTgd4jDV0i-tQ95VZuXJIShG_QhqbtHyKuboZ5ZdzHS0/embed?start=false&loop=false&delayms=60000" frameborder="0" width="100%" height="500px" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
-
-                        <div class="direct-chat-contacts" style="padding: 10px; height:100%; z-index:100">
+                          {{-- <iframe id="slidesIframe" src="https://docs.google.com/presentation/d/e/2PACX-1vSCBRdBkphe1pMUbNscNCUPMTjBwvmGVSm-GTgd4jDV0i-tQ95VZuXJIShG_QhqbtHyKuboZ5ZdzHS0/embed?start=false&loop=false&delayms=60000" frameborder="0" width="100%" height="500px" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe> --}}
+                          <iframe id="slidesIframe" src="https://docs.google.com/presentation/d/e/2PACX-1vTLdDKe9EgHKSNvZkoI877Zs5pzG0LV8cNhvGr4Pgz9mEDIVsS_56Uf1QTuK_xTO5_S69wknGZYAHzg/embed?start=false&loop=true&delayms=60000" frameborder="0" width="100%" height="500px" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+                        
+                          <div class="direct-chat-contacts" style="padding: 10px; height:100%; z-index:100">
                           <div class="row">
                             <div class="col-md-12">
                               <button onclick="load_data0()" type="button" class="btn btn-warning btn-xs float-right" data-widget="chat-pane-toggle">
@@ -308,7 +309,7 @@
                           <div class="card">
                             <div class="card-header" id="headingOne">
                               <h5 class="mb-0">
-                                <a href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                <a href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" onclick="load_rekap1()">
                                   Rekap Data Jumlah Klien
                                 </a>
                               </h5>
@@ -318,30 +319,22 @@
                               <div class="card-body">
                                     <div class="copy-area" id="rangkuman_jumlah_kasus">
                                       *[Rekap Data Jumlah Klien]*<br>
-                                      27 Jun 2024 09:49:32<br>
+                                      {{ date('d M Y H:i:s') }}<br>
                                       -------------------------------------------------<br>
-                                      *Jumlah Seluruh Klien :* <span id="jumlah_seluruh_klien">943</span><br>
+                                      *Jumlah Seluruh Klien :* <span id="jumlah_seluruh_klien">0</span><br>
                                       -------------------------------------------------<br>
-                                      *Yang sudah diregis :* <span id="jumlah_seluruh_klien_regis">938</span><br>
-                                      *Perempuan Dewasa :* <span id="jumlah_perempuan_dewasa">406</span><br>
-                                      *Anak Perempuan :* <span id="jumlah_anak_perempuan">370</span><br>
-                                      *Anak Laki-laki :* <span id="jumlah_anak_laki">177</span><br>
+                                      *Perempuan Dewasa :* <span id="jumlah_perempuan_dewasa">0</span><br>
+                                      *Anak Perempuan :* <span id="jumlah_anak_perempuan">0</span><br>
+                                      *Anak Laki-laki :* <span id="jumlah_anak_laki">0</span><br>
                                       -------------------------------------------------<br>
-                                      *a. Kategori Kasus (5 Terbanyak) :*<br>
-                                      - Anak Korban Kekerasan Seksual : 267<br>
-                                      - Kekerasan Dalam Rumah Tangga (KDRT) : 245<br>
-                                      - Perempuan Korban Kekerasan Fisik : 190<br>
-                                      *b. Jenis Kekerasan :*<br>
-                                      - Fisik : 210<br>
-                                      - Psikis : 123<br>
-                                      - Seksual : 321<br>
-                                      - Seksual : 287<br>
-                                      - Eksploitasi : 542<br>
-                                      - Penelantaran : 653<br>
-                                      - Tidak Diketahui / Lainnya : 125<br>
-                                      - Bukan Kekerasan : 0<br>
+                                      *a. Kategori Kasus (10 Terbanyak) :*<br>
+                                      <div id="wa_kategori_kasus"></div>
+                                      *b. Jenis Kekerasan (10 Terbanyak) :*<br>
+                                      <div id="wa_jenis_kekerasan"></div>
+                                      *c. Bentuk Kekerasan (10 Terbanyak) :*<br>
+                                      <div id="wa_bentuk_kekerasan"></div>
                                       ==========================================================<br>
-                                      *Jumlah Klien Berdasarkan Wilayah Penugasan Satpel :* <br>
+                                      {{-- *Jumlah Klien Berdasarkan Wilayah Penugasan Satpel :* <br>
                                       *1. Jakarta Pusat* (420 Klien) <br>
                                       Perempuan Dewasa : <span id="jumlah_perempuan_dewasa">0</span><br>
                                       Anak Perempuan : <span id="jumlah_anak_perempuan">0</span><br>
@@ -427,7 +420,7 @@
                                       - Penelantaran : 0<br>
                                       - Tidak Diketahui / Lainnya : 0<br>
                                       - Bukan Kekerasan : 0<br>
-                                      -------------------------------------------------<br>
+                                      -------------------------------------------------<br> --}}
                                     </div>
                                   <button class="btn btn-primary copy-button" onclick="copyTextExportData('rangkuman_jumlah_kasus')">
                                     <i class="fas fa-copy"></i> Copy Text
@@ -2355,7 +2348,16 @@
   $(document).ready(function() {
       $('.datatableall').DataTable();
       load_data11();
+      // update data whatsaapp
+      load_data3();
   });
+
+  function load_rekap1() {
+    load_data5('kategori_kasus');
+    load_data5('jenis_kekerasan');
+    load_data5('bentuk_kekerasan');
+  }
+
   function search() {
         var input = document.getElementById("Search");
         var filter = input.value.toLowerCase();
@@ -2876,6 +2878,13 @@ function load_data2() {
         });
         $('#filter3').append("<span class=\"badge bg-warning\">Data ini disajikan pada : "+getCurrentDateTime()+"</span> ");
         datas = response.data;
+
+        // update data whatsapp 
+        $('#jumlah_seluruh_klien').html(datas.seluruh_klien);
+        $('#jumlah_perempuan_dewasa').html(datas.dewasa_perempuan);
+        $('#jumlah_anak_perempuan').html(datas.anak_perempuan);
+        $('#jumlah_anak_laki').html(datas.anak_laki);
+        
         
         // setup chart
         var options = {
@@ -3052,10 +3061,19 @@ function load_data2() {
   }
 
   var chart5; 
-  function load_data5() {
+  function load_data5(klasifikasi) {
       $("#overlay5").show();
-      if ($.fn.DataTable.isDataTable('#tabelChart5')) {
-          $('#tabelChart5').DataTable().destroy();
+      if (klasifikasi != null) {
+        wa = 1;
+      } else {
+        wa = 0;
+      }
+
+      if (wa == 0) {
+      // jika null berarti bukan untuk update data wa
+        if ($.fn.DataTable.isDataTable('#tabelChart5')) {
+            $('#tabelChart5').DataTable().destroy();
+        } 
       }
 
       pengelompokan = 'tahun';
@@ -3067,7 +3085,10 @@ function load_data2() {
       kategoriKlien = $('#filterKategoriKlien5').val();
       regis = $('input[name="filterRegis5"]:checked').val();
       arsip = $('input[name="filterArsip5"]:checked').val();
-      klasifikasi = $('#filterKlasifikasi5').val();
+      if (klasifikasi == null) {
+        // jika tidak null berarti untuk update data wa
+        klasifikasi = $('#filterKlasifikasi5').val();
+      }
 
       titleChart5 = $('#titleChart5').html(klasifikasi);
       
@@ -3081,8 +3102,14 @@ function load_data2() {
                   $('#filter5').append("<span class=\"badge bg-primary\">" + key.replace(/_/g, ' ') + " : " + value.toString().replace(/_/g, ' ') + "</span> ");
               });
               $('#filter5').append("<span class=\"badge bg-warning\">Data ini disajikan pada : " + getCurrentDateTime() + "</span> ");
+              var datas = response.data;
               var jumlah = Object.values(response.data);
               var labels = Object.keys(response.data);
+
+              // update data whatsapp
+              Object.entries(datas).forEach(([key, value]) => {
+                  $('#wa_'+klasifikasi).append(`- ${key}: ${value}<br>`);
+              });
 
               if (!chart5) {
                   // Create chart instance if it doesn't exist
@@ -3134,29 +3161,31 @@ function load_data2() {
                   });
               }
 
-              // Data Tabulasi 
-              const dataSet = Object.entries(response.data_seluruh);
-              new DataTable('#tabelChart5', {
-                  "columns": [
-                      { title: klasifikasi },
-                      { title: 'Jumlah Korban' },
-                  ],
-                  "data": dataSet,
-                  "dom": 'Blfrtip', // Blfrtip or Bfrtip
-                  "ordering": true,
-                  "responsive": false, 
-                  "lengthChange": false, 
-                  "pageLength": 10,
-                  "autoWidth": false,
-                  "order": [[1, 'desc']],
-                  "lengthMenu": [
-                    [5, 10, 25, 50, 100, -1],
-                    ['10 rows', '25 rows', '50 rows', '100 rows','All'],
-                  ],
-                  buttons: ["pageLength", "copy", "csv", "excel"],
-              }).buttons().container().appendTo('#tabelChart5_wrapper .col-md-6:eq(0)');
+              if (wa == 0) {
+                // Data Tabulasi 
+                const dataSet = Object.entries(response.data_seluruh);
+                new DataTable('#tabelChart5', {
+                    "columns": [
+                        { title: klasifikasi },
+                        { title: 'Jumlah Korban' },
+                    ],
+                    "data": dataSet,
+                    "dom": 'Blfrtip', // Blfrtip or Bfrtip
+                    "ordering": true,
+                    "responsive": false, 
+                    "lengthChange": false, 
+                    "pageLength": 10,
+                    "autoWidth": false,
+                    "order": [[1, 'desc']],
+                    "lengthMenu": [
+                      [5, 10, 25, 50, 100, -1],
+                      ['10 rows', '25 rows', '50 rows', '100 rows','All'],
+                    ],
+                    buttons: ["pageLength", "copy", "csv", "excel"],
+                }).buttons().container().appendTo('#tabelChart5_wrapper .col-md-6:eq(0)');
 
-              $('#tabelChart5_filter').css({'float':'right','display':'inline-block; background-color:black'});
+                $('#tabelChart5_filter').css({'float':'right','display':'inline-block; background-color:black'});
+            }
           },
           error: function(response) {
               setTimeout(function() {

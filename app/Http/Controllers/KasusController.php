@@ -197,6 +197,7 @@ class KasusController extends Controller
             'a.status', 'a.intervensi_ke', 'a.uuid', 'd.name as petugas', 'a.arsip']);
 
             $data->list_petugas = DB::table('petugas as a')
+                                    ->select('b.id','b.uuid','b.name','b.jabatan')
                                     ->leftJoin('users as b', 'a.user_id', 'b.id')
                                     ->whereNull('a.deleted_at')
                                     ->where('a.klien_id', $data->id)
