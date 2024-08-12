@@ -119,23 +119,38 @@
               </div>
               <div class="card-footer p-0">
                 <ul class="nav flex-column">
-                  <li class="nav-item">
+                  <li class="nav-item" style="font-size: 18px">
                     <a href="{{ route('kasus') }}" class="nav-link">
-                      Jumlah Kasus Terminasi / Seluruhnya <span class="float-right badge bg-primary">{{ $jumlah_terminasi }} / {{ $jumlah_kasus }}</span>
+                      Jumlah Kasus Terselesaikan / Seluruhnya <span class="float-right badge bg-primary">{{ $jumlah_terminasi }} / {{ $jumlah_kasus }}</span>
                     </a>
                   </li>
-                  <li class="nav-item">
-                    <a href="{{ route('kinerja.detail') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}&user_id={{ Auth::user()->uuid }}" class="nav-link"> 
-                      Jumlah Agenda Kegiatan <span class="float-right badge bg-success">{{ $jumlah_agenda }}</span>
-                    </a>
-                  </li>
-                  <li class="nav-item">
+                  <li class="nav-item" style="font-size: 18px; border-bottom: 1px solid rgb(199, 199, 199);">
                     <a href="{{ route('notifikasi') }}" class="nav-link">
                       Skor Survey Kepuasan Layanan <span class="float-right badge bg-warning">NAN / NAN</span>
                     </a>
                   </li>
                 </ul>
               </div>
+
+              <div class="card-footer">
+<div class="row">
+<div class="col-sm-6 border-right">
+<div class="description-block">
+<h5 class="description-header">{{ $layanan }}</h5>
+<span class="description-text">Layanan</span>
+</div>
+</div>
+
+<div class="col-sm-6">
+<div class="description-block">
+<h5 class="description-header">{{ $manajemen_layanan }}</h5>
+<span class="description-text">Manajemen Layanan</span>
+</div>
+</div>
+
+</div>
+
+</div>
             </div>
             <!-- TO DO List -->
             <div class="card card-primary">

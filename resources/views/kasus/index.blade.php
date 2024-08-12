@@ -45,7 +45,7 @@
                   <thead>
                   <tr>
                   <th>Tgl Pelaporan</th>
-                  <th>Nama</th>
+                  <th>Nama Klien</th>
                   <th>Kategori Klien</th>
                   <th>Pengaduan</th>
                   <th>Status Terakhir</th>
@@ -87,15 +87,17 @@
               <span class="badge bg-primary">Basis Perhitungan Usia : <span id="filterPenghitunganUsia"></span>  </span>
               <span class="badge bg-primary">Kategori Klien : <span id="filterKategori"></span>  </span>
               <span class="badge bg-primary">Tampilkan Seluruh Kasus : <span id="filterAnda"></span>  </span>
+              <span class="badge bg-primary">Pemantauaan : <span id="filterPemantauan"></span>  </span>
               <span class="badge bg-primary">Arsip : <span id="filterArsip"></span>  </span>
             <table id="tabelKasus" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
             <thead>
             <tr>
             <th>Tgl Pelaporan</th>
             <th>No Regis</th>
-            <th>Nama</th>
+            <th>Nama Klien</th>
             <th>Kategori Klien</th>
             <th>Pengaduan</th>
+            <th>Jatuh Tempo</th>
             <th>Status Terakhir</th>
             </tr>
             </thead>
@@ -112,6 +114,19 @@
             </tr>
             </tfoot>
             </table>
+            <b>Keterangan : </b><br>
+            <table>
+              <tr>
+                <td>
+                  <div style="background-color:rgb(255, 205, 205); width: 100px; height: 20px; display: inline-block; vertical-align: middle;"></div>
+                </td>
+                <td>
+                  Warna merah artinya MK perlu segera melakukan Pemantauan & Evaluasi. Dan Petugas Layanan Lain memastikan laporan intervensi sudah diinputkan semua.
+                  <br>
+                  Gunakan <a href="#" onclick="$('#modalFilterKasus').modal('show'); return false;"><b>Filter</b></a> untuk menampilkan Kasus yang perlu segera dilakukan Pemantauan & Evaluasi.
+                </td>
+              </tr>
+            </table> 
             </div>
             
             </div>
@@ -336,6 +351,25 @@
 
       <div class="col-md-12">
         <div class="form-group">
+            <label for="">Pemantauaan & Evaluasi</label>
+            <br>
+            <div class="icheck-primary d-inline" style="margin-right:15px">
+              <input type="radio" id="radioPrimary1d" name="filter1Pemantauan" value="1">
+              <label for="radioPrimary1d">
+                  Kasus yang perlu segera dilakukan Pemantauan & Evaluasi saja
+              </label>
+            </div>
+            <div class="icheck-primary d-inline">
+              <input type="radio" id="radioPrimary2d" name="filter1Pemantauan" value="0" checked>
+              <label for="radioPrimary2d">
+                Seluruh kasus
+              </label>
+            </div>
+          </div>
+    </div>
+
+      <div class="col-md-12">
+        <div class="form-group">
             <label for="">Arsip</label>
             <br>
             <div class="icheck-primary d-inline" style="margin-right:15px">
@@ -396,6 +430,7 @@
       var basis_wilayah = $('#filter1BasisWilayah').val();
       var wilayah = $('#filter1Wilayah').val();
       var anda = $('input[name="filter1Anda"]:checked').val();
+      var pemantauan = $('input[name="filter1Pemantauan"]:checked').val();
       var arsip = $('input[name="filter1Arsip"]:checked').val();
       var penghitungan_usia = $('#filter1PenghitunganUsia').val();
       var kategori = $('#filter1Kategori').val();
@@ -405,6 +440,7 @@
       $('#filterWilayah').html(wilayah);
       $('#filterAnda').html(anda);
       $('#filterArsip').html(arsip);
+      $('#filterPemantauan').html(pemantauan);
       $('#filterPenghitunganUsia').html(penghitungan_usia);
       $('#filterKategori').html(kategori);
 
@@ -482,14 +518,23 @@
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
-      "ajax": "{{ env('APP_URL') }}/kasus?basis_tanggal=" + $('#filter1BasisTanggal').val() + "&basis_wilayah=" + $('#filter1BasisWilayah').val() + "&wilayah=" + $('#filter1Wilayah').val() + "&tanggal=" + $('#filter1Tanggal').val() + "&arsip=" + $('input[name="filter1Arsip"]:checked').val() + "&anda=" + $('input[name="filter1Anda"]:checked').val(),
+      "ajax": "{{ env('APP_URL') }}/kasus?basis_tanggal=" + $('#filter1BasisTanggal').val() + "&basis_wilayah=" + $('#filter1BasisWilayah').val() + "&wilayah=" + $('#filter1Wilayah').val() + "&tanggal=" + $('#filter1Tanggal').val() + "&arsip=" + $('input[name="filter1Arsip"]:checked').val() + "&pemantauan=" + $('input[name="filter1Pemantauan"]:checked').val() + "&anda=" + $('input[name="filter1Anda"]:checked').val(),
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
+
+          if (data.jatuh_tempo >= 172) {
+            $(row).attr('class', 'warning_table');
+          }
       },
       "columns": [
         {"data": "tanggal_pelaporan_formatted"},
         {"data": "no_klien"},
-        {"data": "nama"},
+        {
+            "mData": "nama",
+            "mRender": function (data, type, row) {
+              return row.nama+' ('+row.usia+')';
+            }
+          },
         {
             "mData": "status",
             "mRender": function (data, type, row) {
@@ -507,8 +552,9 @@
             }
         },
         {"data": "petugas"},
+        {"data": "jatuh_tempo"},
         {
-            "mData": "jenis_kelamin",
+            "mData": "status_terakhir",
             "mRender": function (data, type, row) {
               return '<span class="badge bg-primary">'+row.status+'</span>';
             }
@@ -808,8 +854,8 @@
         type: "GET",
         cache: false,
         success: function (response){
-            if (response.deadline_pemantauan <= 10 || response.terakhir_pemantauan == null) {
-                // kalau deadlinenya kurang dari 10 hari berarti harusnya udah dilakukan Pemantauan & Evaluasi lagi
+            if (response.deadline_pemantauan >= 172) {
+                // 6 bulan kurang lebih 182, 10 hari sebelumnya sudah diperingatkan
                 $('.warningIntervensi').show();
             } else {
                 $('.warningIntervensi').hide();
@@ -889,16 +935,18 @@
       var basis_wilayah = $('#filter1BasisWilayah').val();
       var wilayah = $('#filter1Wilayah').val();
       var anda = $('input[name="filter1Anda"]:checked').val();
+      var pemantauan = $('input[name="filter1Pemantauan"]:checked').val();
       var arsip = $('input[name="filter1Arsip"]:checked').val();
       var penghitungan_usia = $('#filter1PenghitunganUsia').val();
       var kategori = $('#filter1Kategori').val();
-      var url = "{{ env('APP_URL') }}/kasus?basis_tanggal=" + basisTanggal + "&tanggal=" + tanggal + "&basis_wilayah=" + basis_wilayah + "&wilayah=" + wilayah + "&arsip=" + arsip + "&anda=" + anda + "&penghitungan_usia=" + penghitungan_usia + "&kategoriklien=" + kategori;
+      var url = "{{ env('APP_URL') }}/kasus?basis_tanggal=" + basisTanggal + "&tanggal=" + tanggal + "&basis_wilayah=" + basis_wilayah + "&wilayah=" + wilayah + "&arsip=" + arsip + "&pemantauan=" + pemantauan + "&anda=" + anda + "&penghitungan_usia=" + penghitungan_usia + "&kategoriklien=" + kategori;
 
       $('#filterBasisTanggal').html(basisTanggal);
       $('#filterTanggal').html(tanggal);
       $('#filterBasisWilayah').html(basis_wilayah);
       $('#filterWilayah').html(wilayah);
       $('#filterAnda').html(anda);
+      $('#filterPemantauan').html(pemantauan);
       $('#filterArsip').html(arsip);
       $('#filterPenghitunganUsia').html(penghitungan_usia);
       $('#filterKategori').html(kategori);
@@ -906,6 +954,10 @@
       $('#tabelKasus').DataTable().ajax.url(url).load();
 
       $('#modalFilterKasus').modal('hide');
+    }
+
+    function count_warning_table() {
+      
     }
   </script>
 {{-- 

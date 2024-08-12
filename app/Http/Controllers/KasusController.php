@@ -57,8 +57,30 @@ class KasusController extends Controller
                 $basis_tanggal = 'b.'.$request->basis_tanggal;
             }
 
+            // Filter basis perhitungan usia klien
+            if ($request->penghitungan_usia == 'lapor') {
+                $penguarang = 'b.tanggal_pelaporan';
+            } elseif ($request->penghitungan_usia == 'kejadian') {
+                $penguarang = 'b.tanggal_kejadian';
+            } elseif ($request->penghitungan_usia == 'input') {
+                $penguarang = 'b.created_at';
+            } else {
+                $penguarang = 'CURDATE()'; // Default to current date
+            }
+            $today = Carbon::today();
             $data = DB::table('klien as a')
-                        ->select('a.uuid', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 'a.jenis_kelamin', 'a.tanggal_lahir', 'a.status', 'd.name as petugas')
+                        ->select(
+                            'a.uuid', 
+                            'b.tanggal_pelaporan', 
+                            'a.no_klien', 
+                            'a.nama', 
+                            'a.jenis_kelamin', 
+                            'a.tanggal_lahir', 
+                            DB::raw("TIMESTAMPDIFF(YEAR, a.tanggal_lahir, $penguarang) as usia"), 
+                            'a.status', 
+                            'd.name as petugas',
+                            'y.jatuh_tempo'
+                        )
                         ->leftJoin('kasus as b', 'b.id', 'a.kasus_id')
                         ->leftJoin('petugas as c', 'a.id', 'c.klien_id')
                         ->leftJoin('users as d', 'd.id', 'a.created_by')
@@ -67,10 +89,21 @@ class KasusController extends Controller
                                             LEFT JOIN petugas b ON a.id = b.user_id
                                             WHERE a.jabatan = "Supervisor Kasus"
                                             AND b.deleted_at IS NULL) z'), 'z.klien_id', '=', 'a.id')
+                        ->leftJoin(DB::raw("(SELECT a.id as klien_id, 
+                                            COALESCE(DATEDIFF(?, p1.created_at), DATEDIFF(?, a.tanggal_approve)) as jatuh_tempo
+                                            FROM klien a
+                                            LEFT JOIN (
+                                                SELECT klien_id, MAX(created_at) as latest_created_at
+                                                FROM pemantauan
+                                                GROUP BY klien_id
+                                            ) p2 ON a.id = p2.klien_id
+                                            LEFT JOIN pemantauan p1 ON p1.klien_id = p2.klien_id AND p1.created_at = p2.latest_created_at) y"), 'y.klien_id', '=', 'a.id')
                         ->whereNull('a.deleted_at')
                         ->whereNull('c.deleted_at')
-                        ->groupBy('a.uuid', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 'a.jenis_kelamin', 'a.tanggal_lahir', 'a.status', 'd.name')
-                        ;
+                        ->groupBy('a.uuid', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 'a.jenis_kelamin', 'a.tanggal_lahir', 'a.status', 'd.name', 'y.jatuh_tempo')
+                        ->addBinding($today->toDateString(), 'select')
+                        ->addBinding($today->toDateString(), 'select'); // Added second binding for tanggal_approve
+
             // filter tanggal 
             if (isset($request->basis_tanggal)) {
                 # jika ada, jika tidak ada berarti untuk tabel LaporKBG (gpp itu tahun berapapun)
@@ -94,22 +127,6 @@ class KasusController extends Controller
             if (!$request->anda && $request->laporkbg != 1) { 
                 $data->where('c.user_id', Auth::user()->id);
             }
-            // filter arsip, sebagai default arsip = 0
-            if ($request->arsip) {
-                $arsip = 1;
-            }else{
-                $arsip = 0;
-            }
-            // Filter basis perhitungan usia klien
-            if ($request->penghitungan_usia == 'lapor') {
-                $penguarang = 'b.tanggal_pelaporan';
-            } elseif ($request->penghitungan_usia == 'kejadian') {
-                $penguarang = 'b.tanggal_kejadian';
-            } elseif ($request->penghitungan_usia == 'input') {
-                $penguarang = 'b.created_at';
-            } else {
-                $penguarang = 'CURDATE()'; // Default to current date
-            }
 
             // Filter kategori klien
             if ($request->kategoriklien == 'dewasa') {
@@ -118,11 +135,23 @@ class KasusController extends Controller
                 $data->whereRaw("TIMESTAMPDIFF(YEAR, a.tanggal_lahir, ".$penguarang.") < 18"); 
             }
 
+            // filter Pemanatauaan & Evaluasi
+            if ($request->pemantauan) {
+                $data->where('y.jatuh_tempo','>=','172');
+            }
+
+            // filter arsip, sebagai default arsip = 0
+            if ($request->arsip) {
+                $arsip = 1;
+            }else{
+                $arsip = 0;
+            }
             // filter arsip
             $data->where('a.arsip', $arsip);
             // $data->orderBy('a.updated_at');
             $datas = $data->get();
             foreach ($datas as $datas2) {
+                // ubah format tanggal pelaporan
                 $datas2->tanggal_pelaporan_formatted = date('d M Y', strtotime($datas2->tanggal_pelaporan));
             }
 
@@ -838,31 +867,42 @@ class KasusController extends Controller
     }
 
     public function check_kelengkapan_pemantauan($klien_id)
-    {
-        // pelaksanaan pemantauan
-        $klien = Klien::where('id', $klien_id)->first();
-        $pemantauan = [];
-        $terakhir_pemantauan = Pemantauan::where('klien_id', $klien->id)->orderBy('created_at', 'DESC')->first();
-        $pemantauan['terakhir_pemantauan'] = $terakhir_pemantauan
-                                            ? Carbon::parse($terakhir_pemantauan->created_at)->format('d-m-Y H:i')
-                                            : null;
+{
+    // Get the klien record
+    $klien = Klien::where('id', $klien_id)->first();
+    $pemantauan = [];
 
-        $dateMonitoring = Carbon::parse($pemantauan['terakhir_pemantauan']);
-        $today = Carbon::today();
-        $expirationDate = $dateMonitoring->copy()->addMonths(6);
-        $daysUntilExpiration = $today->diffInDays($expirationDate, false);
-        $message_pemantauan = '';
-        if ($daysUntilExpiration > 0 && $daysUntilExpiration <= 10) {
-            $message_pemantauan = 'Batas waktu Pemantauan & Evaluasi selanjutnya adalah ' . $daysUntilExpiration . ' hari lagi';
-        } elseif ($daysUntilExpiration <= 0) {
-            $message_pemantauan = 'Sudah lebih dari 6 bulan sejak Pemantauan & Evaluasi terakhir dibuat. Segera dibuat Laporan Pemantauan & Evaluasi!';
-        }
+    // Get the latest pemantauan record
+    $terakhir_pemantauan = Pemantauan::where('klien_id', $klien->id)->orderBy('created_at', 'DESC')->first();
 
-        $pemantauan['deadline_pemantauan'] = $daysUntilExpiration;
-        $pemantauan['message_pemantauan'] = $message_pemantauan;
-        // return jumlah pemantauan
-        return $pemantauan;
+    // Check if terakhir_pemantauan exists, if not, use klien.tanggal_approve
+    if ($terakhir_pemantauan) {
+        $pemantauan['terakhir_pemantauan'] = Carbon::parse($terakhir_pemantauan->created_at)->format('d-m-Y H:i');
+        $dateMonitoring = Carbon::parse($terakhir_pemantauan->created_at);
+    } else {
+        $pemantauan['terakhir_pemantauan'] = null;
+        $dateMonitoring = Carbon::parse($klien->tanggal_approve);
     }
+
+    $today = Carbon::today();
+    $hari_setelah_monev_terakhir = $dateMonitoring->diffInDays($today, false) + 1; // ditambah 1 untuk menyamakan perhitungan di ajax datatable (function index)
+    $message_pemantauan = '';
+    
+    if ($hari_setelah_monev_terakhir >= 172 && $hari_setelah_monev_terakhir < 182) {
+        // 6 bulan kurang lebih 182, 10 hari sebelumnya sudah diperingatkan
+        $berapa_hari_lagi_expired = 182 - $hari_setelah_monev_terakhir;
+        $message_pemantauan = 'Batas waktu Pemantauan & Evaluasi selanjutnya adalah ' . $berapa_hari_lagi_expired . ' hari lagi';
+    } elseif ($hari_setelah_monev_terakhir > 182) {
+        $message_pemantauan = 'Sudah lebih dari 6 bulan sejak Pemantauan & Evaluasi terakhir / sejak diapprove. Segera dibuat Laporan Pemantauan & Evaluasi!';
+    }
+
+    $pemantauan['deadline_pemantauan'] = $hari_setelah_monev_terakhir;
+    $pemantauan['message_pemantauan'] = $message_pemantauan;
+    
+    // Return jumlah pemantauan
+    return $pemantauan;
+}
+
 
     public function check_kelengkapan_terminasi($klien_id)
     {

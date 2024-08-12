@@ -41,7 +41,16 @@ class DashboardController extends Controller
                             ->where('a.arsip', 0)
                             ->where('b.user_id', Auth::user()->id)
                             ->count();
-        $jumlah_agenda = TindakLanjut::where('created_by', Auth::user()->id)->count();
+        $layanan = DB::table('t_keyword as a')
+                        ->leftJoin('m_keyword as b', 'a.value', 'b.id')
+                        ->where('a.created_by', Auth::user()->id)
+                        ->where('b.jenis_agenda', 'Layanan')
+                        ->count();
+        $manajemen_layanan = DB::table('t_keyword as a')
+                        ->leftJoin('m_keyword as b', 'a.value', 'b.id')
+                        ->where('a.created_by', Auth::user()->id)
+                        ->where('b.jenis_agenda', 'Manajemen Layanan')
+                        ->count();
 
         // hapus ini setelah evaluasi selesai dan tercapai
         if (Auth::user()->jabatan == 'Manajer Kasus') {
@@ -96,7 +105,8 @@ class DashboardController extends Controller
         return view('dashboard')->with('jabatan', (new OpsiController)->api_jabatan())
                                 ->with('jumlah_terminasi', $jumlah_terminasi)
                                 ->with('jumlah_kasus', $jumlah_kasus)
-                                ->with('jumlah_agenda', $jumlah_agenda)
+                                ->with('layanan', $layanan)
+                                ->with('manajemen_layanan', $manajemen_layanan)
                                 ->with('dibuatMK', $dibuatMK)
                                 ->with('takDibuatMK', $takDibuatMK)
                                 ;

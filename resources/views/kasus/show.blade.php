@@ -1779,18 +1779,18 @@
                         Gunakan <a href="#" onclick="$('#filter_intervensi').val({{ $i_tab_konten }}); $('#modalFilterLayanan').modal('show'); return false;"><b>Filter</b></a> untuk menampilkan agenda yang ada layanan / intervensi nya.
 
                         <hr style="border: 1px solid #000; margin: 20px 0;">
-
-                        <div id="kolomPemantauan{{ $i_tab_konten }}"></div>
-                        <div class="row warningIntervensi">
-                            <div class="col-md-12">
-                                <div class="alert alert-danger">
-                                    <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
-                                    <span id="terakhirPemantauan"></span>
-                                    <br>
-                                    <span id="messagePemantauan"></span>
+                        @if ($i_tab_konten == $klien->intervensi_ke)
+                            <div class="row warningIntervensi">
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger">
+                                        <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+                                        <div id="terakhirPemantauan"></div>
+                                        <div id="messagePemantauan"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
+                        <div id="kolomPemantauan{{ $i_tab_konten }}"></div>
                         @if ((Auth::user()->jabatan == 'Manajer Kasus' && $akses_petugas == 1) && ($i_tab_konten == $klien->intervensi_ke))
                             <button type="submit" class="btn btn-block btn-success btn-sm" id="tambah_laporan_pemantauan" data-toggle="modal" data-target="#tambahPemantauanModal" disabled="true"><i class="fas fa-plus"></i> Tambah Laporan Pemantauan & Evaluasi</button>
                             <span style="color: red" id="alert-pemantauan">*Laporan Pemantauan & Evaluasi hanya dapat dibuat ketika Progres Intervensi sudah 100%</span>
@@ -4284,12 +4284,11 @@ function check_kelengkapan_pemantauan(klien_id) {
         type: "GET",
         cache: false,
         success: function (response){
-
-            if (response.deadline_pemantauan <= 10) {
-                // kalau deadlinenya kurang dari 10 hari berarti harusnya udah dilakukan Pemantauan & Evaluasi lagi
+            if (response.deadline_pemantauan >= 172) {
+                // 6 bulan kurang lebih 182, 10 hari sebelumnya sudah diperingatkan
                 $('.warningIntervensi').show();
-                $('#terakhirPemantauan').html('Terakhir dilakukan Pemantauan & Evaluasi adalah pada tanggal '+response.terakhir_pemantauan);
-                $('#messagePemantauan').html(response.message_pemantauan);
+                $('#terakhirPemantauan').html('Terakhir dilakukan Pemantauan & Evaluasi adalah pada tanggal '+response.terakhir_pemantauan+'.');
+                $('#messagePemantauan').html(response.message_pemantauan+'.');
             } else {
                 $('.warningIntervensi').hide();
                 $('#check_pemantauan').show();

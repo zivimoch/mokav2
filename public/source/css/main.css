@@ -54,6 +54,10 @@
     animation-duration: 7s;
 }
 
+.warning_table {
+    background-color: rgb(255, 205, 205);
+}
+
 /* Chrome, Safari, Opera */
 @-webkit-keyframes animate1 {
     0% {

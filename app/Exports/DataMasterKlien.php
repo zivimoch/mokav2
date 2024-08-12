@@ -40,6 +40,7 @@ class DataMasterKlien implements FromCollection, WithHeadings, WithStyles
             'Progres Terakhir',
             'No Klien',
             'Tanggal Pelaporan',
+            'Rujukan',
             'Media Pengaduan',
             'Sumber Informasi',
             'Tanggal Kejadian',
@@ -160,7 +161,7 @@ class DataMasterKlien implements FromCollection, WithHeadings, WithStyles
         }
 
         $query = DB::select("SELECT
-                b.status AS progres_terakhir, b.no_klien, a.tanggal_pelaporan, a.media_pengaduan,
+                b.status AS progres_terakhir, b.no_klien, a.tanggal_pelaporan, a.sumber_rujukan, a.media_pengaduan,
                 a.sumber_informasi, a.tanggal_kejadian, a.ringkasan, a.alamat AS alamat_TKP, e.name AS provinsi_TKP, 
                 f.name AS kota_TKP, g.name AS kecamatan_TKP, h.name AS kelurahan_TKP, a.kategori_lokasi, b.nama, b.nik,
                 b.tempat_lahir, b.tanggal_lahir, TIMESTAMPDIFF(YEAR, b.tanggal_lahir, CURDATE()) AS usia, b.jenis_kelamin, 

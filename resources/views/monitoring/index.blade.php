@@ -93,7 +93,7 @@
                         <tr>
                         <th>Tgl Pelaporan</th>
                         <th>No Regis</th>
-                        <th>Nama</th>
+                        <th>Nama Klien</th>
                         <th>Penerima Pengaduan</th>
                         <th>Manajer Kasus</th>
                         <th>Supervisor Kasus</th>
@@ -196,10 +196,10 @@
                     <div class="card-header">
                       <h3 class="card-title">Profil PPPA DKI Jakarta (Data Update 1 Jam Sekali)</h3>
                       <div class="card-tools">
-                        <a href="https://docs.google.com/presentation/d/1Jkn6WhCSE2fTev3kxwWYvkzEA509z7EFcczsVProJe4/export/pptx">
+                        <a href="https://docs.google.com/presentation/d/1-JZxiRPzt-ndAyCNZauT63gjvnqn9Pd5nhZ5jf0XVMU/export/pptx">
                           <button class="btn btn-warning btn-sm"><i class="fas fa-download"></i> Download PPTX</button>
                         </a>
-                        <a href="https://docs.google.com/presentation/d/1Jkn6WhCSE2fTev3kxwWYvkzEA509z7EFcczsVProJe4/export/pdf">
+                        <a href="https://docs.google.com/presentation/d/1-JZxiRPzt-ndAyCNZauT63gjvnqn9Pd5nhZ5jf0XVMU/export/pdf">
                           <button class="btn btn-warning btn-sm"><i class="fas fa-download"></i> Download PDF</button>
                         </a>
                         <button onclick="$('#slidesIframe').get(0).requestFullscreen?.();"  class="btn btn-warning btn-sm"><i class="fas fa-expand"></i> Full Screen</button>
@@ -223,8 +223,8 @@
                       <div id="collapse0" class="collapse show" data-parent="#accordion0">
                         
                         {{-- <iframe src="{{ route('monitoring.slide') }}" height="500px" width="100%" title="Iframe Example"></iframe> --}}
-                          {{-- <iframe id="slidesIframe" src="https://docs.google.com/presentation/d/e/2PACX-1vSCBRdBkphe1pMUbNscNCUPMTjBwvmGVSm-GTgd4jDV0i-tQ95VZuXJIShG_QhqbtHyKuboZ5ZdzHS0/embed?start=false&loop=false&delayms=60000" frameborder="0" width="100%" height="500px" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe> --}}
-                          <iframe id="slidesIframe" src="https://docs.google.com/presentation/d/e/2PACX-1vTLdDKe9EgHKSNvZkoI877Zs5pzG0LV8cNhvGr4Pgz9mEDIVsS_56Uf1QTuK_xTO5_S69wknGZYAHzg/embed?start=false&loop=true&delayms=60000" frameborder="0" width="100%" height="500px" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+                          <iframe id="slidesIframe" src="https://docs.google.com/presentation/d/e/2PACX-1vSCBRdBkphe1pMUbNscNCUPMTjBwvmGVSm-GTgd4jDV0i-tQ95VZuXJIShG_QhqbtHyKuboZ5ZdzHS0/embed?start=false&loop=false&delayms=60000" frameborder="0" width="100%" height="500px" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+                          {{-- <iframe id="slidesIframe" src="https://docs.google.com/presentation/d/e/2PACX-1vTLdDKe9EgHKSNvZkoI877Zs5pzG0LV8cNhvGr4Pgz9mEDIVsS_56Uf1QTuK_xTO5_S69wknGZYAHzg/embed?start=false&loop=true&delayms=60000" frameborder="0" width="100%" height="500px" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe> --}}
                         
                           <div class="direct-chat-contacts" style="padding: 10px; height:100%; z-index:100">
                           <div class="row">
@@ -3935,8 +3935,8 @@ function load_data2() {
         type: "GET",
         cache: false,
         success: function (response){
-            if (response.deadline_pemantauan <= 10 || response.terakhir_pemantauan == null) {
-                // kalau deadlinenya kurang dari 10 hari berarti harusnya udah dilakukan Pemantauan & Evaluasi lagi
+            if (response.deadline_pemantauan >= 172) {
+                // 6 bulan kurang lebih 182, 10 hari sebelumnya sudah diperingatkan
                 $('.warningIntervensi').show();
             } else {
                 $('.warningIntervensi').hide();

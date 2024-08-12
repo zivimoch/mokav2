@@ -684,7 +684,7 @@ class AgendaController extends Controller
                             // jika ada kliennya, maka redirect ke halaman detail kasus dan tab intervensi
                             $url = url('/kasus/show/'.$klien->uuid.'?tab=kasus-layanan&row-layanan='.$proses->uuid);
                         } else {
-                            $url = url('/kinerja/detail?tahun='.$tahun.'&bulan='.$bulan.'&user_id='.$value.'&row-agenda='.$proses->uuid.'&kode=T9&type_notif=task&agenda_id='.$agenda_id);
+                            $url = url('/kinerja/detail?tahun='.$tahun.'&bulan='.$bulan.'&user_id='.$value.'&row-agenda='.$proses->uuid.'&kode='.$kode.'&type_notif='.$type.'&agenda_id='.$agenda_id);
                         }
     
                         NotifHelper::push_notif(
