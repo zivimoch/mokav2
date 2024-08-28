@@ -81,6 +81,7 @@
                     </div>
                   </div>
                   <div class="tab-pane fade" id="notif" role="tabpanel" aria-labelledby="notif-tab">
+                      <center style="margin-top: 10px;"><b><a href="#" onclick="read_all()">Tandai semua telah dibaca</a></b></center>
                       <div class="list-group" id="notif_list" style="max-height: 500px; overflow:scroll; overflow-x: hidden; scrollbar-width: thin;">
                       </div>
                   </div>

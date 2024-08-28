@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Notifikasi;
 use Carbon\Carbon;
+use Google\Service\AlertCenter\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -66,5 +67,16 @@ class NotifikasiController extends Controller
             $datas->formattedDate = Carbon::parse($datas->created_at)->diffForHumans(null, true);
         }
         return DataTables::of($data)->make(true);
+    }
+
+    public function read_all()
+    {
+        $data = Notifikasi::where('receiver_id', Auth::user()->id)
+                            ->where('type_notif', 'notif')
+                            ->where('read',0)
+                            ->whereNull('deleted_at')
+                            ->update(['read' => 1]);
+
+        return $data;
     }
 }

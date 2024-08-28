@@ -2438,7 +2438,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Alasan Terminasi </label>
+                    <label>Keterangan Terminasi</label><br>
+                    <span style="color:red">*Sebutkan <b>Alasan Terminasi</b>. Tulis <b>notulensi hasil gelar internal</b> (untuk kasus selesai). Tulis <b>indikator terminasi</b> (untuk kasus ditutup)</span>
                     <textarea class="form-control required-field-terminasi" id="terminasi_alasan" aria-label="With textarea" style="resize: none;" rows="5"></textarea>
                 </div>
             </div>
@@ -4284,6 +4285,13 @@ function check_kelengkapan_pemantauan(klien_id) {
         type: "GET",
         cache: false,
         success: function (response){
+            // centang indikator pemanatauan & evaluasi
+            if (response.pemantauan_terakhir > 0) {
+                $('#check_pemantauan').show();
+                kelengkapan_kasus = kelengkapan_kasus + 1;
+                $('#kelengkapan_kasus').html(kelengkapan_kasus);
+            }
+
             if (response.deadline_pemantauan >= 172) {
                 // 6 bulan kurang lebih 182, 10 hari sebelumnya sudah diperingatkan
                 $('.warningIntervensi').show();
@@ -4291,9 +4299,6 @@ function check_kelengkapan_pemantauan(klien_id) {
                 $('#messagePemantauan').html(response.message_pemantauan+'.');
             } else {
                 $('.warningIntervensi').hide();
-                $('#check_pemantauan').show();
-                kelengkapan_kasus = kelengkapan_kasus + 1;
-                $('#kelengkapan_kasus').html(kelengkapan_kasus);
             }
         },
         error: function (response){

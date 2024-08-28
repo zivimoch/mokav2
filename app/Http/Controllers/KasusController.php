@@ -17,6 +17,7 @@ use App\Models\PersetujuanIsi;
 use App\Models\PersetujuanTemplate;
 use App\Models\Petugas;
 use App\Models\RHubunganTerlaporKlien;
+use App\Models\RiwayatKejadian;
 use App\Models\TBentukKekerasan;
 use App\Models\Terlapor;
 use App\Models\Terminasi;
@@ -403,12 +404,14 @@ class KasusController extends Controller
                             ->select('a.value','b.nama')
                             ->leftJoin('m_jenis_kekerasan as b', 'a.value', 'b.kode')
                             ->where('a.klien_id', $klien->id)
+                            ->groupBy('b.kode','a.value','b.nama')
                             ->get();
         // data bentuk kekerasan
         $bentuk_kekerasan = DB::table('t_bentuk_kekerasan as a')
                                 ->select('a.value','b.nama')
                                 ->leftJoin('m_bentuk_kekerasan as b', 'a.value', 'b.kode')
                                 ->where('a.klien_id', $klien->id)
+                                ->groupBy('b.kode','a.value','b.nama')
                                 ->get();
         $bentuk_kekerasans = DB::table('m_jenis_kekerasan as a')
                             ->select('a.nama as jenis_nama', 'c.nama as bentuk_nama')
@@ -436,6 +439,7 @@ class KasusController extends Controller
                                 ->select('a.value','b.nama')
                                 ->leftJoin('m_kategori_kasus as b', 'a.value', 'b.kode')
                                 ->where('a.klien_id', $klien->id)
+                                ->groupBy('b.kode','a.value','b.nama')
                                 ->get();
         
         //data petugas
@@ -496,6 +500,7 @@ class KasusController extends Controller
         );
         /////////////////////////////////////////////////////////////////////////////////////////////
        $detail['kelengkapan_petugas'] = $kelengkapan_petugas;
+       
        return view('kasus.show')
                 ->with('klien', $klien)
                 ->with('catatan_hukum', $catatan_hukum)
@@ -534,6 +539,36 @@ class KasusController extends Controller
                 ->with('detail', $detail)
                 ->with('kasus_terkait', $kasus_terkait)
                 ->with('akses_petugas', $akses_petugas);
+    }
+
+    // untuk ajax rekap kasus yang bisa dicopas buat WA
+    public function rekap(Request $request)
+    {
+        $klien = Klien::selectRaw('id, no_klien, nama, tanggal_lahir, TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) as usia, jenis_kelamin')->where('uuid', $request->uuid)->first();
+        $kasus = Kasus::selectRaw('tanggal_pelaporan')->where('id', $klien->id)->first();
+        $terlapor = DB::table('terlapor as a')->selectRaw('a.nama, a.tanggal_lahir, b.value as hubungan')->leftJoin('r_hubungan_terlapor_klien as b', 'a.id', 'b.terlapor_id')->where('b.klien_id', $klien->id)->whereNull('a.deleted_at')->get();
+        $riwayat = RiwayatKejadian::where('klien_id', $klien->id)->whereNull('deleted_at')->orderBy('tanggal')->orderBy('jam')->get();
+        
+        $message = "*[REKAP KASUS]*\n";
+        $message .= "*Diupdate pada : ".now();
+        $message .= "\n=============================\n";
+        $message .= "*DATA KASUS*\n";
+        $message .= "*Nama Klien :* ".$klien->nama." (".$klien->jenis_kelamin.", ".$klien->usia.")\n";
+        $message .= "*No Reg. Klien :* ".$klien->no_klien."\n";
+        $message .= $kasus->tanggal_pelaporan ? "*Tanggal Pelaporan :* ".date('d M Y', strtotime($kasus->tanggal_pelaporan)) : '';
+        $message .= "\n\n=============================\n";
+        $message .= "*KRONOLOGI KEJADIAN*\n";
+        foreach ($riwayat as $key => $value) {
+            $message .= "*- ".date('d M Y', strtotime($value->tanggal))." ".$value->jam."*\n";
+            $message .= $value->keterangan."\n";
+        }
+        $message .= "\n=============================\n";
+        $message .= "*TIMELINE KASUS*\n";
+        $message .= $kasus->tanggal_pelaporan ? "*".date('d M Y', strtotime($kasus->tanggal_pelaporan))."*" : '';
+        $message .= "\n Penerimaan Laporan\n";
+        $message .= $kasus->tanggal_pelaporan ? "*".date('d M Y', strtotime($kasus->tanggal_pelaporan))."*" : '';
+        $message .= "\n Asesmen Awal\n";
+        return $message;
     }
 
     public function approval($uuid, Request $request)
@@ -867,41 +902,42 @@ class KasusController extends Controller
     }
 
     public function check_kelengkapan_pemantauan($klien_id)
-{
-    // Get the klien record
-    $klien = Klien::where('id', $klien_id)->first();
-    $pemantauan = [];
+    {
+        $klien = Klien::where('id', $klien_id)->first();
+        $pemantauan = [];
 
-    // Get the latest pemantauan record
-    $terakhir_pemantauan = Pemantauan::where('klien_id', $klien->id)->orderBy('created_at', 'DESC')->first();
+        // untuk centang indikator pemantauan (hanya tercentang jika ada pemantauan di intervensi terakhir). 
+        // Seperti intervensi, ketika telah dimonev akan mereset jadi 0 lagi. Pemantauan juga jadi 0 lagi. 
+        $pemantauan_terakhir = Pemantauan::where('klien_id', $klien->id)->where('intervensi_ke', $klien->intervensi_ke)->count();
+        $pemantauan['pemantauan_terakhir'] = $pemantauan_terakhir;
 
-    // Check if terakhir_pemantauan exists, if not, use klien.tanggal_approve
-    if ($terakhir_pemantauan) {
-        $pemantauan['terakhir_pemantauan'] = Carbon::parse($terakhir_pemantauan->created_at)->format('d-m-Y H:i');
-        $dateMonitoring = Carbon::parse($terakhir_pemantauan->created_at);
-    } else {
-        $pemantauan['terakhir_pemantauan'] = null;
-        $dateMonitoring = Carbon::parse($klien->tanggal_approve);
+        $terakhir_pemantauan = Pemantauan::where('klien_id', $klien->id)->orderBy('created_at', 'DESC')->first();
+        if ($terakhir_pemantauan) {
+            $pemantauan['terakhir_pemantauan'] = Carbon::parse($terakhir_pemantauan->created_at)->format('d-m-Y H:i');
+            $dateMonitoring = Carbon::parse($terakhir_pemantauan->created_at);
+        } else {
+            $pemantauan['terakhir_pemantauan'] = null;
+            $dateMonitoring = Carbon::parse($klien->tanggal_approve);
+        }
+
+        $today = Carbon::today();
+        $hari_setelah_monev_terakhir = $dateMonitoring->diffInDays($today, false) + 1; // ditambah 1 untuk menyamakan perhitungan di ajax datatable (function index)
+        $message_pemantauan = '';
+        
+        if ($hari_setelah_monev_terakhir >= 172 && $hari_setelah_monev_terakhir < 182) {
+            // 6 bulan kurang lebih 182, 10 hari sebelumnya sudah diperingatkan
+            $berapa_hari_lagi_expired = 182 - $hari_setelah_monev_terakhir;
+            $message_pemantauan = 'Batas waktu Pemantauan & Evaluasi selanjutnya adalah ' . $berapa_hari_lagi_expired . ' hari lagi';
+        } elseif ($hari_setelah_monev_terakhir > 182) {
+            $message_pemantauan = 'Sudah lebih dari 6 bulan sejak Pemantauan & Evaluasi terakhir / sejak diapprove. Segera dibuat Laporan Pemantauan & Evaluasi!';
+        }
+
+        $pemantauan['deadline_pemantauan'] = $hari_setelah_monev_terakhir;
+        $pemantauan['message_pemantauan'] = $message_pemantauan;
+        
+        // Return jumlah pemantauan
+        return $pemantauan;
     }
-
-    $today = Carbon::today();
-    $hari_setelah_monev_terakhir = $dateMonitoring->diffInDays($today, false) + 1; // ditambah 1 untuk menyamakan perhitungan di ajax datatable (function index)
-    $message_pemantauan = '';
-    
-    if ($hari_setelah_monev_terakhir >= 172 && $hari_setelah_monev_terakhir < 182) {
-        // 6 bulan kurang lebih 182, 10 hari sebelumnya sudah diperingatkan
-        $berapa_hari_lagi_expired = 182 - $hari_setelah_monev_terakhir;
-        $message_pemantauan = 'Batas waktu Pemantauan & Evaluasi selanjutnya adalah ' . $berapa_hari_lagi_expired . ' hari lagi';
-    } elseif ($hari_setelah_monev_terakhir > 182) {
-        $message_pemantauan = 'Sudah lebih dari 6 bulan sejak Pemantauan & Evaluasi terakhir / sejak diapprove. Segera dibuat Laporan Pemantauan & Evaluasi!';
-    }
-
-    $pemantauan['deadline_pemantauan'] = $hari_setelah_monev_terakhir;
-    $pemantauan['message_pemantauan'] = $message_pemantauan;
-    
-    // Return jumlah pemantauan
-    return $pemantauan;
-}
 
 
     public function check_kelengkapan_terminasi($klien_id)

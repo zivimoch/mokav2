@@ -39,3 +39,9 @@ SET GLOBAL event_scheduler = ON;
    'NO_AUTO_CREATE_USER',
    'NO_ENGINE_SUBSTITUTION'
    ],
+
+3. MENCEGAH WEB TERDETEKSI SEARCH ENGINE :
+   pada path public buat file : robots.txt isinya :
+   User-agent: \*
+   Disallow: /
+   selanjutnya pada template daan login tambahkan <meta name="robots" content="noindex, nofollow">

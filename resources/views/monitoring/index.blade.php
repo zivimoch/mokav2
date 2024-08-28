@@ -282,21 +282,26 @@
                             <thead>
                                 <tr>
                                     <th style="width: 8%">No</th>
-                                    <th>Judul Rejap Data</th>
+                                    <th>Judul Rekap Data</th>
                                     <th style="width: 12%">Download</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>1</td>
-                                    <td>Data master kasus per klien</td>
+                                    <td>Data master kasus per klien (<span class="filterTanggal11"></span>)</td>
                                     <td><a href="{{ route('export_data_master_klien') }}?format=xlsx" class="btn btn-primary btn-xs export-link">Excel</a> <a href="{{ route('export_data_master_klien') }}?format=csv" class="btn btn-primary btn-xs export-link">CSV</a></td>
                                 </tr>
                                 <tr>
                                     <td>2</td>
-                                    <td>Data master kasus per terlapor</td>
+                                    <td>Data master kasus per terlapor (<span class="filterTanggal11"></span>)</td>
                                     <td><a href="{{ route('export_data_master_terlapor') }}?format=xlsx" class="btn btn-primary btn-xs export-link">Excel</a> <a href="{{ route('export_data_master_terlapor') }}?format=csv" class="btn btn-primary btn-xs export-link">CSV</a></td>
-                                  </tr>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Data master Hubungan Terlapor dengan Korban (Terlapor Siapanya Korban) (<span class="filterTanggal11"></span>)</td>
+                                    <td><a href="{{ route('export_data_master_hubungan') }}?format=xlsx" class="btn btn-primary btn-xs export-link">Excel</a> <a href="{{ route('export_data_master_hubungan') }}?format=csv" class="btn btn-primary btn-xs export-link">CSV</a></td>
+                                </tr>
                             </tbody>
                         </table> 
                         <br>
@@ -2346,7 +2351,13 @@
 <script src="{{ asset('adminlte') }}/plugins/daterangepicker/daterangepicker.js"></script>
 <script>
   $(document).ready(function() {
-      $('.datatableall').DataTable();
+      $('.datatableall').DataTable({
+      "pageLength" : 5,
+      "lengthMenu": [
+          [10, 25, 50, 100, -1],
+          ['10 rows', '25 rows', '50 rows', '100 rows','All'],
+      ],
+    });
       load_data11();
       // update data whatsaapp
       load_data3();
@@ -3772,6 +3783,14 @@ function load_data2() {
                 regis: $('input[name="filterRegis11"]:checked').val(),
                 arsip: $('input[name="filterArsip11"]:checked').val()
             };
+
+            $('#filter11').html('');
+            $.each(params, function(key, value) {
+                $('#filter11').append("<span class=\"badge bg-primary\">" + key + ' : ' +value + "</span> ");
+            });
+            $('#filter11').append("<span class=\"badge bg-warning\">Data ini disajikan pada : " + getCurrentDateTime() + "</span> ");
+
+            $('.filterTanggal11').html($('#filterTanggal11').val());
             // Update the href attributes for all links with class .export-link
             $('.export-link').each(function() {
                 var href = $(this).attr('href');
@@ -3935,16 +3954,11 @@ function load_data2() {
         type: "GET",
         cache: false,
         success: function (response){
-            if (response.deadline_pemantauan >= 172) {
-                // 6 bulan kurang lebih 182, 10 hari sebelumnya sudah diperingatkan
-                $('.warningIntervensi').show();
-            } else {
-                $('.warningIntervensi').hide();
+            // centang indikator pemanatauan & evaluasi
+            if (response.pemantauan_terakhir > 0) {
                 $('#check_pemantauan').show();
                 kelengkapan_kasus = kelengkapan_kasus + 1;
                 $('#kelengkapan_kasus').html(kelengkapan_kasus);
-
-                $('#messagePemantauan').html(response.message);
             }
         },
         error: function (response){

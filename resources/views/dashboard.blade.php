@@ -132,7 +132,6 @@
                 </ul>
               </div>
 
-              <div class="card-footer">
 <div class="row">
 <div class="col-sm-6 border-right">
 <div class="description-block">
@@ -150,7 +149,6 @@
 
 </div>
 
-</div>
             </div>
             <!-- TO DO List -->
             <div class="card card-primary">

@@ -635,13 +635,30 @@ class AgendaController extends Controller
                         // jika ada perubahan (selain created_by, updated_at atau ada user tambahan) maka kirim notif dan ada uuid (berupa update)
                         
                         // yang dilakukan pertama kali adalah hapus notifikasi T9 & T10 agenda ini jika value bukan yang sedang login, agar tidak dobel notifikasi menambah & merubah                    
-                        if ($value != Auth::user()->id) {
+                        // lalu cek lagi apakah sudah diTL atau belum. Jika sudah diTL maka tidak perlu dikirim apa2 juga
+                        $sudahTL = Notifikasi::where('receiver_id', $value)
+                                            ->where('agenda_id', $proses_id)
+                                            ->whereIn('kode', ['T9','T10'])
+                                            ->where('read', 1)
+                                            ->count();
+                        if ($value != Auth::user()->id && $sudahTL == 0) {
                             // jika yang merubah bukan sesuai yang login, maka hapus notif T9 mereka
                             Notifikasi::where('receiver_id', $value)
                                         ->where('agenda_id', $proses_id)
                                         ->whereIn('kode', ['T9','T10'])
                                         ->delete();
-                            
+                            if ($value == Auth::user()->id) {
+                                $message_notif = 'Anda telah membuat agenda untuk diri anda : <b>'.$request->judul_kegiatan.'</b>. Silahkan buat laporan tindak lanjutnya';
+                            } else {
+                                $message_notif = Auth::user()->name.' telah membuat agenda untuk anda : <b>'.$request->judul_kegiatan.'</b>. Silahkan buat laporan tindak lanjutnya';
+                            }
+    
+                            if ($klien && $klien->id) {
+                                // jika ada kliennya, maka redirect ke halaman detail kasus dan tab intervensi
+                                $url = url('/kasus/show/'.$klien->uuid.'?tab=kasus-layanan&row-layanan='.$proses->uuid);
+                            } else {
+                                $url = url('/kinerja/detail?tahun='.$tahun.'&bulan='.$bulan.'&user_id='.$value.'&row-agenda='.$proses->uuid.'&kode=T9&type_notif=task&agenda_id='.$proses_id);
+                            }
                             // kemudian buat ulang notifikasinya
                             NotifHelper::push_notif(
                                 $value , //receiver_id

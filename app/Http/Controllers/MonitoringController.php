@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DataMasterHubungan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -1404,6 +1405,7 @@ class MonitoringController extends Controller
 
     public function export_data_master_klien(Request $request)
     {
+        dd($request);
         $data = DataMasterKlien::data($request);
         return Excel::download(new DataMasterKlien($data), 'Data master kasus per klien '.$request->tanggal.' ('.$request->basisTanggal.').'.$request->format);
     }
@@ -1412,6 +1414,12 @@ class MonitoringController extends Controller
     {
         $data = DataMasterTerlapor::data($request);
         return Excel::download(new DataMasterTerlapor($data), 'Data master kasus per terlapor '.$request->tanggal.' ('.$request->basisTanggal.').'.$request->format);
+    }
+
+    public function export_data_master_hubungan(Request $request)
+    {
+        $data = DataMasterHubungan::data($request);
+        return Excel::download(new DataMasterHubungan($data), 'Data master Hubungan Terlapor dengan Korban (Terlapor Siapanya Korban)'.$request->tanggal.' ('.$request->basisTanggal.').'.$request->format);
     }
 
     public function sheets()

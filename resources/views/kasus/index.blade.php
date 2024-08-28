@@ -97,7 +97,6 @@
             <th>Nama Klien</th>
             <th>Kategori Klien</th>
             <th>Pengaduan</th>
-            <th>Jatuh Tempo</th>
             <th>Status Terakhir</th>
             </tr>
             </thead>
@@ -248,8 +247,7 @@
         </div>
         </div>
       </div>
-      <div class="modal-footer" id="buttons">
-      </div>
+      <div class="modal-footer" id="buttons"></div>
     </div>
   </div>
 </div>
@@ -552,7 +550,6 @@
             }
         },
         {"data": "petugas"},
-        {"data": "jatuh_tempo"},
         {
             "mData": "status_terakhir",
             "mRender": function (data, type, row) {
@@ -612,6 +609,7 @@
           if ('{{ Auth::user()->jabatan }}' == 'Penerima Pengaduan') {
             $('#buttons').append('<button type="button" class="btn btn-success btn-block" id="terima" onclick="terima_kasus(`'+data.uuid+'`)"><i class="fa fa-check"></i> Terima Kasus</button>');
           }
+          $('#buttons').append('<a href="#" onclick="rekap_kasus(`' + data.uuid + '`)" class="btn btn-warning btn-block" id="rekap"><i class="fas fa-stream"></i> Rekap Kasus</a>');
           $('#buttons').append('<a href="' + "{{ route('kasus.show', '') }}" + '/' + data.uuid + '" class="btn btn-primary btn-block" id="detail"><i class="fa fa-info-circle"></i> Detail Kasus (Bisa New Tab)</a>');
           if ( data.no_klien == null && "{{ in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Super Admin']) }}") {
               $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
@@ -657,6 +655,7 @@
           
          //munculkan tombol
         $('#buttons').html('');
+        $('#buttons').append('<a href="#" onclick="rekap_kasus(`' + data.uuid + '`)" class="btn btn-warning btn-block" id="rekap"><i class="fas fa-stream"></i> Rekap Kasus</a>');
         $('#buttons').append('<a href="' + "{{ route('kasus.show', '') }}" + '/' + data.uuid + '" class="btn btn-primary btn-block" id="detail"><i class="fa fa-info-circle"></i> Detail Kasus (Bisa New Tab)</a>');
         if ( data.no_klien == null && "{{ in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Super Admin']) }}") {
             $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
@@ -854,16 +853,11 @@
         type: "GET",
         cache: false,
         success: function (response){
-            if (response.deadline_pemantauan >= 172) {
-                // 6 bulan kurang lebih 182, 10 hari sebelumnya sudah diperingatkan
-                $('.warningIntervensi').show();
-            } else {
-                $('.warningIntervensi').hide();
+            // centang indikator pemanatauan & evaluasi
+            if (response.pemantauan_terakhir > 0) {
                 $('#check_pemantauan').show();
                 kelengkapan_kasus = kelengkapan_kasus + 1;
                 $('#kelengkapan_kasus').html(kelengkapan_kasus);
-
-                $('#messagePemantauan').html(response.message);
             }
         },
         error: function (response){
@@ -956,8 +950,19 @@
       $('#modalFilterKasus').modal('hide');
     }
 
-    function count_warning_table() {
-      
+    function rekap_kasus(uuid) {
+      $.ajax({
+            url:"{{ route('kasus.rekap') }}",
+            data: {
+              uuid: uuid,
+              _token: '{{csrf_token()}}'
+            },
+            type:'POST',
+            dataType: 'json',
+            success: function( response ) {
+              console.log(response);
+            }
+        });
     }
   </script>
 {{-- 

@@ -63,6 +63,7 @@ Route::middleware('auth')->group(function () {
     // kasus
     Route::get('kasus', [KasusController::class, 'index'])->name('kasus');
     Route::get('kasus/show/{uuid}', [KasusController::class, 'show'])->name('kasus.show');
+    Route::post('kasus/rekap', [KasusController::class, 'rekap'])->name('kasus.rekap');
     Route::post('kasus/approval/{uuid}', [KasusController::class, 'approval'])->name('kasus.approval');
     Route::get('/check_kelengkapan_data/{id}', [KasusController::class, 'check_kelengkapan_data'])->name('check_kelengkapan_data');
     // Route::view('kasus/detail/','/kasus/detail')->name('kasus.detail');
@@ -96,6 +97,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
     Route::get('/notifikasi/pull_notif', [NotifikasiController::class, 'pull_notif'])->name('notifikasi.pull_notif');
     Route::get('/notifikasi/pull_all', [NotifikasiController::class, 'pull_all'])->name('notifikasi.pull_all');
+    Route::get('/notifikasi/read_all', [NotifikasiController::class, 'read_all'])->name('notifikasi.read_all');
     // dokumen
     Route::get('dokumen',[DokumenController::class, 'index'])->name('dokumen');
     Route::post('/get_dokumen', [DokumenController::class, 'get_dokumen'])->name('get_dokumen');
@@ -191,6 +193,7 @@ Route::middleware('auth')->group(function () {
     // export_data_master_klien data ke excel
     Route::get('export_data_master_klien/', [MonitoringController::class, 'export_data_master_klien'])->name('export_data_master_klien');
     Route::get('export_data_master_terlapor/', [MonitoringController::class, 'export_data_master_terlapor'])->name('export_data_master_terlapor');
+    Route::get('export_data_master_hubungan/', [MonitoringController::class, 'export_data_master_hubungan'])->name('export_data_master_hubungan');
 });
 
 require __DIR__.'/auth.php';

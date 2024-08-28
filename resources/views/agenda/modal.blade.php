@@ -134,6 +134,14 @@
     </div>
     <div class="modal-body"  style="margin-bottom: -15px">
     <input type="hidden" name="uuid" id="uuid">
+    {{-- <select name="supervisor_id" class="form-control select2bs4" id="supervisor_id">
+      <option value="0"></option>
+      <option value="cek">cek</option>
+      <option value="cok">cok</option>
+      <option value="cak">cak</option>
+      <option value="cik">cik</option>
+  </select> --}}
+
     <div class="row">
       <div class="col-md-6">
         <div class="form-group">
@@ -184,9 +192,9 @@
       </div>
       </div>
       <div class="col-md-4">
-        <div class="form-group" style="background-color:#fff; transparent:50%">
+        <div class="form-group">
           <label>Pilih Klien<span class="text-danger required-layanan">*</span></label>
-          <select data-placeholder="Pilih nama" style="width: 100%;" id="klien_id_select" onchange="load_select2_petugas()"></select>
+          <select data-placeholder="Pilih nama" style="width: 100%;" class="" id="klien_id_select" onchange="load_select2_petugas()"></select>
           <div class="col-md-12" style="background-color:aliceblue; padding:10px; display:none" id="detail_data_klien"></div>
           <div class="invalid-feedback2" id="valid-klien_id_select">
             Klien wajib ada.
@@ -378,6 +386,13 @@
   // Initial setup
   $("#editAgenda, #tombol_view_agenda").hide();
   $(document).ready(function() {
+    // $('.select2').select2();
+    //     $('.select2bs4').select2();
+    //     $('.select-tag').select2({
+    //     tags: true,
+    //     theme: 'bootstrap4'
+    // });
+
     $('#reset-jam-selesai').click(function(event) {
         event.preventDefault(); // Prevent the default link behavior
         $('#jam_selesai').val(''); // Set the value to null (empty string)
