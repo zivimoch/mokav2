@@ -883,7 +883,7 @@
             var jenisAgenda = 'Agenda Non-Layanan';
           }
           $('#viewJenisAgenda').html(jenisAgenda);
-          $('#viewIntervensiKe').html(data.intervensi_ke);
+          $('#viewIntervensiKe').html(data.intervensi_ke_agenda);
           $('#viewKlien').html(data.nama);
           data_tindak_lanjut = data.data_tindak_lanjut;
           $('#viewTLPetugas').html(data_tindak_lanjut.name+' ('+data_tindak_lanjut.jabatan+')');
@@ -926,8 +926,13 @@
 
           if (data.klien_id != null) {
             // jika agenda layanan
-            console.log(data);
-            $('#jumlah_intervensi_ke').val(data.intervensi_ke);
+            if (data.intervensi_ke_agenda != null) {
+              // jika tidak ada berarti create / add maka intervensi_ke nya pakai dari intervensi_ke terupdatenya
+              $('#jumlah_intervensi_ke').val(data.intervensi_ke_agenda);
+            } else {
+              // kalau ada berarti pakai yang editnya
+              $('#jumlah_intervensi_ke').val(data.intervensi_ke);
+            }
             $('input[name="penjadwalan_layanan"][value="1"]').prop('checked', true);
             $("#klien_id_select").append('<option value="'+data.klien_id+'" selected>'+data.nama+'</option>');
 

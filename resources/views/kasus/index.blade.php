@@ -87,8 +87,9 @@
               <span class="badge bg-primary">Basis Perhitungan Usia : <span id="filterPenghitunganUsia"></span>  </span>
               <span class="badge bg-primary">Kategori Klien : <span id="filterKategori"></span>  </span>
               <span class="badge bg-primary">Tampilkan Seluruh Kasus : <span id="filterAnda"></span>  </span>
-              <span class="badge bg-primary">Pemantauaan : <span id="filterPemantauan"></span>  </span>
+              <span class="badge bg-primary">Pemantauan : <span id="filterPemantauan"></span>  </span>
               <span class="badge bg-primary">Arsip : <span id="filterArsip"></span>  </span>
+              <span class="badge bg-primary">Terminasi : <span id="filterTerminasi"></span>  </span>
             <table id="tabelKasus" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
             <thead>
             <tr>
@@ -349,7 +350,7 @@
 
       <div class="col-md-12">
         <div class="form-group">
-            <label for="">Pemantauaan & Evaluasi</label>
+            <label for="">Pemantauan & Evaluasi</label>
             <br>
             <div class="icheck-primary d-inline" style="margin-right:15px">
               <input type="radio" id="radioPrimary1d" name="filter1Pemantauan" value="1">
@@ -365,6 +366,25 @@
             </div>
           </div>
     </div>
+
+    <div class="col-md-12">
+      <div class="form-group">
+          <label for="">Terminasi</label>
+          <br>
+          <div class="icheck-primary d-inline" style="margin-right:15px">
+            <input type="radio" id="radioPrimary1e" name="filter1Terminasi" value="1">
+            <label for="radioPrimary1e">
+                Kasus yang sudah diterminasi
+            </label>
+          </div>
+          <div class="icheck-primary d-inline">
+            <input type="radio" id="radioPrimary2e" name="filter1Terminasi" value="0" checked>
+            <label for="radioPrimary2e">
+              Seluruh kasus
+            </label>
+          </div>
+        </div>
+  </div>
 
       <div class="col-md-12">
         <div class="form-group">
@@ -430,6 +450,7 @@
       var anda = $('input[name="filter1Anda"]:checked').val();
       var pemantauan = $('input[name="filter1Pemantauan"]:checked').val();
       var arsip = $('input[name="filter1Arsip"]:checked').val();
+      var terminasi = $('input[name="filter1Terminasi"]:checked').val();
       var penghitungan_usia = $('#filter1PenghitunganUsia').val();
       var kategori = $('#filter1Kategori').val();
       $('#filterBasisTanggal').html(basisTanggal);
@@ -438,6 +459,7 @@
       $('#filterWilayah').html(wilayah);
       $('#filterAnda').html(anda);
       $('#filterArsip').html(arsip);
+      $('#filterTerminasi').html(terminasi);
       $('#filterPemantauan').html(pemantauan);
       $('#filterPenghitunganUsia').html(penghitungan_usia);
       $('#filterKategori').html(kategori);
@@ -516,11 +538,11 @@
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
-      "ajax": "{{ env('APP_URL') }}/kasus?basis_tanggal=" + $('#filter1BasisTanggal').val() + "&basis_wilayah=" + $('#filter1BasisWilayah').val() + "&wilayah=" + $('#filter1Wilayah').val() + "&tanggal=" + $('#filter1Tanggal').val() + "&arsip=" + $('input[name="filter1Arsip"]:checked').val() + "&pemantauan=" + $('input[name="filter1Pemantauan"]:checked').val() + "&anda=" + $('input[name="filter1Anda"]:checked').val(),
+      "ajax": "{{ env('APP_URL') }}/kasus?basis_tanggal=" + $('#filter1BasisTanggal').val() + "&basis_wilayah=" + $('#filter1BasisWilayah').val() + "&wilayah=" + $('#filter1Wilayah').val() + "&tanggal=" + $('#filter1Tanggal').val() + "&arsip=" + $('input[name="filter1Arsip"]:checked').val() + "&terminasi=" + $('input[name="filter1Terminasi"]:checked').val() + "&pemantauan=" + $('input[name="filter1Pemantauan"]:checked').val() + "&anda=" + $('input[name="filter1Anda"]:checked').val(),
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
 
-          if (data.jatuh_tempo >= 172) {
+          if (data.jatuh_tempo >= 172 && (data.jumlah_terminasi == 0 || data.jumlah_terminasi == null)) {
             $(row).attr('class', 'warning_table');
           }
       },
@@ -931,9 +953,10 @@
       var anda = $('input[name="filter1Anda"]:checked').val();
       var pemantauan = $('input[name="filter1Pemantauan"]:checked').val();
       var arsip = $('input[name="filter1Arsip"]:checked').val();
+      var terminasi = $('input[name="filter1Terminasi"]:checked').val();
       var penghitungan_usia = $('#filter1PenghitunganUsia').val();
       var kategori = $('#filter1Kategori').val();
-      var url = "{{ env('APP_URL') }}/kasus?basis_tanggal=" + basisTanggal + "&tanggal=" + tanggal + "&basis_wilayah=" + basis_wilayah + "&wilayah=" + wilayah + "&arsip=" + arsip + "&pemantauan=" + pemantauan + "&anda=" + anda + "&penghitungan_usia=" + penghitungan_usia + "&kategoriklien=" + kategori;
+      var url = "{{ env('APP_URL') }}/kasus?basis_tanggal=" + basisTanggal + "&tanggal=" + tanggal + "&basis_wilayah=" + basis_wilayah + "&wilayah=" + wilayah + "&arsip=" + arsip + "&terminasi=" + terminasi + "&pemantauan=" + pemantauan + "&anda=" + anda + "&penghitungan_usia=" + penghitungan_usia + "&kategoriklien=" + kategori;
 
       $('#filterBasisTanggal').html(basisTanggal);
       $('#filterTanggal').html(tanggal);
@@ -942,6 +965,7 @@
       $('#filterAnda').html(anda);
       $('#filterPemantauan').html(pemantauan);
       $('#filterArsip').html(arsip);
+      $('#filterTerminasi').html(terminasi);
       $('#filterPenghitunganUsia').html(penghitungan_usia);
       $('#filterKategori').html(kategori);
 

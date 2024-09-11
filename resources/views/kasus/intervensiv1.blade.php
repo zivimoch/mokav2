@@ -237,6 +237,10 @@ $("#tabelLayanan{{ $intervensi_ke }}").DataTable({
                                       <textarea readonly class=\"form-control\" style=\"resize: none;\">'+e.rencana+'</textarea> \
                                   </div> \
                               </div> \
+                              <div class=\"col-md-12\"> \
+                                  <div class=\"form-group\"> \
+                                      <label>Action Selanjutnya : </label> '+e.action_pemantauan+'</div> \
+                              </div> \
                           </div> \
                       </div>'
                   );

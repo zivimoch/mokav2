@@ -80,7 +80,8 @@ class KasusController extends Controller
                             DB::raw("TIMESTAMPDIFF(YEAR, a.tanggal_lahir, $penguarang) as usia"), 
                             'a.status', 
                             'd.name as petugas',
-                            'y.jatuh_tempo'
+                            'y.jatuh_tempo',
+                            'x.jumlah_terminasi'
                         )
                         ->leftJoin('kasus as b', 'b.id', 'a.kasus_id')
                         ->leftJoin('petugas as c', 'a.id', 'c.klien_id')
@@ -99,9 +100,13 @@ class KasusController extends Controller
                                                 GROUP BY klien_id
                                             ) p2 ON a.id = p2.klien_id
                                             LEFT JOIN pemantauan p1 ON p1.klien_id = p2.klien_id AND p1.created_at = p2.latest_created_at) y"), 'y.klien_id', '=', 'a.id')
+                        ->leftJoin(DB::raw('(SELECT klien_id, COUNT(*) AS jumlah_terminasi  
+                                            FROM terminasi
+                                            WHERE validated_by IS NOT NULL
+                                            AND deleted_at IS NULL GROUP BY klien_id) x'), 'x.klien_id', '=', 'a.id')
                         ->whereNull('a.deleted_at')
                         ->whereNull('c.deleted_at')
-                        ->groupBy('a.uuid', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 'a.jenis_kelamin', 'a.tanggal_lahir', 'a.status', 'd.name', 'y.jatuh_tempo')
+                        ->groupBy('a.uuid', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 'a.jenis_kelamin', 'a.tanggal_lahir', 'a.status', 'd.name', 'y.jatuh_tempo', 'x.jumlah_terminasi')
                         ->addBinding($today->toDateString(), 'select')
                         ->addBinding($today->toDateString(), 'select'); // Added second binding for tanggal_approve
 
@@ -138,7 +143,13 @@ class KasusController extends Controller
 
             // filter Pemanatauaan & Evaluasi
             if ($request->pemantauan) {
-                $data->where('y.jatuh_tempo','>=','172');
+                $data->where('y.jatuh_tempo','>=','172')
+                    ->where('x.jumlah_terminasi', 0);
+            }
+
+            // filter Terminasi
+            if ($request->terminasi) {
+                $data->where('x.jumlah_terminasi', '>', 0);
             }
 
             // filter arsip, sebagai default arsip = 0
@@ -500,6 +511,21 @@ class KasusController extends Controller
         );
         /////////////////////////////////////////////////////////////////////////////////////////////
        $detail['kelengkapan_petugas'] = $kelengkapan_petugas;
+
+       // cek pemantauan & evaluasi terakhir apakah memilih terminasi atau tidak. 
+       // untuk formulir pengajuan terminasi
+
+    $pengajuan_terminasi_terakhir = DB::table('pemantauan as p')
+                                    ->join(DB::raw('(SELECT klien_id, MAX(created_at) AS max_created_at 
+                                                    FROM pemantauan 
+                                                    GROUP BY klien_id) as max_p'), function($join) {
+                                        $join->on('p.klien_id', '=', 'max_p.klien_id')
+                                            ->on('p.created_at', '=', 'max_p.max_created_at');
+                                    })
+                                    ->where('p.klien_id', $klien->id)
+                                    ->where('p.action_pemantauan', 'ajukan_terminasi')
+                                    ->select('p.klien_id', 'p.created_at', 'p.action_pemantauan')
+                                    ->count();
        
        return view('kasus.show')
                 ->with('klien', $klien)
@@ -538,7 +564,8 @@ class KasusController extends Controller
                 ->with('persetujuan_template',$persetujuan_template)
                 ->with('detail', $detail)
                 ->with('kasus_terkait', $kasus_terkait)
-                ->with('akses_petugas', $akses_petugas);
+                ->with('akses_petugas', $akses_petugas)
+                ->with('pengajuan_terminasi_terakhir', $pengajuan_terminasi_terakhir);
     }
 
     // untuk ajax rekap kasus yang bisa dicopas buat WA
@@ -930,6 +957,14 @@ class KasusController extends Controller
             $message_pemantauan = 'Batas waktu Pemantauan & Evaluasi selanjutnya adalah ' . $berapa_hari_lagi_expired . ' hari lagi';
         } elseif ($hari_setelah_monev_terakhir > 182) {
             $message_pemantauan = 'Sudah lebih dari 6 bulan sejak Pemantauan & Evaluasi terakhir / sejak diapprove. Segera dibuat Laporan Pemantauan & Evaluasi!';
+        }
+
+        // kalau sudah terminasi, makaa deadline_pemantauan dibikin 0 aja, biar warning tidak muncul 
+        $terminasi = Terminasi::where('klien_id', $klien->id)
+                            ->whereNotNull('validated_by')
+                            ->first();
+        if ($terminasi) {
+            $hari_setelah_monev_terakhir = 0;
         }
 
         $pemantauan['deadline_pemantauan'] = $hari_setelah_monev_terakhir;

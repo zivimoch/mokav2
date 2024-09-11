@@ -45,8 +45,17 @@
         cursor:not-allowed;
     }
 </style>
-
 <section class="content-header">
+
+@if ($klien->remarks_migrate == 'moka1')
+<div class="col-md-12">
+    <div class="alert alert-danger">
+    <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+    Anda sedang mengakses kasus dari MOKA V1. Pada kasus ini sangat mungkin ada data yang masih kosong atau terjadi error. Bila ada kebutuhan segera mengenai informasi data tertentu pada kasus ini, maka silahkan hubungi TA IT DATA untuk didahulukan proses pelengkapan datanya pada kasus ini.
+    </div>
+</div>
+@endif
+
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
@@ -2069,18 +2078,26 @@
                     <td style="width: 200px"><b>Terminasi Kasus<b></td>
                     <td>
                         <div id="kolomTerminasi"></div>
-                        {{-- @if (in_array(Auth::user()->jabatan, ['Manajer Kasus']))
-                            <div id="accordionTerminasi">
+                        @if (in_array(Auth::user()->jabatan, ['Manajer Kasus']))
+                            <div id="accordionTerminasi2">
                                 <div class="card card-danger">
                                 <div class="card-header">
                                 <h4 class="card-title w-100">
-                                <a class="d-block w-100" data-toggle="collapse" href="#collapseTerminasi">
+                                <a class="d-block w-100" data-toggle="collapse" href="#collapseTerminasi2">
                                 Ajukan Terminasi Kasus
                                 </a>
                                 </h4>
                                 </div>
-                                <div id="collapseTerminasi" class="collapse {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'show' : '' }}" data-parent="#accordionTerminasi" style="">
+                                <div id="collapseTerminasi2" class="collapse {{ Request::get('hightlight') == 'inputpersetujuankasus' ? 'show' : '' }}" data-parent="#accordionTerminasi2" style="">
                                 <div class="card-body">
+                                    @if ($pengajuan_terminasi_terakhir == 0)
+                                        <div class="col-md-12">
+                                            <div class="alert alert-danger">
+                                            <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+                                            Pemantauan & Evaluasi perlu diisi dengan memilih opsi "Cukup, Ajukan Terminasi Kasus".
+                                            </div>
+                                        </div>
+                                    @else
                                     <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message-terminasi">
                                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                         <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
@@ -2114,11 +2131,13 @@
                                         <button type="submit" class="btn btn-block btn-danger" id="submitTerminasi"><i class="fas fa-times"></i> Terminasi Kasus</button>
                                     </div>
                                 </div>
+                                @endif
+
                                 </div>
                                 </div>
                                 </div>
                             </div>
-                        @endif --}}
+                        @endif
                     </td>
                 </tr>
             </table>

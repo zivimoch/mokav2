@@ -690,7 +690,7 @@ class AgendaController extends Controller
                             $type = 'task';
                             $message_notif = Auth::user()->name.' telah membuat agenda untuk anda : <b>'.$request->judul_kegiatan.'</b>. Silahkan buat laporan tindak lanjutnya';
                             $agenda_id = $proses_id;
-                        }else{
+                        } else {
                             $kode = 'N10';
                             $type = 'notif';
                             $message_notif = Auth::user()->name.' telah merubah agenda yang berkaitan dengan anda : <b>'.$request->judul_kegiatan.'</b>.';
@@ -710,7 +710,7 @@ class AgendaController extends Controller
                             $kode, //kode
                             $type, //type_notif
                             ($klien && $klien->no_klien) ? $klien->no_klien : NULL, //noregis
-                            Auth::user()->name, //from
+                            Auth::user()->name, //from  
                             $message_notif, //message
                             ($klien && $klien->nama) ? $klien->nama : NULL,  //nama korban 
                             ($klien && $klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
@@ -818,6 +818,7 @@ class AgendaController extends Controller
                         ]);
     
                         if ($request->jam_selesai) {
+                            // dd($klien->id);
                             // jika ada jam selesainya maka T9 dan T10 read = 1
                             NotifHelper::read_notif(
                                 $value, // receStoreiver_id
@@ -1030,9 +1031,8 @@ class AgendaController extends Controller
                     // ->where('b.created_by', Auth::user()->id)
                     ->where('a.uuid', $uuid)
                     ->whereNull('b.deleted_at')
-                    ->select(DB::raw('a.id, b.id as tindak_lanjut_id, a.tanggal_mulai, a.jam_mulai, a.klien_id, a.intervensi_ke, d.nama, d.intervensi_ke, a.uuid, b.tanggal_selesai, b.jam_selesai, a.judul_kegiatan, a.keterangan, b.lokasi, b.catatan, b.rtl, c.name, b.created_by'))
+                    ->select(DB::raw('a.id, b.id as tindak_lanjut_id, a.tanggal_mulai, a.jam_mulai, a.klien_id, a.intervensi_ke as intervensi_ke_agenda, d.nama, d.intervensi_ke, a.uuid, b.tanggal_selesai, b.jam_selesai, a.judul_kegiatan, a.keterangan, b.lokasi, b.catatan, b.rtl, c.name, b.created_by'))
                     ->first();
-                    
         $data_tindak_lanjut = DB::table('agenda as a')
                     ->leftJoin('tindak_lanjut as b', 'b.agenda_id', 'a.id')
                     ->leftJoin('users as c', 'c.id', 'b.created_by')
