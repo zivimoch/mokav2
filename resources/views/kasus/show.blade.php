@@ -2098,25 +2098,25 @@
                                             </div>
                                         </div>
                                     @else
-                                    <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message-terminasi">
+                                    <div class="alert alert-danger alert-dismissible invalid-feedback" id="error-message-terminasi_settings">
                                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                         <h4><i class="icon fa fa-ban"></i> Gagal!</h4>
                                         <span id="message-terminasi"></span>
                                     </div>
-                                    <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message-terminasi">
+                                    <div class="alert alert-success alert-dismissible invalid-feedback" id="success-message-terminasi_settings">
                                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                         <h4><i class="icon fa fa-check"></i> Success!</h4>
                                         Data berhasil disimpan.
                                     </div>
                                     <div class="form-group clearfix">
                                         <div class="icheck-primary d-inline" style="margin-right:15px">
-                                        <input type="radio" id="radioPrimary1" name="jenis_terminasi" checked value="selesai">
+                                        <input type="radio" id="radioPrimary1" name="jenis_terminasi_settings" checked value="selesai">
                                         <label for="radioPrimary1">
                                             Terminasi Kasus Selesai
                                         </label>
                                         </div>
                                         <div class="icheck-primary d-inline">
-                                        <input type="radio" id="radioPrimary2" name="jenis_terminasi" value="ditutup">
+                                        <input type="radio" id="radioPrimary2" name="jenis_terminasi_settings" value="ditutup">
                                         <label for="radioPrimary2">
                                             Terminasi Kasus Ditutup
                                         </label>
@@ -2124,11 +2124,11 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Alasan Terminasi </label>
-                                        <textarea class="form-control required-field-terminasi" id="terminasi_alasan" aria-label="With textarea" style="resize: none;" rows="5"></textarea>
+                                        <textarea class="form-control required-field-terminasi_settings" id="terminasi_alasan_settings" aria-label="With textarea" style="resize: none;" rows="5"></textarea>
                                     </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <button type="submit" class="btn btn-block btn-danger" id="submitTerminasi"><i class="fas fa-times"></i> Terminasi Kasus</button>
+                                        <button type="submit" class="btn btn-block btn-danger" onclick="submit_terminasi('_settings')"><i class="fas fa-times"></i> Terminasi Kasus</button>
                                     </div>
                                 </div>
                                 @endif
@@ -3759,8 +3759,8 @@ $("#tabelAsesmenLanjutan").DataTable({
             });
     }
 
-    function submit_terminasi() {
-        if(validateForm('terminasi')){
+    function submit_terminasi(form='') {
+        if(validateForm('terminasi'+form)){
             let token   = $("meta[name='csrf-token']").attr("content");
             $.ajax({
             url: "{{ route('terminasi.store') }}",
@@ -3769,19 +3769,19 @@ $("#tabelAsesmenLanjutan").DataTable({
             data: {
                 uuid: $('#uuid_terminasi').val(),
                 uuid_klien: '{{ $klien->uuid }}',
-                jenis_terminasi: $("input[name=jenis_terminasi]:checked").val(),
-                alasan: $("#terminasi_alasan").val(),
+                jenis_terminasi: $("input[name=jenis_terminasi"+form+"]:checked").val(),
+                alasan: $("#terminasi_alasan"+form).val(),
                 _token: token
             },
             success: function (response){
                 if (response.success != true) {
-                    $('#message-terminasi').html(JSON.stringify(response));
-                    $("#success-message-terminasi").hide();
-                    $("#error-message-terminasi").show();
+                    $('#message-terminasi'+form).html(JSON.stringify(response));
+                    $("#success-message-terminasi"+form).hide();
+                    $("#error-message-terminasi"+form).show();
                 }else{
-                    $('#message-terminasi').html(response.message);
+                    $('#message-terminasi'+form).html(response.message);
                     // $("#success-message-terminasi").show();
-                    $("#error-message-terminasi").hide();
+                    $("#error-message-terminasi"+form).hide();
                     loadTerminasi();                    
                     
                     // kirim realtime notifikasi
@@ -3790,8 +3790,8 @@ $("#tabelAsesmenLanjutan").DataTable({
                     });
 
                     // hapus semua inputan
-                    $('#uuid_terminasi').val('');
-                    $("#terminasi_alasan").val('');
+                    $('#uuid_terminasi'+form).val('');
+                    $("#terminasi_alasan"+form).val('');
                 }
             },
             error: function (response){
@@ -3800,9 +3800,9 @@ $("#tabelAsesmenLanjutan").DataTable({
                 },500);
                 console.log(response);
 
-                $('#message-terminasi').html(JSON.stringify(response));
-                $("#success-message-terminasi").hide();
-                $("#error-message-terminasi").show();
+                $('#message-terminasi'+form).html(JSON.stringify(response));
+                $("#success-message-terminasi"+form).hide();
+                $("#error-message-terminasi"+form).show();
             }
             }).done(function() { //loading submit form
                 setTimeout(function(){
@@ -3810,9 +3810,9 @@ $("#tabelAsesmenLanjutan").DataTable({
                 },500);
             });
         }else{
-            $('#message-terminasi').html('Mohon cek ulang data yang wajib diinput.');
-            $("#success-message-terminasi").hide();
-            $("#error-message-terminasi").show();
+            $('#message-terminasi'+form).html('Mohon cek ulang data yang wajib diinput.');
+            $("#success-message-terminasi"+form).hide();
+            $("#error-message-terminasi"+form).show();
         }
     }
 

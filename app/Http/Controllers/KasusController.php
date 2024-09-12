@@ -143,8 +143,11 @@ class KasusController extends Controller
 
             // filter Pemanatauaan & Evaluasi
             if ($request->pemantauan) {
-                $data->where('y.jatuh_tempo','>=','172')
-                    ->where('x.jumlah_terminasi', 0);
+                $data->where('y.jatuh_tempo', '>=', 172)
+                    ->where(function($q) {
+                        $q->where('x.jumlah_terminasi', '=', 0)
+                        ->orWhereNull('x.jumlah_terminasi');
+                    });
             }
 
             // filter Terminasi

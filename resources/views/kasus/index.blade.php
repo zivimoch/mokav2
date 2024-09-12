@@ -631,7 +631,8 @@
           if ('{{ Auth::user()->jabatan }}' == 'Penerima Pengaduan') {
             $('#buttons').append('<button type="button" class="btn btn-success btn-block" id="terima" onclick="terima_kasus(`'+data.uuid+'`)"><i class="fa fa-check"></i> Terima Kasus</button>');
           }
-          $('#buttons').append('<a href="#" onclick="rekap_kasus(`' + data.uuid + '`)" class="btn btn-warning btn-block" id="rekap"><i class="fas fa-stream"></i> Rekap Kasus</a>');
+          $('#buttons').append('<a href="#" onclick="alert(`Fitur belum tersedia`)" class="btn btn-warning btn-block" id="rekap"><i class="fas fa-stream"></i> Rekap Kasus</a>');
+          // $('#buttons').append('<a href="#" onclick="rekap_kasus(`' + data.uuid + '`)" class="btn btn-warning btn-block" id="rekap"><i class="fas fa-stream"></i> Rekap Kasus</a>');
           $('#buttons').append('<a href="' + "{{ route('kasus.show', '') }}" + '/' + data.uuid + '" class="btn btn-primary btn-block" id="detail"><i class="fa fa-info-circle"></i> Detail Kasus (Bisa New Tab)</a>');
           if ( data.no_klien == null && "{{ in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Super Admin']) }}") {
               $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
@@ -677,7 +678,8 @@
           
          //munculkan tombol
         $('#buttons').html('');
-        $('#buttons').append('<a href="#" onclick="rekap_kasus(`' + data.uuid + '`)" class="btn btn-warning btn-block" id="rekap"><i class="fas fa-stream"></i> Rekap Kasus</a>');
+        $('#buttons').append('<a href="#" onclick="alert(`Fitur belum tersedia`)" class="btn btn-warning btn-block" id="rekap"><i class="fas fa-stream"></i> Rekap Kasus</a>');
+        // $('#buttons').append('<a href="#" onclick="rekap_kasus(`' + data.uuid + '`)" class="btn btn-warning btn-block" id="rekap"><i class="fas fa-stream"></i> Rekap Kasus</a>');
         $('#buttons').append('<a href="' + "{{ route('kasus.show', '') }}" + '/' + data.uuid + '" class="btn btn-primary btn-block" id="detail"><i class="fa fa-info-circle"></i> Detail Kasus (Bisa New Tab)</a>');
         if ( data.no_klien == null && "{{ in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Super Admin']) }}") {
             $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
