@@ -568,6 +568,15 @@ class AgendaController extends Controller
             $tahun = date('Y', strtotime($request->tanggal_mulai));
             $bulan = date('m', strtotime($request->tanggal_mulai));
             $notif_receiver = NULL; 
+
+            // read Task T8
+            NotifHelper::read_notif(
+                Auth::user()->id, // receiver_id
+                ($klien && $klien->id)? $klien->id : NULL, // klien_id
+                'T8', // kode ini request dari link 
+                'task', // type_notif
+                NULL // agenda_id
+            );
             
             // ===========================================================================================
             // Proses read, push notif & log activity ////////////////////////////////////////////////////

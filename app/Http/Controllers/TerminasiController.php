@@ -58,6 +58,7 @@ class TerminasiController extends Controller
 
                 $klien = Klien::where('uuid', $request->uuid_klien)->first();
                 
+                $setuju_terminasi = 0;
                 if (!$request->uuid) {
                     // jika tidak ada uuid berarti tambah / mengajukan terminasi
                     $data_request = array('klien_id'   => $klien->id, 
@@ -94,6 +95,7 @@ class TerminasiController extends Controller
                     $kode = 'T13';
                     $message_notif = Auth::user()->name.' menyetujui terminasi. <b>Kasus ditutup / selesai</b>';
                     $message_status = 'Kasus berhasil diTerminasi';
+                    $setuju_terminasi = 1;
                 }
 
                 //create post
@@ -113,6 +115,7 @@ class TerminasiController extends Controller
                 $petugas = $petugas->where('b.jabatan', $jabatan);
             }
             $petugas = $petugas->pluck('b.id');
+            // list petugas untuk kitim notif (ke user2 tertentu)
             foreach ($petugas as $key => $value) {
                 NotifHelper::push_notif(
                     $value , //receiver_id
@@ -134,6 +137,39 @@ class TerminasiController extends Controller
                     $notif_receiver[] = 'user_'.$value;
                 }
             }
+            
+            // lsit petugas untuk hilangkan notif (untuk semua user)
+            $petugas_all = DB::table('petugas as a')
+                        ->leftJoin('users as b', 'a.user_id', 'b.id')
+                        ->where('a.klien_id', $klien->id)
+                        ->whereNull('a.deleted_at')
+                        ->whereNull('b.deleted_at')
+                        ->pluck('b.id');
+            foreach ($petugas_all as $key => $value_all) {
+                // jika disetujui terminasi, beberapa notif kasus ini akan ter-read
+                if ($setuju_terminasi) {
+                    $notif_data = [
+                        ['kode' => 'T7', 'type_notif' => 'task'],
+                        ['kode' => 'T8', 'type_notif' => 'task']
+                    ];
+                } else {
+                    // task yang setuju / tidak tetap hilang
+                    $notif_data = [
+                        ['kode' => 'T12', 'type_notif' => 'task']
+                    ];
+                }
+                foreach ($notif_data as $notif) {
+                    NotifHelper::read_notif(
+                        $value_all, // receiver_id
+                        ($klien && $klien->id)? $klien->id : NULL, // klien_id
+                        $notif['kode'], // kode
+                        $notif['type_notif'], // type_notif
+                        NULL // agenda_id
+                    );
+                }
+            }
+
+
             //write log activity ////////////////////////////////////////////////////////////////////////
             LogActivityHelper::push_log(
                 //message

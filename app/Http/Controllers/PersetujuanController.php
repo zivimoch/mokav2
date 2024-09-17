@@ -225,6 +225,17 @@ class PersetujuanController extends Controller
 
         $klien = Klien::where('id', $persetujuan_isi->klien_id)->first();
 
+        // read task jika login sebagai MK
+        if (isset(Auth::user()->id)) {
+            NotifHelper::read_notif(
+                Auth::user()->id, // receiver_id
+                $klien->id, // klien_id
+                'T7', // kode
+                'task', // type_notif
+                NULL // agenda_id
+            );
+        }
+        
         return view('persetujuan.donepelayanan',)
                     ->with('persetujuan_template', $persetujuan_template)
                     ->with('persetujuan_item', $persetujuan_item)

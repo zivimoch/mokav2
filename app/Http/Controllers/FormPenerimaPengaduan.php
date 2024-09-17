@@ -517,6 +517,22 @@ class FormPenerimaPengaduan extends Controller
                     'user_id' => Auth::user()->id,
                     'created_by'=>  Auth::user()->id
                 ]);
+                
+                NotifHelper::push_notif(
+                    Auth::user()->id , //receiver_id
+                    $klien->id, //klien_id
+                    'T2', //type_notif
+                    'task', //type_notif
+                    $klien->no_klien ? $klien->no_klien : NULL, //noregis
+                    'System', //from
+                    'Kasus baru. Silahkan pilih Supervisor & Manajer Kasus', //message
+                    ($klien && $klien->nama) ? $klien->nama : NULL,  //nama korban 
+                    ($klien && $klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
+                    url('/kasus/show/'.$klien->uuid.'?tab=kasus-petugas&tambah-petugas=1'), //url
+                    1, //kirim ke diri sendiri 0 / 1
+                    Auth::user()->id, // created_by
+                    NULL // agenda_id
+                );
             }
 
             $klien_notifs = DB::table('kasus as a')

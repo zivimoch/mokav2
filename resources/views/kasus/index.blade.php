@@ -87,6 +87,7 @@
               <span class="badge bg-primary">Basis Perhitungan Usia : <span id="filterPenghitunganUsia"></span>  </span>
               <span class="badge bg-primary">Kategori Klien : <span id="filterKategori"></span>  </span>
               <span class="badge bg-primary">Tampilkan Seluruh Kasus : <span id="filterAnda"></span>  </span>
+              <span class="badge bg-primary">Intervensiku : <span id="filterIntervensiku"></span>  </span>
               <span class="badge bg-primary">Pemantauan : <span id="filterPemantauan"></span>  </span>
               <span class="badge bg-primary">Arsip : <span id="filterArsip"></span>  </span>
               <span class="badge bg-primary">Terminasi : <span id="filterTerminasi"></span>  </span>
@@ -97,6 +98,7 @@
             <th>No Regis</th>
             <th>Nama Klien</th>
             <th>Kategori Klien</th>
+            <th>Jumlah Intervensiku</th>
             <th>Pengaduan</th>
             <th>Status Terakhir</th>
             </tr>
@@ -109,6 +111,7 @@
             <th>No Regis</th>
             <th>Nama</th>
             <th>Kategori Klien</th>
+            <th>Jumlah Intervensiku</th>
             <th>Pengaduan</th>
             <th>Status Terakhir</th>
             </tr>
@@ -349,6 +352,25 @@
       </div>
 
       <div class="col-md-12">
+          <div class="form-group">
+              <label for="">Intervensi Anda</label>
+              <br>
+              <div class="icheck-primary d-inline">
+                  <input type="radio" id="radioPrimary2f" name="filter1Intervensiku" value="1">
+                <label for="radioPrimary2f">
+                    Kasus yang BELUM ADA agenda intervensinya dari anda
+                </label>
+              </div>
+              <div class="icheck-primary d-inline" style="margin-right:15px">
+                <input type="radio" id="radioPrimary1f" name="filter1Intervensiku" checked value="0">
+                <label for="radioPrimary1f">
+                    Seluruh kasus
+                </label>
+              </div>
+            </div>
+      </div>
+
+      <div class="col-md-12">
         <div class="form-group">
             <label for="">Pemantauan & Evaluasi</label>
             <br>
@@ -448,6 +470,7 @@
       var basis_wilayah = $('#filter1BasisWilayah').val();
       var wilayah = $('#filter1Wilayah').val();
       var anda = $('input[name="filter1Anda"]:checked').val();
+      var intervensiku = $('input[name="filter1Intervensiku"]:checked').val();
       var pemantauan = $('input[name="filter1Pemantauan"]:checked').val();
       var arsip = $('input[name="filter1Arsip"]:checked').val();
       var terminasi = $('input[name="filter1Terminasi"]:checked').val();
@@ -460,6 +483,7 @@
       $('#filterAnda').html(anda);
       $('#filterArsip').html(arsip);
       $('#filterTerminasi').html(terminasi);
+      $('#filterIntervensiku').html(intervensiku);
       $('#filterPemantauan').html(pemantauan);
       $('#filterPenghitunganUsia').html(penghitungan_usia);
       $('#filterKategori').html(kategori);
@@ -538,7 +562,7 @@
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
-      "ajax": "{{ env('APP_URL') }}/kasus?basis_tanggal=" + $('#filter1BasisTanggal').val() + "&basis_wilayah=" + $('#filter1BasisWilayah').val() + "&wilayah=" + $('#filter1Wilayah').val() + "&tanggal=" + $('#filter1Tanggal').val() + "&arsip=" + $('input[name="filter1Arsip"]:checked').val() + "&terminasi=" + $('input[name="filter1Terminasi"]:checked').val() + "&pemantauan=" + $('input[name="filter1Pemantauan"]:checked').val() + "&anda=" + $('input[name="filter1Anda"]:checked').val(),
+      "ajax": "{{ env('APP_URL') }}/kasus?basis_tanggal=" + $('#filter1BasisTanggal').val() + "&basis_wilayah=" + $('#filter1BasisWilayah').val() + "&wilayah=" + $('#filter1Wilayah').val() + "&tanggal=" + $('#filter1Tanggal').val() + "&arsip=" + $('input[name="filter1Arsip"]:checked').val() + "&terminasi=" + $('input[name="filter1Terminasi"]:checked').val() + "&pemantauan=" + $('input[name="filter1Pemantauan"]:checked').val() + "&anda=" + $('input[name="filter1Anda"]:checked').val() + "&intervensiku=" + $('input[name="filter1Intervensiku"]:checked').val(),
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
 
@@ -571,6 +595,7 @@
               }
             }
         },
+        {"data": "jumlah_intervensiku"},
         {"data": "petugas"},
         {
             "mData": "status_terakhir",
@@ -953,18 +978,20 @@
       var basis_wilayah = $('#filter1BasisWilayah').val();
       var wilayah = $('#filter1Wilayah').val();
       var anda = $('input[name="filter1Anda"]:checked').val();
+      var intervensiku = $('input[name="filter1Intervensiku"]:checked').val();
       var pemantauan = $('input[name="filter1Pemantauan"]:checked').val();
       var arsip = $('input[name="filter1Arsip"]:checked').val();
       var terminasi = $('input[name="filter1Terminasi"]:checked').val();
       var penghitungan_usia = $('#filter1PenghitunganUsia').val();
       var kategori = $('#filter1Kategori').val();
-      var url = "{{ env('APP_URL') }}/kasus?basis_tanggal=" + basisTanggal + "&tanggal=" + tanggal + "&basis_wilayah=" + basis_wilayah + "&wilayah=" + wilayah + "&arsip=" + arsip + "&terminasi=" + terminasi + "&pemantauan=" + pemantauan + "&anda=" + anda + "&penghitungan_usia=" + penghitungan_usia + "&kategoriklien=" + kategori;
+      var url = "{{ env('APP_URL') }}/kasus?basis_tanggal=" + basisTanggal + "&tanggal=" + tanggal + "&basis_wilayah=" + basis_wilayah + "&wilayah=" + wilayah + "&arsip=" + arsip + "&terminasi=" + terminasi + "&pemantauan=" + pemantauan + "&anda=" + anda + "&intervensiku=" + intervensiku + "&penghitungan_usia=" + penghitungan_usia + "&kategoriklien=" + kategori;
 
       $('#filterBasisTanggal').html(basisTanggal);
       $('#filterTanggal').html(tanggal);
       $('#filterBasisWilayah').html(basis_wilayah);
       $('#filterWilayah').html(wilayah);
       $('#filterAnda').html(anda);
+      $('#filterIntervensiku').html(intervensiku);
       $('#filterPemantauan').html(pemantauan);
       $('#filterArsip').html(arsip);
       $('#filterTerminasi').html(terminasi);

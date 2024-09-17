@@ -47,14 +47,14 @@
 </style>
 <section class="content-header">
 
-@if ($klien->remarks_migrate == 'moka1')
+{{-- @if ($klien->remarks_migrate == 'moka1')
 <div class="col-md-12">
     <div class="alert alert-danger">
     <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
     Anda sedang mengakses kasus dari MOKA V1. Pada kasus ini sangat mungkin ada data yang masih kosong atau terjadi error. Bila ada kebutuhan segera mengenai informasi data tertentu pada kasus ini, maka silahkan hubungi TA IT DATA untuk didahulukan proses pelengkapan datanya pada kasus ini.
     </div>
 </div>
-@endif
+@endif --}}
 
     <div class="container-fluid">
       <div class="row mb-2">
@@ -2547,6 +2547,13 @@
                 <textarea class="form-control required-field-catatan" id="catatan_kasus" aria-label="With textarea" style="resize: none;" rows="5"></textarea>
             </div>
         </div>
+        <div class="col-md-12">
+            <div class="form-group">
+              <label>Kirim notifikasi ke (bisa lebih dari 1)</label>
+              <select multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" class="user_id_select" id="user_id_select_catatan" style="height: 15px">
+              </select>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-success btn-block" id="submitCatatan"><i class="fa fa-check"></i> Simpan</button>
@@ -3740,7 +3747,7 @@ $("#tabelAsesmenLanjutan").DataTable({
                         if ('{{ Auth::user()->jabatan }}' == 'Supervisor Kasus') {
                             kolomapproval = '<div class=\"row\"> <div class=\"col-md-6\"> <button type=\"button\" class=\"btn btn-block btn-success btn-sm\" onclick=\"approveTerminasi(`'+e.uuid+'`,1)\"><i class=\"fas fa-check\"></i> Ya setuju terminasi</button> </div> <div class=\"col-md-6\"> <button type=\"button\" class=\"btn btn-block btn-danger btn-sm\" onclick=\"approveTerminasi(`'+e.uuid+'`,0)\"><i class=\"fas fa-times\"></i> Tidak setuju terminasi</button> </div></div>';
                         }else{
-                            kolomapproval = '<div class=\"row\"> Terminasi belum disetujui. Menunggu persetujuan Supervisor Kasus </div>';
+                            kolomapproval = '<div class=\"row\"> Pengajuan Terminasi belum disetujui. Menunggu persetujuan Supervisor Kasus </div>';
                         }
                     } else if (e.validated_by) {
                         // jika adavalidasinya berarti sudah diapprove
@@ -3842,6 +3849,8 @@ $("#tabelAsesmenLanjutan").DataTable({
         $('#deleteCatatan').hide();
         $('#submitCatatan').show();
         $('#catatan_kasus').val('');
+        $('#user_id_select_catatan').val([]).change();
+        $('#user_id_select_catatan').empty();
         $('#catatan_kasus').prop('disabled', false);
         $('#tambahCatatanModal').modal('show');
     }
@@ -3857,6 +3866,7 @@ $("#tabelAsesmenLanjutan").DataTable({
                 uuid: $('#uuid_catatan').val(),
                 uuid_klien: '{{ $klien->uuid }}',
                 catatan: $("#catatan_kasus").val(),
+                user_id: $("#user_id_select_catatan").val(),
                 _token: token
             },
             success: function (response){
@@ -3873,6 +3883,8 @@ $("#tabelAsesmenLanjutan").DataTable({
                     // hapus semua inputan
                     $('#uuid_catatan').val('');
                     $("#catatan_kasus").val('');
+                    $('#user_id_select_catatan').val([]).change();
+                    $('#user_id_select_catatan').empty();
                     $('#tambahCatatanModal').scrollTop(0);
 
                     // kirim realtime notifikasi
@@ -4136,6 +4148,16 @@ $("#tabelAsesmenLanjutan").DataTable({
         url = '{{ route("persetujuan.done", "") }}/'+uuid;
         $('#showPersetujuan').attr('src', url);
         $('#sppModal').modal('show');
+
+        // read task
+            $.ajax({
+            url: url,
+            type: "GET",
+            cache: false,
+            success: function (response){
+             console.log('success');   
+            }
+            });
     }
 
     function penjadwalan_layanan() {

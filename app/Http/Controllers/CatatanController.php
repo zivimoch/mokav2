@@ -88,28 +88,30 @@ class CatatanController extends Controller
                         ->whereNull('a.deleted_at')
                         ->whereNull('b.deleted_at')
                         ->pluck('b.id');
-            
-            $notif_receiver = [];
-            foreach ($petugas as $key => $value) {
-                NotifHelper::push_notif(
-                    $value , //receiver_id
-                    ($klien && $klien->id) ? $klien->id : NULL, //klien_id
-                    'T11', //kode
-                    'task', //type_notif
-                    ($klien && $klien->no_klien) ? $klien->no_klien : NULL, //noregis
-                    Auth::user()->name, //from
-                    Auth::user()->name.' menambahkan catatan pada kasus. Silahkan lihat catatan kasus untuk update informasi kasus', //message
-                    ($klien && $klien->nama) ? $klien->nama : NULL,  //nama korban 
-                    ($klien && $klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
-                    url('/kasus/show/'.$klien->uuid.'?catatan-kasus=1&user_id='.$value.'&kode=T11&type_notif=task'), //url
-                    0, //kirim ke diri sendiri 0 / 1
-                    Auth::user()->id, // created_by
-                    NULL // agenda_id
-                );
 
-                // untuk kirim realtime notifikasi
-                if ($value != Auth::user()->id) {
-                    $notif_receiver[] = 'user_'.$value;
+            if ($request->user_id) {
+                $notif_receiver = [];
+                foreach ($request->user_id as $value) {
+                    NotifHelper::push_notif(
+                        $value , //receiver_id
+                        ($klien && $klien->id) ? $klien->id : NULL, //klien_id
+                        'T11', //kode
+                        'task', //type_notif
+                        ($klien && $klien->no_klien) ? $klien->no_klien : NULL, //noregis
+                        Auth::user()->name, //from
+                        Auth::user()->name.' menambahkan catatan pada kasus. Silahkan lihat catatan kasus untuk update informasi kasus', //message
+                        ($klien && $klien->nama) ? $klien->nama : NULL,  //nama korban 
+                        ($klien && $klien->tanggal_lahir) ? $klien->tanggal_lahir : NULL, //tanggal lahir korban
+                        url('/kasus/show/'.$klien->uuid.'?catatan-kasus=1&user_id='.$value.'&kode=T11&type_notif=task'), //url
+                        0, //kirim ke diri sendiri 0 / 1
+                        Auth::user()->id, // created_by
+                        NULL // agenda_id
+                    );
+
+                    // untuk kirim realtime notifikasi
+                    if ($value != Auth::user()->id) {
+                        $notif_receiver[] = 'user_'.$value;
+                    }
                 }
             }
             //write log activity ////////////////////////////////////////////////////////////////////////
@@ -221,8 +223,8 @@ class CatatanController extends Controller
                 NotifHelper::push_notif(
                     $value , //receiver_id
                     ($klien && $klien->id) ? $klien->id : NULL, //klien_id
-                    'T15', //kode
-                    'task', //type_notif
+                    'N11', //kode
+                    'notif', //type_notif
                     ($klien && $klien->no_klien) ? $klien->no_klien : NULL, //noregis
                     Auth::user()->name, //from
                     Auth::user()->name.' membuat / update cacatan '.$request->nama_layanan.'. Silahkan lihat catatan '.$request->nama_layanan.' untuk update informasi kasus', //message
@@ -317,8 +319,8 @@ class CatatanController extends Controller
                 NotifHelper::push_notif(
                     $value , //receiver_id
                     ($klien && $klien->id) ? $klien->id : NULL, //klien_id
-                    'T15', //kode
-                    'task', //type_notif
+                    'N11', //kode
+                    'notif', //type_notif
                     ($klien && $klien->no_klien) ? $klien->no_klien : NULL, //noregis
                     Auth::user()->name, //from
                     Auth::user()->name.' membuat / update cacatan '.$request->nama_layanan.'. Silahkan lihat catatan '.$request->nama_layanan.' untuk update informasi kasus', //message

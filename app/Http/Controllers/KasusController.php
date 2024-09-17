@@ -81,7 +81,8 @@ class KasusController extends Controller
                             'a.status', 
                             'd.name as petugas',
                             'y.jatuh_tempo',
-                            'x.jumlah_terminasi'
+                            'x.jumlah_terminasi',
+                            'w.jumlah_intervensiku'
                         )
                         ->leftJoin('kasus as b', 'b.id', 'a.kasus_id')
                         ->leftJoin('petugas as c', 'a.id', 'c.klien_id')
@@ -104,9 +105,14 @@ class KasusController extends Controller
                                             FROM terminasi
                                             WHERE validated_by IS NOT NULL
                                             AND deleted_at IS NULL GROUP BY klien_id) x'), 'x.klien_id', '=', 'a.id')
+                        ->leftJoin(DB::raw('(SELECT klien_id, COUNT(*) AS jumlah_intervensiku  
+                                            FROM agenda a LEFT JOIN tindak_lanjut b on a.id = b.agenda_id 
+                                            WHERE 
+                                            b.created_by = '.Auth::user()->id.'
+                                            AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) w'), 'w.klien_id', '=', 'a.id')
                         ->whereNull('a.deleted_at')
                         ->whereNull('c.deleted_at')
-                        ->groupBy('a.uuid', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 'a.jenis_kelamin', 'a.tanggal_lahir', 'a.status', 'd.name', 'y.jatuh_tempo', 'x.jumlah_terminasi')
+                        ->groupBy('a.uuid', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 'a.jenis_kelamin', 'a.tanggal_lahir', 'a.status', 'd.name', 'y.jatuh_tempo', 'x.jumlah_terminasi', 'w.jumlah_intervensiku')
                         ->addBinding($today->toDateString(), 'select')
                         ->addBinding($today->toDateString(), 'select'); // Added second binding for tanggal_approve
 
@@ -129,9 +135,15 @@ class KasusController extends Controller
                     $data->where('z.kotkab_id', $request->wilayah);
                 }
             }
+
             // filter untuk memunculkan kasus sesuai yang login saja
             if (!$request->anda && $request->laporkbg != 1) { 
                 $data->where('c.user_id', Auth::user()->id);
+            }
+
+            // filter untuk memunculkan kasus yang tidak ada intervensi dari saya
+            if ($request->intervensiku) { 
+                $data->whereNull('w.jumlah_intervensiku');
             }
 
             // Filter kategori klien
@@ -485,33 +497,34 @@ class KasusController extends Controller
        $kasus_terkait = $this->kasus_terkait($klien->kasus_id, $klien->id);
        // ===========================================================================================
         //Proses read, push notif & log activity ////////////////////////////////////////////////////
-        // jika petugas sudah melihat data kasus maka tasknya (T8, T11) selesai
-        $task = ['T8', 'T11'];
-        foreach ($task as $item) {
+        // spesifik ke yang task & notif
+        $notif_data = [
+            ['kode' => 'T4', 'type_notif' => 'task'],
+            ['kode' => 'T8', 'type_notif' => 'task'],
+            ['kode' => 'T11', 'type_notif' => 'task'],
+            ['kode' => 'T13', 'type_notif' => 'task'],
+            ['kode' => 'N10', 'type_notif' => 'notif'],
+            ['kode' => 'N11', 'type_notif' => 'notif']
+        ];
+        foreach ($notif_data as $notif) {
             NotifHelper::read_notif(
                 Auth::user()->id, // receiver_id
                 $klien->id, // klien_id
-                $item, // kode ini request dari link 
-                'task', // type_notif
+                $notif['kode'], // kode
+                $notif['type_notif'], // type_notif
                 NULL // agenda_id
-            );   
+            );
         }
-        // spesifik ke yang notif
-        NotifHelper::read_notif(
-            Auth::user()->id, // receiver_id
-            $klien->id, // klien_id
-            'N10', // kode ini request dari link 
-            'notif', // type_notif
-            NULL // agenda_id
-        ); 
+
         // read notif sesuai url
-        NotifHelper::read_notif(
-            Auth::user()->id, // receiver_id
-            $klien->id, // klien_id
-            $request->kode, // kode ini request dari link 
-            $request->type_notif, // type_notif
-            $request->agenda_id // agenda_id
-        );
+        // sementara di hide dulu, karna ada notif T12 yang hilang sebelum diTL
+        // NotifHelper::read_notif(
+        //     Auth::user()->id, // receiver_id
+        //     $klien->id, // klien_id
+        //     $request->kode, // kode ini request dari link 
+        //     $request->type_notif, // type_notif
+        //     $request->agenda_id // agenda_id
+        // );
         /////////////////////////////////////////////////////////////////////////////////////////////
        $detail['kelengkapan_petugas'] = $kelengkapan_petugas;
 
