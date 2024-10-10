@@ -160,14 +160,16 @@ $("#tabelLayanan{{ $intervensi_ke }}").DataTable({
                     $('#filter_intervensi').val('{{ $intervensi_ke }}');
                     $('#modalFilterLayanan').modal('show');
                   }
-              }, 
-              {
-                className: "btn-success",
-                text: 'Tambah',
+              }]
+                .concat(
+                '{{ $akses_petugas }}' == 1 ? [{
+                    className: "btn-success",
+                    text: 'Tambah',
                   action: function ( ) {
                     showModalAgenda("{{ date('Y-m-d') }}",0);
                   }
-              }]
+                }] : []
+                )
       }).buttons().container().appendTo('#tabelLayanan{{ $intervensi_ke }}_wrapper .col-md-6:eq(0)');
 
       $('#tabelLayanan{{ $intervensi_ke }}_filter').css({'float':'right','display':'inline-block; background-color:black'});

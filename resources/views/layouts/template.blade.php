@@ -107,6 +107,127 @@
     </div>
   </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="ajaxModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      {{-- <div id="overlay" class="overlay dark">
+        <div class="cv-spinner">
+          <span class="spinner"></span>
+        </div>
+      </div> --}}
+      
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div class="ribbon-wrapper ribbon-xl">
+          <div class="ribbon bg-danger text-xl warningTerminasi">
+          CLOSED
+          </div>
+      </div>
+      <div class="card-body box-profile">
+      <div class="text-center">
+      <img class="profile-user-img img-fluid img-circle" src="{{ asset('adminlte') }}/dist/img/default-150x150.png" alt="User profile picture">
+      </div>
+      <h3 class="profile-username text-center" id="nama"></h3>
+      <p class="text-muted text-center"> (<span id="usia"></span>) <span id="jenis_kelamin"></span></p>
+      <p class="text-center" id="no_klien"></p>
+      <ul class="list-group list-group-unbordered mb-3">
+      <h5><span class="float-right badge bg-primary btn-block" id="status"></span></h5>
+      </ul>
+      </div>
+      <div class="card" style="margin-top:-30px; margin-bottom:0px">
+          <div id="accordionKelengkapan" style="margin-bottom:-15px">
+              <div class="card card-light">
+                <div class="card-header" data-toggle="collapse" data-target="#collapseKelengkapan" aria-expanded="true" aria-controls="collapseKelengkapan" style="cursor: pointer;">
+                  <h3 class="card-title">
+                      <b>Kelengkapan Kasus (<span id="kelengkapan_kasus"></span>/6) </b>
+                  </h3>
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool">
+                      <i class="fas fa-chevron-down"></i>
+                    </button>
+                  </div>
+                </div>
+              <div id="collapseKelengkapan" class="collapse show" data-parent="#accordionKelengkapan">
+              <div class="card-body">
+                  <ol style="padding:15px; margin :-25px 0px -20px 0px">
+                      <li>
+                          Identifikasi <i class="fa fa-check" id="check_identifikasi"></i>
+                          <ul style="margin-left: -25px">
+                            <li style="color: blue; cursor: pointer; font-weight:bold" onclick="alert('Field yang dibutuhkan untuk diisi :\n1. Data Kasus : \nMedia Pengagduan, Sumber Informasi, Tanggal Pelaporan, Tanggal Kejadian, Kategori Lokasi, Ringkasan, TKP\n2. Data Pelapor :\n Nama Lengkap, Jenis Kelamin\n3. Data Korban :\nNama Lengkap, Tempat Lahir, Tanggal Lahir, Jenis Kelamin, Alamat KTP, Alamat Domisili, Agama, Status Kawin, Pekerjaan, Kewargangaraan, Status Pendidikan, Pendidikan, Hubungan dengan Pelapor\n4. Data Terlapor :\nNama Lengkap, Tempat Lahir, Tanggal Lahir, Jenis Kelamin, Agama, Pekerjaan, Kewarganegaraan, Status Pendidikan, Pendidikan')">
+                                Kelengkapan Data (<span id="persen_title_data"></span>%) <i class="far fa-check-circle"></i>
+                                <div class="progress progress-xs">
+                                    <div class="progress-bar bg-success progress-bar-striped" id="persen_data" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </li>
+                              <li>
+                                  Persetujuan Supervisor <i class="far fa-check-circle" id="check_persetujuan_spv"></i>
+                              </li>
+                              <li>
+                                  Tanda Tangan SPP <i class="far fa-check-circle" id="check_ttd_spp"></i>
+                              </li>
+                          </ul>
+                      </li>
+                      <li>
+                          Asesmen <i class="fa fa-check" id="check_asesmen"></i>
+                      </li>
+                      <li>
+                          Perencanaan Intervensi <i class="fa fa-check" id="check_perencanaan"></i>
+                      </li>
+                      <li>
+                          Pelaksanaan Intervensi  <i class="fa fa-check" id="check_pelaksanaan"></i>
+                          <br>
+                          (<span class="persen_title_layanan"></span>%)
+                          <div class="progress progress-xs">
+                              <div class="progress-bar bg-success progress-bar-striped persen_layanan" role="progressbar" aria-valuemin="0">
+                              </div>
+                          </div>
+                      </li>
+                      <li>
+                          Pemantauan & Evaluasi <i class="fa fa-check" id="check_pemantauan"></i>
+                      </li>
+                      <li>
+                          Terminasi <i class="fa fa-check" id="check_terminasi"></i>
+                      </li>
+                  </ol>
+              </div>
+              </div>
+              </div>
+          </div>
+
+          <div style="margin-bottom:-15px">
+            <div class="card card-light">
+              <div class="card-header" data-toggle="collapse" data-target="#accordionListPetugas" aria-expanded="true" aria-controls="accordionListPetugas" style="cursor: pointer;">
+                <h3 class="card-title">
+                    <b>Petugas </b>
+                </h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool">
+                    <i class="fas fa-chevron-down"></i>
+                  </button>
+                </div>
+              </div>
+            <div id="accordionListPetugas" class="collapse" data-parent="#accordionListPetugas">
+            <div class="card-body">
+                <ol style="padding:15px; margin :-25px 0px -20px 0px" id="listPetugas"></ol>
+            </div>
+            </div>
+            </div>
+        </div>
+        </div>
+      </div>
+      <div class="modal-footer" id="buttons"></div>
+    </div>
+  </div>
+</div>
+
 @if (((env('APP_URL') == 'http://127.0.0.1:8000') || ($firstSegment === 'latihan')) && isset(Auth::user()->id))
 {{-- MOKA V2.0 ANNOUCMENT BOX  --}}
 <style>
@@ -221,6 +342,147 @@
 <script src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
 <script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
 <script>
+// search klien end
+
+function klien_search() {
+        let searchQuery = $('#klien_search').val();
+        // if (searchQuery.length >= 1) {
+            $.ajax({
+                url: '/get_klien?uuid=1&petugas=1&no_klien=1',
+                type: 'POST',
+                data: {
+                    search: searchQuery,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(data) {
+                    $('#search_results').empty();
+                    highlightedIndex = -1; // Reset highlighted index
+                    if (data.length > 0) {
+                        $.each(data, function(index, item) {
+                            $('#search_results').append('<a href="#" class="list-group-item list-group-item-action small-item" data-id="' + item.id + '">' + item.text + '<br> <span style="font-size:13px">' + item.no_klien + ' </span> </a>');
+                        });
+                      } else {
+                        $('#search_results').append('<a href="#" class="list-group-item list-group-item-action small-item" >Klien tidak ditemukan</a>');
+                      }
+                      $('#search_results').show(); // Show results
+                },
+                error: function() {
+                    console.log('Error occurred while searching.');
+                }
+            });
+        // } else {
+        //     $('#search_results').hide(); // Hide results if input is empty
+        // }
+    }
+
+  $(document).ready(function() {
+
+    let selectedId = null;
+    let highlightedIndex = -1; 
+    // $('#klien_search').on('input', function() {
+    // });
+    $(document).on('keydown', '#klien_search', function(e) {
+        const items = $('#search_results .list-group-item');
+        if (e.key === 'ArrowDown') {
+            highlightedIndex = (highlightedIndex + 1) % items.length; // Loop back to start
+            updateHighlight(items);
+            e.preventDefault();
+        } else if (e.key === 'ArrowUp') {
+            highlightedIndex = (highlightedIndex - 1 + items.length) % items.length; // Loop back to end
+            updateHighlight(items);
+            e.preventDefault(); 
+        } else if (e.key === 'Enter') {
+            if (highlightedIndex >= 0 && highlightedIndex < items.length) {
+                const selectedItem = items.eq(highlightedIndex);
+                selectItem(selectedItem);
+            }
+        }
+    });
+    function updateHighlight(items) {
+        items.removeClass('list-group-item-active'); // Remove previous highlight
+        if (highlightedIndex >= 0 && highlightedIndex < items.length) {
+            items.eq(highlightedIndex).addClass('list-group-item-active'); // Highlight current item
+        }
+    }
+    function selectItem(item) {
+        selectedId = item.data('id');
+        $('#klien_search').val(item.text());
+        $('#search_results').hide(); 
+        highlightedIndex = -1; 
+    }
+    $(document).on('click', '.list-group-item', function() {
+        selectItem($(this)); 
+    });
+    $('#search_btn').on('click', function() {
+        if (selectedId) {
+          modal_klien(selectedId); 
+        } else {
+            alert("Klien tidak ditemukan");
+        }
+    });
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.input-group').length) {
+            $('#search_results').hide();
+        }
+    });
+});
+// search klien end
+
+function modal_klien(uuid) {
+  $.ajax({
+        url: '/kasus/show/'+uuid,
+        type: 'GET',
+        success: function(data) {
+          dob = new Date(data.tanggal_lahir);
+          var today = new Date();
+          var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
+
+          $('#nama').html(data.nama);
+          $('#usia').html(age);
+          $('#jenis_kelamin').html(data.jenis_kelamin);
+          $('#no_klien').html(data.no_klien);
+          $('#status').html(data.status);
+
+          $('#check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningAsesmen, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_pemantauan, #check_terminasi, .warningTerminasi').hide();
+        
+          check_kelengkapan_data(data.id);
+          check_kelengkapan_persetujuan_spv(data.id);
+          check_kelengkapan_spp(data.id);
+          check_kelengkapan_asesmen(data.id);
+          check_kelengkapan_perencanaan(data.id);
+          check_kelengkapan_pemantauan(data.id);
+          check_kelengkapan_terminasi(data.id);
+          kelengkapan_kasus = 0;
+          kelengkapan_identifikasi = 0;
+          $('#kelengkapan_kasus').html(kelengkapan_kasus);
+            
+          //munculkan tombol
+          $('#buttons').html('');
+          $('#buttons').append('<a href="#" onclick="alert(`Fitur belum tersedia`)" class="btn btn-warning btn-block" id="rekap"><i class="fas fa-stream"></i> Rekap Kasus</a>');
+          // $('#buttons').append('<a href="#" onclick="rekap_kasus(`' + data.uuid + '`)" class="btn btn-warning btn-block" id="rekap"><i class="fas fa-stream"></i> Rekap Kasus</a>');
+          $('#buttons').append('<a href="' + "{{ route('kasus.show', '') }}" + '/' + data.uuid + '" class="btn btn-primary btn-block" id="detail"><i class="fa fa-info-circle"></i> Detail Kasus (Bisa New Tab)</a>');
+          if ( data.no_klien == null && "{{ in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Super Admin']) }}") {
+              $('#buttons').append('<button type="button" onclick="hapus(`'+data.uuid+'`)" class="btn btn-danger btn-block" id="hapus"><i class="fa fa-trash"></i> Hapus Kasus</button>');
+          }else{
+            $('#buttons').append('<div btn-block>*Anda tidak memiliki akses atau kasus ini sudah ada no regisnya sehingga anda tidak dapat menghapus kasus ini</div>');
+          }
+
+          // list petugas
+          $('#listPetugas').html('');
+          listPetugas = data.list_petugas;
+          listPetugas.forEach(e => {
+            $('#listPetugas').append('<li><b>'+e.name+'</b> ('+e.jabatan+')</li>')
+          });
+            
+            $("#overlay").hide();
+          $('#ajaxModal').modal('show');
+        },
+        error: function() {
+            console.log('Error occurred while searching.');
+        }
+    });
+}
+
   $(function() {
     if ($('#kontainerwidth').length == 1) {
      
@@ -383,6 +645,218 @@ function capitalizeWords(text) {
         }
     });
   }
+
+  function check_kelengkapan_data(klien_id) {
+        $.ajax({
+            url: `{{ env('APP_URL') }}/check_kelengkapan_data/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                // nol kan dulu persentasenya 
+                $('.persen_data').css('width','0%');
+                // update persentase
+                $('#persen_title_data').html(response);
+                $('#persen_data').css('width', response+'%');
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+        });
+    }
+
+    function check_kelengkapan_persetujuan_spv(klien_id) {
+        $.ajax({
+            url: `{{ env('APP_URL') }}/check_kelengkapan_persetujuan_spv/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response) {
+                    $('#check_persetujuan_spv').show();
+                    kelengkapan_identifikasi = kelengkapan_identifikasi + 1;
+                    if (kelengkapan_identifikasi > 1) {
+                        $('#check_identifikasi').show();
+                        kelengkapan_kasus = kelengkapan_kasus + 1;
+                        $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                    }
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_spp(klien_id) {
+        $.ajax({
+            url: `{{ env('APP_URL') }}/check_kelengkapan_spp/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response) {
+                    $('#check_ttd_spp').show();
+                    kelengkapan_identifikasi = kelengkapan_identifikasi + 1;
+                    if (kelengkapan_identifikasi > 1) {
+                        $('#check_identifikasi').show();
+                        kelengkapan_kasus = kelengkapan_kasus + 1;
+                        $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                    }
+                    $('#modalAsesmen').show();
+                }else{
+                    $('.warningSPP').show();
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_asesmen(klien_id) {
+        $.ajax({
+            url: `{{ env('APP_URL') }}/check_kelengkapan_asesmen/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response) {
+                    $('#check_asesmen').show();
+                    kelengkapan_kasus = kelengkapan_kasus + 1;
+                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                    $('.warningAsesmen').hide();
+                }else{
+                    $('.warningAsesmen').show();
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_perencanaan(klien_id) {
+        $.ajax({
+            url: `{{ env('APP_URL') }}/check_kelengkapan_perencanaan/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response > 0) {
+                    $('#check_perencanaan').show();
+                    kelengkapan_kasus = kelengkapan_kasus + 1;
+                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                }
+                check_kelengkapan_pelaksanaan(response, klien_id);
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+    function check_kelengkapan_pelaksanaan(jml_perencanaan, klien_id) {
+        $.ajax({
+            url: `{{ env('APP_URL') }}/check_kelengkapan_pelaksanaan/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                // nol kan dulu persentasenya 
+                $('.persen_layanan').css('width','0%');
+                // update persentase
+                persentase = (response / jml_perencanaan) * 100
+                persentase = persentase.toFixed(2);
+                $('.persen_title_layanan').html(persentase);
+                $('.persen_layanan').css('width', persentase+'%');
+                if (persentase == 100) {
+                    $('#check_pelaksanaan').show();
+                    kelengkapan_kasus = kelengkapan_kasus + 1;
+                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+          });
+    }
+
+    function check_kelengkapan_pemantauan(klien_id) {
+      $.ajax({
+          url: `{{ env('APP_URL') }}/check_kelengkapan_pemantauan/`+klien_id,
+          type: "GET",
+          cache: false,
+          success: function (response){
+              // centang indikator pemanatauan & evaluasi
+              if (response.pemantauan_terakhir > 0) {
+                  $('#check_pemantauan').show();
+                  kelengkapan_kasus = kelengkapan_kasus + 1;
+                  $('#kelengkapan_kasus').html(kelengkapan_kasus);
+              }
+          },
+          error: function (response){
+              // alert("Error");
+              console.log(response);
+          }
+          });
+    }
+
+    function check_kelengkapan_terminasi(klien_id) {
+        $.ajax({
+            url: `{{ env('APP_URL') }}/check_kelengkapan_terminasi/`+klien_id,
+            type: "GET",
+            cache: false,
+            success: function (response){
+                if (response!='') {
+                    $('#check_terminasi').show();
+                    kelengkapan_kasus = kelengkapan_kasus + 1;
+                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                    $('.warningTerminasi').show();
+                    $('#alasan_terminasi').html(response.alasan);
+                }
+            },
+            error: function (response){
+                alert("Error");
+                console.log(response);
+            }
+            });
+    }
+
+function hapus(uuid) {
+  if (confirm("Apakah anda yakin ingin menghapus kasus ini? Seluruh task & notifikasi terkait kasus ini akan dihapus juga.") == true) {
+    let token   = $("meta[name='csrf-token']").attr("content");
+    $.ajax({
+    url: `{{ env('APP_URL') }}/kasus/destroy/`+uuid,
+    type: "POST",
+    cache: false,
+    data: {
+        _method:'DELETE',
+        _token: token
+    },
+    success: function (response){
+        if (response.success != true) {
+            console.log(response);
+        }else{
+            $('#tabelKasus').DataTable().ajax.reload();
+            $('#tabelLaporKBG').DataTable().ajax.reload();
+            $('#ajaxModal').modal('hide');
+        }
+        loadnotif();
+    },
+    error: function (response){
+        setTimeout(function(){
+        $("#overlay").fadeOut(300);
+        },500);
+        console.log(response);
+    }
+    }).done(function() { //loading submit form
+        setTimeout(function(){
+        $("#overlay").fadeOut(300);
+        },500);
+    });
+  }
+}
 </script>
 </body>
 </html>

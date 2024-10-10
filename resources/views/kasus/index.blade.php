@@ -98,7 +98,6 @@
             <th>No Regis</th>
             <th>Nama Klien</th>
             <th>Kategori Klien</th>
-            <th>Jumlah Intervensiku</th>
             <th>Pengaduan</th>
             <th>Status Terakhir</th>
             </tr>
@@ -111,7 +110,6 @@
             <th>No Regis</th>
             <th>Nama</th>
             <th>Kategori Klien</th>
-            <th>Jumlah Intervensiku</th>
             <th>Pengaduan</th>
             <th>Status Terakhir</th>
             </tr>
@@ -595,7 +593,6 @@
               }
             }
         },
-        {"data": "jumlah_intervensiku"},
         {"data": "petugas"},
         {
             "mData": "status_terakhir",
@@ -758,218 +755,6 @@
               } 
             }
         });
-    }
-
-    function check_kelengkapan_data(klien_id) {
-        $.ajax({
-            url: `{{ env('APP_URL') }}/check_kelengkapan_data/`+klien_id,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                // nol kan dulu persentasenya 
-                $('.persen_data').css('width','0%');
-                // update persentase
-                $('#persen_title_data').html(response);
-                $('#persen_data').css('width', response+'%');
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
-            }
-        });
-    }
-
-    function check_kelengkapan_persetujuan_spv(klien_id) {
-        $.ajax({
-            url: `{{ env('APP_URL') }}/check_kelengkapan_persetujuan_spv/`+klien_id,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                if (response) {
-                    $('#check_persetujuan_spv').show();
-                    kelengkapan_identifikasi = kelengkapan_identifikasi + 1;
-                    if (kelengkapan_identifikasi > 1) {
-                        $('#check_identifikasi').show();
-                        kelengkapan_kasus = kelengkapan_kasus + 1;
-                        $('#kelengkapan_kasus').html(kelengkapan_kasus);
-                    }
-                }
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
-            }
-            });
-    }
-
-    function check_kelengkapan_spp(klien_id) {
-        $.ajax({
-            url: `{{ env('APP_URL') }}/check_kelengkapan_spp/`+klien_id,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                if (response) {
-                    $('#check_ttd_spp').show();
-                    kelengkapan_identifikasi = kelengkapan_identifikasi + 1;
-                    if (kelengkapan_identifikasi > 1) {
-                        $('#check_identifikasi').show();
-                        kelengkapan_kasus = kelengkapan_kasus + 1;
-                        $('#kelengkapan_kasus').html(kelengkapan_kasus);
-                    }
-                    $('#modalAsesmen').show();
-                }else{
-                    $('.warningSPP').show();
-                }
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
-            }
-            });
-    }
-
-    function check_kelengkapan_asesmen(klien_id) {
-        $.ajax({
-            url: `{{ env('APP_URL') }}/check_kelengkapan_asesmen/`+klien_id,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                if (response) {
-                    $('#check_asesmen').show();
-                    kelengkapan_kasus = kelengkapan_kasus + 1;
-                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
-                    $('.warningAsesmen').hide();
-                }else{
-                    $('.warningAsesmen').show();
-                }
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
-            }
-            });
-    }
-
-    function check_kelengkapan_perencanaan(klien_id) {
-        $.ajax({
-            url: `{{ env('APP_URL') }}/check_kelengkapan_perencanaan/`+klien_id,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                if (response > 0) {
-                    $('#check_perencanaan').show();
-                    kelengkapan_kasus = kelengkapan_kasus + 1;
-                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
-                }
-                check_kelengkapan_pelaksanaan(response, klien_id);
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
-            }
-            });
-    }
-
-    function check_kelengkapan_pelaksanaan(jml_perencanaan, klien_id) {
-        $.ajax({
-            url: `{{ env('APP_URL') }}/check_kelengkapan_pelaksanaan/`+klien_id,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                // nol kan dulu persentasenya 
-                $('.persen_layanan').css('width','0%');
-                // update persentase
-                persentase = (response / jml_perencanaan) * 100
-                persentase = persentase.toFixed(2);
-                $('.persen_title_layanan').html(persentase);
-                $('.persen_layanan').css('width', persentase+'%');
-                if (persentase == 100) {
-                    $('#check_pelaksanaan').show();
-                    kelengkapan_kasus = kelengkapan_kasus + 1;
-                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
-                }
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
-            }
-            });
-    }
-
-    function check_kelengkapan_pemantauan(klien_id) {
-    $.ajax({
-        url: `{{ env('APP_URL') }}/check_kelengkapan_pemantauan/`+klien_id,
-        type: "GET",
-        cache: false,
-        success: function (response){
-            // centang indikator pemanatauan & evaluasi
-            if (response.pemantauan_terakhir > 0) {
-                $('#check_pemantauan').show();
-                kelengkapan_kasus = kelengkapan_kasus + 1;
-                $('#kelengkapan_kasus').html(kelengkapan_kasus);
-            }
-        },
-        error: function (response){
-            // alert("Error");
-            console.log(response);
-        }
-        });
-}
-
-    function check_kelengkapan_terminasi(klien_id) {
-        $.ajax({
-            url: `{{ env('APP_URL') }}/check_kelengkapan_terminasi/`+klien_id,
-            type: "GET",
-            cache: false,
-            success: function (response){
-                if (response!='') {
-                    $('#check_terminasi').show();
-                    kelengkapan_kasus = kelengkapan_kasus + 1;
-                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
-                    $('.warningTerminasi').show();
-                    $('#alasan_terminasi').html(response.alasan);
-                }
-            },
-            error: function (response){
-                alert("Error");
-                console.log(response);
-            }
-            });
-    }
-
-    function hapus(uuid) {
-      if (confirm("Apakah anda yakin ingin menghapus kasus ini? Seluruh task & notifikasi terkait kasus ini akan dihapus juga.") == true) {
-        let token   = $("meta[name='csrf-token']").attr("content");
-        $.ajax({
-        url: `{{ env('APP_URL') }}/kasus/destroy/`+uuid,
-        type: "POST",
-        cache: false,
-        data: {
-            _method:'DELETE',
-            _token: token
-        },
-        success: function (response){
-            if (response.success != true) {
-                console.log(response);
-            }else{
-                $('#tabelKasus').DataTable().ajax.reload();
-                $('#tabelLaporKBG').DataTable().ajax.reload();
-                $('#ajaxModal').modal('hide');
-            }
-            loadnotif();
-        },
-        error: function (response){
-            setTimeout(function(){
-            $("#overlay").fadeOut(300);
-            },500);
-            console.log(response);
-        }
-        }).done(function() { //loading submit form
-            setTimeout(function(){
-            $("#overlay").fadeOut(300);
-            },500);
-        });
-      }
     }
 
     function submitFilterKasus() {

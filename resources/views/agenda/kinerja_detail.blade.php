@@ -155,9 +155,9 @@
                     <div class="col-md-6 text-center">
                         Jakarta, {{ \Carbon\Carbon::now()->endOfMonth()->format('d/m/Y'); }}</br>
                         Yang Membuat,</br>
-                        <img src="{{ asset('img/tandatangan/ttd_user/'.Auth::user()->tandatangan) }}" alt="">
+                        <img src="{{ asset('img/tandatangan/ttd_user/'.$user->tandatangan) }}" alt="">
                         <br>
-                        {{ Auth::user()->name }}
+                        {{ $user->name }}
                     </div>
                 </div>
             </div>

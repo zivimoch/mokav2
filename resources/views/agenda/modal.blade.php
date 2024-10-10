@@ -785,7 +785,8 @@
               dob = new Date(response.tanggal_lahir);
               var today = new Date();
               var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
-              $('#detail_data_klien').html(`<a href="{{ env('APP_URL') }}/kasus/show/`+response.uuid+`" target="_blank">`+response.nama+` (`+age+`)</a> `+response.no_klien);
+              $('#detail_data_klien').html(`<a href="#" onclick="modal_klien('`+response.uuid+`')">`+response.nama+` (`+age+`)</a> `+response.no_klien);
+              $('#detail_data_klien').show();
 
               if ($('#uuid').val() == '' || $('#jumlah_intervensi_ke').val() == '') {
                 // jika kosong alias actionnya tambah, maka setting intervensi ke nya adalah yang terbaru
@@ -823,6 +824,7 @@
     if ($('input[name="penjadwalan_layanan"]:checked').val() == 0) {
       // jika bukan agenda non-layanan
       $("#jumlah_intervensi_ke").val('');
+      $('#detail_data_klien').hide();
 
       $('#klien_id_select').prop('disabled', true);
       $('#klien_id_select').val('').change();
@@ -850,6 +852,7 @@
       $('.required-layanan').show();
 
       $("#keterangan-agenda").addClass("required-field-agenda");
+
     }
  }
  
@@ -884,7 +887,7 @@
           }
           $('#viewJenisAgenda').html(jenisAgenda);
           $('#viewIntervensiKe').html(data.intervensi_ke_agenda);
-          $('#viewKlien').html(data.nama);
+          $('#viewKlien').html('<a href="#" onclick="modal_klien(`'+data.uuid_klien+'`)">'+data.nama+'</a>');
           data_tindak_lanjut = data.data_tindak_lanjut;
           $('#viewTLPetugas').html(data_tindak_lanjut.name+' ('+data_tindak_lanjut.jabatan+')');
           $('#viewTanggalWaktu').html(data.tanggal_mulai+', '+data.jam_mulai+' s/d '+data_tindak_lanjut.jam_selesai);
@@ -991,6 +994,7 @@
     $('#editAgenda').show();
     $('#tombol_edit_agenda').hide();
     $('#tombol_view_agenda').hide();
+    $('#detail_data_klien').hide();
   }
   
   $("#success-message-agenda").hide();

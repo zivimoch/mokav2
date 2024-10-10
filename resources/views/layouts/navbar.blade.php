@@ -1,4 +1,19 @@
 <style>
+  /* style search klien di navbar */
+  .list-group-item {
+      border: none; /* Remove border for cleaner look */
+  }
+  
+  .list-group-item:hover {
+      background-color: #f8f9fa; /* Light background on hover */
+  }
+  
+  .list-group-item-active {
+      background-color: #007bff; /* Highlight color */
+      color: #ffffff; /* Text color on highlight */
+  }
+  /* style search klien di navbar end */
+
   @media (max-width: 767px) {
   .dropdown-menu {
     right: 0;
@@ -49,11 +64,20 @@
           </li>
         @endif
       </ul>
-      <div class="btn-group">
-        <a href="{{ route('formpenerimapengaduan.index') }}" class="btn btn-success btn-sm">
-          <i class="fas fa-bullhorn"></i> Lapor KBG 
-        </a>
-      </div>
+      
+      
+      <div class="form-inline ml-0 ml-md-3 position-relative">
+        <div class="input-group input-group-sm">
+            <input type="text" id="klien_search" class="form-control form-control-navbar" placeholder="Cari nama / no regis" onfocus="klien_search()" oninput="klien_search()">
+            <div class="input-group-append">
+                <button class="btn btn-navbar" type="button" id="search_btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div id="search_results" class="list-group" style="position: absolute; top: 100%; left: 0; z-index: 1000; display: none; width: 100%;"></div>
+    </div>
+
     </div>
 
     <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +85,11 @@
     </button>
     <!-- Right navbar links -->
     <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+      <li class="nav-item dropdown">
+        <a href="{{ route('formpenerimapengaduan.index') }}" class="btn btn-success btn-sm" style="margin : 7px 0px 0px 0px; padding : 3px 5px 3px 5px">
+          <i class="fas fa-bullhorn"></i> Lapor 
+        </a>
+      </li>
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-trigger" id="notif_text" data-toggle="dropdown" href="#">
                 <i id="notif_bell" class="far fa-bell"></i> <span id="notif_count"></span> <i class="fa fa-caret-down"></i>

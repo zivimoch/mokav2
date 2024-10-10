@@ -26,4 +26,39 @@ class Klien extends Model
     {
         return $this->belongsTo(TKedaruratan::class);
     }
+
+    public function kasus()
+    {
+        return $this->belongsTo(Kasus::class, 'kasus_id');
+    }
+
+    public function petugas()
+    {
+        return $this->hasMany(Petugas::class);
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function pemantauan()
+    {
+        return $this->hasMany(Pemantauan::class);
+    }
+
+    public function terminasi()
+    {
+        return $this->hasMany(Terminasi::class);
+    }
+
+    public function tindakLanjut()
+    {
+        return $this->hasManyThrough(TindakLanjut::class, Agenda::class);
+    }
+
+    public function createdBy() {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+    
 }

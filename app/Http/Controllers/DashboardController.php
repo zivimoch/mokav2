@@ -21,19 +21,18 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-        // hapus persetujuan isi yang lebih dari 2 hari. hari created di tambah 2, kemudian cari selisih dengan dikurangi dengan hari ini. jika < 1 maka delete
-        PersetujuanIsi::whereRaw('TIMESTAMPDIFF(DAY, NOW(), DATE_ADD(created_at, INTERVAL 3 DAY)) < 1')
-                        ->whereNull('tandatangan')
-                        ->update(['deleted_at' => date('Y-m-d H:i:s')]);
         $jumlah_terminasi = DB::table('klien as a')
-                            ->leftJoin('petugas as b', 'a.id', 'b.klien_id')
-                            ->leftJoin('terminasi as c', 'a.id', 'c.klien_id')
-                            ->whereNull('a.deleted_at')
-                            ->whereNull('b.deleted_at')
-                            ->where('a.arsip', 0)
-                            ->where('b.user_id', Auth::user()->id)
-                            ->whereNotNull('c.validated_by')
-                            ->count();
+                        ->leftJoin('petugas as b', 'a.id', '=', 'b.klien_id')
+                        ->leftJoin('terminasi as c', 'a.id', '=', 'c.klien_id')
+                        ->whereNull('a.deleted_at')
+                        ->whereNull('b.deleted_at')
+                        ->where('a.arsip', 0)
+                        ->where('b.user_id', Auth::user()->id)
+                        ->whereNotNull('c.validated_by')
+                        ->groupBy('a.id')
+                        ->selectRaw('COUNT(DISTINCT a.id) as total')
+                        ->pluck('total')
+                        ->count();
         $jumlah_kasus = DB::table('klien as a')
                             ->leftJoin('petugas as b', 'a.id', 'b.klien_id')
                             ->whereNull('a.deleted_at')

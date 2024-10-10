@@ -14,4 +14,14 @@ class Petugas extends Model
 
     protected $table = 'petugas';
     protected $guarded = [];
+
+    public function klien()
+    {
+        return $this->belongsTo(Klien::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -605,7 +605,7 @@ class MonitoringController extends Controller
         } // else jika satpel maka tidak apa2 mengikuti tkp, karna 5 wilayah satpel pasti ada dan yang 0 akan dieliminasi
         
         $kota = DB::table('klien as a')
-                        ->select(DB::raw('c.code, c.province_code, COALESCE(c.name, "NULL (Kosong / Tidak Diisi)") AS name'))
+                        ->select(DB::raw('c.code, c.province_code, COALESCE(c.name, "Data Dalam Konfirmasi") AS name'))
                         ->leftJoin('kasus as b', 'a.kasus_id', '=', 'b.id')
                         ->leftJoin('indonesia_cities as c', 'c.code', '=', $basis_wilayah)
                         ->groupBy('c.name', 'c.code', 'c.province_code')
@@ -638,7 +638,7 @@ class MonitoringController extends Controller
                         
                         arsort($data);
                         $data["LUAR DKI JAKARTA"] = $luar_jkt;
-                        $data["NULL (Kosong / Tidak Diisi)"] = $null_tidak_diisi;
+                        $data["Data Dalam Konfirmasi"] = $null_tidak_diisi;
                         
         // mendapatkan filter
         $allAttributes = $request->all();
@@ -753,7 +753,7 @@ class MonitoringController extends Controller
                         // filter tanggal
                         ->whereBetween($basis_tanggal, [$from, $to]);
         // tambahan karna untuk klasifikasi kasus            
-        $seluruh_klien->selectRaw('COALESCE(y.nama, "NULL (Kosong / Tidak Diisi)") AS nama');
+        $seluruh_klien->selectRaw('COALESCE(y.nama, "Data Dalam Konfirmasi") AS nama');
         
         $seluruh_klien->leftJoin(DB::raw('(SELECT a.klien_id, b.nama  
                         FROM t_'.$request->klasifikasi.' a 
@@ -894,7 +894,7 @@ class MonitoringController extends Controller
                         // filter tanggal
                         ->whereBetween($basis_tanggal, [$from, $to]);
         // tambahan karna untuk klasifikasi kasus            
-        $seluruh_klien->selectRaw('COALESCE(b.kategori_lokasi, "NULL (Kosong / Tidak Diisi)") AS nama');
+        $seluruh_klien->selectRaw('COALESCE(b.kategori_lokasi, "Data Dalam Konfirmasi") AS nama');
 
         $seluruh_klien->groupBy(DB::raw('YEAR('.$basis_tanggal.'), b.kategori_lokasi'))
                         ->orderBy('total','DESC');
@@ -1045,11 +1045,11 @@ class MonitoringController extends Controller
 
         if ($request->identitas != "usia") {
             $seluruh_klien
-            ->selectRaw('COALESCE('.$basis_identitas.', "NULL (Kosong / Tidak Diisi)") AS nama')
+            ->selectRaw('COALESCE('.$basis_identitas.', "Data Dalam Konfirmasi") AS nama')
            ->groupBy(DB::raw('YEAR('.$basis_tanggal.'), '.$basis_identitas));
         } else {
             $seluruh_klien
-            ->selectRaw('COALESCE(TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.'), "NULL (Kosong / Tidak Diisi)") AS nama')
+            ->selectRaw('COALESCE(TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.'), "Data Dalam Konfirmasi") AS nama')
             ->groupBy(DB::raw('YEAR('.$basis_tanggal.'), nama'));
         }
 
@@ -1315,11 +1315,11 @@ class MonitoringController extends Controller
 
         if ($request->identitas != "usia") {
             $seluruh_klien
-            ->selectRaw('COALESCE('.$basis_identitas.', "NULL (Kosong / Tidak Diisi)") AS nama')
+            ->selectRaw('COALESCE('.$basis_identitas.', "Data Dalam Konfirmasi") AS nama')
            ->groupBy(DB::raw('YEAR('.$basis_tanggal.'), '.$basis_identitas));
         } else {
             $seluruh_klien
-            ->selectRaw('COALESCE(TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.'), "NULL (Kosong / Tidak Diisi)") AS nama')
+            ->selectRaw('COALESCE(TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.'), "Data Dalam Konfirmasi") AS nama')
             ->groupBy(DB::raw('YEAR('.$basis_tanggal.'), nama'));
         }
 

@@ -15,4 +15,9 @@ class Kasus extends Model
 
     protected $table = 'kasus';
     protected $guarded = [];
+
+    public function klien()
+    {
+        return $this->hasOne(Klien::class);
+    }
 }

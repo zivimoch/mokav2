@@ -225,6 +225,7 @@ class OpsiController extends Controller
                 'Teman',
                 'Guru',
                 'Staff TU',
+                'Atasan',
                 'Majikan',
                 'ART / Pembantu',
                 'Rekan Kerja',
@@ -1060,6 +1061,11 @@ class OpsiController extends Controller
                 "tahun" => 2024,
                 "bulan" => 8,
                 "hari_kerja" => 22,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 9,
+                "hari_kerja" => 20,
             ],
         ];
 

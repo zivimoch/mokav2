@@ -413,7 +413,7 @@ function loadAgenda(tanggal_mulai, id) {
 
         nama_klien = '';
         if (e.nama != null) {
-          nama_klien = '<br>Klien : <a href="{{ route('kasus.show', '') }}/'+e.uuid_klien+'">'+e.nama+'</a>';
+          nama_klien = '<br>Klien : <a href="#" onclick="modal_klien(`'+e.uuid_klien+'`)">'+e.nama+'</a>';
         }
         $('#agendaSaya'+id).append('<li class="'+done+'"><div  class="icheck-primary d-inline ml-2"><input type="checkbox" value="" id="todoCheck'+i+'" '+checked+' '+disabled+' onclick="showModalAgenda(`'+e.tanggal_mulai+'`,`'+e.uuid+'`,{{ Auth::user()->id }})"><label for="todoCheck'+i+'"></label></div><span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span>'+nama_klien+'</li>');
         $('#agendaAndaHeading'+id).html('Agenda Anda ('+i+' agenda)')
@@ -427,7 +427,7 @@ function loadAgenda(tanggal_mulai, id) {
       agenda_kasus_saya.forEach(e => {
         nama_klien = '';
         if (e.nama != null) {
-          nama_klien = '<br>Klien : <a href="{{ route('kasus.show', '') }}/'+e.uuid_klien+'">'+e.nama+'</a>';
+          nama_klien = '<br>Klien : <a href="#" onclick="modal_klien(`'+e.uuid_klien+'`)">'+e.nama+'</a>';
         }
         $('#agendaKasusSaya'+id).append('<li>'+x+'. <span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span>'+nama_klien+'<br>Petugas : '+e.petugas+'</li>');
         $('#agendaKasusAndaHeading'+id).html('Agenda Kasus Yang Anda Tangani ('+x+' agenda)');
@@ -441,7 +441,7 @@ function loadAgenda(tanggal_mulai, id) {
       agenda_semua.forEach(e => {
         nama_klien = '';
         if (e.nama != null) {
-          nama_klien = '<br>Klien : <a href="{{ route('kasus.show', '') }}/'+e.uuid_klien+'">'+e.nama+'</a>';
+          nama_klien = '<br>Klien : <a href="#" onclick="modal_klien(`'+e.uuid_klien+'`)">'+e.nama+'</a>';
         }
         $('#agendaSemua'+id).append('<li>'+y+'. <span class="text">'+e.judul_kegiatan+'</span><span class="badge badge-warning badge-lg" style="font-size:13px"><i class="far fa-clock"></i> '+e.jam_mulai+'</span>'+nama_klien+'<br>Petugas : '+e.petugas+'</li>');
         $('#agendaSemuaHeading'+id).html('Agenda Seluruh Petugas ('+y+' agenda)')

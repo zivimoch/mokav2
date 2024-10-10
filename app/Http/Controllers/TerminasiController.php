@@ -59,6 +59,7 @@ class TerminasiController extends Controller
                 $klien = Klien::where('uuid', $request->uuid_klien)->first();
                 
                 $setuju_terminasi = 0;
+                $edit_terminasi = 0;
                 if (!$request->uuid) {
                     // jika tidak ada uuid berarti tambah / mengajukan terminasi
                     $data_request = array('klien_id'   => $klien->id, 
@@ -71,6 +72,7 @@ class TerminasiController extends Controller
                     $kode = 'T12';
                     $message_notif = Auth::user()->name.' mengajukan terminasi. Silahkan terima / tolak terminasi';
                     $message_status = 'Proses terminasi';
+                    $edit_terminasi = 0;
                     // jika MK sudah mengajukan Terminasi maka tasknya (T5) selesai
                     NotifHelper::read_notif(
                         0, // receiver_id
@@ -87,6 +89,7 @@ class TerminasiController extends Controller
                     $kode = 'T14';
                     $message_notif = Auth::user()->name.' tidak menyetujui terminasi. SIlahkan lihat catatan supervisor';
                     $message_status = 'Proses terminasi';
+                    $edit_terminasi = 1;
                 }else{
                     // jika ada uuid & ada alasan_approve berarti edit setuju terminasi
                     $data_request = array('validated_by' => Auth::user()->id);
@@ -96,6 +99,7 @@ class TerminasiController extends Controller
                     $message_notif = Auth::user()->name.' menyetujui terminasi. <b>Kasus ditutup / selesai</b>';
                     $message_status = 'Kasus berhasil diTerminasi';
                     $setuju_terminasi = 1;
+                    $edit_terminasi = 1;
                 }
 
                 //create post
@@ -146,18 +150,23 @@ class TerminasiController extends Controller
                         ->whereNull('b.deleted_at')
                         ->pluck('b.id');
             foreach ($petugas_all as $key => $value_all) {
+                $notif_data = [];
                 // jika disetujui terminasi, beberapa notif kasus ini akan ter-read
-                if ($setuju_terminasi) {
-                    $notif_data = [
-                        ['kode' => 'T7', 'type_notif' => 'task'],
-                        ['kode' => 'T8', 'type_notif' => 'task']
-                    ];
-                } else {
-                    // task yang setuju / tidak tetap hilang
+                if ($edit_terminasi) {
+                    // jika ada perubahan (keputusan dari satpel approve/tidak), maka hilangkan notif T12.
                     $notif_data = [
                         ['kode' => 'T12', 'type_notif' => 'task']
                     ];
                 }
+
+                if ($setuju_terminasi) {
+                    $notif_data2 = [
+                        ['kode' => 'T7', 'type_notif' => 'task'],
+                        ['kode' => 'T8', 'type_notif' => 'task']
+                    ];
+                    $notif_data = array_merge($notif_data, $notif_data2);
+                }
+
                 foreach ($notif_data as $notif) {
                     NotifHelper::read_notif(
                         $value_all, // receiver_id

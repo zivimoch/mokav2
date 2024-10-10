@@ -37,7 +37,7 @@
         height: 30px !important;
     }
 
-    .akses_petugas, #check_persetujuan_spv, #check_ttd_spp, #check_identifikasi, #check_asesmen, .warningKasus, .warningAsesmen, .warningIntervensi, .warningSPP, #modalAsesmen, #check_perencanaan, #check_pelaksanaan, #check_pemantauan, #check_terminasi, .warningTerminasi {
+    .akses_petugas, #check_persetujuan_spv2, #check_ttd_spp2, #check_identifikasi2, #check_asesmen2, .warningKasus, .warningAsesmen, .warningIntervensi, .warningSPP, #modalAsesmen, #check_perencanaan2, #check_pelaksanaan2, #check_pemantauan2, #check_terminasi2, .warningTerminasi2 {
         display: none;
     }
 
@@ -89,7 +89,7 @@
 <div class="card card-primary card-outline">
 
     <div class="ribbon-wrapper ribbon-xl">
-        <div class="ribbon bg-danger text-xl warningTerminasi">
+        <div class="ribbon bg-danger text-xl warningTerminasi2">
         CLOSED
         </div>
     </div>
@@ -105,12 +105,12 @@
 </ul>
 </div>
 <div class="card" style="margin-top:-30px; margin-bottom:0px">
-    <div id="accordionKelengkapan" style="margin-bottom:-15px">
+    <div id="accordionKelengkapan2" style="margin-bottom:-15px">
         <div class="card card-light">
 
             <div class="card-header {{ Request::get('kolom-kelengkapan') == 1 ? 'hightlighting' : '' }}" data-toggle="collapse" data-target="#collapseKelengkapan" aria-expanded="true" aria-controls="collapseKelengkapan" style="cursor: pointer;">
                 <h3 class="card-title">
-                    <b>Kelengkapan Kasus (<span id="kelengkapan_kasus"></span>/6) </b>
+                    <b>Kelengkapan Kasus (<span id="kelengkapan_kasus2"></span>/6) </b>
                 </h3>
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool">
@@ -118,36 +118,36 @@
                   </button>
                 </div>
               </div>
-        <div id="collapseKelengkapan" class="collapse {{ Request::get('kolom-kelengkapan') == 1 ? 'show' : '' }} {{ Request::get('kolom-kelengkapan') == 1 ? 'hightlighting' : '' }}" data-parent="#accordionKelengkapan">
+        <div id="collapseKelengkapan" class="collapse {{ Request::get('kolom-kelengkapan') == 1 ? 'show' : '' }} {{ Request::get('kolom-kelengkapan') == 1 ? 'hightlighting' : '' }}" data-parent="#accordionKelengkapan2">
         <div class="card-body">
             <ol style="padding:15px; margin :-25px 0px -20px 0px">
                 <li>
-                    Identifikasi <i class="fa fa-check" id="check_identifikasi"></i>
+                    Identifikasi <i class="fa fa-check" id="check_identifikasi2"></i>
                     <ul style="margin-left: -25px">
                         <li style="color: blue; cursor: pointer; font-weight:bold" onclick="alert('Field yang dibutuhkan untuk diisi :\n1. Data Kasus : \nMedia Pengagduan, Sumber Informasi, Tanggal Pelaporan, Tanggal Kejadian, Kategori Lokasi, Ringkasan, TKP\n2. Data Pelapor :\n Nama Lengkap, Jenis Kelamin\n3. Data Korban :\nNama Lengkap, Tempat Lahir, Tanggal Lahir, Jenis Kelamin, Alamat KTP, Alamat Domisili, Agama, Status Kawin, Pekerjaan, Kewargangaraan, Status Pendidikan, Pendidikan, Hubungan dengan Pelapor\n4. Data Terlapor :\nNama Lengkap, Tempat Lahir, Tanggal Lahir, Jenis Kelamin, Agama, Pekerjaan, Kewarganegaraan, Status Pendidikan, Pendidikan')">
-                            Kelengkapan Data (<span id="persen_title_data"></span>%) <i class="far fa-check-circle"></i>
+                            Kelengkapan Data (<span id="persen_title_data2"></span>%) <i class="far fa-check-circle"></i>
                         </li>
                             <div class="progress progress-xs">
-                                <div class="progress-bar bg-success progress-bar-striped" id="persen_data" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar bg-success progress-bar-striped" id="persen_data2" role="progressbar" aria-valuemin="0" aria-valuemax="100">
                                 </div>
                             </div>
                         </li>
                         <li>
-                            Persetujuan Supervisor <i class="far fa-check-circle" id="check_persetujuan_spv"></i>
+                            Persetujuan Supervisor <i class="far fa-check-circle" id="check_persetujuan_spv2"></i>
                         </li>
                         <li>
-                            Tanda Tangan SPP <i class="far fa-check-circle" id="check_ttd_spp"></i>
+                            Tanda Tangan SPP <i class="far fa-check-circle" id="check_ttd_spp2"></i>
                         </li>
                     </ul>
                 </li>
                 <li>
-                    Asesmen <i class="fa fa-check" id="check_asesmen"></i>
+                    Asesmen <i class="fa fa-check" id="check_asesmen2"></i>
                 </li>
                 <li>
-                    Perencanaan Intervensi <i class="fa fa-check" id="check_perencanaan"></i>
+                    Perencanaan Intervensi <i class="fa fa-check" id="check_perencanaan2"></i>
                 </li>
                 <li>
-                    Pelaksanaan Intervensi  <i class="fa fa-check" id="check_pelaksanaan"></i>
+                    Pelaksanaan Intervensi  <i class="fa fa-check" id="check_pelaksanaan2"></i>
                     <br>
                     (<span class="persen_title_layanan"></span>)
                     <div class="progress progress-xs">
@@ -156,10 +156,10 @@
                     </div>
                 </li>
                 <li>
-                    Pemantauan & Evaluasi <i class="fa fa-check" id="check_pemantauan"></i>
+                    Pemantauan & Evaluasi <i class="fa fa-check" id="check_pemantauan2"></i>
                 </li>
                 <li>
-                    Terminasi <i class="fa fa-check" id="check_terminasi"></i>
+                    Terminasi <i class="fa fa-check" id="check_terminasi2"></i>
                 </li>
             </ol>
         </div>
@@ -272,7 +272,7 @@
         <div class="card-body">
         <div class="tab-content" id="custom-tabs-one-tabContent">
         <div class="tab-pane fade show {{ Request::get('tab') == 'kasus' || Request::get('tab') == ''  ? 'active' : '' }}  {{ Request::get('hightlight') == 'formulir' ? 'hightlighting' : '' }}  {{ Request::get('kasus-all') == 1 ? 'hightlighting' : '' }}" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
-        <div class="post warningTerminasi">
+        <div class="post warningTerminasi2">
             <div class="card card-danger" style="transition: all 0.15s ease 0s; height: inherit; width: inherit;">
                 <div class="card-header">
                 <h3 class="card-title">Kasus Terminasi</h3>
@@ -281,7 +281,7 @@
                 </button>
                 </div>
                 </div>
-                <div class="card-body" id="alasan_terminasi"></div>
+                <div class="card-body" id="alasan_terminasi2"></div>
             </div>
         </div>
             
@@ -1847,7 +1847,7 @@
                             <h6><span class="badge badge-pill badge-primary">{{ $item->jabatan }}</span></h6>
                         </td>
                         <td>
-                            @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Supervisor Kasus']))
+                            @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Supervisor Kasus']) && $akses_petugas == 1)
                             <form id="formPetugas{{ $no_petugas }}" action="{{ route('petugas.destroy', $item->id) }}" method="post">
                                 @csrf 
                                 @method('delete')
@@ -2738,16 +2738,16 @@
         show_catatan('layanan_hukum_putusan');
         show_catatan('layanan_psikologi_disabilitas');
         // loadPublicUrl();
-        check_kelengkapan_data('{{ $klien->id }}');
-        check_kelengkapan_persetujuan_spv('{{ $klien->id }}');
-        check_kelengkapan_spp('{{ $klien->id }}');
-        check_kelengkapan_asesmen('{{ $klien->id }}');
-        check_kelengkapan_perencanaan('{{ $klien->id }}');
-        check_kelengkapan_pemantauan('{{ $klien->id }}');
-        check_kelengkapan_terminasi('{{ $klien->id }}');
+        check_kelengkapan_data2('{{ $klien->id }}');
+        check_kelengkapan_persetujuan_spv2('{{ $klien->id }}');
+        check_kelengkapan_spp2('{{ $klien->id }}');
+        check_kelengkapan_asesmen2('{{ $klien->id }}');
+        check_kelengkapan_perencanaan2('{{ $klien->id }}');
+        check_kelengkapan_pemantauan2('{{ $klien->id }}');
+        check_kelengkapan_terminasi2('{{ $klien->id }}');
         kelengkapan_kasus = 0;
         kelengkapan_identifikasi = 0;
-        $('#kelengkapan_kasus').html(kelengkapan_kasus);
+        $('#kelengkapan_kasus2').html(kelengkapan_kasus);
 
         $('#arsipkan').on('switchChange.bootstrapSwitch', function (event, state) {
                 let token   = $("meta[name='csrf-token']").attr("content");
@@ -3211,26 +3211,27 @@
           ['10 rows', '25 rows', '50 rows', '100 rows','All'],
       ],
       "dom": 'Blfrtip', // Blfrtip or Bfrtip
-      "buttons": ["pageLength", "copy", "csv", "excel", "pdf",
-              {
-                className: "btn-info",
-                text: 'Tambah',
-                action: function ( ) {
-                    $('#deleteRiwayatKejadian').hide();
-                    $('#tanggal').val('');
-                    $('#jam').val('');
-                    tinyMCE.get('keterangan').setContent('');
-                    // $('#keterangan').val('');
-                    $('#modelHeading').html("Tambah Riwayat Kejadian");
-                    $('#riwayatModal').modal('show'); 
-                    $("#overlay").hide();
-                    //reset uuid riwayat
-                    $('#uuid_riwayat').val('');
-                  }
-              }]
-      }).buttons().container().appendTo('#tabelRiwayat_wrapper .col-md-6:eq(0)');
+      "buttons": ["pageLength", "copy", "csv", "excel", "pdf"]
+                .concat(
+                '{{ $akses_petugas }}' == 1 ? [{
+                    className: "btn-info",
+                    text: 'Tambah',
+                    action: function () {
+                        $('#deleteRiwayatKejadian').hide();
+                        $('#tanggal').val('');
+                        $('#jam').val('');
+                        tinyMCE.get('keterangan').setContent('');
+                        $('#modelHeading').html("Tambah Riwayat Kejadian");
+                        $('#riwayatModal').modal('show'); 
+                        $("#overlay").hide();
+                        $('#uuid_riwayat').val('');  // reset uuid riwayat
+                    }
+                }] : []
+                )
+            }).buttons().container().appendTo('#tabelRiwayat_wrapper .col-md-6:eq(0)');
 
-      $('#tabelRiwayat_filter').css({'float':'right','display':'inline-block; background-color:black'});
+
+        $('#tabelRiwayat_filter').css({'float':'right','display':'inline-block; background-color:black'});
     
     });
 
@@ -4168,7 +4169,7 @@ $("#tabelAsesmenLanjutan").DataTable({
         }
     }
 
-    function check_kelengkapan_data(klien_id) {
+    function check_kelengkapan_data2(klien_id) {
         $.ajax({
             url: `{{ env('APP_URL') }}/check_kelengkapan_data/`+klien_id,
             type: "GET",
@@ -4177,8 +4178,8 @@ $("#tabelAsesmenLanjutan").DataTable({
                 // nol kan dulu persentasenya 
                 $('.persen_data').css('width','0%');
                 // update persentase
-                $('#persen_title_data').html(response);
-                $('#persen_data').css('width', response+'%');
+                $('#persen_title_data2').html(response);
+                $('#persen_data2').css('width', response+'%');
 
                 jenis_kekerasan = $('#jenis_kekerasan').val();
                 bentuk_kekerasan = $('#bentuk_kekerasan').val();
@@ -4197,19 +4198,19 @@ $("#tabelAsesmenLanjutan").DataTable({
         });
     }
 
-function check_kelengkapan_persetujuan_spv(klien_id) {
+function check_kelengkapan_persetujuan_spv2(klien_id) {
     $.ajax({
         url: `{{ env('APP_URL') }}/check_kelengkapan_persetujuan_spv/`+klien_id,
         type: "GET",
         cache: false,
         success: function (response){
             if (response) {
-                $('#check_persetujuan_spv').show();
+                $('#check_persetujuan_spv2').show();
                 kelengkapan_identifikasi = kelengkapan_identifikasi + 1;
                 if (kelengkapan_identifikasi > 1) {
-                    $('#check_identifikasi').show();
+                    $('#check_identifikasi2').show();
                     kelengkapan_kasus = kelengkapan_kasus + 1;
-                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                    $('#kelengkapan_kasus2').html(kelengkapan_kasus);
                 }
             }
         },
@@ -4220,19 +4221,19 @@ function check_kelengkapan_persetujuan_spv(klien_id) {
         });
 }
 
-function check_kelengkapan_spp(klien_id) {
+function check_kelengkapan_spp2(klien_id) {
     $.ajax({
         url: `{{ env('APP_URL') }}/check_kelengkapan_spp/`+klien_id,
         type: "GET",
         cache: false,
         success: function (response){
             if (response) {
-                $('#check_ttd_spp').show();
+                $('#check_ttd_spp2').show();
                 kelengkapan_identifikasi = kelengkapan_identifikasi + 1;
                 if (kelengkapan_identifikasi > 1) {
-                    $('#check_identifikasi').show();
+                    $('#check_identifikasi2').show();
                     kelengkapan_kasus = kelengkapan_kasus + 1;
-                    $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                    $('#kelengkapan_kasus2').html(kelengkapan_kasus);
                     $('#tombol_edit_rekam').show();
                 }
                 // $('#modalAsesmen').show();
@@ -4248,16 +4249,16 @@ function check_kelengkapan_spp(klien_id) {
         });
 }
 
-function check_kelengkapan_asesmen(klien_id) {
+function check_kelengkapan_asesmen2(klien_id) {
     $.ajax({
         url: `{{ env('APP_URL') }}/check_kelengkapan_asesmen/`+klien_id,
         type: "GET",
         cache: false,
         success: function (response){
             if (response) {
-                $('#check_asesmen').show();
+                $('#check_asesmen2').show();
                 kelengkapan_kasus = kelengkapan_kasus + 1;
-                $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                $('#kelengkapan_kasus2').html(kelengkapan_kasus);
                 $('.warningAsesmen').hide();
             }else{
                 $('.warningAsesmen').show();
@@ -4270,18 +4271,18 @@ function check_kelengkapan_asesmen(klien_id) {
         });
 }
 
-function check_kelengkapan_perencanaan(klien_id) {
+function check_kelengkapan_perencanaan2(klien_id) {
     $.ajax({
         url: `{{ env('APP_URL') }}/check_kelengkapan_perencanaan/`+klien_id,
         type: "GET",
         cache: false,
         success: function (response){
             if (response > 0) {
-                $('#check_perencanaan').show();
+                $('#check_perencanaan2').show();
                 kelengkapan_kasus = kelengkapan_kasus + 1;
-                $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                $('#kelengkapan_kasus2').html(kelengkapan_kasus);
             }
-            check_kelengkapan_pelaksanaan(response, '{{ $klien->id }}');
+            check_kelengkapan_pelaksanaan2(response, '{{ $klien->id }}');
         },
         error: function (response){
             // alert("Error");
@@ -4290,7 +4291,7 @@ function check_kelengkapan_perencanaan(klien_id) {
         });
 }
 
-function check_kelengkapan_pelaksanaan(jml_perencanaan, klien_id) {
+function check_kelengkapan_pelaksanaan2(jml_perencanaan, klien_id) {
     $.ajax({
         url: `{{ env('APP_URL') }}/check_kelengkapan_pelaksanaan/`+klien_id,
         type: "GET",
@@ -4300,17 +4301,20 @@ function check_kelengkapan_pelaksanaan(jml_perencanaan, klien_id) {
             persentase = persentase.toFixed(2);
             $('.persen_title_layanan').html(persentase+'%');
             $('.persen_layanan').css('width', persentase+'%');
+
+            $('#tambah_laporan_pemantauan').prop('disabled', false);
+            $('#alert-pemantauan').hide();
             if (persentase == 100) {
-                $('#check_pelaksanaan').show();
+                $('#check_pelaksanaan2').show();
                 kelengkapan_kasus = kelengkapan_kasus + 1;
-                $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                $('#kelengkapan_kasus2').html(kelengkapan_kasus);
 
                 // enable / disable tombol pemantauan & evaluasi
-                $('#tambah_laporan_pemantauan').prop('disabled', false);
-                $('#alert-pemantauan').hide();
+                // $('#tambah_laporan_pemantauan').prop('disabled', false);
+                // $('#alert-pemantauan').hide();
             } else {
-                $('#tambah_laporan_pemantauan').prop('disabled', true);
-                $('#alert-pemantauan').show();
+                // $('#tambah_laporan_pemantauan').prop('disabled', true);
+                // $('#alert-pemantauan').show();
             }
         },
         error: function (response){
@@ -4320,7 +4324,7 @@ function check_kelengkapan_pelaksanaan(jml_perencanaan, klien_id) {
         });
 }
 
-function check_kelengkapan_pemantauan(klien_id) {
+function check_kelengkapan_pemantauan2(klien_id) {
     $.ajax({
         url: `{{ env('APP_URL') }}/check_kelengkapan_pemantauan/`+klien_id,
         type: "GET",
@@ -4328,9 +4332,9 @@ function check_kelengkapan_pemantauan(klien_id) {
         success: function (response){
             // centang indikator pemanatauan & evaluasi
             if (response.pemantauan_terakhir > 0) {
-                $('#check_pemantauan').show();
+                $('#check_pemantauan2').show();
                 kelengkapan_kasus = kelengkapan_kasus + 1;
-                $('#kelengkapan_kasus').html(kelengkapan_kasus);
+                $('#kelengkapan_kasus2').html(kelengkapan_kasus);
             }
 
             if (response.deadline_pemantauan >= 172) {
@@ -4349,18 +4353,18 @@ function check_kelengkapan_pemantauan(klien_id) {
         });
 }
 
-function check_kelengkapan_terminasi(klien_id) {
+function check_kelengkapan_terminasi2(klien_id) {
     $.ajax({
         url: `{{ env('APP_URL') }}/check_kelengkapan_terminasi/`+klien_id,
         type: "GET",
         cache: false,
         success: function (response){
             if (response!='') {
-                $('#check_terminasi').show();
+                $('#check_terminasi2').show();
                 kelengkapan_kasus = kelengkapan_kasus + 1;
-                $('#kelengkapan_kasus').html(kelengkapan_kasus);
-                $('.warningTerminasi').show();
-                $('#alasan_terminasi').html(response.alasan);
+                $('#kelengkapan_kasus2').html(kelengkapan_kasus);
+                $('.warningTerminasi2').show();
+                $('#alasan_terminasi2').html(response.alasan);
             }
         },
         error: function (response){
