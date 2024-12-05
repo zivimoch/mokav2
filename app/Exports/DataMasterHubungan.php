@@ -145,6 +145,7 @@ class DataMasterHubungan implements FromCollection, WithHeadings, WithStyles
                             (SELECT a.klien_id, GROUP_CONCAT(' ', b.name) AS supervisor_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Supervisor Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id)
                             s ON s.klien_id = c.id
                             WHERE 
+                            a.deleted_at IS NULL AND
                             b.deleted_at IS NULL AND 
                             c.deleted_at IS NULL AND
                             ".$basis_tanggal." BETWEEN '".$from."' AND '".$to."'
@@ -152,6 +153,7 @@ class DataMasterHubungan implements FromCollection, WithHeadings, WithStyles
                             ".$no_regis."
                             ".$arsip."
                             ".$kategori_klien."
+                            GROUP BY a.id
                             ORDER BY a.id"
                         );
 

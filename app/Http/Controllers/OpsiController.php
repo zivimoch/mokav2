@@ -247,6 +247,7 @@ class OpsiController extends Controller
 
     public function api_kekhususan()
     {
+        // jadi kedaruratan
         $data = ['Tinggal dengan Terlapor',
                 'Tidak memiliki Keluarga Dekat',
                 'Ancaman dibunuh',
@@ -259,6 +260,7 @@ class OpsiController extends Controller
 
     public function api_kedaruratan()
     {
+        // jadi tindak_lanjut
         $data = ['Fasilitasi SPP',
                 'Pemberian Informasi',
                 'Layanan Kedaruratan'
@@ -575,7 +577,7 @@ class OpsiController extends Controller
                 'PUSKESMAS Kec. Kelapa Gading',
                 'PUSKESMAS Kec. Cilincing',
                 'PUSKESMAS Kec. Kembangan',
-                'PUSKESMAS Kec. Kebon Jeruk',
+                'PUSKESMAS Kec. Keborujukann Jeruk',
                 'PUSKESMAS Kec. Palmerah',
                 'PUSKESMAS Kec. Grogol Petamburan',
                 'PUSKESMAS Kec. Tambora',
@@ -605,7 +607,12 @@ class OpsiController extends Controller
                 'PUSKESMAS Kec. Kepulauan Seribu Selatan',
                 'PUSKESMAS Kec. Jagakarsa',
                 'UPTD PPA Tangsel',
-                'UPT PPA Jawa Tengah'
+                'UPT PPA Jawa Tengah',
+                'Sudin Pendidikan Wiyalah Jakarta Pusat',
+                'Sudin Pendidikan Wiyalah Jakarta Utara',
+                'Sudin Pendidikan Wiyalah Jakarta Barat',
+                'Sudin Pendidikan Wiyalah Jakarta Selatan',
+                'Sudin Pendidikan Wiyalah Jakarta Timur'
             ];
                 
         return $data;
@@ -843,7 +850,12 @@ class OpsiController extends Controller
                 'PUSKESMAS Kec. Jagakarsa',
                 'UPTD PPA Tangsel',
                 'Yayasan / NGO',
-                'Pemerintah Daerah (PEMDA)'
+                'Pemerintah Daerah (PEMDA)',
+                'Sudin Pendidikan Wiyalah Jakarta Pusat',
+                'Sudin Pendidikan Wiyalah Jakarta Utara',
+                'Sudin Pendidikan Wiyalah Jakarta Barat',
+                'Sudin Pendidikan Wiyalah Jakarta Selatan',
+                'Sudin Pendidikan Wiyalah Jakarta Timur'
             ];
                 
         return $data;
@@ -1065,6 +1077,16 @@ class OpsiController extends Controller
             [
                 "tahun" => 2024,
                 "bulan" => 9,
+                "hari_kerja" => 20,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 10,
+                "hari_kerja" => 23,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 11,
                 "hari_kerja" => 20,
             ],
         ];

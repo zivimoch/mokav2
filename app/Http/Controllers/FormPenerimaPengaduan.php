@@ -410,20 +410,33 @@ class FormPenerimaPengaduan extends Controller
             }
             if ($data_update == 'klien') {
                 $data = Klien::where('uuid', $request->uuid)->first();
-                // proses update kondisi_khusus klien di tabel kondisi_khusus
+                // proses update kedaruratan klien di tabel kedaruratan
                 TKedaruratan::where('klien_id', $data->id)->delete();
-                //simpan kondisi_khusus
-                if (isset($request->kondisi_khusus)) {
-                    $kondisi_khusus = $request->kondisi_khusus;
-                    foreach ($kondisi_khusus as $key4 => $value) {
-                        $proses['kondisi_khusus'] = TKedaruratan::create(['klien_id' => $data->id, 'value' => $kondisi_khusus[$key4]]);
+                //simpan kedaruratan
+                if (isset($request->kedaruratan)) {
+                    $kedaruratan = $request->kedaruratan;
+                    foreach ($kedaruratan as $key4 => $value) {
+                        $proses['kedaruratan'] = TKedaruratan::create(['klien_id' => $data->id, 'value' => $kedaruratan[$key4]]);
                     }
                 }
 
-                $klien = Klien::where('id', $data->id)->first();
+                $request->request->remove('kedaruratan');
 
-                $request->request->remove('kondisi_khusus');
+                // proses update tindak_lanjut klien di tabel t_tindak_lanjut
+                TTindakLanjut::where('klien_id', $data->id)->delete();
+                //simpan tindak_lanjut
+                if (isset($request->tindak_lanjut)) {
+                    $tindak_lanjut = $request->tindak_lanjut;
+                    foreach ($tindak_lanjut as $key5 => $value) {
+                        $proses['tindak_lanjut'] = TTindakLanjut::create(['klien_id' => $data->id, 'value' => $tindak_lanjut[$key5]]);
+                    }
+                }
+
+                $request->request->remove('tindak_lanjut');
+
+                $klien = Klien::where('id', $data->id)->first();
             }
+
             if ($data_update == 'terlapor') {
                 // hapus semua hubungan_terlapor klien ini
                 RHubunganTerlaporKlien::updateOrCreate(['klien_id' => $request->klien_id,

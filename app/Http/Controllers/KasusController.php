@@ -43,138 +43,138 @@ class KasusController extends Controller
     {
         if($request->ajax()) {
             // Getting date range
-$daterange = $request->get('tanggal') ? explode(" - ", $request->get('tanggal')) : [date("Y") . '-01-01', date("Y-m-d")];
-$from = $daterange[0];
-$to = $daterange[1];
+            $daterange = $request->get('tanggal') ? explode(" - ", $request->get('tanggal')) : [date("Y") . '-01-01', date("Y-m-d")];
+            $from = $daterange[0];
+            $to = $daterange[1];
 
-// Selecting basis tanggal
-$basis_tanggal = $request->basis_tanggal == 'tanggal_approve' ? 'a.tanggal_approve' : 'b.' . $request->basis_tanggal;
+            // Selecting basis tanggal
+            $basis_tanggal = $request->basis_tanggal == 'tanggal_approve' ? 'a.tanggal_approve' : 'b.' . $request->basis_tanggal;
 
-// Filter basis perhitungan usia klien
-if ($request->penghitungan_usia == 'lapor') {
-    $penguarang = 'b.tanggal_pelaporan';
-} elseif ($request->penghitungan_usia == 'kejadian') {
-    $penguarang = 'b.tanggal_kejadian';
-} elseif ($request->penghitungan_usia == 'input') {
-    $penguarang = 'b.created_at';
-} else {
-    $penguarang = 'CURDATE()'; // Default to current date
-}
+            // Filter basis perhitungan usia klien
+            if ($request->penghitungan_usia == 'lapor') {
+                $penguarang = 'b.tanggal_pelaporan';
+            } elseif ($request->penghitungan_usia == 'kejadian') {
+                $penguarang = 'b.tanggal_kejadian';
+            } elseif ($request->penghitungan_usia == 'input') {
+                $penguarang = 'b.created_at';
+            } else {
+                $penguarang = 'CURDATE()'; // Default to current date
+            }
 
-$today = Carbon::today();
+            $today = Carbon::today();
 
-$data = DB::table('klien as a')
-    ->select(
-        'a.uuid', 
-        'b.tanggal_pelaporan', 
-        'a.no_klien', 
-        'a.nama', 
-        'a.jenis_kelamin', 
-        'a.tanggal_lahir', 
-        DB::raw("TIMESTAMPDIFF(YEAR, a.tanggal_lahir, $penguarang) as usia"), 
-        'a.status', 
-        'd.name as petugas',
-        'y.jatuh_tempo',
-        'x.jumlah_terminasi',
-        'w.jumlah_intervensiku'
-    )
-    ->leftJoin('kasus as b', 'b.id', '=', 'a.kasus_id')
-    ->leftJoin('petugas as c', 'a.id', '=', 'c.klien_id')
-    ->leftJoin('users as d', 'd.id', '=', 'a.created_by')
-    ->leftJoin(DB::raw('(SELECT b.klien_id  
-                         FROM users a 
-                         LEFT JOIN petugas b ON a.id = b.user_id
-                         WHERE a.jabatan = "Supervisor Kasus"
-                         AND b.deleted_at IS NULL) z'), 'z.klien_id', '=', 'a.id')
-    ->leftJoin(DB::raw("(SELECT a.id as klien_id, 
-                        COALESCE(DATEDIFF(?, p1.created_at), DATEDIFF(?, a.tanggal_approve)) as jatuh_tempo
-                        FROM klien a
-                        LEFT JOIN (
-                            SELECT klien_id, MAX(created_at) as latest_created_at
-                            FROM pemantauan
-                            GROUP BY klien_id
-                        ) p2 ON a.id = p2.klien_id
-                        LEFT JOIN pemantauan p1 ON p1.klien_id = p2.klien_id AND p1.created_at = p2.latest_created_at) y"), 'y.klien_id', '=', 'a.id')
-    ->leftJoin(DB::raw('(SELECT klien_id, COUNT(*) AS jumlah_terminasi  
-                        FROM terminasi
-                        WHERE validated_by IS NOT NULL
-                        AND deleted_at IS NULL GROUP BY klien_id) x'), 'x.klien_id', '=', 'a.id')
-    ->leftJoin(DB::raw('(SELECT klien_id, COUNT(*) AS jumlah_intervensiku  
-                        FROM agenda a 
-                        LEFT JOIN tindak_lanjut b ON a.id = b.agenda_id 
-                        WHERE b.created_by = '.Auth::user()->id.'
-                        AND a.deleted_at IS NULL 
-                        AND b.deleted_at IS NULL GROUP BY a.klien_id) w'), 'w.klien_id', '=', 'a.id')
-    
-    ->whereNull('a.deleted_at')
-    ->whereNull('c.deleted_at')
-    ->groupBy('a.uuid', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 'a.jenis_kelamin', 'a.tanggal_lahir', 'a.status', 'd.name', 'y.jatuh_tempo', 'x.jumlah_terminasi', 'w.jumlah_intervensiku')
-    ->addBinding($today->toDateString(), 'select')
-    ->addBinding($today->toDateString(), 'select');
+            $data = DB::table('klien as a')
+                ->select(
+                    'a.uuid', 
+                    'b.tanggal_pelaporan', 
+                    'a.no_klien', 
+                    'a.nama', 
+                    'a.jenis_kelamin', 
+                    'a.tanggal_lahir', 
+                    DB::raw("TIMESTAMPDIFF(YEAR, a.tanggal_lahir, $penguarang) as usia"), 
+                    'a.status', 
+                    'd.name as petugas',
+                    'y.jatuh_tempo',
+                    'x.jumlah_terminasi',
+                    'w.jumlah_intervensiku'
+                )
+                ->leftJoin('kasus as b', 'b.id', '=', 'a.kasus_id')
+                ->leftJoin('petugas as c', 'a.id', '=', 'c.klien_id')
+                ->leftJoin('users as d', 'd.id', '=', 'a.created_by')
+                ->leftJoin(DB::raw('(SELECT b.klien_id  
+                                    FROM users a 
+                                    LEFT JOIN petugas b ON a.id = b.user_id
+                                    WHERE a.jabatan = "Supervisor Kasus"
+                                    AND b.deleted_at IS NULL) z'), 'z.klien_id', '=', 'a.id')
+                ->leftJoin(DB::raw("(SELECT a.id as klien_id, 
+                                    COALESCE(DATEDIFF(?, p1.created_at), DATEDIFF(?, a.tanggal_approve)) as jatuh_tempo
+                                    FROM klien a
+                                    LEFT JOIN (
+                                        SELECT klien_id, MAX(created_at) as latest_created_at
+                                        FROM pemantauan
+                                        GROUP BY klien_id
+                                    ) p2 ON a.id = p2.klien_id
+                                    LEFT JOIN pemantauan p1 ON p1.klien_id = p2.klien_id AND p1.created_at = p2.latest_created_at) y"), 'y.klien_id', '=', 'a.id')
+                ->leftJoin(DB::raw('(SELECT klien_id, COUNT(*) AS jumlah_terminasi  
+                                    FROM terminasi
+                                    WHERE validated_by IS NOT NULL
+                                    AND deleted_at IS NULL GROUP BY klien_id) x'), 'x.klien_id', '=', 'a.id')
+                ->leftJoin(DB::raw('(SELECT klien_id, COUNT(*) AS jumlah_intervensiku  
+                                    FROM agenda a 
+                                    LEFT JOIN tindak_lanjut b ON a.id = b.agenda_id 
+                                    WHERE b.created_by = '.Auth::user()->id.'
+                                    AND a.deleted_at IS NULL 
+                                    AND b.deleted_at IS NULL GROUP BY a.klien_id) w'), 'w.klien_id', '=', 'a.id')
+                
+                ->whereNull('a.deleted_at')
+                ->whereNull('c.deleted_at')
+                ->groupBy('a.uuid', 'b.tanggal_pelaporan', 'a.no_klien', 'a.nama', 'a.jenis_kelamin', 'a.tanggal_lahir', 'a.status', 'd.name', 'y.jatuh_tempo', 'x.jumlah_terminasi', 'w.jumlah_intervensiku')
+                ->addBinding($today->toDateString(), 'select')
+                ->addBinding($today->toDateString(), 'select');
 
-// Filter by date
-if ($request->basis_tanggal) {
-    $data->whereBetween($basis_tanggal, [$from, $to]);
-}
+            // Filter by date
+            if ($request->basis_tanggal) {
+                $data->whereBetween($basis_tanggal, [$from, $to]);
+            }
 
-// Filter for laporKBG cases
-if ($request->laporkbg == 1) {
-    $data->whereNull('a.created_by');
-}
+            // Filter for laporKBG cases
+            if ($request->laporkbg == 1) {
+                $data->whereNull('a.created_by');
+            }
 
-// Filter by wilayah
-if ($request->wilayah != 'default') {
-    if ($request->basis_wilayah == 'tkp') {
-        $data->where($request->wilayah != 'luar' ? 'b.kotkab_id' : 'b.provinsi_id', $request->wilayah != 'luar' ? '=' : '!=', $request->wilayah != 'luar' ? $request->wilayah : env('id_provinsi'));
-    } elseif ($request->basis_wilayah == 'ktp') {
-        $data->where($request->wilayah != 'luar' ? 'a.kotkab_id' : 'a.provinsi_id', $request->wilayah != 'luar' ? '=' : '!=', $request->wilayah != 'luar' ? $request->wilayah : env('id_provinsi'));
-    } elseif ($request->basis_wilayah == 'satpel') {
-        $data->where('z.kotkab_id', $request->wilayah);
-    }
-}
+            // Filter by wilayah
+            if ($request->wilayah != 'default') {
+                if ($request->basis_wilayah == 'tkp') {
+                    $data->where($request->wilayah != 'luar' ? 'b.kotkab_id' : 'b.provinsi_id', $request->wilayah != 'luar' ? '=' : '!=', $request->wilayah != 'luar' ? $request->wilayah : env('id_provinsi'));
+                } elseif ($request->basis_wilayah == 'ktp') {
+                    $data->where($request->wilayah != 'luar' ? 'a.kotkab_id' : 'a.provinsi_id', $request->wilayah != 'luar' ? '=' : '!=', $request->wilayah != 'luar' ? $request->wilayah : env('id_provinsi'));
+                } elseif ($request->basis_wilayah == 'satpel') {
+                    $data->where('z.kotkab_id', $request->wilayah);
+                }
+            }
 
-// Filter for logged-in user cases
-if (!$request->anda && $request->laporkbg != 1) { 
-    $data->where('c.user_id', Auth::user()->id);
-}
+            // Filter for logged-in user cases
+            if (!$request->anda && $request->laporkbg != 1) { 
+                $data->where('c.user_id', Auth::user()->id);
+            }
 
-// Filter for cases without user intervention
-if ($request->intervensiku) { 
-    $data->whereNull('w.jumlah_intervensiku');
-}
+            // Filter for cases without user intervention
+            if ($request->intervensiku) { 
+                $data->whereNull('w.jumlah_intervensiku');
+            }
 
-// Filter by kategori klien
-if ($request->kategoriklien == 'dewasa') {
-    $data->whereRaw("TIMESTAMPDIFF(YEAR, a.tanggal_lahir, ".$penguarang.") >= 18");
-} elseif ($request->kategoriklien == 'anak') {
-    $data->whereRaw("TIMESTAMPDIFF(YEAR, a.tanggal_lahir, ".$penguarang.") < 18");
-}
+            // Filter by kategori klien
+            if ($request->kategoriklien == 'dewasa') {
+                $data->whereRaw("TIMESTAMPDIFF(YEAR, a.tanggal_lahir, ".$penguarang.") >= 18");
+            } elseif ($request->kategoriklien == 'anak') {
+                $data->whereRaw("TIMESTAMPDIFF(YEAR, a.tanggal_lahir, ".$penguarang.") < 18");
+            }
 
-// Filter for Pemantauan & Evaluasi
-if ($request->pemantauan) {
-    $data->where('y.jatuh_tempo', '>=', 172)
-         ->where(function($q) {
-             $q->where('x.jumlah_terminasi', '=', 0)
-               ->orWhereNull('x.jumlah_terminasi');
-         });
-}
+            // Filter for Pemantauan & Evaluasi
+            if ($request->pemantauan) {
+                $data->where('y.jatuh_tempo', '>=', 172)
+                    ->where(function($q) {
+                        $q->where('x.jumlah_terminasi', '=', 0)
+                        ->orWhereNull('x.jumlah_terminasi');
+                    });
+            }
 
-// Filter for Terminasi
-if ($request->terminasi) {
-    $data->where('x.jumlah_terminasi', '>', 0);
-}
+            // Filter for Terminasi
+            if ($request->terminasi) {
+                $data->where('x.jumlah_terminasi', '>', 0);
+            }
 
-// Filter by arsip status
-$data->where('a.arsip', $request->arsip ? 1 : 0);
+            // Filter by arsip status
+            $data->where('a.arsip', $request->arsip ? 1 : 0);
 
-$datas = $data->get();
+            $datas = $data->get();
 
-foreach ($datas as $datas2) {
-    // Format tanggal pelaporan
-    $datas2->tanggal_pelaporan_formatted = date('d M Y', strtotime($datas2->tanggal_pelaporan));
-}
+            foreach ($datas as $datas2) {
+                // Format tanggal pelaporan
+                $datas2->tanggal_pelaporan_formatted = date('d M Y', strtotime($datas2->tanggal_pelaporan));
+            }
 
-return DataTables::of($datas)->make(true);
+            return DataTables::of($datas)->make(true);
        }
        
        // ===========================================================================================
@@ -214,7 +214,7 @@ return DataTables::of($datas)->make(true);
         }
         if ((Auth::user()->jabatan != 'Super Admin' && $request->petugas == null) || (Auth::user()->jabatan != 'Super Admin' && $search == '')) {
             // super admin dapat memilih seluruh klien
-            $data = $data->where('user_id', Auth::user()->id);
+            $data = $data->where('a.user_id', Auth::user()->id);
         }
         $data = $data->select('b.id','b.uuid','b.nama','b.no_klien')->limit(10)->get();
 
@@ -278,6 +278,7 @@ return DataTables::of($datas)->make(true);
        $hubungan_dengan_terlapor =  (new OpsiController)->api_hubungan_dengan_terlapor();
        $hubungan_dengan_klien =  (new OpsiController)->api_hubungan_dengan_klien();
        $kekhususan =  (new OpsiController)->api_kekhususan();
+       $kedaruratan =  (new OpsiController)->api_kedaruratan();
        $pengadilan_negri =  (new OpsiController)->api_pengadilan_negri();
        $pasal = (new OpsiController)->api_pasal();
        $tipe_disabilitas = (new OpsiController)->api_difabel_type();
@@ -301,7 +302,9 @@ return DataTables::of($datas)->make(true);
            'g.name as kota_ktp',
            'h.name as kecamatan_ktp',
            'i.name as kelurahan_ktp',
+           'j.value as kedaruratan',
            DB::raw('(SELECT GROUP_CONCAT(" ", value) FROM t_kedaruratan WHERE klien_id = a.id) as t_kedaruratan'),
+           DB::raw('(SELECT GROUP_CONCAT(" ", value) FROM t_tindak_lanjut WHERE klien_id = a.id) as t_tindak_lanjut'),
            DB::raw('(SELECT GROUP_CONCAT(" ", value) FROM t_kategori_kasus WHERE klien_id = a.id) as t_kategori_kasus'),
            DB::raw('(SELECT GROUP_CONCAT(" ", value) FROM t_program_pemerintah WHERE klien_id = a.id) as t_program_pemerintah')
        )
@@ -313,6 +316,7 @@ return DataTables::of($datas)->make(true);
        ->leftJoin('indonesia_cities as g', 'a.kotkab_id_ktp', 'g.code')
        ->leftJoin('indonesia_districts as h', 'a.kecamatan_id_ktp', 'h.code')
        ->leftJoin('indonesia_villages as i', 'a.kelurahan_id_ktp', 'i.code')
+       ->leftJoin('t_kedaruratan as j', 'a.id', 'j.klien_id')
        ->where('a.uuid', $uuid)
        ->limit(1)
        ->first();
@@ -577,6 +581,7 @@ return DataTables::of($datas)->make(true);
                 ->with('hubungan_dengan_terlapor', $hubungan_dengan_terlapor)
                 ->with('hubungan_dengan_klien', $hubungan_dengan_klien)
                 ->with('kekhususan', $kekhususan)
+                ->with('kedaruratan', $kedaruratan)
                 ->with('pengadilan_negri', $pengadilan_negri)
                 ->with('pasal', $pasal)
                 ->with('tipe_disabilitas', $tipe_disabilitas)
@@ -887,7 +892,7 @@ return DataTables::of($datas)->make(true);
 
     public function check_kelengkapan_spp($klien_id)
     {
-        $persetujuan_template = PersetujuanTemplate::where('kategori', 'persetujuan pelayanan')->pluck('id');
+        $persetujuan_template = PersetujuanTemplate::withTrashed()->where('kategori', 'persetujuan pelayanan')->pluck('id');
         $persetujuan_isi = PersetujuanIsi::whereIn('persetujuan_template_id', [$persetujuan_template])
                                         ->where('klien_id', $klien_id)
                                         ->whereNotNull('tandatangan')

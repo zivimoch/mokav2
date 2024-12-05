@@ -217,7 +217,11 @@ class PersetujuanController extends Controller
         if (!$persetujuan_isi) {
             abort(404);
         }
-        $persetujuan_template = PersetujuanTemplate::where('id', $persetujuan_isi->persetujuan_template_id)->first();
+        $persetujuan_template = PersetujuanTemplate::withTrashed()
+    ->where('id', $persetujuan_isi->persetujuan_template_id)
+    ->first();
+
+        // $persetujuan_template = PersetujuanTemplate::where('id', $persetujuan_isi->persetujuan_template_id)->first();
         $persetujuan_item = PersetujuanItem::where('persetujuan_template_id', $persetujuan_template->id)
                             ->where('parent_id', 0)
                             ->with('children')

@@ -47,9 +47,7 @@ class NotifikasiController extends Controller
         foreach ($notifs as $notif) {
             $notif->formattedDate = Carbon::parse($notif->created_at)->diffForHumans(null, true);
         }
-        $data = array('task' => $tasks, 
-                        'notif' => $notifs, 
-                        );
+        $data = env('mode_iso') ? null : array('task' => $tasks, 'notif' => $notifs);
         return json_encode($data);
     }
     

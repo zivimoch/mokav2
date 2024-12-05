@@ -387,10 +387,10 @@
   $("#editAgenda, #tombol_view_agenda").hide();
   $(document).ready(function() {
     // $('.select2').select2();
-    //     $('.select2bs4').select2();
-    //     $('.select-tag').select2({
-    //     tags: true,
-    //     theme: 'bootstrap4'
+    // $('.select2bs4').select2();
+    // $('.select-tag').select2({
+    //   tags: true,
+    //   theme: 'bootstrap4'
     // });
 
     $('#reset-jam-selesai').click(function(event) {
@@ -623,8 +623,8 @@
            };
          },
          cache: false
-       }
-
+       },
+       dropdownParent: "#ajaxModel" 
     });
   }
 

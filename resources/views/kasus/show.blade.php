@@ -36,9 +36,11 @@
     .select2-selection__arrow {
         height: 30px !important;
     }
-
-    .akses_petugas, #check_persetujuan_spv2, #check_ttd_spp2, #check_identifikasi2, #check_asesmen2, .warningKasus, .warningAsesmen, .warningIntervensi, .warningSPP, #modalAsesmen, #check_perencanaan2, #check_pelaksanaan2, #check_pemantauan2, #check_terminasi2, .warningTerminasi2 {
+    .akses_petugas, .warningTerminasi2 {
         display: none;
+    }
+    #check_persetujuan_spv2, #check_ttd_spp2, #check_identifikasi2, #check_asesmen2, .warningKasus, .warningAsesmen, .warningIntervensi, .warningSPP, #modalAsesmen, #check_perencanaan2, #check_pelaksanaan2, #check_pemantauan2, #check_terminasi2 {
+        display: none @if(env('mode_iso')) !important @endif;
     }
 
     .cursor-disabled {
@@ -261,9 +263,11 @@
         <li class="nav-item">
         <a class="nav-link {{ Request::get('tab') == 'kasus-persetujuan' ? 'active' : '' }}" id="kasus-persetujuan-tab" data-toggle="pill" href="#kasus-persetujuan" role="tab" aria-controls="kasus-persetujuan" aria-selected="false">Persetujuan <i class="fas fa-exclamation-circle warningSPP" style="color: red; font-size:20px"></i></a>
         </li>
-        <li class="nav-item">
-        <a class="nav-link" id="kasus-log-tab" data-toggle="pill" href="#kasus-log" role="tab" aria-controls="kasus-log" aria-selected="false">Log Activity</a>
-        </li>
+        @if (env('mode_iso') == 0)
+            <li class="nav-item">
+            <a class="nav-link" id="kasus-log-tab" data-toggle="pill" href="#kasus-log" role="tab" aria-controls="kasus-log" aria-selected="false">Log Activity</a>
+            </li>
+        @endif
         <li class="nav-item akses_petugas">
         <a class="nav-link {{ Request::get('tab') == 'settings' ? 'active' : '' }}" id="kasus-settings-tab" data-toggle="pill" href="#kasus-settings" role="tab" aria-controls="kasus-settings" aria-selected="false">Settings</a>
         </li>
@@ -694,7 +698,7 @@
                     <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klasifikasi">
-                            @if (count($bentuk_kekerasan_sets)> 0)
+                            @if (count($bentuk_kekerasan_sets)> 0 || env('mode_iso'))
                                 @php
                                     $no_jenis = 1;
                                 @endphp
@@ -728,7 +732,7 @@
                     <td style="width: 1%">:</td>
                     <td>
                         <span class="data_klasifikasi">
-                            @if (count($kategori_kasus) > 0)
+                            @if (count($kategori_kasus) > 0 || env('mode_iso'))
                                 @foreach ($kategori_kasus as $item)
                                     {{ $item->nama }}@if (!$loop->last), @endif 
                                 @endforeach
@@ -1146,6 +1150,40 @@
                         </select>
                     </td>
                 </tr>
+                <tr id="kedaruratan_klien">
+                    <td style="width: 200px">Kondisi Kedaruratan</td>
+                    <td style="width: 1%">:</td>
+                    <td>
+                        <span class="data_klien">
+                            {{ isset($klien->t_kedaruratan) ? $klien->t_kedaruratan : 'TIDAK DARURAT' }}
+                            @php
+                                $t_kedaruratan_array = array_map('trim', explode(', ', $klien->t_kedaruratan));
+                            @endphp
+                        </span> 
+                        <select name="kedaruratan[]" class="input_klien select2bs4" style="width: 100%;" multiple="multiple">
+                            @foreach ($kekhususan as $item) 
+                                <option value="{{ $item }}"  {{ in_array($item, $t_kedaruratan_array) ? 'selected' : '' }}>{{ $item }}</option> 
+                            @endforeach 
+                        </select>
+                    </td>
+                </tr>
+                <tr id="tindak_lanjut_klien">
+                    <td style="width: 200px">Tindak Lanjut</td>
+                    <td style="width: 1%">:</td>
+                    <td>
+                        <span class="data_klien">
+                            {{ isset($klien->t_tindak_lanjut) ? $klien->t_tindak_lanjut : '-' }}
+                            @php
+                                $t_tindak_lanjut_array = array_map('trim', explode(', ', $klien->t_tindak_lanjut));
+                            @endphp
+                        </span> 
+                        <select name="tindak_lanjut[]" class="input_klien select2bs4" style="width: 100%;" multiple="multiple">
+                            @foreach ($kedaruratan as $item) 
+                                <option value="{{ $item }}"  {{ in_array($item, $t_tindak_lanjut_array) ? 'selected' : '' }}>{{ $item }}</option> 
+                            @endforeach 
+                        </select>
+                    </td>
+                </tr>
             </table>
             </form>
         </div>
@@ -1343,7 +1381,7 @@
                         <td style="width: 200px">Hubungan dengan klien (Terlapor siapanya Klien?)</td>
                         <td style="width: 1%">:</td>
                         <td>
-                            <span class="data_terlapor{{ $no_terlapor }}">{!! isset($item_terlapor->hubungan_terlapor) ? $item_terlapor->hubungan_terlapor : '<span style="background-color:red;font-weight:bold; padding:5px; color:#fff">Perhatian! Hubungan Terlapor Dengan Klien Mohon Untuk Diisi</span>' !!}</span> 
+                            <span class="data_terlapor{{ $no_terlapor }}">{!! isset($item_terlapor->hubungan_terlapor)  || env('mode_iso') ? $item_terlapor->hubungan_terlapor : '<span style="background-color:red;font-weight:bold; padding:5px; color:#fff">Perhatian! Hubungan Terlapor Dengan Klien Mohon Untuk Diisi</span>' !!}</span> 
                             <select name="hubungan_terlapor" class="input_terlapor input_terlapor{{ $no_terlapor }} select2bs4" style="width: 100%;" required>
                                 <option value=""></option>
                                 @foreach ($hubungan_dengan_klien as $item)
@@ -1721,8 +1759,8 @@
                                         <thead>
                                         <tr>
                                         <th>Waktu Kegiatan</th>
-                                        <th>Perencanaan Intervensi</th>
-                                        <th>Pelaksanaan Intervensi</th>
+                                        <th>Asesmen Lanjutan</th>
+                                        <th>Laporan Pelaksanaan</th>
                                         <th></th>
                                         </tr>
                                         </thead>
@@ -1730,8 +1768,8 @@
                                         <tfoot>
                                         <tr>
                                             <th>Waktu Kegiatan</th>
-                                            <th>Perencanaan Intervensi</th>
-                                            <th>Pelaksanaan Intervensi</th>
+                                            <th>Asesmen Lanjutan</th>
+                                            <th>Laporan Pelaksanaan</th>
                                             <th></th>
                                         </tr>
                                         </tfoot>
@@ -1815,7 +1853,7 @@
     <div class="tab-pane {{ Request::get('tab') == 'kasus-petugas' ? 'active' : '' }}" id="kasus-petugas" role="tabpanel" aria-labelledby="kasus-petugas-tab">
         <b id="anchor_petugas">PETUGAS PADA KASUS</b>
             
-            @if(!($detail['kelengkapan_petugas']))
+            @if(!($detail['kelengkapan_petugas']) )
             <div class="row">
                 <div class="col-md-12">
                     <div class="alert alert-danger">
@@ -2724,6 +2762,10 @@
 <script src="{{ asset('vendor/tinymce4/tinymce.min.js') }}"></script>
 <script>
     $(document).ready(function () {
+        $('.select-tag').select2({
+        tags: true,
+        theme: 'bootstrap4'
+        });
         getkotkab('kasus');
         getkotkab('pelapor');
         getkotkab('pelapor_ktp');
@@ -4364,7 +4406,7 @@ function check_kelengkapan_terminasi2(klien_id) {
                 kelengkapan_kasus = kelengkapan_kasus + 1;
                 $('#kelengkapan_kasus2').html(kelengkapan_kasus);
                 $('.warningTerminasi2').show();
-                $('#alasan_terminasi2').html(response.alasan);
+                $('#alasan_terminasi2').html(response.alasan+'<br> <b>Jenis Terminasi : </b> '+response.jenis_terminasi);
             }
         },
         error: function (response){

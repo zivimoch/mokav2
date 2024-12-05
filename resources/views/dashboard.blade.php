@@ -56,6 +56,16 @@
                   <i class="fas fa-bullhorn"></i>
                   Pengumuman 
                 </h3>
+                {{-- <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Pilih Klien<span class="text-danger required-layanan">*</span></label>
+                    <select data-placeholder="Pilih nama" style="width: 100%;" class="" id="klien_id_select" onchange="load_select2_petugas()"></select>
+                    <div class="col-md-12" style="background-color:aliceblue; padding:10px; display:none" id="detail_data_klien"></div>
+                    <div class="invalid-feedback2" id="valid-klien_id_select">
+                      Klien wajib ada.
+                    </div>  
+                  </div>
+                </div> --}}
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" onclick="tambahPengumuman()"><i class="nav-icon fas fa-edit"></i>
                     </button>

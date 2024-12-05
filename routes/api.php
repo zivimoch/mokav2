@@ -41,6 +41,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/jumlahkorbankategorilokasi', [MonitoringController::class, 'jumlah_korban_kategori_lokasi'])->name('api.v1.jumlahkorbankategorilokasi');
         Route::get('/jumlahkorbanidentitas', [MonitoringController::class, 'jumlah_korban_identitas'])->name('api.v1.jumlahkorbanidentitas');
         Route::get('/jumlahlayanan', [MonitoringController::class, 'jumlah_layanan'])->name('api.v1.jumlahlayanan');
+        Route::get('/jumlahlp', [MonitoringController::class, 'jumlah_lp'])->name('api.v1.jumlahlp');
+        Route::get('/jumlahpos', [MonitoringController::class, 'jumlah_pos'])->name('api.v1.jumlahpos');
     });
 });
 

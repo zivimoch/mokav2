@@ -68,7 +68,7 @@
       
       <div class="form-inline ml-0 ml-md-3 position-relative">
         <div class="input-group input-group-sm">
-            <input type="text" id="klien_search" class="form-control form-control-navbar" placeholder="Cari nama / no regis" onfocus="klien_search()" oninput="klien_search()">
+            <input type="text" id="klien_search" class="form-control form-control-navbar" placeholder="Cari nama / no regis"  autocomplete="off" onfocus="klien_search()" oninput="klien_search()">
             <div class="input-group-append">
                 <button class="btn btn-navbar" type="button" id="search_btn">
                     <i class="fas fa-search"></i>

@@ -564,7 +564,7 @@
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.uuid);
 
-          if (data.jatuh_tempo >= 172 && (data.jumlah_terminasi == 0 || data.jumlah_terminasi == null)) {
+          if (data.jatuh_tempo >= 172 && (data.jumlah_terminasi == 0 || data.jumlah_terminasi == null) && {{ env('mode_iso') }} == 0) {
             $(row).attr('class', 'warning_table');
           }
       },

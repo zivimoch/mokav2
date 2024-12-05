@@ -60,7 +60,7 @@
         <div class="col-md-12 text-center">
             <div class="row">
                 <div class="col-md-8 offset-md-2">
-                <img src="https://mokapppa.jakarta.go.id/storage/institusi/Hrza2eMQa3OMALtbc7vtdYLShrZAsWSMbvlBgThU.png" style="width:100px;margin:30px 0px 20px 0px;"/>
+                <img src="https://mokapppa.jakarta.go.id/v2/img/favicon.png" style="width:100px;margin:30px 0px 20px 0px;"/>
                 {{-- <img src="{{ asset('storage/institusi/'.$persetujuan->kasus->institusi->logo) }}" style="width:200px;margin:30px 0px 20px 0px;"/> --}}
                     <p>
                         <span style="font-weight:bold;text-transform: uppercase;">Pusat Perlindungan Perempuan dan Anak Provinsi DKI Jakarta</span><br/>
