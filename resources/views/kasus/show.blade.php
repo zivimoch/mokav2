@@ -2669,7 +2669,7 @@
         <div class="col-md-12">
             <div class="form-group">
               <label>Agenda Layanan Berdasarkan Jabatan : </label>
-              <select multiple="multiple" style="width: 100%;" class="select-tag" id="filterJabatan">
+              <select multiple="multiple" style="width: 100%;" class="select2" id="filterJabatan">
                 <option value="Advokat">Advokat</option>
                 <option value="Paralegal">Paralegal</option>
                 <option value="Unit Reaksi Cepat">Unit Reaksi Cepat</option>

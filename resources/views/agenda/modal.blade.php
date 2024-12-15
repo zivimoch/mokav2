@@ -285,7 +285,7 @@
                 <div class="col-md-5">
                     <div class="form-group">
                       <label>Detail Layanan (bisa lebih dari 1)<span class="text-danger required-layanan">*</span></label>
-                      <select multiple="multiple" style="width: 100%;" class="select-tag" id="keyword-agenda"></select>
+                      <select multiple="multiple" style="width: 100%;" class="select2" id="keyword-agenda"></select>
                       <div class="invalid-feedback2" id="valid-keyword-agenda">
                         Keyword Hasil wajib diisi jika agenda layanan.
                       </div> 

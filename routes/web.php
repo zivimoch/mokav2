@@ -128,6 +128,7 @@ Route::middleware('auth')->group(function () {
     Route::get('agenda/pdf_kinerja', [AgendaController::class, 'pdf_kinerja'])->name('pdf_kinerja');
     Route::post('/get_keyword', [AgendaController::class, 'get_keyword'])->name('get_keyword');
     Route::get('kinerja', [AgendaController::class, 'kinerja'])->name('kinerja');
+    Route::get('kinerja/pertahun', [AgendaController::class, 'kinerja_pertahun'])->name('kinerja.pertahun');
     Route::get('kinerja/detail', [AgendaController::class, 'kinerja_detail'])->name('kinerja.detail');
     Route::get('kinerja/ajax', [AgendaController::class, 'kinerja_ajax'])->name('kinerja_ajax');
     Route::post('kinerja/valid', [AgendaController::class, 'kinerja_valid'])->name('kinerja_valid');

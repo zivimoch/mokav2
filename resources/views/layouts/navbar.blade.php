@@ -65,10 +65,14 @@
         @endif
       </ul>
       
-      
       <div class="form-inline ml-0 ml-md-3 position-relative">
         <div class="input-group input-group-sm">
-            <input type="text" id="klien_search" class="form-control form-control-navbar" placeholder="Cari nama / no regis"  autocomplete="off" onfocus="klien_search()" oninput="klien_search()">
+            <input type="text" id="klien_search" class="form-control form-control-navbar" 
+                   placeholder="Cari nama / no regis" 
+                   autocomplete="off" 
+                   onfocus="klien_search()" 
+                   oninput="klien_search()" 
+                   style="color: rgba(0, 0, 0, 0.5);">
             <div class="input-group-append">
                 <button class="btn btn-navbar" type="button" id="search_btn">
                     <i class="fas fa-search"></i>
@@ -77,6 +81,7 @@
         </div>
         <div id="search_results" class="list-group" style="position: absolute; top: 100%; left: 0; z-index: 1000; display: none; width: 100%;"></div>
     </div>
+    
 
     </div>
 

@@ -319,10 +319,11 @@ class AgendaController extends Controller
                 LEFT JOIN
                     agenda b ON a.agenda_id = b.id
                 WHERE
-                    YEAR(b.tanggal_mulai) = ' . $tahun . ' AND MONTH(b.tanggal_mulai) = ' . $bulan . '
+                    YEAR(b.tanggal_mulai) = ' . $tahun . ' 
                     AND a.deleted_at IS NULL AND b.deleted_at IS NULL
+                    AND a.created_by = '.Auth::user()->id.'
                 GROUP BY
-                    created_by) z'), 'z.created_by', '=', 'a.id')
+                    MONTH(b.tanggal_mulai)) z'), 'z.created_by', '=', 'a.id')
             ->leftJoin(DB::raw('(SELECT
                     a.created_by,
                     SUM(CASE WHEN a.jam_selesai IS NULL THEN 1 ELSE 0 END) AS belum_ditl
@@ -331,10 +332,11 @@ class AgendaController extends Controller
                 LEFT JOIN
                     agenda b ON a.agenda_id = b.id
                 WHERE
-                    YEAR(b.tanggal_mulai) = ' . $tahun . ' AND MONTH(b.tanggal_mulai) = ' . $bulan . '
+                    YEAR(b.tanggal_mulai) = ' . $tahun . ' 
                     AND a.deleted_at IS NULL AND b.deleted_at IS NULL
+                    AND a.created_by = '.Auth::user()->id.'
                 GROUP BY
-                    created_by) y'), 'y.created_by', '=', 'a.id')
+                    MONTH(b.tanggal_mulai)) y'), 'y.created_by', '=', 'a.id')
             ->leftJoin(DB::raw('(SELECT
                     a.created_by,
                     COUNT(*) AS verified
@@ -344,10 +346,11 @@ class AgendaController extends Controller
                     agenda b ON a.agenda_id = b.id
                 WHERE
                     a.validated_by IS NOT NULL
-                    AND YEAR(b.tanggal_mulai) = ' . $tahun . ' AND MONTH(b.tanggal_mulai) = ' . $bulan . '
+                    AND YEAR(b.tanggal_mulai) = ' . $tahun . ' 
                     AND a.deleted_at IS NULL AND b.deleted_at IS NULL
+                    AND a.created_by = '.Auth::user()->id.'
                 GROUP BY
-                    created_by) x'), 'x.created_by', '=', 'a.id')
+                    MONTH(b.tanggal_mulai)) x'), 'x.created_by', '=', 'a.id')
             ->leftJoin(DB::raw('(SELECT
             a.created_by,
             COUNT(DISTINCT DATE(b.tanggal_mulai)) AS jumlah_hari
@@ -357,18 +360,98 @@ class AgendaController extends Controller
             agenda b ON a.agenda_id = b.id
         WHERE
             YEAR(b.tanggal_mulai) = ' . $tahun . '
-            AND MONTH(b.tanggal_mulai) = ' . $bulan . '
             AND a.deleted_at IS NULL
             AND b.deleted_at IS NULL
+            AND a.created_by = '.Auth::user()->id.'
         GROUP BY
-            a.created_by) w'), 'w.created_by', '=', 'a.id')
+            MONTH(b.tanggal_mulai)) w'), 'w.created_by', '=', 'a.id')
             ->whereNull('a.deleted_at')
-            ->whereIn('a.jabatan', ['Tenaga Ahli', 'Manajer Kasus', 'Pendamping Kasus', 'Advokat', 'Paralegal', 'Unit Reaksi Cepat', 'Psikolog', 'Konselor'])
+            ->where('a.id', Auth::user()->id)
             ->orderBy('a.jabatan')
             ->orderBy('a.name')
             ->get();
         return DataTables::of($data)->make(true);
     }
+
+    // public function kinerja_ajax(Request $request)
+    // {
+    //     $tahun = $request->tahun;
+    //     $bulan = $request->bulan;
+    //     $data = DB::table('users as a')
+    //         ->select(
+    //             'a.id',
+    //             'a.uuid',
+    //             'a.jabatan',
+    //             'a.name',
+    //             DB::raw('COALESCE(w.jumlah_hari, 0) AS jumlah_hari'),
+    //             DB::raw('COALESCE(z.sudah_ditl, 0) AS sudah_ditl'),
+    //             DB::raw('COALESCE(y.belum_ditl, 0) AS belum_ditl'),
+    //             DB::raw('COALESCE(z.sudah_ditl, 0) + COALESCE(y.belum_ditl, 0) AS total'),
+    //             DB::raw('ROUND(COALESCE(z.sudah_ditl, 0) / NULLIF(COALESCE(z.sudah_ditl, 0) + COALESCE(y.belum_ditl, 0), 0) * 100, 2) AS persen'),
+    //             DB::raw('COALESCE(x.verified, 0) AS verified'),
+    //             DB::raw('ROUND(COALESCE(x.verified, 0) / NULLIF(COALESCE(z.sudah_ditl, 0) + COALESCE(y.belum_ditl, 0), 0) * 100, 2) AS persen_verified')
+    //         )
+    //         ->leftJoin(DB::raw('(SELECT
+    //                 a.created_by,
+    //                 SUM(CASE WHEN a.jam_selesai IS NOT NULL THEN 1 ELSE 0 END) AS sudah_ditl
+    //             FROM
+    //                 tindak_lanjut a
+    //             LEFT JOIN
+    //                 agenda b ON a.agenda_id = b.id
+    //             WHERE
+    //                 YEAR(b.tanggal_mulai) = ' . $tahun . ' 
+    //                 AND MONTH(b.tanggal_mulai) = ' . $bulan . '
+    //                 AND a.deleted_at IS NULL AND b.deleted_at IS NULL
+    //             GROUP BY
+    //                 created_by) z'), 'z.created_by', '=', 'a.id')
+    //         ->leftJoin(DB::raw('(SELECT
+    //                 a.created_by,
+    //                 SUM(CASE WHEN a.jam_selesai IS NULL THEN 1 ELSE 0 END) AS belum_ditl
+    //             FROM
+    //                 tindak_lanjut a
+    //             LEFT JOIN
+    //                 agenda b ON a.agenda_id = b.id
+    //             WHERE
+    //                 YEAR(b.tanggal_mulai) = ' . $tahun . ' 
+    //                 AND MONTH(b.tanggal_mulai) = ' . $bulan . '
+    //                 AND a.deleted_at IS NULL AND b.deleted_at IS NULL
+    //             GROUP BY
+    //                 created_by) y'), 'y.created_by', '=', 'a.id')
+    //         ->leftJoin(DB::raw('(SELECT
+    //                 a.created_by,
+    //                 COUNT(*) AS verified
+    //             FROM
+    //                 tindak_lanjut a
+    //             LEFT JOIN
+    //                 agenda b ON a.agenda_id = b.id
+    //             WHERE
+    //                 a.validated_by IS NOT NULL
+    //                 AND YEAR(b.tanggal_mulai) = ' . $tahun . ' 
+    //                 AND MONTH(b.tanggal_mulai) = ' . $bulan . '
+    //                 AND a.deleted_at IS NULL AND b.deleted_at IS NULL
+    //             GROUP BY
+    //                 created_by) x'), 'x.created_by', '=', 'a.id')
+    //         ->leftJoin(DB::raw('(SELECT
+    //         a.created_by,
+    //         COUNT(DISTINCT DATE(b.tanggal_mulai)) AS jumlah_hari
+    //     FROM
+    //         tindak_lanjut a
+    //     LEFT JOIN
+    //         agenda b ON a.agenda_id = b.id
+    //     WHERE
+    //         YEAR(b.tanggal_mulai) = ' . $tahun . '
+    //         AND MONTH(b.tanggal_mulai) = ' . $bulan . '
+    //         AND a.deleted_at IS NULL
+    //         AND b.deleted_at IS NULL
+    //     GROUP BY
+    //         a.created_by) w'), 'w.created_by', '=', 'a.id')
+    //         ->whereNull('a.deleted_at')
+    //         ->whereIn('a.jabatan', ['Tenaga Ahli', 'Manajer Kasus', 'Pendamping Kasus', 'Advokat', 'Paralegal', 'Unit Reaksi Cepat', 'Psikolog', 'Konselor'])
+    //         ->orderBy('a.jabatan')
+    //         ->orderBy('a.name')
+    //         ->get();
+    //     return DataTables::of($data)->make(true);
+    // }
 
     public function kinerja_valid(Request $request)
     {
@@ -408,6 +491,11 @@ class AgendaController extends Controller
         }else{
             return abort(403);
         }
+    }
+
+    public function kinerja_pertahun(Request $request)
+    {
+        return view('agenda.kinerja_pertahun');
     }
 
     public function kinerja_detail(Request $request)

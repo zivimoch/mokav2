@@ -893,7 +893,7 @@ class KasusController extends Controller
     public function check_kelengkapan_spp($klien_id)
     {
         $persetujuan_template = PersetujuanTemplate::withTrashed()->where('kategori', 'persetujuan pelayanan')->pluck('id');
-        $persetujuan_isi = PersetujuanIsi::whereIn('persetujuan_template_id', [$persetujuan_template])
+        $persetujuan_isi = PersetujuanIsi::whereIn('persetujuan_template_id', $persetujuan_template)
                                         ->where('klien_id', $klien_id)
                                         ->whereNotNull('tandatangan')
                                         ->whereNull('deleted_at')
