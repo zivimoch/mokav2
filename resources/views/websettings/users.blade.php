@@ -166,9 +166,20 @@
                         </select>
                     </div>
                 </div>
+                <div class="col-md-12">
+                        <div class="form-group">
+                        <label>Aktif</label>
+                        <select name="active" class="form-control select2bs4" id="active">
+                            <option value="1">Aktif</option>
+                            <option value="0">Non Aktif</option>
+                        </select>
+                    </div>
+                </div>
             </div>
+            *User Aktif / Non Aktif untuk label di kasus <br>
+            ^User Hapus / DIsabled untuk akses login
             <button type="button" class="btn btn-success btn-block" id="submitUsers"><i class="fa fa-check"></i> Simpan</button>
-            <button type="button" class="btn btn-danger btn-block" id="deleteUsers"><i class="fa fa-trash"></i> Hapus</button>
+            <button type="button" class="btn btn-danger btn-block" id="deleteUsers"><i class="fa fa-trash"></i> Hapus / Disabled User</button>
         </div>
     </div>
     </div>
@@ -213,6 +224,11 @@
             rowHightlight = $('#uuid_users_hightlight').val();
             if (data.uuid == rowHightlight) {
                 $(row).attr('class', 'hightlighting');
+            }
+            if (data.deleted_at != null) {
+                $(row).attr('class', 'warning_table');
+            } else if (data.active == 0){
+                $(row).attr('class', 'disabled_table');
             }
         },
         "columns": [
@@ -263,6 +279,7 @@
                 $('#jabatan').val(data.jabatan).change();
                 $('#supervisor_id').val(data.supervisor_id).change();
                 $('#kotkab_id').val(data.kotkab_id).change();
+                $('#aktif').val(data.aktif).change();
                 $('#password').val('');
             });
         });
@@ -282,6 +299,7 @@
                     jabatan: $("#jabatan").val(),
                     supervisor_id: $("#supervisor_id").val(),
                     kotkab_id: $("#kotkab_id").val(),
+                    active: $("#active").val(),
                     _token: token
                 },
                 success: function (response){

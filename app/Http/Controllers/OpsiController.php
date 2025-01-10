@@ -25,8 +25,9 @@ class OpsiController extends Controller
             'Lokasi Komersial' => ['Kantor Swasta', 'Pabrik', 'Toko', 'Pasar', 'Mall'],
             'Cagar Budaya' => ['Museum', 'Tempat Wisata'],
             'Kantor Pemerintahan' => ['Kantor Pemerintahan'],
-            'Transportasi' => ['Ojek Online', 'Taksi / Mobile Online', 'Taksi Konvensional', 'Bajaj', 'Transjakarta', 'MRT', 'LRT', 'KRL', 'Kereta Cepat', 'Angkot', 'Kendaraan Pribadi'],
-            'Public Area' => ['Jalan', 'Taman']
+            'Transportasi' => ['Ojek Online', 'Taksi / Mobile Online', 'Taksi Konvensional', 'Bajaj', 'Transjakarta', 'MRT', 'LRT', 'KRL', 'Kereta Cepat', 'Angkot', 'Kendaraan Pribadi', 'Terminal', 'Stasiun', 'Bandara', 'Pelabuhan'],
+            'Public Area' => ['Jalan', 'Taman'],
+            'Fasilitas Kesehatan' => ['Rumah Sakit', 'Puskesmas', 'Klinik', 'Praktek Dokter Pribadi']
         ];
 
         return $data;
@@ -248,11 +249,21 @@ class OpsiController extends Controller
     public function api_kekhususan()
     {
         // jadi kedaruratan
-        $data = ['Tinggal dengan Terlapor',
-                'Tidak memiliki Keluarga Dekat',
-                'Ancaman dibunuh',
-                'Ingin menyakiti Diri Sendiri',
-                'Mengalami Penyakit/Luka/Cedera Serius'
+        $data = [
+                'Tinggal bersama terlapor',
+                'Terlapor memiliki senjata tajam',
+                'Dalam ancaman dan hamil',
+                'Dalam ancaman dan disabilitas',
+                'Dalam ancaman dan cedera/luka/sakit',
+                'Dalam ancaman dan ingin menyakiti diri sendiri',
+                'Mengalami penyekapan',
+                'Mengalami penculikan',
+                'Mengalami pemasungan',
+                'Tidak memiliki keluarga untuk berlindung',
+                'Tidak memiliki tempat yang aman untuk berlindung',
+                'Keluarga menolak keberadaan korban',
+                'Komunitas/masyarakat menolak keberadaan korban',
+                'Tidak Diketahui'
                 ];
                 
         return $data;
@@ -1087,6 +1098,11 @@ class OpsiController extends Controller
             [
                 "tahun" => 2024,
                 "bulan" => 11,
+                "hari_kerja" => 20,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 12,
                 "hari_kerja" => 20,
             ],
         ];

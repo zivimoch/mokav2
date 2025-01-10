@@ -29,6 +29,9 @@
 
 @media  (max-width:960px) { .dropdown-menu { width: 360px !important; } }
 </style>
+<div style="background-color: red; color:#fff; font-weight:bold; font-size:20px">
+  <marquee>PERHATIAN! INI ADALAH MOKA DEMO, SELURUH DATA YANG ADA DI MOKA VERSI DEMO TIDAK PERMANEN.</marquee>
+</div>
 @if (Auth::user()->settings_navbar_bg_color == 'default')
   <nav class="main-header navbar navbar-expand-md navbar-black navbar-dark">
 @else
@@ -67,12 +70,12 @@
       
       <div class="form-inline ml-0 ml-md-3 position-relative">
         <div class="input-group input-group-sm">
-            <input type="text" id="klien_search" class="form-control form-control-navbar" 
-                   placeholder="Cari nama / no regis" 
-                   autocomplete="off" 
-                   onfocus="klien_search()" 
-                   oninput="klien_search()" 
-                   style="color: rgba(0, 0, 0, 0.5);">
+          <input type="text" id="klien_search" class="form-control form-control-navbar" 
+          placeholder="Cari nama / no regis" 
+          autocomplete="off" 
+          onfocus="klien_search()" 
+          oninput="klien_search()" 
+          style="background-color: rgba(0, 0, 0, 0.5); ">
             <div class="input-group-append">
                 <button class="btn btn-navbar" type="button" id="search_btn">
                     <i class="fas fa-search"></i>
@@ -145,6 +148,16 @@
                   </small> 
                   <h6 style="margin-bottom: -2px">
                     Laporan Kinerja
+                  </h6>
+                </div> 
+              </a>
+              <a href="{{ route('kinerja.pertahun') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}&user_id={{ Auth::user()->uuid }}" class="list-group-item list-group-item-action flex-column align-items-start"> 
+                <div class="d-flex"> 
+                  <small class="mr-2">
+                    <i class="fas fa-layer-group"></i>
+                  </small> 
+                  <h6 style="margin-bottom: -2px">
+                    Rekap Laporan Kinerja
                   </h6>
                 </div> 
               </a>

@@ -281,7 +281,7 @@
               <option value="created_at">Berdasarkan Tanggal Input</option>
             </select>
           </div>
-          <input type="text" class="form-control daterank" id="filter1Tanggal" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+          <input type="text" class="form-control daterank" id="filter1Tanggal" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
         </div>
       </div>
     </div>

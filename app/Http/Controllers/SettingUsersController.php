@@ -24,7 +24,7 @@ class SettingUsersController extends Controller
             ->select('a.*', 'b.name as kota', 'c.name as supervisor')
             ->leftJoin('indonesia_cities as b', 'a.kotkab_id', '=', 'b.code')
             ->leftJoin('users as c', 'a.supervisor_id', '=', 'c.id')
-            ->whereNull('a.deleted_at')
+            // ->whereNull('a.deleted_at')
             ->orderBy('a.id'); 
 
         return DataTables::of($data)
@@ -69,6 +69,7 @@ class SettingUsersController extends Controller
                 'name'   => $request->name, 
                 'email'     => $request->email, 
                 'jabatan'     => $request->jabatan, 
+                'active'     => $request->active, 
             ];
 
             if (isset($request->password)) {

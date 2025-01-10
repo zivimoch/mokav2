@@ -1,0 +1,122 @@
+id,uuid,jabatan,keyword,jenis_agenda,created_by
+1,0d6eddd7-fe70-40e7-934e-055915f7c65e,Konselor,Pengukuran Awal,Layanan,0
+2,0d6eddd7-fe70-40e7-934e-055915f7c65a,Konselor,Administrasi Tes Psikologi,Layanan,0
+3,0d6eddd7-fe70-40e7-934e-055915f7c65x,Konselor,Psikososial / Psikoedukasi,Layanan,0
+4,0d6eddd7-fe70-40e7-934e-055915f7c65x,Konselor,Pendampingan Psikologi,Layanan,0
+5,0d6eddd7-fe71-40e7-934e-055915f7c65x,Konselor,Konseling,Layanan,0
+6,0d6eddd7-fe71-40e2-934e-055915f7c65x,Konselor,Pemeriksaan Psikologi,Layanan,0
+7,0d6eddd7-xe71-40e2-934e-055915f7c65x,Konselor,Hasil Pemeriksaan Psikologi,Layanan,0
+8,0d6eddd7-xe71-40e2-934e-155915f7c65x,Konselor,BAP / Saksi Ahli,Layanan,0
+9,0d6eddd7-xe71-40e2-934e-155915f7c65z,Konselor,Proyeksi Restitusi ,Layanan,0
+10,0d6edda7-xe71-40e2-934e-155915f7c65z,Konselor,Verifikasi HPP / BAP,Layanan,0
+11,0d6edda7-xe71-40e2-134e-155915f7c65z,Psikolog,Pengukuran Awal,Layanan,0
+12,0d6edda7-xe71-49e2-134e-155915f7c65z,Psikolog,Administrasi Tes Psikologi,Layanan,0
+13,0d6edda7-xe71-49e2-234e-155915f7c65z,Psikolog,Psikososial / Psikoedukasi,Layanan,0
+14,0d6eddk7-xe71-49e2-234e-155915f7c65z,Psikolog,Pendampingan Psikologi,Layanan,0
+15,0d6eddk7-xe72-49e2-234e-155915f7c65z,Psikolog,Konseling,Layanan,0
+16,0d6eddk7-xe82-49e2-234e-155915f7c65z,Psikolog,Pemeriksaan Psikologi,Layanan,0
+17,0d6eddk7-xe92-49e2-234e-155915f7c65z,Psikolog,Hasil Pemeriksaan Psikologi,Layanan,0
+18,0d6eddk7-xe92-49e2-244e-155915f7c65z,Psikolog,BAP / Saksi Ahli,Layanan,0
+19,0d6eddk7-xe62-49e2-244e-155915f7c65z,Psikolog,Proyeksi Restitusi,Manajemen Layanan,0
+20,0d6eddk7-xe62-39e2-244e-155915f7c65z,Psikolog,Verifikasi HPP / BAP,Layanan,0
+21,0d6eddk7-xe62-39e2-224e-155915f7c65z,Advokat,Konsultasi Hukum,Layanan,0
+22,0d6eddk7-xe62-49e2-244e-152915f7c65z,Advokat,Pendampingan di Kepolisian,Layanan,0
+23,0d6eddk7-xe62-44e2-244e-152915f7c65z,Advokat,Mediasi,Layanan,0
+24,0d6eddk7-xe62-44e2-244e-152915f7k65z,Paralegal,Konsultasi Hukum,Layanan,0
+25,0d6eddk7-xe62-44e2-244w-152915f7k65z,Paralegal,Pendampingan di Kepolisian,Layanan,0
+26,0d6eddk7-xe62-44o2-244w-152915f7k65z,Paralegal,Pendampingan di PN,Layanan,0
+27,0d6eddk7-xe62-44e2-244w-852915f7k65z,Paralegal,Pendampingan di PA,Layanan,0
+28,0d6eddk7-xe62-44e2-244w-852995f7k65z,Paralegal,Penjangkauan Paralegal POS,Layanan,0
+29,0d6eddk7-xe62-44e2-2442-852995f7k65z,Paralegal,Penjangkauan Paralegal URC,Layanan,0
+30,0d6eddk7-xe62-46e2-2442-852995f7k65z,Paralegal,Pendampingan Lainnya,Manajemen Layanan,0
+31,0d6eddk7-xe62-44e2-2442-852595f7k65z,Unit Reaksi Cepat,Konsultasi Hukum,Layanan,0
+32,0d6eddk7-xe62-44e2-1442-852595f7k65z,Unit Reaksi Cepat,Pendampingan di Kepolisian,Layanan,0
+33,0d6eddk7-xe62-46e2-1442-852595f7k65z,Unit Reaksi Cepat,Pendampingan di PN,Layanan,0
+34,0d6eddk7-xe62-44e2-1442-892595f7k65z,Unit Reaksi Cepat,Pendampingan di PA,Layanan,0
+35,0d6eddk7-xe62-44e2-1443-892595f7k65z,Unit Reaksi Cepat,Penjangkauan Paralegal URC,Layanan,0
+36,0d6eddk7-xe62-44e2-1453-892595f7k65z,Unit Reaksi Cepat,Pendampingan Lainnya,Layanan,0
+37,0d6eddk7-xe62-44e2-1443-792595f7k65z,Pendamping Kasus,Pendampingan Lainnya,Layanan,0
+38,0d6eddk7-xe62-44e2-1443-782595f7k65z,Pendamping Kasus,Pendampingan Puskesmas Rawat Inap,Layanan,0
+39,0d6eddk7-xe62-44e3-1443-792595f7k65z,Pendamping Kasus,Pendampingan Puskesmas Rawat Jalan,Layanan,0
+40,0d6eddk7-xe62-44e3-1443-79259527k65z,Pendamping Kasus,Pendampingan Rumah Sakit Rawat Inap,Layanan,0
+41,0d6eddk7-xe62-44e3-2443-79259527k65z,Pendamping Kasus,Pendampingan Rumah Sakit Rawat Jalan,Layanan,0
+42,0d6eddk7-xe62-44e3-2443-79359527k65z,Pendamping Kasus,Pendampingan Visum,Layanan,0
+43,0d6eddk7-xe62-44e3-2443-89359527k65z,Pendamping Kasus,Pendampingan BAP,Layanan,0
+44,0d6eddk7-xe62-44e3-2543-89359527k65z,Pendamping Kasus,Pendampingan LP,Layanan,0
+45,0d6eddk7-xe62-44e3-2443-893j9527k65z,Pendamping Kasus,Rujukan,Layanan,0
+46,0d6eddk7-xe62-44e3-2543-89359527k65z,Pendamping Kasus,Home Visit,Layanan,0
+47,0d6eddk7-xe62-44e3-2543-89359t27k65z,Pendamping Kasus,School Visit,Layanan,0
+48,0d6eddk7-xe62-44e3-2543-99359t27k65z,Manajer Kasus,Koordinasi Internal,Manajemen Layanan,0
+49,0d6eddk7-xe62-44e3-2k43-89359t27k65z,Manajer Kasus,Koordinasi Eksternal,Manajemen Layanan,0
+50,0d6eddk7-xe62-44e3-25a3-89359t27k65z,Manajer Kasus,Rujukan,Manajemen Layanan,0
+51,0d6eddk7-xe62-44e3-2543-8k359t27k65z,Manajer Kasus,Pengelolaan Dokumen Klien,Manajemen Layanan,0
+52,0d6eddk7-xe62-44e3-2523-8k359t27k65z,Pendamping Kasus,Penjangkauan,Layanan,0
+53,0d6eddk7-xe62-44e4-2523-8k359t27k65z,Advokat,Supervisi,Manajemen Layanan,0
+54,0d6eddd7-fe70-40e7-934e-055915f7co5e,Manajer Kasus,Review Kasus,Manajemen Layanan,0
+55,0d6eddd7-fe70-40e7-934e-055915f7c25e,Manajer Kasus,Asesmen Lanjutan,Manajemen Layanan,0
+56,dqwed23dasdas,Manajer Kasus,Case Conference,Manajemen Layanan,0
+57,dsdsdsa321dasds,Unit Reaksi Cepat,Pendampingan Puskesmas Rawat Inap,Layanan,0
+58,31dadsa4yy,Unit Reaksi Cepat,Pendampingan Puskesmas Rawat Jalan,Layanan,0
+59,989hwf8hef,Unit Reaksi Cepat,Pendampingan Rumah Sakit Rawat Inap,Layanan,0
+60,dadiih8ii3g7gfgs87,Unit Reaksi Cepat,Pendampingan Rumah Sakit Rawat Jalan,Layanan,0
+61,pjijd98ah98hd732,Unit Reaksi Cepat,Pendampingan Rumah Sakit Visum,Layanan,0
+62,dsadsadsai9dhas8h87das,Paralegal,Pendampingan Puskesmas Rawat Inap,Manajemen Layanan,0
+63,pj98pjf98wh98efw,Paralegal,Pendampingan Puskesmas Rawat Jalan,Manajemen Layanan,0
+64,ojf9h98wweh98fwe,Paralegal,Pendampingan Rumah Sakit Rawat Inap,Manajemen Layanan,0
+65,j98dh8hqwh7asddsa,Paralegal,Pendampingan Rumah Sakit Rawat Jalan,Manajemen Layanan,0
+66,09d989328dw,Paralegal,Pendampingan Rumah Sakit Visum,Manajemen Layanan,0
+67,hd9832h87dwq,Konselor,Pendampingan Rumah Sakit Visum,Layanan,0
+68,hdo87327hd8h8d3,Konselor,Pendampingan Puskesmas Rawat Inap,Layanan,0
+69,ohuh7ads87y8dasdas,Konselor,Pendampingan Puskesmas Rawat Jalan,Layanan,0
+70,9yadyh382h8d32,Konselor,Pendampingan Rumah Sakit Rawat Inap,Layanan,0
+71,h98dh87hd32d32h,Konselor,Pendampingan Rumah Sakit Rawat Jalan,Layanan,0
+72,ihd87dh87owg8g23g8fd,Pendamping Kasus,Pemulangan,Layanan,0
+73,hd87h328d87g8aosdsa,Manajer Kasus,Pemulangan,Layanan,0
+74,0d6eddk7-xe62-39e2-224e-155915f7cdsa,Pendamping Kasus,Rujukan ke Rumah Aman,Layanan,0
+75,dasdsaqw,Pendamping Kasus,Rujukan ke UPTD PPA,Layanan,0
+76,rfefew,Pendamping Kasus,Rujukan ke KemenPPA,Layanan,0
+77,sad322ddd,Pendamping Kasus,Rujukan ke Panti Dinas Sosial,Layanan,0
+78,898da9da89dsa89dsa,Pendamping Kasus,Rujukan ke Lembaga Lain,Layanan,0
+79,ee2ee3e32dsad,Paralegal,Co-Mediator,Layanan,0
+80,dsads,Manajer Kasus,School Visit,Layanan,0
+81,dsdsa,Pendamping Kasus,Penerimaan Akses Layanan RPS,Layanan,0
+82,3232d23,Pendamping Kasus,Penghentian Akses Layanan RPS,Layanan,0
+83,dasdasd32,Pendamping Kasus,Pendampingan di Kantor Pusat,Layanan,0
+84,42332e,Pendamping Kasus,Asesmen Lanjutan,Manajemen Layanan,0
+85,t3v34cc41c43eqw,Psikolog,Supervisi,Manajemen Layanan,0
+86,9uj9832hdihsd,Advokat,Pendampingan di PA,Layanan,0
+87,dad23d23i0923u,Advokat,Pendampingan di PN,Layanan,0
+88,dsdad32d23t54y65,Tenaga Ahli,School Visit,Layanan,0
+89,rwer32r32rr4,Tenaga Ahli,Case Conference,Manajemen Layanan,0
+90,svytyygg67,Tenaga Ahli,Asesmen Lanjutan,Manajemen Layanan,0
+91,da23dqd,Tenaga Ahli,Riview Kasus,Manajemen Layanan,0
+92,dasasd2d32d2,Tenaga Ahli,Pengelolaan Dokumen Klien,Manajemen Layanan,0
+93,f43f34f34,Tenaga Ahli,Rujukan,Layanan,0
+94,f43f43f4ggergrthrhgfuu,Tenaga Ahli,Koordinasi Eksternal,Manajemen Layanan,0
+95,43f34rf34fdsfsg,Tenaga Ahli,Koordinasi Internal,Manajemen Layanan,0
+97,2r43refregg,Tenaga Ahli,Home Visit,Layanan,0
+98,greg43tg54ggre,Tenaga Ahli,School Visit,Layanan,0
+99,f4334f43f3eeeg,Tenaga Ahli,Rujukan ke Panti Dinas Sosial,Layanan,0
+100,vr455t4t45gddfgdgfd,Tenaga Ahli,Penyiapan Pemulangan & Reintegrasi Sosial,Layanan,0
+101,r32r32rff,Tenaga Ahli,Pendampingan Lainnya,Layanan,0
+102,g54gwadwq,Tenaga Ahli,Pendampingan Puskesmas Rawat Inap,Layanan,0
+103,f43f343ssdgd,Tenaga Ahli,Penjangkauan,Layanan,0
+104,f43frertrerteg54,Tenaga Ahli,Pendampingan Puskesmas Rawat Jalan,Layanan,0
+105,d2334fftg4g45,Tenaga Ahli,Pendampingan Rumah Sakit Rawat Jalan,Layanan,0
+106,2f334fsdfsdfds,Tenaga Ahli,Pendampingan Rumah Sakit Visum,Layanan,0
+107,f32f43ff4343few,Tenaga Ahli,Pendampingan di Kantor Pusat,Layanan,0
+108,f23f4334f43,Tenaga Ahli,Pendampingan Rumah Sakit Rawat Inap,Layanan,0
+109,reg343greggetdwr,Tenaga Ahli,Pendampingan BAP,Layanan,0
+110,dasdsada23d,Manajer Kasus,Home Visit,Layanan,0
+111,idu3290uu23890eu239u,Tenaga Ahli,Pendampingan Psikososial,Layanan,0
+112,9u239d98y238asas,Pendamping Kasus,Pendampingan Psikososial,Layanan,0
+113,id32gh8ui23hg8d2,Tenaga Ahli,Penyiapan Pemulangan & Reintegrasi Sosial,Layanan,0
+114,dsadsds,Pendamping Kasus,Pendampingan Fasilitas Kesehatan,Layanan,0
+115,dsad32d32r42we,Advokat,Koordinasi Eksternal,Manajemen Layanan,0
+116,y832y32yd327,Advokat,Koordinasi Internal,Manajemen Layanan,0
+117,1yey73y2y373e2,Psikolog,Koordinasi Internal,Manajemen Layanan,0
+640,d32d3232r34f433y6y6,Pendamping Kasus,Pendampingan Psikososial,Layanan,0
+641,223rdwdqw0129dh328yd32,Pendamping Kasus,Rujukan,Layanan,0
+642,732723d823yy23d8ydy3284d,Pendamping Kasus,Penyiapan Reintegrasi Sosial,Layanan,0
+643,h21he8128e1812ehe21e998121,Manajer Kasus,Family Group Conference,Manajemen Layanan,0
+644,32dewwfwfereteetrr3r43fsfsdfds,Tenaga Ahli,Supervisi,Manajemen Layanan,0

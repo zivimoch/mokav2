@@ -23,6 +23,7 @@ class CreateTindakLanjutsTable extends Migration
             $table->longText('catatan')->nullable(); 
             $table->longText('rtl')->nullable(); 
             $table->boolean('terlaksana')->default(1); 
+            $table->integer('durasi')->nullable(); 
             $table->integer('created_by'); //pembuat
             $table->integer('validated_by')->nullable(); 
             $table->timestamps();

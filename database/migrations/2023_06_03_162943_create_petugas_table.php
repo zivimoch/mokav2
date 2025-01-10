@@ -18,6 +18,7 @@ class CreatePetugasTable extends Migration
             $table->integer('klien_id');
             $table->integer('user_id');
             $table->integer('created_by');
+            $table->boolean('active')->default(1)->nullable();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();
         });

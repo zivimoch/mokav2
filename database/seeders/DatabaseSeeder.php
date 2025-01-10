@@ -36,6 +36,7 @@ use App\Models\TemplateKeyword;
 use App\Models\Terlapor;
 use App\Models\TindakKekerasan;
 use App\Models\TindakLanjut;
+use App\Models\TJenisKekerasan;
 use App\Models\TKategoriKasus;
 use App\Models\TKeyword;
 use App\Models\TTipeDisabilitas;
@@ -66,718 +67,936 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(12)->create();
         
         //data user
-        // $csvFile = fopen(base_path("database/data/users.csv"), "r");
-        // $firstline = true;
-        // while (($users = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
-        //     if (!$firstline) {
-        //         User::create([
-        //             "id" => $users['0'],
-        //             "uuid" => $users['1'],
-        //             "name" => $users['2'],
-        //             "kotkab_id" => $users['3'],
-        //             "email" => $users['4'],
-        //             "email_verified_at" => Carbon::now(),
-        //             "jabatan" => $users['6'],
-        //             // "supervisor_layanan" => 0,
-        //             "supervisor_id" => $users['7'],
-        //             "password" => $users['8'],
-        //             "remember_token" => NULL,
-        //             "created_at" => Carbon::now(),
-        //             "updated_at" => Carbon::now(),
-        //             "deleted_at" => NULL,
-        //         ]);    
-        //     }
-        //     $firstline = false;
-        // }
-        // fclose($csvFile);
+        $csvFile = fopen(base_path("database/data/users.csv"), "r");
+        $firstline = true;
+        while (($users = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+            if (!$firstline) {
+                User::create([
+                    "id" => $users['0'],
+                    "uuid" => $users['1'],
+                    "name" => $users['2'],
+                    "kotkab_id" => $users['3'],
+                    "email" => $users['4'],
+                    "email_verified_at" => Carbon::now(),
+                    "jabatan" => $users['6'],
+                    // "supervisor_layanan" => 0,
+                    "supervisor_id" => $users['7'],
+                    "password" => $users['8'],
+                    "remember_token" => NULL,
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now(),
+                    "deleted_at" => NULL,
+                ]);    
+            }
+            $firstline = false;
+        }
+        fclose($csvFile);
         
-        $users = [
-            [
-                "uuid" => "43a348be-9f12-42f5-b567-f095fc5c11cd",
-                "name" => "Muhammad Light Yagami",
-                "kotkab_id" => 4,
-                "email" => 'penerima@moka.ol',
-                "email_verified_at" => '2023-03-08 03:28:35',
-                "jabatan" => 'Penerima Pengaduan',
-                // "supervisor_layanan" => 0,
-                "supervisor_id" => 11,
-                "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
-                "foto" => 'light.png'
-            ],[
-                "uuid" => "43a348be-9f12-42f5-b567-f095f25111cd",
-                "name" => "Alex Ferguson",
-                "kotkab_id" => 4,
-                "email" => "mk@moka.ol",
-                "email_verified_at" => '2023-03-08 03:28:35',
-                "jabatan" => 'Manajer Kasus',
-                // "supervisor_layanan" => 0,
-                "supervisor_id" => 9,
-                "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
-                "foto" => 'ferguson.png'
-            ],[
-                "uuid" => "43a348be-9f12-42f5-b567-f09tfc5111cd",
-                "name" => "Dominic Toretto",
-                "kotkab_id" => 4,
-                "email" => "pk@moka.ol",
-                "email_verified_at" => '2023-03-08 03:28:35',
-                "jabatan" => 'Pendamping Kasus',
-                // "supervisor_layanan" => 0,
-                "supervisor_id" => 9,
-                "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
-                "foto" => 'dominic.png'
-            ],[
-                "uuid" => "43a348be-9f12-42f5-b567-f0952c5111cd",
-                "name" => "Wanda Maximoff",
-                "kotkab_id" => 4,
-                "email" => "psikolog@moka.ol",
-                "email_verified_at" => '2023-03-08 03:28:35',
-                "jabatan" => 'Psikolog',
-                // "supervisor_layanan" => 0,
-                "supervisor_id" => 13,
-                "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
-                "foto" => 'light.png'
-            ],[
-                "uuid" => "43a348be-9112-42f5-b567-f095fo5111cd",
-                "name" => "Hotman Paris Hutapea",
-                "kotkab_id" => 4,
-                "email" => "advokat@moka.ol",
-                "email_verified_at" => '2023-03-08 03:28:35',
-                "jabatan" => 'Advokat',
-                // "supervisor_layanan" => 0,
-                "supervisor_id" => 12,
-                "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
-                "foto" => 'light.png'
-            ],[
-                "uuid" => "43a348be-9112-42f5-b567-f095fc5111cd",
-                "name" => "John Constantine",
-                "kotkab_id" => 4,
-                "email" => "paralegal@moka.ol",
-                "email_verified_at" => '2023-03-08 03:28:35',
-                "jabatan" => 'Paralegal',
-                // "supervisor_layanan" => 0,
-                "supervisor_id" => 12,
-                "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
-                "foto" => 'light.png'
-            ],[
-                "uuid" => "43a348be-9112-42f5-b567-f095fc5112cd",
-                "name" => "Bruce Wayne",
-                "kotkab_id" => 4,
-                "email" => "urc@moka.ol",
-                "email_verified_at" => '2023-03-08 03:28:35',
-                "jabatan" => 'Unit Reaksi Cepat',
-                // "supervisor_layanan" => 0,
-                "supervisor_id" => 12,
-                "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
-                "foto" => 'light.png'
-            ],[
-                "uuid" => "43a348be-9112-42f5-b567-f095fc5011cd",
-                "name" => "Nick Fury",
-                "kotkab_id" => 4,
-                "email" => "spv@moka.ol",
-                "email_verified_at" => '2023-03-08 03:28:35',
-                "jabatan" => 'Supervisor Kasus',
-                // "supervisor_layanan" => 0,
-                "supervisor_id" => 11,
-                "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
-                "foto" => 'nick.jpg'
-            ],[
-                "uuid" => "43a348be-9112-42f5-b767-f095fc5111cd",
-                "name" => "Tenaga Ahli",
-                "kotkab_id" => 4,
-                "email" => "ta@moka.ol",
-                "email_verified_at" => '2023-03-08 03:28:35',
-                "jabatan" => 'Tenaga Ahli',
-                // "supervisor_layanan" => 1,
-                "supervisor_id" => 0,
-                "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
-                "foto" => 'light.png'
-            ],[
-                "uuid" => "43a348be-9112-42f5-b537-f095fc5111cd",
-                "name" => "Tony Stark",
-                "kotkab_id" => 4,
-                "email" => "superadmin@moka.ol",
-                "email_verified_at" => '2023-03-08 03:28:35',
-                "jabatan" => 'Super Admin',
-                // "supervisor_layanan" => 0,
-                "supervisor_id" => 0,
-                "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
-                "foto" => 'light.png'
-            ],[
-                "uuid" => "43a348be-9112-42fs-b567-f095fc5111cd",
-                "name" => "Kepala Instansi",
-                "kotkab_id" => 4,
-                "email" => "kepala@moka.ol",
-                "email_verified_at" => '2023-03-08 03:28:35',
-                "jabatan" => 'Kepala Instansi',
-                // "supervisor_layanan" => 0,
-                "supervisor_id" => 0,
-                "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
-                "foto" => 'light.png'
-            ],[
-                "uuid" => "43a348be-9112-42f5-b567-f095fo5111td",
-                "name" => "Advokat Sebagai SPV",
-                "kotkab_id" => 4,
-                "email" => "advokat.spv@moka.ol",
-                "email_verified_at" => '2023-03-08 03:28:35',
-                "jabatan" => 'Advokat',
-                // "supervisor_layanan" => 1,
-                "supervisor_id" => 9,
-                "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
-                "foto" => 'light.png'
-            ],[
-                "uuid" => "43a348be-9f12-42f5-b567-f0952a5111cd",
-                "name" => "Psikolog Sebagai SPV",
-                "kotkab_id" => 4,
-                "email" => "psikolog.spv@moka.ol",
-                "email_verified_at" => '2023-03-08 03:28:35',
-                "jabatan" => 'Psikolog',
-                // "supervisor_layanan" => 1,
-                "supervisor_id" => 9,
-                "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
-                "foto" => 'light.png'
-            ],[
-                "uuid" => "43a348be-9f12-42f5-b567-f09e2c5111cd",
-                "name" => "Konselor",
-                "kotkab_id" => 4,
-                "email" => "konselor@moka.ol",
-                "email_verified_at" => '2023-03-08 03:28:35',
-                "jabatan" => 'Konselor',
-                // "supervisor_layanan" => 0,
-                "supervisor_id" => 13,
-                "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
-                "foto" => 'light.png'
-            ],[
-                "uuid" => "43a348be-9f12-42f5-b567-f09s2c5111cd",
-                "name" => "Sekretariat",
-                "kotkab_id" => 4,
-                "email" => "sekretariat@moka.ol",
-                "email_verified_at" => '2023-03-08 03:28:35',
-                "jabatan" => 'Sekretariat',
-                // "supervisor_layanan" => 0,
-                "supervisor_id" => 13,
-                "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
-                "foto" => 'light.png'
-        ]
-        ];
-        User::insert($users);
+        // $users = [
+        //     [
+        //         "uuid" => "43a348be-9f12-42f5-b567-f095fc5c11cd",
+        //         "name" => "Muhammad Light Yagami",
+        //         "kotkab_id" => 4,
+        //         "email" => 'penerima@moka.ol',
+        //         "email_verified_at" => '2023-03-08 03:28:35',
+        //         "jabatan" => 'Penerima Pengaduan',
+        //         // "supervisor_layanan" => 0,
+        //         "supervisor_id" => 11,
+        //         "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
+        //         "foto" => 'light.png'
+        //     ],[
+        //         "uuid" => "43a348be-9f12-42f5-b567-f095f25111cd",
+        //         "name" => "Alex Ferguson",
+        //         "kotkab_id" => 4,
+        //         "email" => "mk@moka.ol",
+        //         "email_verified_at" => '2023-03-08 03:28:35',
+        //         "jabatan" => 'Manajer Kasus',
+        //         // "supervisor_layanan" => 0,
+        //         "supervisor_id" => 9,
+        //         "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
+        //         "foto" => 'ferguson.png'
+        //     ],[
+        //         "uuid" => "43a348be-9f12-42f5-b567-f09tfc5111cd",
+        //         "name" => "Dominic Toretto",
+        //         "kotkab_id" => 4,
+        //         "email" => "pk@moka.ol",
+        //         "email_verified_at" => '2023-03-08 03:28:35',
+        //         "jabatan" => 'Pendamping Kasus',
+        //         // "supervisor_layanan" => 0,
+        //         "supervisor_id" => 9,
+        //         "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
+        //         "foto" => 'dominic.png'
+        //     ],[
+        //         "uuid" => "43a348be-9f12-42f5-b567-f0952c5111cd",
+        //         "name" => "Wanda Maximoff",
+        //         "kotkab_id" => 4,
+        //         "email" => "psikolog@moka.ol",
+        //         "email_verified_at" => '2023-03-08 03:28:35',
+        //         "jabatan" => 'Psikolog',
+        //         // "supervisor_layanan" => 0,
+        //         "supervisor_id" => 13,
+        //         "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
+        //         "foto" => 'light.png'
+        //     ],[
+        //         "uuid" => "43a348be-9112-42f5-b567-f095fo5111cd",
+        //         "name" => "Hotman Paris Hutapea",
+        //         "kotkab_id" => 4,
+        //         "email" => "advokat@moka.ol",
+        //         "email_verified_at" => '2023-03-08 03:28:35',
+        //         "jabatan" => 'Advokat',
+        //         // "supervisor_layanan" => 0,
+        //         "supervisor_id" => 12,
+        //         "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
+        //         "foto" => 'light.png'
+        //     ],[
+        //         "uuid" => "43a348be-9112-42f5-b567-f095fc5111cd",
+        //         "name" => "John Constantine",
+        //         "kotkab_id" => 4,
+        //         "email" => "paralegal@moka.ol",
+        //         "email_verified_at" => '2023-03-08 03:28:35',
+        //         "jabatan" => 'Paralegal',
+        //         // "supervisor_layanan" => 0,
+        //         "supervisor_id" => 12,
+        //         "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
+        //         "foto" => 'light.png'
+        //     ],[
+        //         "uuid" => "43a348be-9112-42f5-b567-f095fc5112cd",
+        //         "name" => "Bruce Wayne",
+        //         "kotkab_id" => 4,
+        //         "email" => "urc@moka.ol",
+        //         "email_verified_at" => '2023-03-08 03:28:35',
+        //         "jabatan" => 'Unit Reaksi Cepat',
+        //         // "supervisor_layanan" => 0,
+        //         "supervisor_id" => 12,
+        //         "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
+        //         "foto" => 'light.png'
+        //     ],[
+        //         "uuid" => "43a348be-9112-42f5-b567-f095fc5011cd",
+        //         "name" => "Nick Fury",
+        //         "kotkab_id" => 4,
+        //         "email" => "spv@moka.ol",
+        //         "email_verified_at" => '2023-03-08 03:28:35',
+        //         "jabatan" => 'Supervisor Kasus',
+        //         // "supervisor_layanan" => 0,
+        //         "supervisor_id" => 11,
+        //         "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
+        //         "foto" => 'nick.jpg'
+        //     ],[
+        //         "uuid" => "43a348be-9112-42f5-b767-f095fc5111cd",
+        //         "name" => "Tenaga Ahli",
+        //         "kotkab_id" => 4,
+        //         "email" => "ta@moka.ol",
+        //         "email_verified_at" => '2023-03-08 03:28:35',
+        //         "jabatan" => 'Tenaga Ahli',
+        //         // "supervisor_layanan" => 1,
+        //         "supervisor_id" => 0,
+        //         "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
+        //         "foto" => 'light.png'
+        //     ],[
+        //         "uuid" => "43a348be-9112-42f5-b537-f095fc5111cd",
+        //         "name" => "Tony Stark",
+        //         "kotkab_id" => 4,
+        //         "email" => "superadmin@moka.ol",
+        //         "email_verified_at" => '2023-03-08 03:28:35',
+        //         "jabatan" => 'Super Admin',
+        //         // "supervisor_layanan" => 0,
+        //         "supervisor_id" => 0,
+        //         "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
+        //         "foto" => 'light.png'
+        //     ],[
+        //         "uuid" => "43a348be-9112-42fs-b567-f095fc5111cd",
+        //         "name" => "Kepala Instansi",
+        //         "kotkab_id" => 4,
+        //         "email" => "kepala@moka.ol",
+        //         "email_verified_at" => '2023-03-08 03:28:35',
+        //         "jabatan" => 'Kepala Instansi',
+        //         // "supervisor_layanan" => 0,
+        //         "supervisor_id" => 0,
+        //         "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
+        //         "foto" => 'light.png'
+        //     ],[
+        //         "uuid" => "43a348be-9112-42f5-b567-f095fo5111td",
+        //         "name" => "Advokat Sebagai SPV",
+        //         "kotkab_id" => 4,
+        //         "email" => "advokat.spv@moka.ol",
+        //         "email_verified_at" => '2023-03-08 03:28:35',
+        //         "jabatan" => 'Advokat',
+        //         // "supervisor_layanan" => 1,
+        //         "supervisor_id" => 9,
+        //         "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
+        //         "foto" => 'light.png'
+        //     ],[
+        //         "uuid" => "43a348be-9f12-42f5-b567-f0952a5111cd",
+        //         "name" => "Psikolog Sebagai SPV",
+        //         "kotkab_id" => 4,
+        //         "email" => "psikolog.spv@moka.ol",
+        //         "email_verified_at" => '2023-03-08 03:28:35',
+        //         "jabatan" => 'Psikolog',
+        //         // "supervisor_layanan" => 1,
+        //         "supervisor_id" => 9,
+        //         "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
+        //         "foto" => 'light.png'
+        //     ],[
+        //         "uuid" => "43a348be-9f12-42f5-b567-f09e2c5111cd",
+        //         "name" => "Konselor",
+        //         "kotkab_id" => 4,
+        //         "email" => "konselor@moka.ol",
+        //         "email_verified_at" => '2023-03-08 03:28:35',
+        //         "jabatan" => 'Konselor',
+        //         // "supervisor_layanan" => 0,
+        //         "supervisor_id" => 13,
+        //         "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
+        //         "foto" => 'light.png'
+        //     ],[
+        //         "uuid" => "43a348be-9f12-42f5-b567-f09s2c5111cd",
+        //         "name" => "Sekretariat",
+        //         "kotkab_id" => 4,
+        //         "email" => "sekretariat@moka.ol",
+        //         "email_verified_at" => '2023-03-08 03:28:35',
+        //         "jabatan" => 'Sekretariat',
+        //         // "supervisor_layanan" => 0,
+        //         "supervisor_id" => 13,
+        //         "password" => '$2y$10$9BcBcEWaVUmAOrl2zZkaKeYRZaajkbtNFlAcpNTwkXDab9e00kqlq',
+        //         "foto" => 'light.png'
+        // ]
+        // ];
+        // User::insert($users);
 
         //data kasus
-        $kasus = [
-            [
-                "uuid" => "5caa4c24-e49b-45c1-be5f-d5485f72753a",
-                "no_reg" => NULL,
-                "sumber_rujukan" => 'UPTD PPA Tangsel',
-                "media_pengaduan" => 'Datang Langsung',
-                "sumber_informasi" => 'UPTD PPA Tangsel',
-                "tanggal_pelaporan" => Carbon::now(),
-                "tanggal_kejadian" => Carbon::now()->subDays(1000),
-                "kategori_lokasi" => 'Rumah Tinggal',
-                "provinsi_id" => 31,
-                "kotkab_id" => 3171,
-                "kecamatan_id" => 317204,
-                "kelurahan_id" => 3172041003,
-                "alamat" => 'JL Kampung Buaran Timur RT.011 RW.002',
-                "ringkasan" => 'Rujukan dari UPTD PPA Tangerang Selatan, KTA Seksual atau anak korban. Kekerasan seksual persetubuhan a.n Fatma usia 17 tahun. Terduga pelaku yakni Bapak Kartono ayah kandung korban. Tempat kejadian perkara terjadi di alamat domisili Korban yakni Tangerang Selatan. Alamat KTP/KK keluarga/korban beralamat Jakarta selatan',
-                "created_by" => 1,
-                "created_at" => Carbon::now()->subDays(150),
-                "updated_at" => Carbon::now()->addDays(1),
-                "deleted_at" => NULL
-            ],
-            [
-                "uuid" => "5caa4c24-e49b-45c1-ce5f-d5485f72753a",
-                "no_reg" => NULL,
-                "sumber_rujukan" => '',
-                "media_pengaduan" => 'Datang Langsung',
-                "sumber_informasi" => 'UPTD PPA Tangsel',
-                "tanggal_pelaporan" => Carbon::now()->subDays(30),
-                "tanggal_kejadian" => Carbon::now()->subDays(45),
-                "kategori_lokasi" => 'Rumah Tinggal',
-                "provinsi_id" => 31,
-                "kotkab_id" => 3175,
-                "kecamatan_id" => 317204,
-                "kelurahan_id" => 3172041003,
-                "alamat" => 'JL Kampung Buaran Timur RT.011 RW.002',
-                "ringkasan" => 'Rujukan dari UPTD PPA Tangerang Selatan, KTA Seksual atau anak korban. Kekerasan seksual persetubuhan a.n Fatma usia 17 tahun. Terduga pelaku yakni Bapak Kartono ayah kandung korban. Tempat kejadian perkara terjadi di alamat domisili Korban yakni Tangerang Selatan. Alamat KTP/KK keluarga/korban beralamat Jakarta selatan',
-                "created_by" => 1,
-                "created_at" => Carbon::now()->subDays(2),
-                "updated_at" => Carbon::now()->addDays(1),
-                "deleted_at" => NULL
-            ],
-            [
-                "uuid" => "5caa4c24-e49b-45c1-ce5f-d5385f72753a",
-                "no_reg" => NULL,
-                "sumber_rujukan" => '',
-                "media_pengaduan" => 'Datang Langsung',
-                "sumber_informasi" => 'UPTD PPA Tangsel',
-                "tanggal_pelaporan" => Carbon::now()->subDays(30),
-                "tanggal_kejadian" => Carbon::now()->subDays(45),
-                "kategori_lokasi" => 'Rumah Tinggal',
-                "provinsi_id" => 31,
-                "kotkab_id" => 3171,
-                "kecamatan_id" => 317204,
-                "kelurahan_id" => 3172041003,
-                "alamat" => 'JL Kampung Buaran Timur RT.011 RW.002',
-                "ringkasan" => 'Rujukan dari UPTD PPA Tangerang Selatan, KTA Seksual atau anak korban. Kekerasan seksual persetubuhan a.n Fatma usia 17 tahun. Terduga pelaku yakni Bapak Kartono ayah kandung korban. Tempat kejadian perkara terjadi di alamat domisili Korban yakni Tangerang Selatan. Alamat KTP/KK keluarga/korban beralamat Jakarta selatan',
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
-                "deleted_at" => NULL
-            ]
-        ];
-        Kasus::insert($kasus);
+        // $kasus = [
+        //     [
+        //         "uuid" => "5caa4c24-e49b-45c1-be5f-d5485f72753a",
+        //         "no_reg" => NULL,
+        //         "sumber_rujukan" => 'UPTD PPA Tangsel',
+        //         "media_pengaduan" => 'Datang Langsung',
+        //         "sumber_informasi" => 'UPTD PPA Tangsel',
+        //         "tanggal_pelaporan" => Carbon::now(),
+        //         "tanggal_kejadian" => Carbon::now()->subDays(1000),
+        //         "kategori_lokasi" => 'Rumah Tinggal',
+        //         "provinsi_id" => 31,
+        //         "kotkab_id" => 3171,
+        //         "kecamatan_id" => 317204,
+        //         "kelurahan_id" => 3172041003,
+        //         "alamat" => 'JL Kampung Buaran Timur RT.011 RW.002',
+        //         "ringkasan" => 'Rujukan dari UPTD PPA Tangerang Selatan, KTA Seksual atau anak korban. Kekerasan seksual persetubuhan a.n Fatma usia 17 tahun. Terduga pelaku yakni Bapak Kartono ayah kandung korban. Tempat kejadian perkara terjadi di alamat domisili Korban yakni Tangerang Selatan. Alamat KTP/KK keluarga/korban beralamat Jakarta selatan',
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now()->subDays(150),
+        //         "updated_at" => Carbon::now()->addDays(1),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "uuid" => "5caa4c24-e49b-45c1-ce5f-d5485f72753a",
+        //         "no_reg" => NULL,
+        //         "sumber_rujukan" => '',
+        //         "media_pengaduan" => 'Datang Langsung',
+        //         "sumber_informasi" => 'UPTD PPA Tangsel',
+        //         "tanggal_pelaporan" => Carbon::now()->subDays(30),
+        //         "tanggal_kejadian" => Carbon::now()->subDays(45),
+        //         "kategori_lokasi" => 'Rumah Tinggal',
+        //         "provinsi_id" => 31,
+        //         "kotkab_id" => 3175,
+        //         "kecamatan_id" => 317204,
+        //         "kelurahan_id" => 3172041003,
+        //         "alamat" => 'JL Kampung Buaran Timur RT.011 RW.002',
+        //         "ringkasan" => 'Rujukan dari UPTD PPA Tangerang Selatan, KTA Seksual atau anak korban. Kekerasan seksual persetubuhan a.n Fatma usia 17 tahun. Terduga pelaku yakni Bapak Kartono ayah kandung korban. Tempat kejadian perkara terjadi di alamat domisili Korban yakni Tangerang Selatan. Alamat KTP/KK keluarga/korban beralamat Jakarta selatan',
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now()->subDays(2),
+        //         "updated_at" => Carbon::now()->addDays(1),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "uuid" => "5caa4c24-e49b-45c1-ce5f-d5385f72753a",
+        //         "no_reg" => NULL,
+        //         "sumber_rujukan" => '',
+        //         "media_pengaduan" => 'Datang Langsung',
+        //         "sumber_informasi" => 'UPTD PPA Tangsel',
+        //         "tanggal_pelaporan" => Carbon::now()->subDays(30),
+        //         "tanggal_kejadian" => Carbon::now()->subDays(45),
+        //         "kategori_lokasi" => 'Rumah Tinggal',
+        //         "provinsi_id" => 31,
+        //         "kotkab_id" => 3171,
+        //         "kecamatan_id" => 317204,
+        //         "kelurahan_id" => 3172041003,
+        //         "alamat" => 'JL Kampung Buaran Timur RT.011 RW.002',
+        //         "ringkasan" => 'Rujukan dari UPTD PPA Tangerang Selatan, KTA Seksual atau anak korban. Kekerasan seksual persetubuhan a.n Fatma usia 17 tahun. Terduga pelaku yakni Bapak Kartono ayah kandung korban. Tempat kejadian perkara terjadi di alamat domisili Korban yakni Tangerang Selatan. Alamat KTP/KK keluarga/korban beralamat Jakarta selatan',
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now(),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "uuid" => "5caa4c24-e49b-45c1-ce5f-d5385f727531",
+        //         "no_reg" => NULL,
+        //         "sumber_rujukan" => 'Bukan Rujukan',
+        //         "media_pengaduan" => 'Datang Langsung',
+        //         "sumber_informasi" => 'PUSKESMAS Kec. Jagakarsa',
+        //         "tanggal_pelaporan" => Carbon::now()->subDays(30),
+        //         "tanggal_kejadian" => Carbon::now()->subDays(45),
+        //         "kategori_lokasi" => 'Sekolah',
+        //         "provinsi_id" => 31,
+        //         "kotkab_id" => 3174,
+        //         "kecamatan_id" => 317409,
+        //         "kelurahan_id" => 3174091002,
+        //         "alamat" => 'JL Kampung Buaran Timur RT.011 RW.002',
+        //         "ringkasan" => 'Team Sekian (TS) merupakan dugaan korban terhadap anak (KTA) Fisik dan Psikis yang dilakukan oleh teman sekelasnya an. Yoga (Y) Bentuk kekerasan fisik dan psikis berupa ditendang,dicekik dan diolok olok.',
+        //         "created_by" => 1, // ubah ini penerima pengaduan
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now(),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "uuid" => "5caa4c24-e49b-45c1-ce5f-d5385f727531",
+        //         "no_reg" => NULL,
+        //         "sumber_rujukan" => 'Bukan Rujukan',
+        //         "media_pengaduan" => 'Datang Langsung',
+        //         "sumber_informasi" => 'PUSKESMAS Kec. Jagakarsa',
+        //         "tanggal_pelaporan" => Carbon::now()->subDays(30),
+        //         "tanggal_kejadian" => Carbon::now()->subDays(45),
+        //         "kategori_lokasi" => 'Sekolah',
+        //         "provinsi_id" => 31,
+        //         "kotkab_id" => 3174,
+        //         "kecamatan_id" => 317409,
+        //         "kelurahan_id" => 3174091002,
+        //         "alamat" => 'JL Kampung Buaran Timur RT.011 RW.002',
+        //         "ringkasan" => 'Team Sekian (TS) merupakan dugaan korban terhadap anak (KTA) Fisik dan Psikis yang dilakukan oleh teman sekelasnya an. Yoga (Y) Bentuk kekerasan fisik dan psikis berupa ditendang,dicekik dan diolok olok.',
+        //         "created_by" => 1, // ubah ini penerima pengaduan
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now(),
+        //         "deleted_at" => NULL
+        //     ]
+        // ];
+        // Kasus::insert($kasus);
+        $csvFile = fopen(base_path("database/data/kasus.csv"), "r");
+        $firstline = true;
+        while (($kasus = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+            if (!$firstline) {
+                Kasus::create([
+                    "id" => $kasus['0'],
+                    "uuid" => $kasus['1'],
+                    "no_reg" => $kasus['2'],
+                    "sumber_rujukan" => $kasus['3'],
+                    "media_pengaduan" => $kasus['4'],
+                    "sumber_informasi" => $kasus['5'],
+                    "tanggal_pelaporan" => Carbon::now(),
+                    "tanggal_kejadian" => Carbon::now(),
+                    "perkiraan_tanggal_kejadian" => $kasus['8'],
+                    "kategori_lokasi" => $kasus['9'],
+                    "ringkasan" => $kasus['10'],
+                    "provinsi_id" => $kasus['11'],
+                    "kotkab_id" => $kasus['12'],
+                    "kecamatan_id" => $kasus['13'],
+                    "kelurahan_id" => $kasus['14'],
+                    "alamat" => $kasus['15'],
+                    "created_by" => $kasus['16'],
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now(),
+                    "deleted_at" => NULL,
+                ]);    
+            }
+            $firstline = false;
+        }
+        fclose($csvFile);
 
         //data pelapor
-        $pelapor = [
-            [
-                "uuid" => "178e7zdb-f845-4abb-966b-4b727f3a1a2e",
-                "kasus_id" => 1,
-                "nik" => '3213029381729001',
-                "nama" => 'Kartini',
-                "tempat_lahir" => 'Jakarta',
-                "tanggal_lahir" => '1984-09-07',
-                "provinsi_id_ktp" => 31,
-                "kotkab_id_ktp" => 3172,
-                "kecamatan_id_ktp" => 317204,
-                "kelurahan_id_ktp" => 3172041003,
-                "alamat_ktp" => 'Jl. Mawar No. 9',
-                "provinsi_id" => 31,
-                "kotkab_id" => 3172,
-                "kecamatan_id" => 317204,
-                "kelurahan_id" => 3172041003,
-                "alamat" => 'Jl. Melati No. 10',
-                "agama" => 'Islam',
-                "no_telp" => '082718221238',
-                "status_kawin" => NULL,
-                "pekerjaan" => NULL,
-                "kewarganegaraan" => NULL,
-                "status_pendidikan" => NULL,
-                "pendidikan" => NULL,
-                "desil" => NULL,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
-                "deleted_at" => NULL
-            ],
-            [
-                "uuid" => "178e7zdb-a845-4abb-966b-4b727f3a1a2e",
-                "kasus_id" => 2,
-                "nik" => '3213029381729001',
-                "nama" => 'Sunarti',
-                "tempat_lahir" => 'Jakarta',
-                "tanggal_lahir" => '1994-09-07',
-                "provinsi_id_ktp" => 31,
-                "kotkab_id_ktp" => 3172,
-                "kecamatan_id_ktp" => 317204,
-                "kelurahan_id_ktp" => 3172041003,
-                "alamat_ktp" => 'Jl. Mawar No. 9',
-                "provinsi_id" => 31,
-                "kotkab_id" => 3172,
-                "kecamatan_id" => 317204,
-                "kelurahan_id" => 3172041003,
-                "alamat" => 'Jl. Melati No. 10',
-                "agama" => 'Islam',
-                "no_telp" => '082718221238',
-                "status_kawin" => NULL,
-                "pekerjaan" => NULL,
-                "kewarganegaraan" => NULL,
-                "status_pendidikan" => NULL,
-                "pendidikan" => NULL,
-                "desil" => NULL,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
-                "deleted_at" => NULL
-            ],
-            [
-                "uuid" => "178e7zdb-a845-4abb-966b-4b727f3a1a2a",
-                "kasus_id" => 3,
-                "nik" => '3213029381729001',
-                "nama" => 'Sumanto',
-                "tempat_lahir" => 'Jakarta',
-                "tanggal_lahir" => '1994-09-07',
-                "provinsi_id_ktp" => 31,
-                "kotkab_id_ktp" => 3172,
-                "kecamatan_id_ktp" => 317204,
-                "kelurahan_id_ktp" => 3172041003,
-                "alamat_ktp" => 'Jl. Mawar No. 9',
-                "provinsi_id" => 31,
-                "kotkab_id" => 3172,
-                "kecamatan_id" => 317204,
-                "kelurahan_id" => 3172041003,
-                "alamat" => 'Jl. Melati No. 10',
-                "agama" => 'Islam',
-                "no_telp" => '082718221238',
-                "status_kawin" => NULL,
-                "pekerjaan" => NULL,
-                "kewarganegaraan" => NULL,
-                "status_pendidikan" => NULL,
-                "pendidikan" => NULL,
-                "desil" => NULL,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
-                "deleted_at" => NULL
-            ]
-        ];
-        Pelapor::insert($pelapor);
+        // $pelapor = [
+        //     [
+        //         "uuid" => "178e7zdb-f845-4abb-966b-4b727f3a1a2e",
+        //         "kasus_id" => 1,
+        //         "nik" => '3213029381729001',
+        //         "nama" => 'Kartini',
+        //         "tempat_lahir" => 'Jakarta',
+        //         "tanggal_lahir" => '1984-09-07',
+        //         "provinsi_id_ktp" => 31,
+        //         "kotkab_id_ktp" => 3172,
+        //         "kecamatan_id_ktp" => 317204,
+        //         "kelurahan_id_ktp" => 3172041003,
+        //         "alamat_ktp" => 'Jl. Mawar No. 9',
+        //         "provinsi_id" => 31,
+        //         "kotkab_id" => 3172,
+        //         "kecamatan_id" => 317204,
+        //         "kelurahan_id" => 3172041003,
+        //         "alamat" => 'Jl. Melati No. 10',
+        //         "agama" => 'Islam',
+        //         "no_telp" => '082718221238',
+        //         "status_kawin" => NULL,
+        //         "pekerjaan" => NULL,
+        //         "kewarganegaraan" => NULL,
+        //         "status_pendidikan" => NULL,
+        //         "pendidikan" => NULL,
+        //         "desil" => NULL,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now(),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "uuid" => "178e7zdb-a845-4abb-966b-4b727f3a1a2e",
+        //         "kasus_id" => 2,
+        //         "nik" => '3213029381729001',
+        //         "nama" => 'Sunarti',
+        //         "tempat_lahir" => 'Jakarta',
+        //         "tanggal_lahir" => '1994-09-07',
+        //         "provinsi_id_ktp" => 31,
+        //         "kotkab_id_ktp" => 3172,
+        //         "kecamatan_id_ktp" => 317204,
+        //         "kelurahan_id_ktp" => 3172041003,
+        //         "alamat_ktp" => 'Jl. Mawar No. 9',
+        //         "provinsi_id" => 31,
+        //         "kotkab_id" => 3172,
+        //         "kecamatan_id" => 317204,
+        //         "kelurahan_id" => 3172041003,
+        //         "alamat" => 'Jl. Melati No. 10',
+        //         "agama" => 'Islam',
+        //         "no_telp" => '082718221238',
+        //         "status_kawin" => NULL,
+        //         "pekerjaan" => NULL,
+        //         "kewarganegaraan" => NULL,
+        //         "status_pendidikan" => NULL,
+        //         "pendidikan" => NULL,
+        //         "desil" => NULL,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now(),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "uuid" => "178e7zdb-a845-4abb-966b-4b727f3a1a2a",
+        //         "kasus_id" => 3,
+        //         "nik" => '3213029381729001',
+        //         "nama" => 'Sumanto',
+        //         "tempat_lahir" => 'Jakarta',
+        //         "tanggal_lahir" => '1994-09-07',
+        //         "provinsi_id_ktp" => 31,
+        //         "kotkab_id_ktp" => 3172,
+        //         "kecamatan_id_ktp" => 317204,
+        //         "kelurahan_id_ktp" => 3172041003,
+        //         "alamat_ktp" => 'Jl. Mawar No. 9',
+        //         "provinsi_id" => 31,
+        //         "kotkab_id" => 3172,
+        //         "kecamatan_id" => 317204,
+        //         "kelurahan_id" => 3172041003,
+        //         "alamat" => 'Jl. Melati No. 10',
+        //         "agama" => 'Islam',
+        //         "no_telp" => '082718221238',
+        //         "status_kawin" => NULL,
+        //         "pekerjaan" => NULL,
+        //         "kewarganegaraan" => NULL,
+        //         "status_pendidikan" => NULL,
+        //         "pendidikan" => NULL,
+        //         "desil" => NULL,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now(),
+        //         "deleted_at" => NULL
+        //     ]
+        // ];
+        // Pelapor::insert($pelapor);
+        $csvFile = fopen(base_path("database/data/pelapor.csv"), "r");
+        $firstline = true;
+        while (($pelapor = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+            if (!$firstline) {
+                Pelapor::create([
+                    "id" => $pelapor['0'],
+                    "uuid" => $pelapor['1'],
+                    "kasus_id" => $pelapor['2'],
+                    "nik" => $pelapor['3'],
+                    "nama" => $pelapor['4'],
+                    "tempat_lahir" => $pelapor['5'],
+                    "tanggal_lahir" => $pelapor['6'],
+                    "perkiraan_tanggal_lahir" => $pelapor['7'],
+                    "jenis_kelamin" => $pelapor['8'],
+                    "provinsi_id_ktp" => $pelapor['9'],
+                    "kotkab_id_ktp" => $pelapor['10'],
+                    "kecamatan_id_ktp" => $pelapor['11'],
+                    "kelurahan_id_ktp" => $pelapor['12'],
+                    "alamat_ktp" => $pelapor['13'],
+                    "provinsi_id" => $pelapor['14'],
+                    "kotkab_id" => $pelapor['15'],
+                    "kecamatan_id" => $pelapor['16'],
+                    "kelurahan_id" => $pelapor['17'],
+                    "alamat" => $pelapor['18'],
+                    "agama" => $pelapor['19'],
+                    "status_kawin" => $pelapor['20'],
+                    "pekerjaan" => $pelapor['21'],
+                    "kewarganegaraan" => $pelapor['22'],
+                    "status_pendidikan" => $pelapor['23'],
+                    "pendidikan" => $pelapor['24'],
+                    "no_telp" => $pelapor['25'],
+                    "desil" => $pelapor['26'],
+                    "created_by" => $pelapor['27'],
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now(),
+                    "deleted_at" => NULL,
+                ]);    
+            }
+            $firstline = false;
+        }
+        fclose($csvFile);
 
         //data klien
-        $klien = [
-            [
-                "uuid" => "456ab15f-1f30-48e1-a5c0-ke39c05a93ab",
-                "kasus_id" => 1,
-                "tanggal_approve" => Carbon::now(),
-                "no_klien" => '001/'.Carbon::now()->format('m').'/'.Carbon::now()->format('Y'),
-                "status" => 'Pelaksanaan intervensi',
-                "nik" => '320323219209991',
-                "nama" => 'Caca Marica Hey Hey',
-                "tempat_lahir" => 'Surabaya',
-                "tanggal_lahir" => '1992-11-02',
-                "jenis_kelamin" => 'perempuan',
-                "provinsi_id_ktp" => 31,
-                "kotkab_id_ktp" => 3175,
-                "kecamatan_id_ktp" => 317506,
-                "kelurahan_id_ktp" => 9271101004,
-                "alamat_ktp" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
-                "provinsi_id" => 31,
-                "kotkab_id" => 3175,
-                "kecamatan_id" => 317506,
-                "kelurahan_id" => 9271101004,
-                "alamat" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
-                "agama" => 'Islam',
-                "no_telp" => '082718227738',
-                "status_kawin" => 'Menikah Resmi',
-                "pekerjaan" => 'Swasta',
-                "kewarganegaraan" => 'WNI',
-                "status_pendidikan" => 'Lulus dan Tidak Melanjutkan (Tamat Belajar)',
-                "pendidikan" => 'Perguruan Tinggi',
-                "hubungan_pelapor" => 'Teman',
-                "desil" => NULL,
-                "created_by" => 1,
-                "created_at" => Carbon::now()->subDay(1),
-                "updated_at" => Carbon::now()->subDay(1),
-                "deleted_at" => NULL
-            ],
-            [
-                "uuid" => "456ab15f-1f30-48e1-k5c0-je39c05a93ab",
-                "kasus_id" => 2,
-                "tanggal_approve" => Carbon::now()->subDays(2),
-                "no_klien" => '002/'.Carbon::now()->format('m').'/'.Carbon::now()->format('Y'),
-                "status" => 'Pelaksanaan intervensi',
-                "nik" => '320323219219991',
-                "nama" => 'Putri Tidur',
-                "tempat_lahir" => 'Bandung',
-                "tanggal_lahir" => '1991-11-02',
-                "jenis_kelamin" => 'perempuan',
-                "provinsi_id_ktp" => 31,
-                "kotkab_id_ktp" => 3174,
-                "kecamatan_id_ktp" => 317506,
-                "kelurahan_id_ktp" => 9271101004,
-                "alamat_ktp" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
-                "provinsi_id" => 31,
-                "kotkab_id" => 3172,
-                "kecamatan_id" => 317506,
-                "kelurahan_id" => 9271101004,
-                "alamat" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
-                "agama" => 'Islam',
-                "no_telp" => '082718227738',
-                "status_kawin" => 'Menikah Resmi',
-                "pekerjaan" => 'Swasta',
-                "kewarganegaraan" => 'WNI',
-                "status_pendidikan" => 'Lulus dan Tidak Melanjutkan (Tamat Belajar)',
-                "pendidikan" => 'Perguruan Tinggi',
-                "hubungan_pelapor" => 'Teman',
-                "desil" => NULL,
-                "created_by" => 1,
-                "created_at" => Carbon::now()->subDay(1),
-                "updated_at" => Carbon::now()->subDay(1),
-                "deleted_at" => NULL
-            ],
-            [
-                "uuid" => "451ab15f-1f30-48e1-k5c0-je39c05a93ab",
-                "kasus_id" => 2,
-                "tanggal_approve" => Carbon::now()->subDays(2),
-                "no_klien" => '003/'.Carbon::now()->format('m').'/'.Carbon::now()->format('Y'),
-                "status" => 'Pelaksanaan intervensi',
-                "nik" => '310323219219991',
-                "nama" => 'Nina Bobo',
-                "tempat_lahir" => 'Bandung',
-                "tanggal_lahir" => '2019-11-02',
-                "jenis_kelamin" => 'perempuan',
-                "provinsi_id_ktp" => 31,
-                "kotkab_id_ktp" => 3174,
-                "kecamatan_id_ktp" => 317506,
-                "kelurahan_id_ktp" => 9271101004,
-                "alamat_ktp" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
-                "provinsi_id" => 31,
-                "kotkab_id" => 3172,
-                "kecamatan_id" => 317506,
-                "kelurahan_id" => 9271101004,
-                "alamat" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
-                "agama" => 'Islam',
-                "no_telp" => '082718227738',
-                "status_kawin" => 'Menikah Resmi',
-                "pekerjaan" => 'Swasta',
-                "kewarganegaraan" => 'WNI',
-                "status_pendidikan" => 'Lulus dan Tidak Melanjutkan (Tamat Belajar)',
-                "pendidikan" => 'Perguruan Tinggi',
-                "hubungan_pelapor" => 'Teman',
-                "desil" => NULL,
-                "created_by" => 1,
-                "created_at" => Carbon::now()->subDay(1),
-                "updated_at" => Carbon::now()->subDay(1),
-                "deleted_at" => NULL
-            ],
-            [
-                "uuid" => "451ab15f-1f30-48e1-k5c0-je39c05a93ab",
-                "kasus_id" => 3,
-                "tanggal_approve" => NULL,
-                "no_klien" => NULL,
-                "status" => 'Pelaksanaan intervensi',
-                "nik" => '310313219219991',
-                "nama" => 'Rudy Tabootie',
-                "tempat_lahir" => 'Bandung',
-                "tanggal_lahir" => '2023-11-02',
-                "jenis_kelamin" => 'laki-laki',
-                "provinsi_id_ktp" => 31,
-                "kotkab_id_ktp" => 3171,
-                "kecamatan_id_ktp" => 317506,
-                "kelurahan_id_ktp" => 9271101004,
-                "alamat_ktp" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
-                "provinsi_id" => 31,
-                "kotkab_id" => 3172,
-                "kecamatan_id" => 317506,
-                "kelurahan_id" => 9271101004,
-                "alamat" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
-                "agama" => 'Islam',
-                "no_telp" => '082718227738',
-                "status_kawin" => 'Menikah Resmi',
-                "pekerjaan" => 'Swasta',
-                "kewarganegaraan" => 'WNI',
-                "status_pendidikan" => 'Lulus dan Tidak Melanjutkan (Tamat Belajar)',
-                "pendidikan" => 'Perguruan Tinggi',
-                "hubungan_pelapor" => 'Teman',
-                "desil" => NULL,
-                "created_by" => 1,
-                "created_at" => Carbon::now()->subDay(1),
-                "updated_at" => Carbon::now()->subDay(1),
-                "deleted_at" => NULL
-            ]
-        ];
-        Klien::insert($klien);
+        // $klien = [
+        //     [
+        //         "uuid" => "456ab15f-1f30-48e1-a5c0-ke39c05a93ab",
+        //         "kasus_id" => 1,
+        //         "tanggal_approve" => Carbon::now(),
+        //         "no_klien" => '001/'.Carbon::now()->format('m').'/'.Carbon::now()->format('Y'),
+        //         "status" => 'Pelaksanaan intervensi',
+        //         "nik" => '320323219209991',
+        //         "nama" => 'Caca Marica Hey Hey',
+        //         "tempat_lahir" => 'Surabaya',
+        //         "tanggal_lahir" => '1992-11-02',
+        //         "jenis_kelamin" => 'perempuan',
+        //         "provinsi_id_ktp" => 31,
+        //         "kotkab_id_ktp" => 3175,
+        //         "kecamatan_id_ktp" => 317506,
+        //         "kelurahan_id_ktp" => 9271101004,
+        //         "alamat_ktp" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
+        //         "provinsi_id" => 31,
+        //         "kotkab_id" => 3175,
+        //         "kecamatan_id" => 317506,
+        //         "kelurahan_id" => 9271101004,
+        //         "alamat" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
+        //         "agama" => 'Islam',
+        //         "no_telp" => '082718227738',
+        //         "status_kawin" => 'Menikah Resmi',
+        //         "pekerjaan" => 'Swasta',
+        //         "kewarganegaraan" => 'WNI',
+        //         "status_pendidikan" => 'Lulus dan Tidak Melanjutkan (Tamat Belajar)',
+        //         "pendidikan" => 'Perguruan Tinggi',
+        //         "hubungan_pelapor" => 'Teman',
+        //         "desil" => NULL,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now()->subDay(1),
+        //         "updated_at" => Carbon::now()->subDay(1),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "uuid" => "456ab15f-1f30-48e1-k5c0-je39c05a93ab",
+        //         "kasus_id" => 2,
+        //         "tanggal_approve" => Carbon::now()->subDays(2),
+        //         "no_klien" => '002/'.Carbon::now()->format('m').'/'.Carbon::now()->format('Y'),
+        //         "status" => 'Pelaksanaan intervensi',
+        //         "nik" => '320323219219991',
+        //         "nama" => 'Putri Tidur',
+        //         "tempat_lahir" => 'Bandung',
+        //         "tanggal_lahir" => '1991-11-02',
+        //         "jenis_kelamin" => 'perempuan',
+        //         "provinsi_id_ktp" => 31,
+        //         "kotkab_id_ktp" => 3174,
+        //         "kecamatan_id_ktp" => 317506,
+        //         "kelurahan_id_ktp" => 9271101004,
+        //         "alamat_ktp" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
+        //         "provinsi_id" => 31,
+        //         "kotkab_id" => 3172,
+        //         "kecamatan_id" => 317506,
+        //         "kelurahan_id" => 9271101004,
+        //         "alamat" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
+        //         "agama" => 'Islam',
+        //         "no_telp" => '082718227738',
+        //         "status_kawin" => 'Menikah Resmi',
+        //         "pekerjaan" => 'Swasta',
+        //         "kewarganegaraan" => 'WNI',
+        //         "status_pendidikan" => 'Lulus dan Tidak Melanjutkan (Tamat Belajar)',
+        //         "pendidikan" => 'Perguruan Tinggi',
+        //         "hubungan_pelapor" => 'Teman',
+        //         "desil" => NULL,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now()->subDay(1),
+        //         "updated_at" => Carbon::now()->subDay(1),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "uuid" => "451ab15f-1f30-48e1-k5c0-je39c05a93ab",
+        //         "kasus_id" => 2,
+        //         "tanggal_approve" => Carbon::now()->subDays(2),
+        //         "no_klien" => '003/'.Carbon::now()->format('m').'/'.Carbon::now()->format('Y'),
+        //         "status" => 'Pelaksanaan intervensi',
+        //         "nik" => '310323219219991',
+        //         "nama" => 'Nina Bobo',
+        //         "tempat_lahir" => 'Bandung',
+        //         "tanggal_lahir" => '2019-11-02',
+        //         "jenis_kelamin" => 'perempuan',
+        //         "provinsi_id_ktp" => 31,
+        //         "kotkab_id_ktp" => 3174,
+        //         "kecamatan_id_ktp" => 317506,
+        //         "kelurahan_id_ktp" => 9271101004,
+        //         "alamat_ktp" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
+        //         "provinsi_id" => 31,
+        //         "kotkab_id" => 3172,
+        //         "kecamatan_id" => 317506,
+        //         "kelurahan_id" => 9271101004,
+        //         "alamat" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
+        //         "agama" => 'Islam',
+        //         "no_telp" => '082718227738',
+        //         "status_kawin" => 'Menikah Resmi',
+        //         "pekerjaan" => 'Swasta',
+        //         "kewarganegaraan" => 'WNI',
+        //         "status_pendidikan" => 'Lulus dan Tidak Melanjutkan (Tamat Belajar)',
+        //         "pendidikan" => 'Perguruan Tinggi',
+        //         "hubungan_pelapor" => 'Teman',
+        //         "desil" => NULL,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now()->subDay(1),
+        //         "updated_at" => Carbon::now()->subDay(1),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "uuid" => "451ab15f-1f30-48e1-k5c0-je39c05a93ab",
+        //         "kasus_id" => 3,
+        //         "tanggal_approve" => NULL,
+        //         "no_klien" => NULL,
+        //         "status" => 'Pelaksanaan intervensi',
+        //         "nik" => '310313219219991',
+        //         "nama" => 'Rudy Tabootie',
+        //         "tempat_lahir" => 'Bandung',
+        //         "tanggal_lahir" => '2023-11-02',
+        //         "jenis_kelamin" => 'laki-laki',
+        //         "provinsi_id_ktp" => 31,
+        //         "kotkab_id_ktp" => 3171,
+        //         "kecamatan_id_ktp" => 317506,
+        //         "kelurahan_id_ktp" => 9271101004,
+        //         "alamat_ktp" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
+        //         "provinsi_id" => 31,
+        //         "kotkab_id" => 3172,
+        //         "kecamatan_id" => 317506,
+        //         "kelurahan_id" => 9271101004,
+        //         "alamat" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
+        //         "agama" => 'Islam',
+        //         "no_telp" => '082718227738',
+        //         "status_kawin" => 'Menikah Resmi',
+        //         "pekerjaan" => 'Swasta',
+        //         "kewarganegaraan" => 'WNI',
+        //         "status_pendidikan" => 'Lulus dan Tidak Melanjutkan (Tamat Belajar)',
+        //         "pendidikan" => 'Perguruan Tinggi',
+        //         "hubungan_pelapor" => 'Teman',
+        //         "desil" => NULL,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now()->subDay(1),
+        //         "updated_at" => Carbon::now()->subDay(1),
+        //         "deleted_at" => NULL
+        //     ]
+        // ];
+        // Klien::insert($klien);
+        $csvFile = fopen(base_path("database/data/klien.csv"), "r");
+        $firstline = true;
+        while (($klien = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+            if (!$firstline) {
+                Klien::create([
+                    "id" => $klien['0'],
+                    "uuid" => $klien['1'],
+                    "kasus_id" => $klien['2'],
+                    "tanggal_approve" => NULL,
+                    "urutan" => NULL,
+                    "no_klien" => $klien['5'],
+                    "status" => $klien['6'],
+                    "nik" => $klien['7'],
+                    "nama" => $klien['8'],
+                    "tempat_lahir" => $klien['9'],
+                    "tanggal_lahir" => $klien['10'],
+                    "perkiraan_tanggal_lahir" => $klien['11'],
+                    "jenis_kelamin" => $klien['12'],
+                    "provinsi_id_ktp" => $klien['13'],
+                    "kotkab_id_ktp" => $klien['14'],
+                    "kecamatan_id_ktp" => $klien['15'],
+                    "kelurahan_id_ktp" => $klien['16'],
+                    "alamat_ktp" => $klien['17'],
+                    "provinsi_id" => $klien['18'],
+                    "kotkab_id" => $klien['19'],
+                    "kecamatan_id" => $klien['20'],
+                    "kelurahan_id" => $klien['21'],
+                    "alamat" => $klien['22'],
+                    "agama" => $klien['23'],
+                    "status_kawin" => $klien['24'],
+                    "pekerjaan" => $klien['25'],
+                    "kewarganegaraan" => $klien['26'],
+                    "status_pendidikan" => $klien['27'],
+                    "pendidikan" => $klien['28'],
+                    "no_telp" => $klien['29'],
+                    "kedisabilitasan" => $klien['30'],
+                    "hubungan_pelapor" => $klien['31'],
+                    "intervensi_ke" => $klien['32'],
+                    "desil" => $klien['33'],
+                    "arsip" => $klien['34'],
+                    "created_by" => $klien['35'],
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now(),
+                    "deleted_at" => NULL,
+                ]);    
+            }
+            $firstline = false;
+        }
+        fclose($csvFile);
 
         //data terlapor
-        $terlapor = [
-            [
-                "uuid" => "178e78d2-f845-4abb-966b-4b727f3a1a2e",
-                "kasus_id" => 1,
-                "nik" => '3213029381729001',
-                "nama" => 'Zoombie',
-                "tempat_lahir" => 'Bandung',
-                "tanggal_lahir" => '1992-10-11',
-                "provinsi_id_ktp" => 31,
-                "kotkab_id_ktp" => 3175,
-                "kecamatan_id_ktp" => 317502,
-                "kelurahan_id_ktp" => 9271101004,
-                "alamat_ktp" => 'jl. sesama nomor 23',
-                "provinsi_id" => 31,
-                "kotkab_id" => 3175,
-                "kecamatan_id" => 317502,
-                "kelurahan_id" => 9271101004,
-                "alamat" => 'jl. sesama nomor 23',
-                "agama" => 'Islam',
-                "no_telp" => '082718221238',
-                "status_kawin" => NULL,
-                "pekerjaan" => NULL,
-                "kewarganegaraan" => NULL,
-                "status_pendidikan" => NULL,
-                "pendidikan" => NULL,
-                "desil" => NULL,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
-                "deleted_at" => NULL
-            ],
-            [
-                "uuid" => "178e78d2-f845-4abb-966b-4b727f3a1a2e",
-                "kasus_id" => 2,
-                "nik" => '3213029381729001',
-                "nama" => 'Putin Millenix',
-                "tempat_lahir" => 'Bandung',
-                "tanggal_lahir" => '1992-10-11',
-                "provinsi_id_ktp" => 31,
-                "kotkab_id_ktp" => 3175,
-                "kecamatan_id_ktp" => 317502,
-                "kelurahan_id_ktp" => 9271101004,
-                "alamat_ktp" => 'jl. sesama nomor 23',
-                "provinsi_id" => 31,
-                "kotkab_id" => 3175,
-                "kecamatan_id" => 317502,
-                "kelurahan_id" => 9271101004,
-                "alamat" => 'jl. sesama nomor 23',
-                "agama" => 'Islam',
-                "no_telp" => '082718221238',
-                "status_kawin" => NULL,
-                "pekerjaan" => NULL,
-                "kewarganegaraan" => NULL,
-                "status_pendidikan" => NULL,
-                "pendidikan" => NULL,
-                "desil" => NULL,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
-                "deleted_at" => NULL
-            ],
-            [
-                "uuid" => "178a78d2-f845-4abb-966b-4b727f3a1a2e",
-                "kasus_id" => 3,
-                "nik" => '3213029381729001',
-                "nama" => 'Frankenstein',
-                "tempat_lahir" => 'Bandung',
-                "tanggal_lahir" => '1990-10-11',
-                "provinsi_id_ktp" => 31,
-                "kotkab_id_ktp" => 3175,
-                "kecamatan_id_ktp" => 317502,
-                "kelurahan_id_ktp" => 9271101004,
-                "alamat_ktp" => 'jl. sesama nomor 23',
-                "provinsi_id" => 31,
-                "kotkab_id" => 3175,
-                "kecamatan_id" => 317502,
-                "kelurahan_id" => 9271101004,
-                "alamat" => 'jl. sesama nomor 23',
-                "agama" => 'Islam',
-                "no_telp" => '082718221238',
-                "status_kawin" => NULL,
-                "pekerjaan" => NULL,
-                "kewarganegaraan" => NULL,
-                "status_pendidikan" => NULL,
-                "pendidikan" => NULL,
-                "desil" => NULL,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
-                "deleted_at" => NULL
-            ]
-        ];
-        Terlapor::insert($terlapor);
+        // $terlapor = [
+        //     [
+        //         "uuid" => "178e78d2-f845-4abb-966b-4b727f3a1a2e",
+        //         "kasus_id" => 1,
+        //         "nik" => '3213029381729001',
+        //         "nama" => 'Zoombie',
+        //         "tempat_lahir" => 'Bandung',
+        //         "tanggal_lahir" => '1992-10-11',
+        //         "provinsi_id_ktp" => 31,
+        //         "kotkab_id_ktp" => 3175,
+        //         "kecamatan_id_ktp" => 317502,
+        //         "kelurahan_id_ktp" => 9271101004,
+        //         "alamat_ktp" => 'jl. sesama nomor 23',
+        //         "provinsi_id" => 31,
+        //         "kotkab_id" => 3175,
+        //         "kecamatan_id" => 317502,
+        //         "kelurahan_id" => 9271101004,
+        //         "alamat" => 'jl. sesama nomor 23',
+        //         "agama" => 'Islam',
+        //         "no_telp" => '082718221238',
+        //         "status_kawin" => NULL,
+        //         "pekerjaan" => NULL,
+        //         "kewarganegaraan" => NULL,
+        //         "status_pendidikan" => NULL,
+        //         "pendidikan" => NULL,
+        //         "desil" => NULL,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now(),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "uuid" => "178e78d2-f845-4abb-966b-4b727f3a1a2e",
+        //         "kasus_id" => 2,
+        //         "nik" => '3213029381729001',
+        //         "nama" => 'Putin Millenix',
+        //         "tempat_lahir" => 'Bandung',
+        //         "tanggal_lahir" => '1992-10-11',
+        //         "provinsi_id_ktp" => 31,
+        //         "kotkab_id_ktp" => 3175,
+        //         "kecamatan_id_ktp" => 317502,
+        //         "kelurahan_id_ktp" => 9271101004,
+        //         "alamat_ktp" => 'jl. sesama nomor 23',
+        //         "provinsi_id" => 31,
+        //         "kotkab_id" => 3175,
+        //         "kecamatan_id" => 317502,
+        //         "kelurahan_id" => 9271101004,
+        //         "alamat" => 'jl. sesama nomor 23',
+        //         "agama" => 'Islam',
+        //         "no_telp" => '082718221238',
+        //         "status_kawin" => NULL,
+        //         "pekerjaan" => NULL,
+        //         "kewarganegaraan" => NULL,
+        //         "status_pendidikan" => NULL,
+        //         "pendidikan" => NULL,
+        //         "desil" => NULL,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now(),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "uuid" => "178a78d2-f845-4abb-966b-4b727f3a1a2e",
+        //         "kasus_id" => 3,
+        //         "nik" => '3213029381729001',
+        //         "nama" => 'Frankenstein',
+        //         "tempat_lahir" => 'Bandung',
+        //         "tanggal_lahir" => '1990-10-11',
+        //         "provinsi_id_ktp" => 31,
+        //         "kotkab_id_ktp" => 3175,
+        //         "kecamatan_id_ktp" => 317502,
+        //         "kelurahan_id_ktp" => 9271101004,
+        //         "alamat_ktp" => 'jl. sesama nomor 23',
+        //         "provinsi_id" => 31,
+        //         "kotkab_id" => 3175,
+        //         "kecamatan_id" => 317502,
+        //         "kelurahan_id" => 9271101004,
+        //         "alamat" => 'jl. sesama nomor 23',
+        //         "agama" => 'Islam',
+        //         "no_telp" => '082718221238',
+        //         "status_kawin" => NULL,
+        //         "pekerjaan" => NULL,
+        //         "kewarganegaraan" => NULL,
+        //         "status_pendidikan" => NULL,
+        //         "pendidikan" => NULL,
+        //         "desil" => NULL,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now(),
+        //         "deleted_at" => NULL
+        //     ]
+        // ];
+        // Terlapor::insert($terlapor);
+        $csvFile = fopen(base_path("database/data/terlapor.csv"), "r");
+        $firstline = true;
+        while (($terlapor = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+            if (!$firstline) {
+                Terlapor::create([
+                    "id" => $terlapor['0'],
+                    "uuid" => $terlapor['1'],
+                    "kasus_id" => $terlapor['2'],
+                    "nik" => $terlapor['3'],
+                    "nama" => $terlapor['4'],
+                    "tempat_lahir" => $terlapor['5'],
+                    "tanggal_lahir" => $terlapor['6'],
+                    "perkiraan_tanggal_lahir" => $terlapor['7'],
+                    "jenis_kelamin" => $terlapor['8'],
+                    "provinsi_id_ktp" => $terlapor['9'],
+                    "kotkab_id_ktp" => $terlapor['10'],
+                    "kecamatan_id_ktp" => $terlapor['11'],
+                    "kelurahan_id_ktp" => $terlapor['12'],
+                    "alamat_ktp" => $terlapor['13'],
+                    "provinsi_id" => $terlapor['14'],
+                    "kotkab_id" => $terlapor['15'],
+                    "kecamatan_id" => $terlapor['16'],
+                    "kelurahan_id" => $terlapor['17'],
+                    "alamat" => $terlapor['18'],
+                    "agama" => $terlapor['19'],
+                    "status_kawin" => $terlapor['20'],
+                    "pekerjaan" => $terlapor['21'],
+                    "kewarganegaraan" => $terlapor['22'],
+                    "status_pendidikan" => $terlapor['23'],
+                    "pendidikan" => $terlapor['24'],
+                    "no_telp" => $terlapor['25'],
+                    "desil" => $terlapor['26'],
+                    "created_by" => $terlapor['27'],
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now(),
+                    "deleted_at" => NULL,
+                ]);    
+            }
+            $firstline = false;
+        }
+        fclose($csvFile);
 
         //data petugas
-        $petugas = [
-            [
-                "klien_id" => 1,
-                "user_id" => 1,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()->addDays(5),
-                "deleted_at" => NULL
-            ],
-            [
-                "klien_id" => 2,
-                "user_id" => 1,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()->addDays(5),
-                "deleted_at" => NULL
-            ],
-            [
-                "klien_id" => 1,
-                "user_id" => 8,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()->addDays(5),
-                "deleted_at" => NULL
-            ],
-            [
-                "klien_id" => 1,
-                "user_id" => 2,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()->addDays(5),
-                "deleted_at" => NULL
-            ],
-            [
-                "klien_id" =>1,
-                "user_id" => 4,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()->addDays(5),
-                "deleted_at" => NULL
-            ],
-            [
-                "klien_id" =>1,
-                "user_id" => 5,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()->addDays(5),
-                "deleted_at" => NULL
-            ],
-            [
-                "klien_id" =>1,
-                "user_id" => 3,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()->addDays(5),
-                "deleted_at" => NULL
-            ]
-            // DATA UNTUK UJI COBA GRAFIK, DAPAT DIDISABLED NANTI,
-            ,[
-                "klien_id" => 4,
-                "user_id" => 3,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()->addDays(5),
-                "deleted_at" => NULL
-            ],
-            [
-                "klien_id" => 4,
-                "user_id" => 2,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()->addDays(5),
-                "deleted_at" => NULL
-            ],
-            [
-                "klien_id" => 4,
-                "user_id" => 8,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()->addDays(5),
-                "deleted_at" => NULL
-            ],
-            [
-                "klien_id" => 4,
-                "user_id" => 1,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()->addDays(5),
-                "deleted_at" => NULL
-            ],
-            [
-                "klien_id" => 3,
-                "user_id" => 1,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()->addDays(5),
-                "deleted_at" => NULL
-            ],
-            [
-                "klien_id" => 3,
-                "user_id" => 2,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()->addDays(5),
-                "deleted_at" => NULL
-            ],
-            [
-                "klien_id" => 3,
-                "user_id" => 3,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()->addDays(5),
-                "deleted_at" => NULL
-            ]
-        ];
-        Petugas::insert($petugas);
+        // $petugas = [
+        //     [
+        //         "klien_id" => 1,
+        //         "user_id" => 1,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()->addDays(5),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "klien_id" => 2,
+        //         "user_id" => 1,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()->addDays(5),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "klien_id" => 1,
+        //         "user_id" => 8,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()->addDays(5),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "klien_id" => 1,
+        //         "user_id" => 2,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()->addDays(5),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "klien_id" =>1,
+        //         "user_id" => 4,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()->addDays(5),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "klien_id" =>1,
+        //         "user_id" => 5,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()->addDays(5),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "klien_id" =>1,
+        //         "user_id" => 3,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()->addDays(5),
+        //         "deleted_at" => NULL
+        //     ]
+        //     // DATA UNTUK UJI COBA GRAFIK, DAPAT DIDISABLED NANTI,
+        //     ,[
+        //         "klien_id" => 4,
+        //         "user_id" => 3,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()->addDays(5),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "klien_id" => 4,
+        //         "user_id" => 2,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()->addDays(5),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "klien_id" => 4,
+        //         "user_id" => 8,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()->addDays(5),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "klien_id" => 4,
+        //         "user_id" => 1,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()->addDays(5),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "klien_id" => 3,
+        //         "user_id" => 1,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()->addDays(5),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "klien_id" => 3,
+        //         "user_id" => 2,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()->addDays(5),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "klien_id" => 3,
+        //         "user_id" => 3,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()->addDays(5),
+        //         "deleted_at" => NULL
+        //     ]
+        // ];
+        // Petugas::insert($petugas);
+        $csvFile = fopen(base_path("database/data/petugas.csv"), "r");
+        $firstline = true;
+        while (($petugas = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+            if (!$firstline) {
+                Petugas::create([
+                    "id" => $petugas['0'],
+                    "klien_id" => $petugas['1'],
+                    "user_id" => $petugas['2'],
+                    "created_by" => $petugas['3'],
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now(),
+                    "deleted_at" => NULL,
+                ]);    
+            }
+            $firstline = false;
+        }
+        fclose($csvFile);
 
         //data Relasi Kategori kasus, Jenis Kekerasan dan Bentuk Kekerasan 
         $csvFile = fopen(base_path("database/data/r_kategori_jenis_bentuk.csv"), "r");
@@ -1036,112 +1255,129 @@ class DatabaseSeeder extends Seeder
         // MBentukKekerasan::insert($m_bentuk_kekerasan);
 
         //data Kategori kasus
-        $kategori_kasus = [
-            [
-                "klien_id" => 1,
-                "value" => 'KTP'
-            ],
-            [
-                "klien_id" => 1,
-                "value" => 'KDRT'
-            ],
-            [
-                "klien_id" => 2,
-                "value" => 'KTA'
-            ],
-            [
-                "klien_id" => 2,
-                "value" => 'KDRT'
-            ],
-            [
-                "klien_id" => 3,
-                "value" => 'KTA'
-            ],
-            [
-                "klien_id" => 3,
-                "value" => 'KDRT'
-            ]
-        ];
-        TKategoriKasus::insert($kategori_kasus);
+        // $kategori_kasus = [
+        //     [
+        //         "klien_id" => 1,
+        //         "value" => 'KTP'
+        //     ],
+        //     [
+        //         "klien_id" => 1,
+        //         "value" => 'KDRT'
+        //     ],
+        //     [
+        //         "klien_id" => 2,
+        //         "value" => 'KTA'
+        //     ],
+        //     [
+        //         "klien_id" => 2,
+        //         "value" => 'KDRT'
+        //     ],
+        //     [
+        //         "klien_id" => 3,
+        //         "value" => 'KTA'
+        //     ],
+        //     [
+        //         "klien_id" => 3,
+        //         "value" => 'KDRT'
+        //     ]
+        // ];
+        // TKategoriKasus::insert($kategori_kasus);
+
+        //data Master Bentuk Kekerasan
+        $csvFile = fopen(base_path("database/data/t_jenis_kekerasan.csv"), "r");
+        $firstline = true;
+        while (($t_jenis_kekerasan = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+            if (!$firstline) {
+                TJenisKekerasan::create([
+                    "id" => $t_jenis_kekerasan['0'],
+                    "klien_id" => $t_jenis_kekerasan['1'],
+                    "value" => $t_jenis_kekerasan['2'],
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now(),
+                ]);    
+            }
+            $firstline = false;
+        }
+        fclose($csvFile);
 
         //data bentuk kekerasan
-        $bentuk_kekerasan = [
-            [
-                "klien_id" => 1,
-                "value" => 'ini nanti diupdate lagi yaaaaa'
-            ],
-            [
-                "klien_id" => 2,
-                "value" => 'ini nanti diupdate lagi yaaaaa'
-            ],
-            [
-                "klien_id" => 3,
-                "value" => 'ini nanti diupdate lagi yaaaaa'
-            ]
-        ];
-        TBentukKekerasan::insert($bentuk_kekerasan);
+        // $bentuk_kekerasan = [
+        //     [
+        //         "klien_id" => 1,
+        //         "value" => 'ini nanti diupdate lagi yaaaaa'
+        //     ],
+        //     [
+        //         "klien_id" => 2,
+        //         "value" => 'ini nanti diupdate lagi yaaaaa'
+        //     ],
+        //     [
+        //         "klien_id" => 3,
+        //         "value" => 'ini nanti diupdate lagi yaaaaa'
+        //     ]
+        // ];
+        // TBentukKekerasan::insert($bentuk_kekerasan);
 
         //data program pemerintah
-        $program_pemerintah = [
-            [
-                "klien_id" => 1,
-                "value" => 'KIS / BPJS'
-            ],
-            [
-                "klien_id" => 2,
-                "value" => 'KJP'
-            ]
-            // DATA UNTUK UJI COBA GRAFIK, DAPAT DIDISABLED NANTI,
-            ,[
-                "klien_id" => 4,
-                "value" => 'Sembako Murah'
-            ],[
-                "klien_id" => 5,
-                "value" => 'Sembako Murah'
-            ],[
-                "klien_id" => 6,
-                "value" => 'Sembako Murah'
-            ],[
-                "klien_id" => 7,
-                "value" => 'Sembako Murah'
-            ]
-        ];
-        TProgramPemerintah::insert($program_pemerintah);
+        // $program_pemerintah = [
+        //     [
+        //         "klien_id" => 1,
+        //         "value" => 'KIS / BPJS'
+        //     ],
+        //     [
+        //         "klien_id" => 2,
+        //         "value" => 'KJP'
+        //     ]
+        //     // DATA UNTUK UJI COBA GRAFIK, DAPAT DIDISABLED NANTI,
+        //     ,[
+        //         "klien_id" => 4,
+        //         "value" => 'Sembako Murah'
+        //     ],[
+        //         "klien_id" => 5,
+        //         "value" => 'Sembako Murah'
+        //     ],[
+        //         "klien_id" => 6,
+        //         "value" => 'Sembako Murah'
+        //     ],[
+        //         "klien_id" => 7,
+        //         "value" => 'Sembako Murah'
+        //     ]
+        // ];
+        // TProgramPemerintah::insert($program_pemerintah);
 
         //data kondisi khusus
-        $t_kedaruratan = [
-            [
-                "klien_id" => 1,
-                "value" => 'Nikah siri'
-            ],
-            [
-                "klien_id" => 1,
-                "value" => 'Proses persidangan sudah berjalan'
-            ]
-        ];
-        TKedaruratan::insert($t_kedaruratan);
+        // $t_kedaruratan = [
+        //     [
+        //         "klien_id" => 1,
+        //         "value" => 'Nikah siri'
+        //     ],
+        //     [
+        //         "klien_id" => 1,
+        //         "value" => 'Proses persidangan sudah berjalan'
+        //     ]
+        // ];
+        // TKedaruratan::insert($t_kedaruratan);
 
         //data difable type
-        $t_tipe_disabilitas = [
-            [
-                "klien_id" => 1,
-                "value" => 'Depresi'
-            ]
-        ];
-        TTipeDisabilitas::insert($t_tipe_disabilitas);
+        // $t_tipe_disabilitas = [
+        //     [
+        //         "klien_id" => 1,
+        //         "value" => 'Depresi'
+        //     ]
+        // ];
+        // TTipeDisabilitas::insert($t_tipe_disabilitas);
 
         //data pasal
-        $pasal = [
-            [
-                "klien_id" => 1,
-                "value" => 'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 12 TAHUN 2022 TENTANG TINDAK PIDANA KEKERASAN SEKSUAL'
-            ],
-            [
-                "klien_id" => 2,
-                "value" => 'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 12 TAHUN 2022 TENTANG TINDAK PIDANA KEKERASAN SEKSUAL'
-            ]
-        ];
-        TPasal::insert($pasal);
+        // $pasal = [
+        //     [
+        //         "klien_id" => 1,
+        //         "value" => 'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 12 TAHUN 2022 TENTANG TINDAK PIDANA KEKERASAN SEKSUAL'
+        //     ],
+        //     [
+        //         "klien_id" => 2,
+        //         "value" => 'UNDANG-UNDANG REPUBLIK INDONESIA NOMOR 12 TAHUN 2022 TENTANG TINDAK PIDANA KEKERASAN SEKSUAL'
+        //     ]
+        // ];
+        // TPasal::insert($pasal);
 
         $persetujuan_template = [
             [
@@ -1169,65 +1405,65 @@ class DatabaseSeeder extends Seeder
         PersetujuanTemplate::insert($persetujuan_template);
 
         //data persetujuan isi
-        $persetujuan_isi = [
-            [
-                "uuid" => 'ac162ab3-b1ce-4720-813f-3ed5621f33e0',
-                "klien_id" => 1,
-                "persetujuan_template_id" => 1,
-                "no_telp" => NULL,
-                "alamat" => NULL,
-                "isi" => NULL,
-                "catatan" => NULL,
-                "tandatangan" => '652659cd9be41.png',
-                "nama_penandatangan" => 'Caca Marica Hey Hey',
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()
-            ],
-            [
-                "uuid" => '4daea20b-a1ab-4b8c-8ffa-49cfb06b92b0',
-                "klien_id" => 2,
-                "persetujuan_template_id" => 1,
-                "no_telp" => NULL,
-                "alamat" => NULL,
-                "isi" => NULL,
-                "catatan" => NULL,
-                "tandatangan" => '652659cdda0f8.png',
-                "nama_penandatangan" => 'Caca Marica Hey Hey',
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()
-            ],
-            [
-                "uuid" => 'bf4aa69d-e0f7-4f5c-a7c7-94468bb58d83',
-                "klien_id" => 1,
-                "persetujuan_template_id" => 2,
-                "no_telp" => '082718227738',
-                "alamat" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
-                "isi" => '{"setuju":[4,5,6,7,8,9,10,11,12,13,14,15],"tidak_setuju":[]}',
-                "catatan" => NULL,
-                "tandatangan" => '65265d255a475.png',
-                "nama_penandatangan" => 'Caca Marica Hey Hey',
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()
-            ],
-            [
-                "uuid" => '3f3f55cf-8690-4310-a070-4ded0876d775',
-                "klien_id" => 3,
-                "persetujuan_template_id" => 1,
-                "no_telp" => NULL,
-                "alamat" => NULL,
-                "isi" => NULL,
-                "catatan" => NULL,
-                "tandatangan" => '6527a1a4eb826.png',
-                "nama_penandatangan" => 'Sidney Queensland Millenix',
-                "created_by" => NULL,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()
-            ]
-        ];
-        PersetujuanIsi::insert($persetujuan_isi);
+        // $persetujuan_isi = [
+        //     [
+        //         "uuid" => 'ac162ab3-b1ce-4720-813f-3ed5621f33e0',
+        //         "klien_id" => 1,
+        //         "persetujuan_template_id" => 1,
+        //         "no_telp" => NULL,
+        //         "alamat" => NULL,
+        //         "isi" => NULL,
+        //         "catatan" => NULL,
+        //         "tandatangan" => '652659cd9be41.png',
+        //         "nama_penandatangan" => 'Caca Marica Hey Hey',
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()
+        //     ],
+        //     [
+        //         "uuid" => '4daea20b-a1ab-4b8c-8ffa-49cfb06b92b0',
+        //         "klien_id" => 2,
+        //         "persetujuan_template_id" => 1,
+        //         "no_telp" => NULL,
+        //         "alamat" => NULL,
+        //         "isi" => NULL,
+        //         "catatan" => NULL,
+        //         "tandatangan" => '652659cdda0f8.png',
+        //         "nama_penandatangan" => 'Caca Marica Hey Hey',
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()
+        //     ],
+        //     [
+        //         "uuid" => 'bf4aa69d-e0f7-4f5c-a7c7-94468bb58d83',
+        //         "klien_id" => 1,
+        //         "persetujuan_template_id" => 2,
+        //         "no_telp" => '082718227738',
+        //         "alamat" => 'JL Kampung Buaran Cakung Timur RT.011 RW.002 Kel. Cakung Timur, Kec. Cakung Jakarta Timur',
+        //         "isi" => '{"setuju":[4,5,6,7,8,9,10,11,12,13,14,15],"tidak_setuju":[]}',
+        //         "catatan" => NULL,
+        //         "tandatangan" => '65265d255a475.png',
+        //         "nama_penandatangan" => 'Caca Marica Hey Hey',
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()
+        //     ],
+        //     [
+        //         "uuid" => '3f3f55cf-8690-4310-a070-4ded0876d775',
+        //         "klien_id" => 3,
+        //         "persetujuan_template_id" => 1,
+        //         "no_telp" => NULL,
+        //         "alamat" => NULL,
+        //         "isi" => NULL,
+        //         "catatan" => NULL,
+        //         "tandatangan" => '6527a1a4eb826.png',
+        //         "nama_penandatangan" => 'Sidney Queensland Millenix',
+        //         "created_by" => NULL,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()
+        //     ]
+        // ];
+        // PersetujuanIsi::insert($persetujuan_isi);
 
         //data persetujuan item
         $persetujuan_item = [
@@ -1405,117 +1641,143 @@ class DatabaseSeeder extends Seeder
         PersetujuanItem::insert($persetujuan_item);
 
         //data agenda
-        $agenda = [
-            [
-                "uuid" => '2be785b8-995f-40dc-b826-67ad153a38c7',
-                "klien_id" => 1,
-                "judul_kegiatan" => "Review Kasus Caca Marica Hey Hey",
-                "tanggal_mulai" => Carbon::today(),
-                "jam_mulai" => '03:00:00',
-                "keterangan" => 'Melihat kembali kebutuhan klien pada kasus',
-                "created_by" => 2,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()
-            ],
-            [
-                "uuid" => '90a67c58-376c-43a7-8d49-8068aae9f4dd',
-                "klien_id" => 1,
-                "judul_kegiatan" => "Pengukuran Awal",
-                "tanggal_mulai" => Carbon::today(),
-                "jam_mulai" => '02:05:00',
-                "keterangan" => 'Mk berkoordinasi dengan Psikolog untuk melakukan pengukuran awal',
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()
-            ]
-        ];
-        Agenda::insert($agenda);
+        // $agenda = [
+        //     [
+        //         "uuid" => '2be785b8-995f-40dc-b826-67ad153a38c7',
+        //         "klien_id" => 1,
+        //         "judul_kegiatan" => "Review Kasus Caca Marica Hey Hey",
+        //         "tanggal_mulai" => Carbon::today(),
+        //         "jam_mulai" => '03:00:00',
+        //         "keterangan" => 'Melihat kembali kebutuhan klien pada kasus',
+        //         "created_by" => 2,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()
+        //     ],
+        //     [
+        //         "uuid" => '90a67c58-376c-43a7-8d49-8068aae9f4dd',
+        //         "klien_id" => 1,
+        //         "judul_kegiatan" => "Pengukuran Awal",
+        //         "tanggal_mulai" => Carbon::today(),
+        //         "jam_mulai" => '02:05:00',
+        //         "keterangan" => 'Mk berkoordinasi dengan Psikolog untuk melakukan pengukuran awal',
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()
+        //     ]
+        // ];
+        // Agenda::insert($agenda);
 
         //data tindak lanjut
-        $tindak_lanjut = [
-            [
-                "uuid" => '2a83d123-3c16-41f8-aee1-ca22b262f462',
-                "agenda_id" => 1,
-                "tanggal_selesai" => Carbon::now(),
-                "jam_selesai" => '10:00:00',
-                "lokasi" => 'Kantor Pusat PPA DKI Jakarta',
-                "catatan" => 'hasil koordinasi disepakati tanggal PP1 adalah minggu depan',
-                "created_by" => 2,
-                "validated_by" => 2,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()
-            ],
-            [
-                "uuid" => '2a83d123-3c86-41f8-aee1-ca22b2c2f462',
-                "agenda_id" => 2,
-                "tanggal_selesai" => Carbon::now(),
-                "jam_selesai" => '00:00:00',
-                "lokasi" => 'Kantor Pusat PPA DKI Jakarta',
-                "catatan" => 'pemberian tiket sudah dilakukan',
-                "created_by" => 2,
-                "validated_by" => 2,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now()
-            ]
-        ];
-        TindakLanjut::insert($tindak_lanjut);
+        // $tindak_lanjut = [
+        //     [
+        //         "uuid" => '2a83d123-3c16-41f8-aee1-ca22b262f462',
+        //         "agenda_id" => 1,
+        //         "tanggal_selesai" => Carbon::now(),
+        //         "jam_selesai" => '10:00:00',
+        //         "lokasi" => 'Kantor Pusat PPA DKI Jakarta',
+        //         "catatan" => 'hasil koordinasi disepakati tanggal PP1 adalah minggu depan',
+        //         "created_by" => 2,
+        //         "validated_by" => 2,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()
+        //     ],
+        //     [
+        //         "uuid" => '2a83d123-3c86-41f8-aee1-ca22b2c2f462',
+        //         "agenda_id" => 2,
+        //         "tanggal_selesai" => Carbon::now(),
+        //         "jam_selesai" => '00:00:00',
+        //         "lokasi" => 'Kantor Pusat PPA DKI Jakarta',
+        //         "catatan" => 'pemberian tiket sudah dilakukan',
+        //         "created_by" => 2,
+        //         "validated_by" => 2,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now()
+        //     ]
+        // ];
+        // TindakLanjut::insert($tindak_lanjut);
 
         //data riwayat kejadian
-        $riwayat_kejadian = [
-            [
-                "uuid" => '85b605e5-7e0f-4b0d-bde4-e231175e7e7f',
-                "klien_id" => 1,
-                "tanggal" => Carbon::now()->subDays(154),
-                "jam" => '17:25:00',
-                "keterangan" => 'Keesokan harinya CM mengkonfirmasi lagi masalah perselingkuhan FV yang ternyata diketahui FV sudah melakukannya sejak 3 tahun. Seketika itu pula CM kembali berkemas dan mengajak putrinya keluar dari rumah. Namun pada saat di teras rumah FV menarik dan menonjok perut CM di depan putrinya.',
-                "created_by" => 1
-            ],
-            [
-                "uuid" => '11cc4259-1a2f-4f6d-984c-77511dc92860',
-                "klien_id" => 1,
-                "tanggal" => Carbon::now()->subDays(155),
-                "jam" => '11:00:00',
-                "keterangan" => 'Awal mulanya terjadi perselisihan diantara Caca Marica Hey Hey (CM, 30 tahun) dan Frankenstein Van Houten (FV, 32) karna FV selingkuh, CM memutuskan hendak kabur dari rumah, akan tetapi FV mencegahnya.',
-                "created_by" => 1
-            ],
-            [
-                "uuid" => 'a6290f38-83e0-41f6-a372-ee1f55418c5e',
-                "klien_id" => 1,
-                "tanggal" => Carbon::now()->subDays(153),
-                "jam" => '03:55:00',
-                "keterangan" => 'Hingga tanggal 9 Mei, CM dan anaknya berusaha pergi keluar rumah namun tidak berhasil-berhasil. CM dan putrinya semakin sering mendapatkan kekerasan berupa di tampar, di tendang, di colok matanya dan di karate.',
-                "created_by" => 1
-            ],
-            [
-                "uuid" => 'e842e0d7-e4d7-46ab-a684-ec3637a79e90',
-                "klien_id" => 1,
-                "tanggal" => Carbon::now()->subDays(152),
-                "jam" => '23:10:00',
-                "keterangan" => 'Klien dan anaknya akhirnya berhasil kabur dari rumah setelah mengendap-endap saat FV tertidur. Namun saat di jalanan FV mengejar dengan motor dan menyerempet CM dan putrinya sampai tersungkur di pinggir jalan. Warga yang melihatnya menghadang FV sehingga CM dan putrinya berhasil kabur.',
-                "created_by" => 1
-            ]
+        // $riwayat_kejadian = [
+        //     [
+        //         "uuid" => '85b605e5-7e0f-4b0d-bde4-e231175e7e7f',
+        //         "klien_id" => 1,
+        //         "tanggal" => Carbon::now()->subDays(154),
+        //         "jam" => '17:25:00',
+        //         "keterangan" => 'Keesokan harinya CM mengkonfirmasi lagi masalah perselingkuhan FV yang ternyata diketahui FV sudah melakukannya sejak 3 tahun. Seketika itu pula CM kembali berkemas dan mengajak putrinya keluar dari rumah. Namun pada saat di teras rumah FV menarik dan menonjok perut CM di depan putrinya.',
+        //         "created_by" => 1
+        //     ],
+        //     [
+        //         "uuid" => '11cc4259-1a2f-4f6d-984c-77511dc92860',
+        //         "klien_id" => 1,
+        //         "tanggal" => Carbon::now()->subDays(155),
+        //         "jam" => '11:00:00',
+        //         "keterangan" => 'Awal mulanya terjadi perselisihan diantara Caca Marica Hey Hey (CM, 30 tahun) dan Frankenstein Van Houten (FV, 32) karna FV selingkuh, CM memutuskan hendak kabur dari rumah, akan tetapi FV mencegahnya.',
+        //         "created_by" => 1
+        //     ],
+        //     [
+        //         "uuid" => 'a6290f38-83e0-41f6-a372-ee1f55418c5e',
+        //         "klien_id" => 1,
+        //         "tanggal" => Carbon::now()->subDays(153),
+        //         "jam" => '03:55:00',
+        //         "keterangan" => 'Hingga tanggal 9 Mei, CM dan anaknya berusaha pergi keluar rumah namun tidak berhasil-berhasil. CM dan putrinya semakin sering mendapatkan kekerasan berupa di tampar, di tendang, di colok matanya dan di karate.',
+        //         "created_by" => 1
+        //     ],
+        //     [
+        //         "uuid" => 'e842e0d7-e4d7-46ab-a684-ec3637a79e90',
+        //         "klien_id" => 1,
+        //         "tanggal" => Carbon::now()->subDays(152),
+        //         "jam" => '23:10:00',
+        //         "keterangan" => 'Klien dan anaknya akhirnya berhasil kabur dari rumah setelah mengendap-endap saat FV tertidur. Namun saat di jalanan FV mengejar dengan motor dan menyerempet CM dan putrinya sampai tersungkur di pinggir jalan. Warga yang melihatnya menghadang FV sehingga CM dan putrinya berhasil kabur.',
+        //         "created_by" => 1
+        //     ]
             
-        ];
-        RiwayatKejadian::insert($riwayat_kejadian);
+        // ];
+        // RiwayatKejadian::insert($riwayat_kejadian);
 
         //data asesmen
-        $asesmen = [
-            [
-                "uuid" => '4edb3859-729f-4e7f-ae7c-05c7587db723',
-                "klien_id" => 1,
-                "fisik" => 'NF memiliki tubuh sedang dan berkulit putih. Pada saat masuk ke dalam ruangan, NF terlihat ramah menyambut kedatangan petugas dan merespon terbuka setiap pertanyaan yang dilontarkan. Sebelum kejadian kekerasan terakhir yang dialami NF, NF sudah pernah mendapatkan beberapa kali kekerasan yang mengakibatkan tulang hidungnya patah akibat dipukul oleh AF. Namun saat ini sudah sembuh dan tidak mengganggu jalan nafas NF sehingga pengobatan tidak dilanjutkan. Kekerasan terakhir yang NF alami, mengakibatkan beberapa keluhan pada tubuhnya yaitu badan menjadi pegal-pegal dan kepalanya sakit karena jambakan AF pada rambutnya. NF juga memiliki bekas jahitan Caesar yang masih basah setelah melahirkan anak keduanya sehingga untuk melakukan aktivitas sehari-hari cukup terbatas.',
-                "sosial" => 'NF merupakan anak pertama. Kedua orangtuanya telah berpisah sejak NF kelas 2 SD. NF mengungkapkan bahwa pernikahan kedua orangtuanya diakibatkan karena ibu NF hamil diluar nikah. Bapaknya saat ini masih bekerja sebagai pelayar di kapal, sedangkan ibunya setelah NF bekerja sudah tidak lagi bekerja. Sebelum ke Jakarta, NF diketahui juga tinggal di Surabaya dan ketika orangtuanya berpisah NF dirawat oleh kakeknya sedangkan ibunya kerja di luar kota. Sejak masuk ke SMA, NF kemudian ikut tinggal di Jakarta bersama bapak yang mana saat itu sudah menikah kedua kalinya karena ibu NF tidak bisa membiayai sekolah NF. Selain dengan bapaknya, NF juga tinggal bersama ibu tiri dan adik tirinya. NF saat ini bekerja sebagai asisten apoteker di PKC Kelapa Gading. Kebutuhan sehari-harinya ia penuhi dengan gaji yang NF dapatkan dari pekerjaannya. NF juga ikut membantu bisnis angkot Jaklingko bersama ayahnya sehingga hal ini menambah penghasilan NF untuk memenuhi kebutuhan sehari-hari. Setelah kejadian kekerasan terakhir, NF memutuskan untuk berpisah rumah dengan menyewa sebuah kontrakan di dekat rumah saudaranya daerah Penggilingan. NF mengungkapkan juga bahwa setelah berpisah rumah dengan AF, NF merasa kerepotan karena harus mengurusi pekerjaan, ibu dan anaknya, serta bisnisnya secara bersamaan yang pada mulanya bisnis dibantu urus oleh suaminya AF. Sedangkan ibu NF hanya bisa membantu menjaga kedua anaknya namun tidak bisa membantu mengurusi urusan rumah tangga seperti memasak, menyapu, mencuci dll. Ketika NF memiliki permasalahan, NF selalu menceritakan kepada ketiga sahabatnya yang sudah ia kenal sejak SMA dan merupakan rekan kerja di kantor juga.',
-                "psikologis" => 'Atas kejadian yang NF alami, saat ini NF merasa cemas dan syok karena harus mengurusi rumah, anak, ibu, pekerjaan dan bisnis secara bersamaan. NF mengungkapkan bahwa selama berumah tangga dengan AF, NF cukup bergantung dengan AF sehingga kewalahan ketika harus melakukan aktivitas sehari-hari sendirian. NF juga merasa khawatir atas tumbuh kembang anaknya jika NF dan AF resmi bercerai. Isu perselingkuhan suaminya AF sebelum terjadi kekerasan terakhir juga menjadi salah satu faktor NF menjadi insecure, tidak tenang dan selalu curiga. NF mengungkapkan juga bahwa kekerasan yang dialaminya bukanlah kali pertama namun sudah beberapa kali dan peristiwa kekerasan yang paling membekas dalam hatinya yang NF ingat sebanyak 4 kali. Hingga pada kejadian kekerasan ketiga, NF tidak sanggup dan akhirnya pernah mengajukan gugatan cerai namun karena AF datang meminta maaf maka gugatan perceraian di PA ia cabut.',
-                "hukum" => 'Belum adanya dampak hukum yang dialami oleh NF atas permasalahan yang dihadapi namun NF berencana mengajukan gugatan perceraian ke Pengadilan Agama.',
-                "lainnya" => 'Kekerasan yang NF alami dianggap olehnya sebagai ujian kesabaran. NF mengaku bahwa dirinya sebelum menikah dengan AF termasuk orang yang memiliki tingkat keegoisan yang tinggi. Namun setelah mengalami kekerasan dari suaminya AF, NF sudah mampu meredam keegoisannya.',
-                "upaya" => 'Meminta pertolongan ke warga sekitar dan melaporkan ke CRM',
-                "pendukung" => 'Memiliki sahabat yang menjadi tempat curhat dan mendukung penyelesaian masalah yang NF lakukan. Ibu NF support dan membantu mencarikan alternatif tempat tinggal untuk NF.',
-                "hambatan" => 'Kedua orangtua dari AF justru tidak peduli dan membiarkan AF melakukan kekerasan kepada NF',
-                "harapan" => 'Ingin bercerai dengan AF. Pemulihan kondisi psikologis NF dan anak pertamanya',
-                "created_by" => 2
-            ]
-        ];
-        Asesmen::insert($asesmen);
+        // $asesmen = [
+        //     [
+        //         "uuid" => '4edb3859-729f-4e7f-ae7c-05c7587db723',
+        //         "klien_id" => 1,
+        //         "fisik" => 'NF memiliki tubuh sedang dan berkulit putih. Pada saat masuk ke dalam ruangan, NF terlihat ramah menyambut kedatangan petugas dan merespon terbuka setiap pertanyaan yang dilontarkan. Sebelum kejadian kekerasan terakhir yang dialami NF, NF sudah pernah mendapatkan beberapa kali kekerasan yang mengakibatkan tulang hidungnya patah akibat dipukul oleh AF. Namun saat ini sudah sembuh dan tidak mengganggu jalan nafas NF sehingga pengobatan tidak dilanjutkan. Kekerasan terakhir yang NF alami, mengakibatkan beberapa keluhan pada tubuhnya yaitu badan menjadi pegal-pegal dan kepalanya sakit karena jambakan AF pada rambutnya. NF juga memiliki bekas jahitan Caesar yang masih basah setelah melahirkan anak keduanya sehingga untuk melakukan aktivitas sehari-hari cukup terbatas.',
+        //         "sosial" => 'NF merupakan anak pertama. Kedua orangtuanya telah berpisah sejak NF kelas 2 SD. NF mengungkapkan bahwa pernikahan kedua orangtuanya diakibatkan karena ibu NF hamil diluar nikah. Bapaknya saat ini masih bekerja sebagai pelayar di kapal, sedangkan ibunya setelah NF bekerja sudah tidak lagi bekerja. Sebelum ke Jakarta, NF diketahui juga tinggal di Surabaya dan ketika orangtuanya berpisah NF dirawat oleh kakeknya sedangkan ibunya kerja di luar kota. Sejak masuk ke SMA, NF kemudian ikut tinggal di Jakarta bersama bapak yang mana saat itu sudah menikah kedua kalinya karena ibu NF tidak bisa membiayai sekolah NF. Selain dengan bapaknya, NF juga tinggal bersama ibu tiri dan adik tirinya. NF saat ini bekerja sebagai asisten apoteker di PKC Kelapa Gading. Kebutuhan sehari-harinya ia penuhi dengan gaji yang NF dapatkan dari pekerjaannya. NF juga ikut membantu bisnis angkot Jaklingko bersama ayahnya sehingga hal ini menambah penghasilan NF untuk memenuhi kebutuhan sehari-hari. Setelah kejadian kekerasan terakhir, NF memutuskan untuk berpisah rumah dengan menyewa sebuah kontrakan di dekat rumah saudaranya daerah Penggilingan. NF mengungkapkan juga bahwa setelah berpisah rumah dengan AF, NF merasa kerepotan karena harus mengurusi pekerjaan, ibu dan anaknya, serta bisnisnya secara bersamaan yang pada mulanya bisnis dibantu urus oleh suaminya AF. Sedangkan ibu NF hanya bisa membantu menjaga kedua anaknya namun tidak bisa membantu mengurusi urusan rumah tangga seperti memasak, menyapu, mencuci dll. Ketika NF memiliki permasalahan, NF selalu menceritakan kepada ketiga sahabatnya yang sudah ia kenal sejak SMA dan merupakan rekan kerja di kantor juga.',
+        //         "psikologis" => 'Atas kejadian yang NF alami, saat ini NF merasa cemas dan syok karena harus mengurusi rumah, anak, ibu, pekerjaan dan bisnis secara bersamaan. NF mengungkapkan bahwa selama berumah tangga dengan AF, NF cukup bergantung dengan AF sehingga kewalahan ketika harus melakukan aktivitas sehari-hari sendirian. NF juga merasa khawatir atas tumbuh kembang anaknya jika NF dan AF resmi bercerai. Isu perselingkuhan suaminya AF sebelum terjadi kekerasan terakhir juga menjadi salah satu faktor NF menjadi insecure, tidak tenang dan selalu curiga. NF mengungkapkan juga bahwa kekerasan yang dialaminya bukanlah kali pertama namun sudah beberapa kali dan peristiwa kekerasan yang paling membekas dalam hatinya yang NF ingat sebanyak 4 kali. Hingga pada kejadian kekerasan ketiga, NF tidak sanggup dan akhirnya pernah mengajukan gugatan cerai namun karena AF datang meminta maaf maka gugatan perceraian di PA ia cabut.',
+        //         "hukum" => 'Belum adanya dampak hukum yang dialami oleh NF atas permasalahan yang dihadapi namun NF berencana mengajukan gugatan perceraian ke Pengadilan Agama.',
+        //         "lainnya" => 'Kekerasan yang NF alami dianggap olehnya sebagai ujian kesabaran. NF mengaku bahwa dirinya sebelum menikah dengan AF termasuk orang yang memiliki tingkat keegoisan yang tinggi. Namun setelah mengalami kekerasan dari suaminya AF, NF sudah mampu meredam keegoisannya.',
+        //         "upaya" => 'Meminta pertolongan ke warga sekitar dan melaporkan ke CRM',
+        //         "pendukung" => 'Memiliki sahabat yang menjadi tempat curhat dan mendukung penyelesaian masalah yang NF lakukan. Ibu NF support dan membantu mencarikan alternatif tempat tinggal untuk NF.',
+        //         "hambatan" => 'Kedua orangtua dari AF justru tidak peduli dan membiarkan AF melakukan kekerasan kepada NF',
+        //         "harapan" => 'Ingin bercerai dengan AF. Pemulihan kondisi psikologis NF dan anak pertamanya',
+        //         "created_by" => 2
+        //     ]
+        // ];
+        // Asesmen::insert($asesmen);
+        $csvFile = fopen(base_path("database/data/asesmen.csv"), "r");
+        $firstline = true;
+        while (($asesmen = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+            if (!$firstline) {
+                Asesmen::create([
+                    "id" => $asesmen['0'],
+                    "uuid" => $asesmen['1'],
+                    "klien_id" => $asesmen['2'],
+                    "fisik" => NULL,
+                    "psikologis" => NULL,
+                    "sosial" => NULL,
+                    "hukum" => NULL,
+                    "upaya" => NULL,
+                    "pendukung" => NULL,
+                    "hambatan" => NULL,
+                    "harapan" => NULL,
+                    "lainnya" => NULL,
+                    "created_by" => $asesmen['12'],
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now(),
+                    "deleted_at" => NULL,
+                ]);    
+            }
+            $firstline = false;
+        }
+        fclose($csvFile);
 
         //data template
         $csvFile = fopen(base_path("database/data/template.csv"), "r");
@@ -1636,210 +1898,230 @@ class DatabaseSeeder extends Seeder
         DokumenTl::insert($dokumen_tl);
 
         //data notifikasi & task
-        $notifikasi = [
-            [
-                "uuid" => '5b2483dd-b3f2-45e2-a272-6d1770d24bbe',
-                "klien_id" => 1,
-                "receiver_id" => 1,
-                "kode" => 'T2',
-                "type_notif" => 'task',
-                "no_reg" => NULL,
-                "from" => 'System',
-                "message" => 'Kasus baru. Silahkan pilih Supervisor & Manajer Kasus',
-                "kasus" => 'Caca Marica Hey Hey (30)',
-                "url" => 'http://127.0.0.1:8000/kasus/show/456ab15f-1f30-48e1-a5c0-0e39c05a93ab?tab=kasus-petugas&tambah-petugas=1',
-                "read" => 1,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
-                "deleted_at" => NULL
-            ],
-            [
-                "uuid" => 'e111c9ef-845a-4025-bada-34387376c123',
-                "klien_id" => 2,
-                "receiver_id" => 1,
-                "kode" => 'T2',
-                "type_notif" => 'task',
-                "no_reg" => NULL,
-                "from" => 'System',
-                "message" => 'Kasus baru. Silahkan pilih Supervisor & Manajer Kasus',
-                "kasus" => 'Nina Bobo (1)',
-                "url" => 'http://127.0.0.1:8000/kasus/show/cd0723c3-4505-466e-89bc-e1cc8e6e8b40?tab=kasus-petugas&tambah-petugas=1',
-                "read" => 0,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
-                "deleted_at" => NULL
-            ],
-            [
-                "uuid" => '7280b497-e6e3-4fe3-9a50-bf277cc96e00',
-                "klien_id" => 1,
-                "receiver_id" => 8,
-                "kode" => 'T3',
-                "type_notif" => 'task',
-                "no_reg" => NULL,
-                "from" => 'Muhammad Light Yagami',
-                "message" => 'Kasus baru. Meminta persetujuan Supervisor',
-                "kasus" => 'Caca Marica Hey Hey (30)',
-                "url" => 'http://127.0.0.1:8000/kasus/show/456ab15f-1f30-48e1-a5c0-0e39c05a93ab?tab=settings&persetujuan-supervisor=1',
-                "read" => 0,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
-                "deleted_at" => NULL
-            ],
-            [
-                "uuid" => 'd26c7648-6fc0-4a9a-a942-6cc9e94a4550',
-                "klien_id" => 1,
-                "receiver_id" => 2,
-                "kode" => 'T7',
-                "type_notif" => 'task',
-                "no_reg" => NULL,
-                "from" => 'System',
-                "message" => 'Klien sudah mengisi Surat Persetujuan Pelayanan. Silahkan lihat isinya untuk update informasi kasus',
-                "kasus" => 'Caca Marica Hey Hey (30)',
-                "url" => 'http://127.0.0.1:8000/kasus/show/456ab15f-1f30-48e1-a5c0-0e39c05a93ab?tab=kasus-persetujuan&row-persetujuan=bf4aa69d-e0f7-4f5c-a7c7-94468bb58d83&user_id=2&kode=T7&type_notif=task',
-                "read" => 0,
-                "created_by" => 1,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
-                "deleted_at" => NULL
-            ]
-        ];
-        Notifikasi::insert($notifikasi);
+        // $notifikasi = [
+        //     [
+        //         "uuid" => '5b2483dd-b3f2-45e2-a272-6d1770d24bbe',
+        //         "klien_id" => 1,
+        //         "receiver_id" => 1,
+        //         "kode" => 'T2',
+        //         "type_notif" => 'task',
+        //         "no_reg" => NULL,
+        //         "from" => 'System',
+        //         "message" => 'Kasus baru. Silahkan pilih Supervisor & Manajer Kasus',
+        //         "kasus" => 'Caca Marica Hey Hey (30)',
+        //         "url" => 'http://127.0.0.1:8000/kasus/show/456ab15f-1f30-48e1-a5c0-0e39c05a93ab?tab=kasus-petugas&tambah-petugas=1',
+        //         "read" => 1,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now(),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "uuid" => 'e111c9ef-845a-4025-bada-34387376c123',
+        //         "klien_id" => 2,
+        //         "receiver_id" => 1,
+        //         "kode" => 'T2',
+        //         "type_notif" => 'task',
+        //         "no_reg" => NULL,
+        //         "from" => 'System',
+        //         "message" => 'Kasus baru. Silahkan pilih Supervisor & Manajer Kasus',
+        //         "kasus" => 'Nina Bobo (1)',
+        //         "url" => 'http://127.0.0.1:8000/kasus/show/cd0723c3-4505-466e-89bc-e1cc8e6e8b40?tab=kasus-petugas&tambah-petugas=1',
+        //         "read" => 0,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now(),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "uuid" => '7280b497-e6e3-4fe3-9a50-bf277cc96e00',
+        //         "klien_id" => 1,
+        //         "receiver_id" => 8,
+        //         "kode" => 'T3',
+        //         "type_notif" => 'task',
+        //         "no_reg" => NULL,
+        //         "from" => 'Muhammad Light Yagami',
+        //         "message" => 'Kasus baru. Meminta persetujuan Supervisor',
+        //         "kasus" => 'Caca Marica Hey Hey (30)',
+        //         "url" => 'http://127.0.0.1:8000/kasus/show/456ab15f-1f30-48e1-a5c0-0e39c05a93ab?tab=settings&persetujuan-supervisor=1',
+        //         "read" => 0,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now(),
+        //         "deleted_at" => NULL
+        //     ],
+        //     [
+        //         "uuid" => 'd26c7648-6fc0-4a9a-a942-6cc9e94a4550',
+        //         "klien_id" => 1,
+        //         "receiver_id" => 2,
+        //         "kode" => 'T7',
+        //         "type_notif" => 'task',
+        //         "no_reg" => NULL,
+        //         "from" => 'System',
+        //         "message" => 'Klien sudah mengisi Surat Persetujuan Pelayanan. Silahkan lihat isinya untuk update informasi kasus',
+        //         "kasus" => 'Caca Marica Hey Hey (30)',
+        //         "url" => 'http://127.0.0.1:8000/kasus/show/456ab15f-1f30-48e1-a5c0-0e39c05a93ab?tab=kasus-persetujuan&row-persetujuan=bf4aa69d-e0f7-4f5c-a7c7-94468bb58d83&user_id=2&kode=T7&type_notif=task',
+        //         "read" => 0,
+        //         "created_by" => 1,
+        //         "created_at" => Carbon::now(),
+        //         "updated_at" => Carbon::now(),
+        //         "deleted_at" => NULL
+        //     ]
+        // ];
+        // Notifikasi::insert($notifikasi);
 
         //data log activity
-        $log_activity = [
-            [
-                "uuid" => '2921de61-0439-40d4-ac46-10ebd530bd2a',
-                "klien_id" => 2,
-                "message" => 'Petugas Penerima Pengaduan menginputkan data kasus baru',
-                "ip" => '127.0.0.1',
-                "browser" => 'Chrome 103.0.0.0',
-                "device" => 'WebKit',
-                "created_by" => 1
-            ],
-            [
-                "uuid" => '532b1e9f-c9ce-42ec-ae83-67c1fd1b55a5',
-                "klien_id" => 3,
-                "message" => 'Petugas Penerima Pengaduan menginputkan data kasus baru',
-                "ip" => '127.0.0.1',
-                "browser" => 'Chrome 103.0.0.0',
-                "device" => 'WebKit',
-                "created_by" => 1
-            ]
-        ];
-        LogActivity::insert($log_activity);
+        // $log_activity = [
+        //     [
+        //         "uuid" => '2921de61-0439-40d4-ac46-10ebd530bd2a',
+        //         "klien_id" => 2,
+        //         "message" => 'Petugas Penerima Pengaduan menginputkan data kasus baru',
+        //         "ip" => '127.0.0.1',
+        //         "browser" => 'Chrome 103.0.0.0',
+        //         "device" => 'WebKit',
+        //         "created_by" => 1
+        //     ],
+        //     [
+        //         "uuid" => '532b1e9f-c9ce-42ec-ae83-67c1fd1b55a5',
+        //         "klien_id" => 3,
+        //         "message" => 'Petugas Penerima Pengaduan menginputkan data kasus baru',
+        //         "ip" => '127.0.0.1',
+        //         "browser" => 'Chrome 103.0.0.0',
+        //         "device" => 'WebKit',
+        //         "created_by" => 1
+        //     ]
+        // ];
+        // LogActivity::insert($log_activity);
 
         // data catatan
-        $catatan = [
-            [
-                "uuid" => '532b1e9f-c9ce-42ec-ae83-67c1fd1b55a5',
-                "klien_id" => 1,
-                "catatan" => 'Mohon di TL sesuai kebutuhan klien',
-                "created_by" => 8
-            ]
-            ];
-        Catatan::insert($catatan);
+        // $catatan = [
+        //     [
+        //         "uuid" => '532b1e9f-c9ce-42ec-ae83-67c1fd1b55a5',
+        //         "klien_id" => 1,
+        //         "catatan" => 'Mohon di TL sesuai kebutuhan klien',
+        //         "created_by" => 8
+        //     ]
+        //     ];
+        // Catatan::insert($catatan);
 
         // data m_keyword keyword
-        $m_keyword = [
-            [
-                "uuid" => '43a148be-9112-42f5-b537-f095fc5111cd',
-                "jabatan" => 'Konselor',
-                "keyword" => 'Pengukuran Awal'
-            ],
-            [
-                "uuid" => '43a148be-9112-42f5-b537-f09lfc5111cd',
-                "jabatan" => 'Konselor',
-                "keyword" => 'Administrasi Tes Psikologi'
-            ],
-            [
-                "uuid" => '43a148be-9112-42f5-b537-f0c5fc5111cd',
-                "jabatan" => 'Konselor',
-                "keyword" => 'Psikososial / Psikoedukasi '
-            ],
-            [
-                "uuid" => '4la148be-9112-42f5-b537-f095fc5111cd',
-                "jabatan" => 'Konselor',
-                "keyword" => 'Pendampingan Psikologi'
-            ],
-            [
-                "uuid" => '43a148be-9112-42fq-b537-f095fc5111cd',
-                "jabatan" => 'Psikolog',
-                "keyword" => 'Pengukuran Awal'
-            ],
-            [
-                "uuid" => '43a148be-9112-42l5-b537-f095fc5111cd',
-                "jabatan" => 'Psikolog',
-                "keyword" => 'Administrasi Tes Psikologi'
-            ],
-            [
-                "uuid" => '43a148be-9112-42f5-b537-f095fc5111cd',
-                "jabatan" => 'Psikolog',
-                "keyword" => 'Psikososial / Psikoedukasi '
-            ],
-            [
-                "uuid" => '43a148be-9112-42x5-b537-f095fc5111cd',
-                "jabatan" => 'Psikolog',
-                "keyword" => 'Pendampingan Psikologi'
-            ],
-            [
-                "uuid" => '43a148be-9112-42f5-b537-f0d5fc5111cd',
-                "jabatan" => 'Advokat',
-                "keyword" => 'Konsultasi Hukum'
-            ],
-            [
-                "uuid" => '43a148be-9112-41f5-b537-f095fc5111cd',
-                "jabatan" => 'Advokat',
-                "keyword" => 'Pendampingan Kepolisian'
-            ],
-        ];
-        MKeyword::insert($m_keyword);
+        // $m_keyword = [
+        //     [
+        //         "uuid" => '43a148be-9112-42f5-b537-f095fc5111cd',
+        //         "jabatan" => 'Konselor',
+        //         "keyword" => 'Pengukuran Awal'
+        //     ],
+        //     [
+        //         "uuid" => '43a148be-9112-42f5-b537-f09lfc5111cd',
+        //         "jabatan" => 'Konselor',
+        //         "keyword" => 'Administrasi Tes Psikologi'
+        //     ],
+        //     [
+        //         "uuid" => '43a148be-9112-42f5-b537-f0c5fc5111cd',
+        //         "jabatan" => 'Konselor',
+        //         "keyword" => 'Psikososial / Psikoedukasi '
+        //     ],
+        //     [
+        //         "uuid" => '4la148be-9112-42f5-b537-f095fc5111cd',
+        //         "jabatan" => 'Konselor',
+        //         "keyword" => 'Pendampingan Psikologi'
+        //     ],
+        //     [
+        //         "uuid" => '43a148be-9112-42fq-b537-f095fc5111cd',
+        //         "jabatan" => 'Psikolog',
+        //         "keyword" => 'Pengukuran Awal'
+        //     ],
+        //     [
+        //         "uuid" => '43a148be-9112-42l5-b537-f095fc5111cd',
+        //         "jabatan" => 'Psikolog',
+        //         "keyword" => 'Administrasi Tes Psikologi'
+        //     ],
+        //     [
+        //         "uuid" => '43a148be-9112-42f5-b537-f095fc5111cd',
+        //         "jabatan" => 'Psikolog',
+        //         "keyword" => 'Psikososial / Psikoedukasi '
+        //     ],
+        //     [
+        //         "uuid" => '43a148be-9112-42x5-b537-f095fc5111cd',
+        //         "jabatan" => 'Psikolog',
+        //         "keyword" => 'Pendampingan Psikologi'
+        //     ],
+        //     [
+        //         "uuid" => '43a148be-9112-42f5-b537-f0d5fc5111cd',
+        //         "jabatan" => 'Advokat',
+        //         "keyword" => 'Konsultasi Hukum'
+        //     ],
+        //     [
+        //         "uuid" => '43a148be-9112-41f5-b537-f095fc5111cd',
+        //         "jabatan" => 'Advokat',
+        //         "keyword" => 'Pendampingan Kepolisian'
+        //     ],
+        // ];
+        // MKeyword::insert($m_keyword);
 
         // data t_keyword keyword
-        $t_keyword = [
-            [
-                "tindak_lanjut_id" => 1,
-                "jabatan" => 'Psikolog',
-                "value" => '4'
-            ],
-            [
-                "tindak_lanjut_id" => 1,
-                "jabatan" => 'Hukum',
-                "value" => '2'
-            ],
-            [
-                "tindak_lanjut_id" => 2,
-                "jabatan" => 'Psikolog',
-                "value" => '1'
-            ],
-            [
-                "tindak_lanjut_id" => 3,
-                "jabatan" => 'Psikolog',
-                "value" => '6'
-            ],
-            [
-                "tindak_lanjut_id" => 4,
-                "jabatan" => 'Psikolog',
-                "value" => '4'
-            ],
-            [
-                "tindak_lanjut_id" => 5,
-                "jabatan" => 'Psikolog',
-                "value" => '6'
-            ],
-            [
-                "tindak_lanjut_id" => 6,
-                "jabatan" => 'Psikolog',
-                "value" => '1'
-            ],
-            [
-                "tindak_lanjut_id" => 7,
-                "jabatan" => 'Psikolog',
-                "value" => '4'
-            ]
-        ];
-        TKeyword::insert($t_keyword);
+        // $t_keyword = [
+        //     [
+        //         "tindak_lanjut_id" => 1,
+        //         "jabatan" => 'Psikolog',
+        //         "value" => '4'
+        //     ],
+        //     [
+        //         "tindak_lanjut_id" => 1,
+        //         "jabatan" => 'Hukum',
+        //         "value" => '2'
+        //     ],
+        //     [
+        //         "tindak_lanjut_id" => 2,
+        //         "jabatan" => 'Psikolog',
+        //         "value" => '1'
+        //     ],
+        //     [
+        //         "tindak_lanjut_id" => 3,
+        //         "jabatan" => 'Psikolog',
+        //         "value" => '6'
+        //     ],
+        //     [
+        //         "tindak_lanjut_id" => 4,
+        //         "jabatan" => 'Psikolog',
+        //         "value" => '4'
+        //     ],
+        //     [
+        //         "tindak_lanjut_id" => 5,
+        //         "jabatan" => 'Psikolog',
+        //         "value" => '6'
+        //     ],
+        //     [
+        //         "tindak_lanjut_id" => 6,
+        //         "jabatan" => 'Psikolog',
+        //         "value" => '1'
+        //     ],
+        //     [
+        //         "tindak_lanjut_id" => 7,
+        //         "jabatan" => 'Psikolog',
+        //         "value" => '4'
+        //     ]
+        // ];
+        // TKeyword::insert($t_keyword);
+
+        $csvFile = fopen(base_path("database/data/m_keyword.csv"), "r");
+        $firstline = true;
+        while (($m_keyword = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+            if (!$firstline) {
+                MKeyword::create([
+                    "id" => $m_keyword['0'],
+                    "uuid" => $m_keyword['1'],
+                    "jabatan" => $m_keyword['2'],
+                    "keyword" => $m_keyword['3'],
+                    "jenis_agenda" => $m_keyword['4'],
+                    "created_by" => $m_keyword['5'],
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now(),
+                    "deleted_at" => NULL,
+                ]);    
+            }
+            $firstline = false;
+        }
+        fclose($csvFile);
     }
 }

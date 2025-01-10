@@ -31,6 +31,7 @@ class CreateUsersTable extends Migration
             $table->integer('settings_tabel_intervensi')->default(2);
             $table->string('settings_navbar_bg_color')->default('default');
             $table->string('settings_kontainer_width')->default('normal');
+            $table->boolean('active')->default(1);
             $table->rememberToken();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();

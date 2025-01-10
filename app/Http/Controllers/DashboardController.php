@@ -52,54 +52,54 @@ class DashboardController extends Controller
                         ->count();
 
         // hapus ini setelah evaluasi selesai dan tercapai
-        if (Auth::user()->jabatan == 'Manajer Kasus') {
-            $user_id = Auth::user()->id;
+        // if (Auth::user()->jabatan == 'Manajer Kasus') {
+        //     $user_id = Auth::user()->id;
 
-            $rekap_agenda = "SELECT 
-                u.name AS user_name,
-                COUNT(CASE WHEN a.created_by = u.id THEN 1 END) AS dibuat_MK,
-                COUNT(CASE WHEN a.created_by != u.id THEN 1 END) AS tak_dibuat_MK,
-                ROUND(
-                    COUNT(CASE WHEN a.created_by = u.id THEN 1 END) * 100.0 /
-                    NULLIF(COUNT(a.id), 0), 2
-                ) AS percentage_dibuatMK,
-                ROUND(
-                    COUNT(CASE WHEN a.created_by != u.id THEN 1 END) * 100.0 /
-                    NULLIF(COUNT(a.id), 0), 2
-                ) AS percentage_takDibuatMK
-            FROM 
-                users u
-            JOIN 
-                petugas p ON p.user_id = u.id
-            JOIN 
-                agenda a ON a.klien_id = p.klien_id
-            WHERE 
-                u.jabatan = 'Manajer Kasus'
-                AND
-                                MONTH(a.created_at) > 6
-                                AND
-                                MONTH(a.tanggal_mulai) > 6
-                                AND u.id = $user_id
-            GROUP BY 
-            u.id;";
-            $result = DB::selectOne(DB::raw($rekap_agenda));
-            if ($result != null) {
-                $dibuatMK = $result->dibuat_MK;  // 1
-                $takDibuatMK = $result->tak_dibuat_MK; // 2
-                // dd($takDibuatMK);
-                $total = $dibuatMK + $takDibuatMK; // 3
-                if ($total != 0) {
-                    $dibuatMK = number_format($dibuatMK / $total * 100, 2);
-                    $takDibuatMK = number_format($takDibuatMK / $total * 100, 2);
-                }
-            } else {
-                $dibuatMK = 0;
-                $takDibuatMK = 0;
-            }
-        } else {
+        //     $rekap_agenda = "SELECT 
+        //         u.name AS user_name,
+        //         COUNT(CASE WHEN a.created_by = u.id THEN 1 END) AS dibuat_MK,
+        //         COUNT(CASE WHEN a.created_by != u.id THEN 1 END) AS tak_dibuat_MK,
+        //         ROUND(
+        //             COUNT(CASE WHEN a.created_by = u.id THEN 1 END) * 100.0 /
+        //             NULLIF(COUNT(a.id), 0), 2
+        //         ) AS percentage_dibuatMK,
+        //         ROUND(
+        //             COUNT(CASE WHEN a.created_by != u.id THEN 1 END) * 100.0 /
+        //             NULLIF(COUNT(a.id), 0), 2
+        //         ) AS percentage_takDibuatMK
+        //     FROM 
+        //         users u
+        //     JOIN 
+        //         petugas p ON p.user_id = u.id
+        //     JOIN 
+        //         agenda a ON a.klien_id = p.klien_id
+        //     WHERE 
+        //         u.jabatan = 'Manajer Kasus'
+        //         AND
+        //                         MONTH(a.created_at) > 6
+        //                         AND
+        //                         MONTH(a.tanggal_mulai) > 6
+        //                         AND u.id = $user_id
+        //     GROUP BY 
+        //     u.id;";
+        //     $result = DB::selectOne(DB::raw($rekap_agenda));
+        //     if ($result != null) {
+        //         $dibuatMK = $result->dibuat_MK;  // 1
+        //         $takDibuatMK = $result->tak_dibuat_MK; // 2
+        //         // dd($takDibuatMK);
+        //         $total = $dibuatMK + $takDibuatMK; // 3
+        //         if ($total != 0) {
+        //             $dibuatMK = number_format($dibuatMK / $total * 100, 2);
+        //             $takDibuatMK = number_format($takDibuatMK / $total * 100, 2);
+        //         }
+        //     } else {
+        //         $dibuatMK = 0;
+        //         $takDibuatMK = 0;
+        //     }
+        // } else {
             $dibuatMK = 0;
             $takDibuatMK = 0;
-        }
+        // }
 
         return view('dashboard')->with('jabatan', (new OpsiController)->api_jabatan())
                                 ->with('jumlah_terminasi', $jumlah_terminasi)

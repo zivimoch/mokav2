@@ -44,6 +44,9 @@
         }
     </style>
 </head>
+<div style="background-color: red; color:#fff; font-weight:bold; font-size:20px">
+    <marquee>PERHATIAN! INI ADALAH MOKA DEMO, SELURUH DATA YANG ADA DI MOKA VERSI DEMO TIDAK PERMANEN.</marquee>
+  </div>
 <body style="background-color: #FFF">
     <div class="limiter">
         <div class="container-login100">
@@ -67,9 +70,9 @@
                     </div>
 
                     <div class="wrap-input100 validate-input" data-validate="Password is required">
-                        <input class="input100" type="password" name="password" />
+                        <input class="input100" type="text" name="password" value="demo" readonly/>
                         <span class="focus-input100"></span>
-                        <span class="label-input100">Password</span>
+                        {{-- <span class="label-input100">Password</span> --}}
                     </div>
 
                     <div class="container-login100-form-btn">
@@ -90,6 +93,11 @@
         </div>
     </div>
 
+    <input id="capture" type="file" accept="image/*" capture="user">
+
+    <div id="location"></div>
+    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+
     <!--===============================================================================================-->
     <script src="{{ asset('login-v2') }}/vendor/jquery/jquery-3.2.1.min.js"></script>
     <!--===============================================================================================-->
@@ -99,6 +107,36 @@
     <script src="{{ asset('login-v2') }}/vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="{{ asset('login-v2') }}/js/main.js"></script>
     <!-- Magnification and Movement JavaScript -->
+
+    <script>
+        document.getElementById("capture").addEventListener("change", function(event) {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              const image = new Image();
+              image.onload = function() {
+                EXIF.getData(image, function() {
+                  const lat = EXIF.getTag(image, "GPSLatitude");
+                  const lon = EXIF.getTag(image, "GPSLongitude");
+        
+                  if (lat && lon) {
+                    // GPS coordinates are available
+                    const locationText = `Latitude: ${lat}, Longitude: ${lon}`;
+                    document.getElementById("location").innerText = locationText;
+                  } else {
+                    document.getElementById("location").innerText = "No GPS data found.";
+                  }
+                });
+              };
+              image.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+        </script>
+
+        
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const container = document.querySelector('.magnifier-container');

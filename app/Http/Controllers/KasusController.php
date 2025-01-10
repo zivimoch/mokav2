@@ -167,7 +167,8 @@ class KasusController extends Controller
             // Filter by arsip status
             $data->where('a.arsip', $request->arsip ? 1 : 0);
 
-            $datas = $data->get();
+            $datas = $data->orderByRaw('a.no_klien IS NOT NULL, CAST(SUBSTRING_INDEX(a.no_klien, "/", 1) AS UNSIGNED) DESC')
+                            ->get();
 
             foreach ($datas as $datas2) {
                 // Format tanggal pelaporan
@@ -201,7 +202,7 @@ class KasusController extends Controller
 
         $data = DB::table('petugas as a')
                             ->leftJoin('klien as b', 'b.id','a.klien_id')
-                            ->whereNull('a.deleted_at')
+                            // ->whereNull('a.deleted_at') // seluruh petugas dimunculkan, akan ada keterangan aktif / non
                             ->whereNull('b.deleted_at')
                             ->whereNotNull('b.nama')
                             ->groupBy('b.id')
@@ -261,7 +262,7 @@ class KasusController extends Controller
             $data->list_petugas = DB::table('petugas as a')
                                     ->select('b.id','b.uuid','b.name','b.jabatan')
                                     ->leftJoin('users as b', 'a.user_id', 'b.id')
-                                    ->whereNull('a.deleted_at')
+                                    // ->whereNull('a.deleted_at') // seluruh petugas dimunculkan, akan ada keterangan aktif / non
                                     ->where('a.klien_id', $data->id)
                                     ->get();
             

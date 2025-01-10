@@ -12,7 +12,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0"><i class="fas fa-tasks"></i> Laporan Kinerja</h1>
+            <h1 class="m-0"><i class="fas fa-layer-group"></i> Rekap Laporan Kinerja</h1>
           </div><!-- /.col -->
           <div class="col-sm-6 text-right">
             <input type="checkbox" class="btn-xs" id="kontainerwidth"
@@ -63,7 +63,7 @@
                 <thead>
                   <tr>
                       <th>No</th>
-                      <th>Jabatan</th>
+                      <th>Bulan</th>
                       <th>Nama Petugas</th>
                       <th>Jumlah Hari</th>
                       <th>Sudah diTL</th>
@@ -74,6 +74,17 @@
                   </thead>
                   <tbody></tbody>
               </table>
+              <b>Keterangan : </b><br>
+              <table>
+                <tr>
+                  <td>
+                    <div style="background-color:rgb(255, 205, 205); width: 100px; height: 20px; display: inline-block; vertical-align: middle;"></div>
+                  </td>
+                  <td>
+                    Warna merah artinya ada agenda yang belum terisi laporan tindak lanjutnya.
+                  </td>
+                </tr>
+              </table> 
             </div>
       </div><!-- /.container-fluid -->
     </section>
@@ -101,18 +112,21 @@
 <script>
     
     $('#tabelAgenda').DataTable({
-      "ordering": true,
+      "ordering": false,
       "processing": true,
       "serverSide": true,
       "responsive": false, 
       "lengthChange": false, 
       "autoWidth": false,
-      "ajax": "{{ env('APP_URL') }}/kinerja/ajax?tahun={{ request()->get('tahun') }}&bulan={{ request()->get('bulan') }}",
+      "ajax": "{{ env('APP_URL') }}/kinerja/ajax2?tahun={{ request()->get('tahun') }}&bulan={{ request()->get('bulan') }}&user_id={{ request()->get('user_id') }}",
       'createdRow': function( row, data, dataIndex ) {
           $(row).attr('id', data.id);
           rowHightlight = $('#uuid_agenda_hightlight').val();
           if (data.id == rowHightlight) {
             $(row).attr('class', 'hightlighting');
+          }
+          if (data.persen < 100) {
+            $(row).attr('class', 'warning_table');
           }
       },
       "columns": [
@@ -122,7 +136,18 @@
             return meta.row + meta.settings._iDisplayStart + 1;
           }
         },
-        {"data": "jabatan"},
+        { 
+            "data": "bulan",
+            "render": function (data, type, row) {
+                const months = [
+                    "Januari", "Februari", "Maret", "April", 
+                    "Mei", "Juni", "Juli", "Agustus", 
+                    "September", "Oktober", "November", "Desember"
+                ];
+                const monthIndex = parseInt(data, 10) - 1; // Convert to zero-based index
+                return months[monthIndex] || "Invalid Month";
+            }
+        },
         {"data": "name"},
         {"data": "jumlah_hari"},
         {"data": "sudah_ditl"},
@@ -167,7 +192,7 @@
                 var table = $('#tabelAgenda').DataTable();
                 var rowData = table.row(this).data();
 
-                redirectUrl = "{{ route('kinerja.detail') }}?tahun={{ request()->tahun }}&bulan={{ request()->bulan }}&user_id="+rowData.uuid;
+                redirectUrl = "{{ route('kinerja.detail') }}?tahun={{ request()->tahun }}&bulan="+rowData.bulan+"&user_id="+rowData.uuid;
                 window.location.href = redirectUrl;
           }
         });

@@ -154,7 +154,7 @@
                                     <option value="created_at">Berdasarkan Tanggal Input</option>
                                   </select>
                                 </div>
-                                <input type="text" class="form-control daterank" id="filterTanggal1" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                <input type="text" class="form-control daterank" id="filterTanggal1" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                               </div>
                             </div>
 
@@ -196,10 +196,10 @@
                     <div class="card-header">
                       <h3 class="card-title">Profil PPPA DKI Jakarta (Data Update 2 Jam Sekali)</h3>
                       <div class="card-tools">
-                        <a href="https://docs.google.com/presentation/d/1-JZxiRPzt-ndAyCNZauT63gjvnqn9Pd5nhZ5jf0XVMU/export/pptx">
+                        <a href="https://docs.google.com/presentation/d/14HRJBbUzQ2xceIh9qHmTIjuf1-XClxv57yBRvM6puLI/export/pptx">
                           <button class="btn btn-warning btn-sm"><i class="fas fa-download"></i> Download PPTX</button>
                         </a>
-                        <a href="https://docs.google.com/presentation/d/1-JZxiRPzt-ndAyCNZauT63gjvnqn9Pd5nhZ5jf0XVMU/export/pdf">
+                        <a href="https://docs.google.com/presentation/d/14HRJBbUzQ2xceIh9qHmTIjuf1-XClxv57yBRvM6puLI/export/pdf">
                           <button class="btn btn-warning btn-sm"><i class="fas fa-download"></i> Download PDF</button>
                         </a>
                         <button onclick="$('#slidesIframe').get(0).requestFullscreen?.();"  class="btn btn-warning btn-sm"><i class="fas fa-expand"></i> Full Screen</button>
@@ -223,7 +223,7 @@
                       <div id="collapse0" class="collapse show" data-parent="#accordion0">
                         
                         {{-- <iframe src="{{ route('monitoring.slide') }}" height="500px" width="100%" title="Iframe Example"></iframe> --}}
-                          <iframe id="slidesIframe" src="https://docs.google.com/presentation/d/e/2PACX-1vSCBRdBkphe1pMUbNscNCUPMTjBwvmGVSm-GTgd4jDV0i-tQ95VZuXJIShG_QhqbtHyKuboZ5ZdzHS0/embed?start=false&loop=false&delayms=60000" frameborder="0" width="100%" height="500px" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+                        <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vR9RL5p91N9Piuu06kHoD3LsfRRGzjdDOIEEUopTNF_rfxR9qj0ZFfYuNEgO7O_wEDmo9Ghik-zpHL_/embed?start=false&loop=true&delayms=60000" frameborder="0" width="100%" height="500" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
                           {{-- <iframe id="slidesIframe" src="https://docs.google.com/presentation/d/e/2PACX-1vTLdDKe9EgHKSNvZkoI877Zs5pzG0LV8cNhvGr4Pgz9mEDIVsS_56Uf1QTuK_xTO5_S69wknGZYAHzg/embed?start=false&loop=true&delayms=60000" frameborder="0" width="100%" height="500px" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe> --}}
                         
                           <div class="direct-chat-contacts" style="padding: 10px; height:100%; z-index:100">
@@ -477,7 +477,7 @@
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
-                                  <input type="text" class="form-control daterank" id="filterTanggal11" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                  <input type="text" class="form-control daterank" id="filterTanggal11" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                                 </div>
                               </div>
 
@@ -595,7 +595,7 @@
                             <option value="created_at">Berdasarkan Tanggal Input</option>
                           </select>
                         </div>
-                        <input type="text" class="form-control daterank" id="filterTanggal11" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                        <input type="text" class="form-control daterank" id="filterTanggal11" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                       </div>
                     </div>
                   </div>
@@ -753,7 +753,7 @@
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
-                                  <input type="text" class="form-control daterank" id="filterTanggal10" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                  <input type="text" class="form-control daterank" id="filterTanggal10" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                                 </div>
                               </div>
 
@@ -918,7 +918,7 @@
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
-                                  <input type="text" class="form-control daterank" id="filterTanggal2" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                  <input type="text" class="form-control daterank" id="filterTanggal2" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                                 </div>
                               </div>
 
@@ -1058,7 +1058,7 @@
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
-                                  <input type="text" class="form-control daterank" id="filterTanggal3" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                  <input type="text" class="form-control daterank" id="filterTanggal3" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                                 </div>
                               </div>
 
@@ -1161,6 +1161,7 @@
                     </div>
                     
                     <div class="card-body" style="overflow: hide;">
+                      *DATA INI SEMENTARA TIDAK DAPAT DIGUNAKAN
                       <div id="overlay4" class="overlay dark" style="position: absolute; height:100%; width:100%; font-size:25px">
                         <div class="cv-spinner">
                           <span style="position: absolute">
@@ -1236,7 +1237,7 @@
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
-                                  <input type="text" class="form-control daterank" id="filterTanggal4" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                  <input type="text" class="form-control daterank" id="filterTanggal4" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                                 </div>
                               </div>
 
@@ -1388,7 +1389,7 @@
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
-                                  <input type="text" class="form-control daterank" id="filterTanggal5" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                  <input type="text" class="form-control daterank" id="filterTanggal5" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                                 </div>
                               </div>
 
@@ -1558,7 +1559,7 @@
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
-                                  <input type="text" class="form-control daterank" id="filterTanggal6" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                  <input type="text" class="form-control daterank" id="filterTanggal6" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                                 </div>
                               </div>
 
@@ -1727,7 +1728,7 @@
                                       <option value="pelapor">Pelapor</option>
                                     </select>
                                   </div>
-                                  {{-- <input type="text" class="form-control daterank" id="filterTanggal7" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}"> --}}
+                                  {{-- <input type="text" class="form-control daterank" id="filterTanggal7" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}"> --}}
                                 </div>
                               </div>
 
@@ -1742,7 +1743,7 @@
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
-                                  <input type="text" class="form-control daterank" id="filterTanggal7" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                  <input type="text" class="form-control daterank" id="filterTanggal7" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                                 </div>
                               </div>
 
@@ -1912,7 +1913,7 @@
                                       <option value="pelapor">Pelapor</option>
                                     </select>
                                   </div>
-                                  {{-- <input type="text" class="form-control daterank" id="filterTanggal7" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}"> --}}
+                                  {{-- <input type="text" class="form-control daterank" id="filterTanggal7" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}"> --}}
                                 </div>
                               </div>
 
@@ -1927,7 +1928,7 @@
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
-                                  <input type="text" class="form-control daterank" id="filterTanggal8" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                  <input type="text" class="form-control daterank" id="filterTanggal8" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                                 </div>
                               </div>
 
@@ -2096,7 +2097,7 @@
                                       <option value="pelapor">Pelapor</option>
                                     </select>
                                   </div>
-                                  {{-- <input type="text" class="form-control daterank" id="filterTanggal7" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}"> --}}
+                                  {{-- <input type="text" class="form-control daterank" id="filterTanggal7" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}"> --}}
                                 </div>
                               </div>
 
@@ -2111,7 +2112,7 @@
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
-                                  <input type="text" class="form-control daterank" id="filterTanggal9" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                  <input type="text" class="form-control daterank" id="filterTanggal9" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                                 </div>
                               </div>
 
@@ -2281,7 +2282,7 @@
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
-                                  <input type="text" class="form-control daterank" id="filterTanggal12" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                  <input type="text" class="form-control daterank" id="filterTanggal12" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                                 </div>
                               </div>
 
@@ -2429,7 +2430,7 @@
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
-                                  <input type="text" class="form-control daterank" id="filterTanggal13" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                  <input type="text" class="form-control daterank" id="filterTanggal13" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                                 </div>
                               </div>
 
@@ -2577,7 +2578,7 @@
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
                                     </select>
                                   </div>
-                                  <input type="text" class="form-control daterank" id="filterTanggal14" value="2024-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
+                                  <input type="text" class="form-control daterank" id="filterTanggal14" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
                                 </div>
                               </div>
 

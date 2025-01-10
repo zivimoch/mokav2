@@ -500,16 +500,31 @@ class MonitoringController extends Controller
         // jumlah klien berdasarkan kategori klien / korban
         $seluruh_klien = DB::table('klien as a')
                         ->leftJoin('kasus as b', 'a.kasus_id', '=', 'b.id')
-                        ->leftJoin(DB::raw('(SELECT a.id, a.kotkab_id, b.klien_id  
-                                            FROM users a 
-                                            LEFT JOIN petugas b ON a.id = b.user_id
-                                            WHERE a.jabatan = "Supervisor Kasus"
-                                            AND b.deleted_at IS NULL) z'), 'z.klien_id', '=', 'a.id')
+                        ->leftJoin(DB::raw('(
+                            SELECT DISTINCT b.klien_id, a.id, a.kotkab_id  
+                            FROM users a 
+                            LEFT JOIN petugas b ON a.id = b.user_id
+                            WHERE a.jabatan = "Supervisor Kasus"
+                            AND b.deleted_at IS NULL
+                            AND b.active = 1
+                        ) z'), 'z.klien_id', '=', 'a.id')
                         ->select(
-                            DB::raw($filter_pengelompokan.'('.$basis_tanggal.') AS PERIODE'),
-                            DB::raw('SUM(DISTINCT CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') >= 18 AND a.jenis_kelamin = "perempuan" THEN a.id ELSE 0 END) AS dewasa_perempuan'),
-                            DB::raw('SUM(DISTINCT CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "perempuan" THEN a.id ELSE 0 END) AS anak_perempuan'),
-                            DB::raw('SUM(DISTINCT CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "laki-laki" THEN a.id ELSE 0 END) AS anak_laki'),
+                            DB::raw($filter_pengelompokan . '(' . $basis_tanggal . ') AS PERIODE'),
+                            DB::raw('SUM(CASE 
+                                WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, ' . $penguarang . ') >= 18 
+                                    AND a.jenis_kelamin = "perempuan" THEN 1 
+                                ELSE 0 
+                            END) AS dewasa_perempuan'),
+                            DB::raw('SUM(CASE 
+                                WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, ' . $penguarang . ') < 18 
+                                    AND a.jenis_kelamin = "perempuan" THEN 1 
+                                ELSE 0 
+                            END) AS anak_perempuan'),
+                            DB::raw('SUM(CASE 
+                                WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, ' . $penguarang . ') < 18 
+                                    AND a.jenis_kelamin = "laki-laki" THEN 1 
+                                ELSE 0 
+                            END) AS anak_laki'),
                             DB::raw('COUNT(DISTINCT a.id) AS total')
                         )
                         ->whereNull('a.deleted_at')
@@ -520,7 +535,7 @@ class MonitoringController extends Controller
                         ->orderBy('PERIODE');
         
         
-        $seluruh_klien->groupBy(DB::raw('YEAR('.$basis_tanggal.')'.$filter_group));
+        // $seluruh_klien->groupBy(DB::raw('YEAR('.$basis_tanggal.')'.$filter_group));
         
         // filter basis wilayah & wilayah
         if ($request->wilayah != 'default') {
@@ -603,14 +618,14 @@ class MonitoringController extends Controller
         } else {
             $basis_wilayah = 'b.kotkab_id';
         } // else jika satpel maka tidak apa2 mengikuti tkp, karna 5 wilayah satpel pasti ada dan yang 0 akan dieliminasi
-        
         $kota = DB::table('klien as a')
                         ->select(DB::raw('c.code, c.province_code, COALESCE(c.name, "Data Dalam Konfirmasi") AS name'))
                         ->leftJoin('kasus as b', 'a.kasus_id', '=', 'b.id')
                         ->leftJoin('indonesia_cities as c', 'c.code', '=', $basis_wilayah)
                         ->groupBy('c.name', 'c.code', 'c.province_code')
                         ->orderBy('c.province_code')
-                        ->get();
+                        ->get()
+                        ;
 
                         $luar_jkt = 0;
                         $null_tidak_diisi = 0;
@@ -741,7 +756,8 @@ class MonitoringController extends Controller
                                             FROM users a 
                                             LEFT JOIN petugas b ON a.id = b.user_id
                                             WHERE a.jabatan = "Supervisor Kasus"
-                                            AND b.deleted_at IS NULL) z'), 'z.klien_id', '=', 'a.id')
+                                            AND b.deleted_at IS NULL
+                            AND b.active = 1) z'), 'z.klien_id', '=', 'a.id')
                         ->select(
                             DB::raw('YEAR('.$basis_tanggal.') AS PERIODE'),
                             DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') >= 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan'),
@@ -890,7 +906,8 @@ class MonitoringController extends Controller
                                             FROM users a 
                                             LEFT JOIN petugas b ON a.id = b.user_id
                                             WHERE a.jabatan = "Supervisor Kasus"
-                                            AND b.deleted_at IS NULL) z'), 'z.klien_id', '=', 'a.id')
+                                            AND b.deleted_at IS NULL
+                                            AND b.active = 1) z'), 'z.klien_id', '=', 'a.id')
                         ->select(
                             DB::raw('YEAR('.$basis_tanggal.') AS PERIODE'),
                             DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') >= 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan'),
@@ -1044,7 +1061,8 @@ class MonitoringController extends Controller
                                             FROM users a 
                                             LEFT JOIN petugas b ON a.id = b.user_id
                                             WHERE a.jabatan = "Supervisor Kasus"
-                                            AND b.deleted_at IS NULL) z'), 'z.klien_id', '=', 'a.id')
+                                            AND b.deleted_at IS NULL
+                                            AND b.active = 1) z'), 'z.klien_id', '=', 'a.id')
                         ->whereNull('a.deleted_at')
                         // filter tanggal
                         ->whereBetween($basis_tanggal, [$from, $to])
@@ -1185,7 +1203,8 @@ class MonitoringController extends Controller
                                             FROM users a 
                                             LEFT JOIN petugas b ON a.id = b.user_id
                                             WHERE a.jabatan = "Supervisor Kasus"
-                                            AND b.deleted_at IS NULL) z'), 'z.klien_id', '=', 'a.id')
+                                            AND b.deleted_at IS NULL
+                            AND b.active = 1) z'), 'z.klien_id', '=', 'a.id')
                         ->whereNull('a.deleted_at')
                         ->whereNull('d.deleted_at')
                         ->whereNotNull('e.id')
@@ -1309,7 +1328,8 @@ class MonitoringController extends Controller
                                             FROM users a 
                                             LEFT JOIN petugas b ON a.id = b.user_id
                                             WHERE a.jabatan = "Supervisor Kasus"
-                                            AND b.deleted_at IS NULL) z'), 'z.klien_id', '=', 'a.id')
+                                            AND b.deleted_at IS NULL
+                            AND b.active = 1) z'), 'z.klien_id', '=', 'a.id')
                         ->leftJoin('catatan_hukum as c', 'c.klien_id', 'a.id')
                         ->select(
                             DB::raw($filter_pengelompokan.'('.$basis_tanggal.') AS PERIODE'),
@@ -1439,7 +1459,8 @@ class MonitoringController extends Controller
                                             FROM users a 
                                             LEFT JOIN petugas b ON a.id = b.user_id
                                             WHERE a.jabatan = "Supervisor Kasus"
-                                            AND b.deleted_at IS NULL) z'), 'z.klien_id', '=', 'a.id')
+                                            AND b.deleted_at IS NULL
+                            AND b.active = 1) z'), 'z.klien_id', '=', 'a.id')
                         ->leftJoin('users as c', 'c.id', 'a.created_by')
                         ->select(
                             DB::raw('c.name as PERIODE, COUNT(DISTINCT a.id) AS total')
@@ -1578,7 +1599,8 @@ class MonitoringController extends Controller
                                             FROM users a 
                                             LEFT JOIN petugas b ON a.id = b.user_id
                                             WHERE a.jabatan = "Supervisor Kasus"
-                                            AND b.deleted_at IS NULL) z'), 'z.klien_id', '=', 'a.id')
+                                            AND b.deleted_at IS NULL
+                            AND b.active = 1) z'), 'z.klien_id', '=', 'a.id')
                         ->whereNull('a.deleted_at')
                         // filter tanggal
                         ->whereBetween($basis_tanggal, [$from, $to])

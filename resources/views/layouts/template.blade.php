@@ -233,7 +233,7 @@
   </div>
 </div>
 
-@if (((env('APP_URL') == 'http://127.0.0.1:8000') || ($firstSegment === 'latihan')) && isset(Auth::user()->id))
+@if (((env('APP_URL') == 'http://127.0.0.1:8000') || ($firstSegment === 'demo')) && isset(Auth::user()->id))
 {{-- MOKA V2.0 ANNOUCMENT BOX  --}}
 <style>
   .chat-box {
@@ -374,7 +374,7 @@ function klien_search() {
         let searchQuery = $('#klien_search').val();
         // if (searchQuery.length >= 1) {
             $.ajax({
-                url: '/get_klien?uuid=1&petugas=1&no_klien=1',
+                url: `{{ env('APP_URL') }}/get_klien?uuid=1&petugas=1&no_klien=1`,
                 type: 'POST',
                 data: {
                     search: searchQuery,
@@ -435,6 +435,7 @@ function klien_search() {
         $('#klien_search').val(item.text());
         $('#search_results').hide(); 
         highlightedIndex = -1; 
+        modal_klien(selectedId);
     }
     $(document).on('click', '.list-group-item', function() {
         selectItem($(this)); 
@@ -456,7 +457,7 @@ function klien_search() {
 
 function modal_klien(uuid) {
   $.ajax({
-        url: '/kasus/show/'+uuid,
+        url: `{{ env('APP_URL') }}/kasus/show/`+uuid,
         type: 'GET',
         success: function(data) {
           dob = new Date(data.tanggal_lahir);

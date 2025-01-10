@@ -236,7 +236,8 @@ class DataMasterKlien implements FromCollection, WithHeadings, WithStyles
                 ".$arsip."
                 ".$kategori_klien."
                 GROUP BY 
-                b.id");
+                b.id
+                ORDER BY CAST(SUBSTRING_INDEX(b.no_klien, '/', 1) AS UNSIGNED);");
 
         return collect($query);
     }

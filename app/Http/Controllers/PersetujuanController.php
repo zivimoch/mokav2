@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Helpers\LogActivityHelper;
 use App\Helpers\NotifHelper;
 use App\Helpers\StatusHelper;
+use App\Models\Kasus;
 use App\Models\Klien;
 use App\Models\PersetujuanIsi;
 use App\Models\PersetujuanItem;
 use App\Models\PersetujuanTemplate;
+use App\Models\Terlapor;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -34,11 +36,22 @@ class PersetujuanController extends Controller
 
             $klien = Klien::where('id', $persetujuan_isi->klien_id)->first();
 
-            return view('persetujuan.show')
+            if ($persetujuan_template->id = 1) {
+                $viewer = 'show_verif_data';
+            } else {
+                $viewer = 'show';
+            }
+
+            $kasus = Kasus::where('id', $klien->kasus_id)->first();
+            $terlapor = Terlapor::where('kasus_id', $kasus->id)->get();
+
+            return view('persetujuan.'.$viewer)
                     ->with('persetujuan_template', $persetujuan_template)
                     ->with('persetujuan_item', $persetujuan_item)
                     ->with('persetujuan_isi', $persetujuan_isi)
-                    ->with('klien', $klien);
+                    ->with('kasus', $kasus)
+                    ->with('klien', $klien)
+                    ->with('terlapor', $terlapor);
         } catch (Exception $e){
             return response()->json(['message' => $e->getMessage()]);
             die();
