@@ -43,6 +43,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/jumlahlayanan', [MonitoringController::class, 'jumlah_layanan'])->name('api.v1.jumlahlayanan');
         Route::get('/jumlahlp', [MonitoringController::class, 'jumlah_lp'])->name('api.v1.jumlahlp');
         Route::get('/jumlahpos', [MonitoringController::class, 'jumlah_pos'])->name('api.v1.jumlahpos');
+        Route::get('/rekapprofile', [MonitoringController::class, 'rekap_profile'])->name('api.v1.rekapprofile');
     });
 });
 

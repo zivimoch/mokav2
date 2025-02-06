@@ -87,6 +87,8 @@
                     </div>
                 </div>
             </form>
+            <b style="font-size: 18px">Jumlah Durasi Kerja Bulan {{ $monthNameSelected }} : {{ $jumlah_durasi ? $jumlah_durasi : 0 }} menit</b>
+            <br>
             <b style="font-size: 18px">Jumlah Hari Kerja yang ditetapkan Bulan {{ $monthNameSelected }} : {{ $hari_kerja }} hari</b>
             <br>
             <b style="font-size: 18px">Jumlah Cuti Anda yang sudah dikonfirmasi Bulan {{ $monthNameSelected }} : - hari</b> (data dari MOKI belum tersedia)
@@ -134,6 +136,7 @@
                   <tr>
                       <th>Tanggal</th>
                       <th>Jam</th>
+                      <th>Durasi (menit)</th>
                       <th>Agenda</th>
                       <th>Tindak Lanjut</th>
                       <th>DiTL</th>
@@ -325,6 +328,9 @@
                 return row.jam_mulai;
               }
             }
+        },
+        {
+            "mData": "durasi"
         },
         {
             "mData": "judul_kegiatan",

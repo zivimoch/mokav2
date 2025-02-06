@@ -36,7 +36,8 @@
             <h3 class="card-title">DataTable with default features</h3>
             </div> --}}
               <div class="card-body" style="overflow-x: scroll">
-                <form action="{{ route('kinerja') }}" method="GET">
+                <form action="{{ route('kinerja') }}/pertahun" method="GET">
+                  <input type="hidden" name="user_id" value="{{ Auth::user()->uuid }}">
                     <div class="input-group">
                         <select name="tahun" class="custom-select">
                             @php
@@ -65,6 +66,7 @@
                       <th>No</th>
                       <th>Bulan</th>
                       <th>Nama Petugas</th>
+                      <th>Durasi (menit)</th>
                       <th>Jumlah Hari</th>
                       <th>Sudah diTL</th>
                       <th>Belum diTL</th>
@@ -149,6 +151,7 @@
             }
         },
         {"data": "name"},
+        {"data": "durasi"},
         {"data": "jumlah_hari"},
         {"data": "sudah_ditl"},
         {"data": "belum_ditl"},

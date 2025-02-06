@@ -17,6 +17,9 @@ class NotifHelper
                 $korban_umur =  ' ('.$korban_umur.')';
             }
             $kasus_data = $korban_nama.$korban_umur;
+            // isu http jadi https karna json encode
+            $url = str_replace('http://', 'https://', $url);
+            
             $data_notif = [
                 'receiver_id' => $receiver_id,
                 'klien_id' => $klien_id,
@@ -27,7 +30,7 @@ class NotifHelper
                 'from' => $from,
                 'message' => $message,
                 'kasus' => $kasus_data,
-                'url' => $url,
+                'url' => (string) $url,
                 'created_by' => $created_by,
             ];
             $notif = Notifikasi::create($data_notif);

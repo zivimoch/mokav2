@@ -7,10 +7,12 @@ use App\Helpers\NotifHelper;
 use App\Helpers\StatusHelper;
 use App\Models\Kasus;
 use App\Models\Klien;
+use App\Models\Pelapor;
 use App\Models\PersetujuanIsi;
 use App\Models\PersetujuanItem;
 use App\Models\PersetujuanTemplate;
 use App\Models\Terlapor;
+use App\Models\TKedaruratan;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -34,22 +36,64 @@ class PersetujuanController extends Controller
                 return redirect('persetujuan/donepelayanan/'.$uuid);
             }
 
-            $klien = Klien::where('id', $persetujuan_isi->klien_id)->first();
+            $klien = DB::table('klien as a')
+                        ->leftJoin('indonesia_provinces as b', 'a.provinsi_id_ktp', 'b.code')
+                        ->leftJoin('indonesia_cities as c', 'a.kotkab_id_ktp', 'c.code')
+                        ->leftJoin('indonesia_districts as d', 'a.kecamatan_id_ktp', 'd.code')
+                        ->leftJoin('indonesia_villages as e', 'a.kelurahan_id_ktp', 'e.code')
+                        ->leftJoin('indonesia_provinces as f', 'a.provinsi_id', 'f.code')
+                        ->leftJoin('indonesia_cities as g', 'a.kotkab_id', 'g.code')
+                        ->leftJoin('indonesia_districts as h', 'a.kecamatan_id', 'h.code')
+                        ->leftJoin('indonesia_villages as i', 'a.kelurahan_id', 'i.code')
+                        ->selectRaw('a.*, b.name as provinsi_ktp, c.name as kota_ktp, d.name as kecamatan_ktp, e.name as kelurahan_ktp, f.name as provinsi, g.name as kota, h.name as kecamatan, i.name as kelurahan') 
+                        ->where('a.id', $persetujuan_isi->klien_id)
+                        ->first();
+            $kasus = DB::table('kasus as a')
+                        ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
+                        ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
+                        ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
+                        ->leftJoin('indonesia_villages as e', 'a.kelurahan_id', 'e.code')
+                        ->selectRaw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan, e.name as kelurahan') 
+                        ->where('a.id', $klien->kasus_id)
+                        ->first();
+            $pelapor = DB::table('pelapor as a')
+                        ->leftJoin('indonesia_provinces as b', 'a.provinsi_id_ktp', 'b.code')
+                        ->leftJoin('indonesia_cities as c', 'a.kotkab_id_ktp', 'c.code')
+                        ->leftJoin('indonesia_districts as d', 'a.kecamatan_id_ktp', 'd.code')
+                        ->leftJoin('indonesia_villages as e', 'a.kelurahan_id_ktp', 'e.code')
+                        ->leftJoin('indonesia_provinces as f', 'a.provinsi_id', 'f.code')
+                        ->leftJoin('indonesia_cities as g', 'a.kotkab_id', 'g.code')
+                        ->leftJoin('indonesia_districts as h', 'a.kecamatan_id', 'h.code')
+                        ->leftJoin('indonesia_villages as i', 'a.kelurahan_id', 'i.code')
+                        ->selectRaw('a.*, b.name as provinsi_ktp, c.name as kota_ktp, d.name as kecamatan_ktp, e.name as kelurahan_ktp, f.name as provinsi, g.name as kota, h.name as kecamatan, i.name as kelurahan') 
+                        ->where('a.kasus_id', $klien->kasus_id)
+                        ->first();
+            $terlapor = DB::table('terlapor as a')
+                        ->leftJoin('indonesia_provinces as b', 'a.provinsi_id_ktp', 'b.code')
+                        ->leftJoin('indonesia_cities as c', 'a.kotkab_id_ktp', 'c.code')
+                        ->leftJoin('indonesia_districts as d', 'a.kecamatan_id_ktp', 'd.code')
+                        ->leftJoin('indonesia_villages as e', 'a.kelurahan_id_ktp', 'e.code')
+                        ->leftJoin('indonesia_provinces as f', 'a.provinsi_id', 'f.code')
+                        ->leftJoin('indonesia_cities as g', 'a.kotkab_id', 'g.code')
+                        ->leftJoin('indonesia_districts as h', 'a.kecamatan_id', 'h.code')
+                        ->leftJoin('indonesia_villages as i', 'a.kelurahan_id', 'i.code')
+                        ->leftJoin('r_hubungan_terlapor_klien as j', 'j.terlapor_id', 'a.id')
+                        ->selectRaw('a.*, b.name as provinsi_ktp, c.name as kota_ktp, d.name as kecamatan_ktp, e.name as kelurahan_ktp, f.name as provinsi, g.name as kota, h.name as kecamatan, i.name as kelurahan, j.value as hubungan_terlapor') 
+                        ->where('a.kasus_id', $klien->kasus_id)
+                        ->get();
 
-            if ($persetujuan_template->id = 1) {
+            if ($persetujuan_template->id == 1) {
                 $viewer = 'show_verif_data';
             } else {
                 $viewer = 'show';
             }
-
-            $kasus = Kasus::where('id', $klien->kasus_id)->first();
-            $terlapor = Terlapor::where('kasus_id', $kasus->id)->get();
 
             return view('persetujuan.'.$viewer)
                     ->with('persetujuan_template', $persetujuan_template)
                     ->with('persetujuan_item', $persetujuan_item)
                     ->with('persetujuan_isi', $persetujuan_isi)
                     ->with('kasus', $kasus)
+                    ->with('pelapor', $pelapor)
                     ->with('klien', $klien)
                     ->with('terlapor', $terlapor);
         } catch (Exception $e){
@@ -114,8 +158,8 @@ class PersetujuanController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'nama_penandatangan' => 'required',
-                'no_telp' => 'required',
-                'alamat' => 'required'
+                // 'no_telp' => 'required',
+                // 'alamat' => 'required'
                 ]);
                 if ($validator->fails())
                 {
@@ -231,8 +275,8 @@ class PersetujuanController extends Controller
             abort(404);
         }
         $persetujuan_template = PersetujuanTemplate::withTrashed()
-    ->where('id', $persetujuan_isi->persetujuan_template_id)
-    ->first();
+                                ->where('id', $persetujuan_isi->persetujuan_template_id)
+                                ->first();
 
         // $persetujuan_template = PersetujuanTemplate::where('id', $persetujuan_isi->persetujuan_template_id)->first();
         $persetujuan_item = PersetujuanItem::where('persetujuan_template_id', $persetujuan_template->id)
@@ -240,8 +284,51 @@ class PersetujuanController extends Controller
                             ->with('children')
                             ->get();
 
-        $klien = Klien::where('id', $persetujuan_isi->klien_id)->first();
-
+        $klien = DB::table('klien as a')
+                    ->leftJoin('indonesia_provinces as b', 'a.provinsi_id_ktp', 'b.code')
+                    ->leftJoin('indonesia_cities as c', 'a.kotkab_id_ktp', 'c.code')
+                    ->leftJoin('indonesia_districts as d', 'a.kecamatan_id_ktp', 'd.code')
+                    ->leftJoin('indonesia_villages as e', 'a.kelurahan_id_ktp', 'e.code')
+                    ->leftJoin('indonesia_provinces as f', 'a.provinsi_id', 'f.code')
+                    ->leftJoin('indonesia_cities as g', 'a.kotkab_id', 'g.code')
+                    ->leftJoin('indonesia_districts as h', 'a.kecamatan_id', 'h.code')
+                    ->leftJoin('indonesia_villages as i', 'a.kelurahan_id', 'i.code')
+                    ->selectRaw('a.*, b.name as provinsi_ktp, c.name as kota_ktp, d.name as kecamatan_ktp, e.name as kelurahan_ktp, f.name as provinsi, g.name as kota, h.name as kecamatan, i.name as kelurahan') 
+                    ->where('a.id', $persetujuan_isi->klien_id)
+                    ->first();
+        $kasus = DB::table('kasus as a')
+                    ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
+                    ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
+                    ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
+                    ->leftJoin('indonesia_villages as e', 'a.kelurahan_id', 'e.code')
+                    ->selectRaw('a.*, b.name as provinsi, c.name as kota, d.name as kecamatan, e.name as kelurahan') 
+                    ->where('a.id', $klien->kasus_id)
+                    ->first();
+        $pelapor = DB::table('pelapor as a')
+                    ->leftJoin('indonesia_provinces as b', 'a.provinsi_id_ktp', 'b.code')
+                    ->leftJoin('indonesia_cities as c', 'a.kotkab_id_ktp', 'c.code')
+                    ->leftJoin('indonesia_districts as d', 'a.kecamatan_id_ktp', 'd.code')
+                    ->leftJoin('indonesia_villages as e', 'a.kelurahan_id_ktp', 'e.code')
+                    ->leftJoin('indonesia_provinces as f', 'a.provinsi_id', 'f.code')
+                    ->leftJoin('indonesia_cities as g', 'a.kotkab_id', 'g.code')
+                    ->leftJoin('indonesia_districts as h', 'a.kecamatan_id', 'h.code')
+                    ->leftJoin('indonesia_villages as i', 'a.kelurahan_id', 'i.code')
+                    ->selectRaw('a.*, b.name as provinsi_ktp, c.name as kota_ktp, d.name as kecamatan_ktp, e.name as kelurahan_ktp, f.name as provinsi, g.name as kota, h.name as kecamatan, i.name as kelurahan') 
+                    ->where('a.kasus_id', $klien->kasus_id)
+                    ->first();
+        $terlapor = DB::table('terlapor as a')
+                    ->leftJoin('indonesia_provinces as b', 'a.provinsi_id_ktp', 'b.code')
+                    ->leftJoin('indonesia_cities as c', 'a.kotkab_id_ktp', 'c.code')
+                    ->leftJoin('indonesia_districts as d', 'a.kecamatan_id_ktp', 'd.code')
+                    ->leftJoin('indonesia_villages as e', 'a.kelurahan_id_ktp', 'e.code')
+                    ->leftJoin('indonesia_provinces as f', 'a.provinsi_id', 'f.code')
+                    ->leftJoin('indonesia_cities as g', 'a.kotkab_id', 'g.code')
+                    ->leftJoin('indonesia_districts as h', 'a.kecamatan_id', 'h.code')
+                    ->leftJoin('indonesia_villages as i', 'a.kelurahan_id', 'i.code')
+                    ->leftJoin('r_hubungan_terlapor_klien as j', 'j.terlapor_id', 'a.id')
+                    ->selectRaw('a.*, b.name as provinsi_ktp, c.name as kota_ktp, d.name as kecamatan_ktp, e.name as kelurahan_ktp, f.name as provinsi, g.name as kota, h.name as kecamatan, i.name as kelurahan, j.value as hubungan_terlapor') 
+                    ->where('a.kasus_id', $klien->kasus_id)
+                    ->get();
         // read task jika login sebagai MK
         if (isset(Auth::user()->id)) {
             NotifHelper::read_notif(
@@ -253,11 +340,19 @@ class PersetujuanController extends Controller
             );
         }
         
-        return view('persetujuan.donepelayanan',)
+        if ($persetujuan_template->id == 1) {
+            $viewer = 'donepelayanan_verif_data';
+        } else {
+            $viewer = 'donepelayanan';
+        }
+        return view('persetujuan.'.$viewer)
                     ->with('persetujuan_template', $persetujuan_template)
                     ->with('persetujuan_item', $persetujuan_item)
                     ->with('persetujuan_isi', $persetujuan_isi)
-                    ->with('klien', $klien);
+                    ->with('kasus', $kasus)
+                    ->with('pelapor', $pelapor)
+                    ->with('klien', $klien)
+                    ->with('terlapor', $terlapor);
     }
 
     public function isi_persetujuan_data($uuid)

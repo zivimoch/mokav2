@@ -15,6 +15,7 @@ use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Laravolt\Indonesia\Http\Requests\Kabupaten\Update;
 
 class PetugasController extends Controller
 {
@@ -82,14 +83,25 @@ class PetugasController extends Controller
                 $filter = Petugas::where('klien_id', $klien->id)
                                 ->where('user_id', $request->user_id)
                                 ->first();
+                $user = User::where('id', $request->user_id)->first();
 
                 if (!isset($filter)) {
                     //create petugas
                     $proses = Petugas::create([
-                        'klien_id'   => $klien->id, 
-                        'user_id'     => $request->user_id, 
-                        'created_by'   => Auth::user()->id
+                        'klien_id'      => $klien->id, 
+                        'user_id'       => $request->user_id, 
+                        'active'        => 1,
+                        'created_by'    => Auth::user()->id
                     ]);
+                    $ada_petugas = DB::table('petugas as a')
+                                    ->leftJoin('users as b', 'a.user_id', 'b.id')
+                                    ->whereIn('b.jabatan', ['Penerima Pengaduan', 'Manajer Kasus', 'Supervisor Kasus'])
+                                    ->where('a.klien_id', $klien->id)
+                                    ->where('b.jabatan', $user->jabatan)
+                                    ->count();
+                    if ($ada_petugas > 1) {
+                        $this->ubah_status_petugas($proses->id);
+                    }
                 }else{
                     $proses = false;
                 }
@@ -251,5 +263,12 @@ class PetugasController extends Controller
             return response()->json(['message' => $e->getMessage()]);
             die();
         }
+    }
+
+    public function ubah_status_petugas($id) {
+        $record = Petugas::findOrFail($id);
+        $record->active = $record->active == 0 ? 1 : 0;
+        $record->save();
+        return true;
     }
 }

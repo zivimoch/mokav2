@@ -289,18 +289,23 @@
                             <tbody>
                                 <tr>
                                     <td>1</td>
-                                    <td>Data master kasus per klien (<span class="filterTanggal11"></span>)</td>
+                                    <td>Data master kasus per klien <span class="filterTanggal11"></span> (<span class="filterBasisTanggal11"></span>)</td>
                                     <td><a href="{{ route('export_data_master_klien') }}?format=xlsx" class="btn btn-primary btn-xs export-link">Excel</a> <a href="{{ route('export_data_master_klien') }}?format=csv" class="btn btn-primary btn-xs export-link">CSV</a></td>
                                 </tr>
                                 <tr>
                                     <td>2</td>
-                                    <td>Data master kasus per terlapor (<span class="filterTanggal11"></span>)</td>
+                                    <td>Data master kasus per terlapor <span class="filterTanggal11"></span> (<span class="filterBasisTanggal11"></span>)</td>
                                     <td><a href="{{ route('export_data_master_terlapor') }}?format=xlsx" class="btn btn-primary btn-xs export-link">Excel</a> <a href="{{ route('export_data_master_terlapor') }}?format=csv" class="btn btn-primary btn-xs export-link">CSV</a></td>
                                 </tr>
                                 <tr>
                                     <td>3</td>
-                                    <td>Data master Hubungan Terlapor dengan Korban (Terlapor Siapanya Korban) (<span class="filterTanggal11"></span>)</td>
+                                    <td>Data master Hubungan Terlapor dengan Korban (Terlapor Siapanya Korban) <span class="filterTanggal11"></span> (<span class="filterBasisTanggal11"></span>)</td>
                                     <td><a href="{{ route('export_data_master_hubungan') }}?format=xlsx" class="btn btn-primary btn-xs export-link">Excel</a> <a href="{{ route('export_data_master_hubungan') }}?format=csv" class="btn btn-primary btn-xs export-link">CSV</a></td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>Template Dana Alokasi Khusus <span class="filterTanggal11"></span> (tanggal_layanan)</td>
+                                    <td><a href="{{ route('export_data_dak') }}?format=xlsx" class="btn btn-primary btn-xs export-link">Excel</a> <a href="{{ route('export_data_dak') }}?format=csv" class="btn btn-primary btn-xs export-link">CSV</a></td>
                                 </tr>
                             </tbody>
                         </table> 
@@ -475,6 +480,7 @@
                                       <option value="tanggal_pelaporan" >Berdasarkan Tanggal Pelaporan</option>
                                       <option value="tanggal_kejadian">Berdasarkan Tanggal Kejadian (Hanya yang ada Tanggal Kejadiannya)</option>
                                       <option value="created_at">Berdasarkan Tanggal Input</option>
+                                      <option value="tanggal_layanan">Berdasarkan Tanggal Layanan</option>
                                     </select>
                                   </div>
                                   <input type="text" class="form-control daterank" id="filterTanggal11" value="{{ date('Y') }}-01-01 - {{ date("Y").'/'.date("m").'/'.date("d") }}">
@@ -4257,6 +4263,7 @@ function load_data2() {
             });
             $('#filter11').append("<span class=\"badge bg-warning\">Data ini disajikan pada : " + getCurrentDateTime() + "</span> ");
 
+            $('.filterBasisTanggal11').html($('#filterBasisTanggal11').val());
             $('.filterTanggal11').html($('#filterTanggal11').val());
             // Update the href attributes for all links with class .export-link
             $('.export-link').each(function() {

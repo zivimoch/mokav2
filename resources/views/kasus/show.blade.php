@@ -458,7 +458,7 @@
                     @method('post')
                     <input type="hidden" name="uuid_klien" value="{{ $klien->uuid }}">
                     <input type="hidden" name="nama_layanan" value="Layanan Hukum">
-                    @if (in_array(Auth::user()->jabatan, ['Advokat', 'Paralegal', 'Unit Reaksi Cepat']))
+                    @if (in_array(Auth::user()->jabatan, ['Advokat', 'Paralegal', 'Unit Reaksi Cepat','Super Admin']))
                         <span style="float:right" class="akses_petugas">
                             <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_hukum" onclick="editdata('hukum')">
                             <i class="fas fa-edit"></i> Edit
@@ -1885,6 +1885,9 @@
                             <h6><span class="badge badge-pill badge-primary">{{ $item->jabatan }}</span></h6>
                         </td>
                         <td>
+                            <h6><span class="badge badge-pill badge-{{ $item->active ? 'success' : 'secondary' }}">{{ $item->active ? 'Primer' : 'Sekunder' }}</span></h6>
+                        </td>
+                        <td>
                             @if (in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Supervisor Kasus']) && $akses_petugas == 1)
                             <form id="formPetugas{{ $no_petugas }}" action="{{ route('petugas.destroy', $item->id) }}" method="post">
                                 @csrf 
@@ -1913,7 +1916,7 @@
                 @csrf
                 <div class="row {{ Request::get('tambah-petugas') == 1 ? 'hightlighting' : '' }}" style="padding : 15px">
                     <div class="col-md-9">
-                        <select name="user_id" class="select2bs4" style="width: 100%;" required>
+                        <select name="user_id" class="select2bs4" style="width: 100%;" required onchange="">
                             <option></option>
                             @foreach ($users as $item)
                                 <option value="{{ $item->id }}">{{ $item->name }} ({{ $item->jabatan }})</option>
@@ -1923,6 +1926,7 @@
                     <div class="col-md-3">
                         <button class="btn btn-success btn-sm btn-block" type="submit"><i class="nav-icon fa fa-user-plus"></i> Tambah Petugas</button>
                     </div>
+                    *Penerima Pengaduan, Manajer Kasus atau Supervisor Kasus hanya 1 yang primer setiap kasus.  
                 </div>
             </form>
             @endif

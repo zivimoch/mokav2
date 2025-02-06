@@ -196,6 +196,8 @@ Route::middleware('auth')->group(function () {
     Route::get('export_data_master_klien/', [MonitoringController::class, 'export_data_master_klien'])->name('export_data_master_klien');
     Route::get('export_data_master_terlapor/', [MonitoringController::class, 'export_data_master_terlapor'])->name('export_data_master_terlapor');
     Route::get('export_data_master_hubungan/', [MonitoringController::class, 'export_data_master_hubungan'])->name('export_data_master_hubungan');
+    Route::get('export_data_dak/', [MonitoringController::class, 'export_data_dak'])->name('export_data_dak');
+    Route::get('export_profile/', [MonitoringController::class, 'export_profile'])->name('export_profile');
 });
 
 require __DIR__.'/auth.php';

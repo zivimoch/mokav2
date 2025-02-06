@@ -147,7 +147,7 @@ class AgendaController extends Controller
                     ->orderBy('a.tanggal_mulai')
                     ->orderBy('a.jam_mulai')
                     ->select(DB::raw('a.uuid as uuid_agenda, b.uuid, b.id as tindak_lanjut_id, a.tanggal_mulai, a.jam_mulai, a.klien_id, b.tanggal_selesai, 
-                    b.jam_selesai, a.judul_kegiatan, a.keterangan, b.lokasi, b.catatan, b.rtl, b.terlaksana, c.name, b.created_by, z.judul, z.uuid_dokumen, d.name as petugas, d.jabatan, b.validated_by')
+                    b.jam_selesai, b.durasi, a.judul_kegiatan, a.keterangan, b.lokasi, b.catatan, b.rtl, b.terlaksana, c.name, b.created_by, z.judul, z.uuid_dokumen, d.name as petugas, d.jabatan, b.validated_by')
                     , DB::raw('DATE_FORMAT(a.tanggal_mulai, "%W") as day'));
 
                     if ($request->belumtl == 1) { 
@@ -293,93 +293,112 @@ class AgendaController extends Controller
                 ;
     }
 
+    // untuk rekap kinerja
     public function kinerja_ajax2(Request $request)
-    {
-        $tahun = $request->tahun;
-        $user = User::where('uuid', $request->user_id)->first();
-        $data = DB::table('users as a')
-            ->select(
-                'a.id',
-                'a.uuid',
-                'z.bulan',
-                'a.jabatan',
-                'a.name',
-                DB::raw('COALESCE(w.jumlah_hari, 0) AS jumlah_hari'),
-                DB::raw('COALESCE(z.sudah_ditl, 0) AS sudah_ditl'),
-                DB::raw('COALESCE(y.belum_ditl, 0) AS belum_ditl'),
-                DB::raw('COALESCE(z.sudah_ditl, 0) + COALESCE(y.belum_ditl, 0) AS total'),
-                DB::raw('ROUND(COALESCE(z.sudah_ditl, 0) / NULLIF(COALESCE(z.sudah_ditl, 0) + COALESCE(y.belum_ditl, 0), 0) * 100, 2) AS persen'),
-                DB::raw('COALESCE(x.verified, 0) AS verified'),
-                DB::raw('ROUND(COALESCE(x.verified, 0) / NULLIF(COALESCE(z.sudah_ditl, 0) + COALESCE(y.belum_ditl, 0), 0) * 100, 2) AS persen_verified')
-            )
-            ->leftJoin(DB::raw('(SELECT
-                    a.created_by,
-                    MONTH(b.tanggal_mulai) AS bulan,
-                    SUM(CASE WHEN a.jam_selesai IS NOT NULL THEN 1 ELSE 0 END) AS sudah_ditl
-                FROM
-                    tindak_lanjut a
-                LEFT JOIN
-                    agenda b ON a.agenda_id = b.id
-                WHERE
-                    YEAR(b.tanggal_mulai) = ' . $tahun . '
-                    AND a.deleted_at IS NULL AND b.deleted_at IS NULL
-                    AND a.created_by = '.$user->id.'
-                GROUP BY
-                    MONTH(b.tanggal_mulai)) z'), 'z.created_by', '=', 'a.id')
-            ->leftJoin(DB::raw('(SELECT
-                    a.created_by,
-                    MONTH(b.tanggal_mulai) as bulan,
-                    SUM(CASE WHEN a.jam_selesai IS NULL THEN 1 ELSE 0 END) AS belum_ditl
-                FROM
-                    tindak_lanjut a
-                LEFT JOIN
-                    agenda b ON a.agenda_id = b.id
-                WHERE
-                    YEAR(b.tanggal_mulai) = ' . $tahun . '
-                    AND a.deleted_at IS NULL AND b.deleted_at IS NULL
-                    AND a.created_by = '.$user->id.'
-                GROUP BY
-                    MONTH(b.tanggal_mulai)) y'), 'y.bulan', '=', 'z.bulan')
-            ->leftJoin(DB::raw('(SELECT
-                    a.created_by,
-                    COUNT(*) AS verified
-                FROM
-                    tindak_lanjut a
-                LEFT JOIN
-                    agenda b ON a.agenda_id = b.id
-                WHERE
-                    a.validated_by IS NOT NULL
-                    AND YEAR(b.tanggal_mulai) = ' . $tahun . '
-                    AND a.deleted_at IS NULL AND b.deleted_at IS NULL
-                    AND a.created_by = '.$user->id.'
-                GROUP BY
-                    MONTH(b.tanggal_mulai)) x'), 'x.created_by', '=', 'a.id')
-            ->leftJoin(DB::raw('(SELECT
-            MONTH(b.tanggal_mulai) as bulan,
-            COUNT(DISTINCT DATE(b.tanggal_mulai)) AS jumlah_hari
-        FROM
-            tindak_lanjut a
-        LEFT JOIN
-            agenda b ON a.agenda_id = b.id
-        WHERE
-            YEAR(b.tanggal_mulai) = ' . $tahun . '
-            AND a.deleted_at IS NULL
-            AND b.deleted_at IS NULL
-            AND a.created_by = '.$user->id.'
-        GROUP BY
-            MONTH(b.tanggal_mulai)) w'), 'w.bulan', '=', 'z.bulan')
-            ->whereNull('a.deleted_at')
-            ->where('a.id', $user->id)
-            ->groupBy('z.bulan')
-            ->orderBy('z.bulan')
-            ->get();
-        return DataTables::of($data)->make(true);
-    }
+{
+    $tahun = $request->tahun;
+    $user = User::where('uuid', $request->user_id)->first();
+    $data = DB::table('users as a')
+        ->select(
+            'a.id',
+            'a.uuid',
+            'z.bulan',
+            'a.jabatan',
+            'a.name',
+            DB::raw('COALESCE(w.jumlah_hari, 0) AS jumlah_hari'),
+            DB::raw('COALESCE(z.sudah_ditl, 0) AS sudah_ditl'),
+            DB::raw('COALESCE(y.belum_ditl, 0) AS belum_ditl'),
+            DB::raw('COALESCE(z.sudah_ditl, 0) + COALESCE(y.belum_ditl, 0) AS total'),
+            DB::raw('ROUND(COALESCE(z.sudah_ditl, 0) / NULLIF(COALESCE(z.sudah_ditl, 0) + COALESCE(y.belum_ditl, 0), 0) * 100, 2) AS persen'),
+            DB::raw('COALESCE(x.verified, 0) AS verified'),
+            DB::raw('ROUND(COALESCE(x.verified, 0) / NULLIF(COALESCE(z.sudah_ditl, 0) + COALESCE(y.belum_ditl, 0), 0) * 100, 2) AS persen_verified'),
+            DB::raw('COALESCE(v.total_durasi, 0) AS durasi')
+        )
+        ->leftJoin(DB::raw('(SELECT
+                a.created_by,
+                MONTH(b.tanggal_mulai) AS bulan,
+                SUM(CASE WHEN a.jam_selesai IS NOT NULL THEN 1 ELSE 0 END) AS sudah_ditl
+            FROM
+                tindak_lanjut a
+            LEFT JOIN
+                agenda b ON a.agenda_id = b.id
+            WHERE
+                YEAR(b.tanggal_mulai) = ' . $tahun . '
+                AND a.deleted_at IS NULL AND b.deleted_at IS NULL
+                AND a.created_by = ' . $user->id . '
+            GROUP BY
+                MONTH(b.tanggal_mulai)) z'), 'z.created_by', '=', 'a.id')
+        ->leftJoin(DB::raw('(SELECT
+                a.created_by,
+                MONTH(b.tanggal_mulai) as bulan,
+                SUM(CASE WHEN a.jam_selesai IS NULL THEN 1 ELSE 0 END) AS belum_ditl
+            FROM
+                tindak_lanjut a
+            LEFT JOIN
+                agenda b ON a.agenda_id = b.id
+            WHERE
+                YEAR(b.tanggal_mulai) = ' . $tahun . '
+                AND a.deleted_at IS NULL AND b.deleted_at IS NULL
+                AND a.created_by = ' . $user->id . '
+            GROUP BY
+                MONTH(b.tanggal_mulai)) y'), 'y.bulan', '=', 'z.bulan')
+        ->leftJoin(DB::raw('(SELECT
+                a.created_by,
+                COUNT(*) AS verified
+            FROM
+                tindak_lanjut a
+            LEFT JOIN
+                agenda b ON a.agenda_id = b.id
+            WHERE
+                a.validated_by IS NOT NULL
+                AND YEAR(b.tanggal_mulai) = ' . $tahun . '
+                AND a.deleted_at IS NULL AND b.deleted_at IS NULL
+                AND a.created_by = ' . $user->id . '
+            GROUP BY
+                MONTH(b.tanggal_mulai)) x'), 'x.created_by', '=', 'a.id')
+        ->leftJoin(DB::raw('(SELECT
+                MONTH(b.tanggal_mulai) as bulan,
+                COUNT(DISTINCT DATE(b.tanggal_mulai)) AS jumlah_hari
+            FROM
+                tindak_lanjut a
+            LEFT JOIN
+                agenda b ON a.agenda_id = b.id
+            WHERE
+                YEAR(b.tanggal_mulai) = ' . $tahun . '
+                AND a.deleted_at IS NULL
+                AND b.deleted_at IS NULL
+                AND a.created_by = ' . $user->id . '
+            GROUP BY
+                MONTH(b.tanggal_mulai)) w'), 'w.bulan', '=', 'z.bulan')
+        ->leftJoin(DB::raw('(SELECT
+                a.created_by,
+                MONTH(b.tanggal_mulai) AS bulan,
+                SUM(TIMESTAMPDIFF(MINUTE, b.jam_mulai, a.jam_selesai)) AS total_durasi
+            FROM
+                tindak_lanjut a
+            LEFT JOIN
+                agenda b ON a.agenda_id = b.id
+            WHERE
+                YEAR(b.tanggal_mulai) = ' . $tahun . '
+                AND a.deleted_at IS NULL AND b.deleted_at IS NULL
+                AND a.created_by = ' . $user->id . '
+            GROUP BY
+                MONTH(b.tanggal_mulai)) v'), 'v.bulan', '=', 'z.bulan')
+        ->whereNull('a.deleted_at')
+        ->where('a.id', $user->id)
+        ->groupBy('z.bulan')
+        ->orderBy('z.bulan')
+        ->get();
+
+    return DataTables::of($data)->make(true);
+}
+
 
     public function kinerja_ajax(Request $request)
     {
         $tahun = $request->tahun;
         $bulan = $request->bulan;
+
         $data = DB::table('users as a')
             ->select(
                 'a.id',
@@ -392,7 +411,8 @@ class AgendaController extends Controller
                 DB::raw('COALESCE(z.sudah_ditl, 0) + COALESCE(y.belum_ditl, 0) AS total'),
                 DB::raw('ROUND(COALESCE(z.sudah_ditl, 0) / NULLIF(COALESCE(z.sudah_ditl, 0) + COALESCE(y.belum_ditl, 0), 0) * 100, 2) AS persen'),
                 DB::raw('COALESCE(x.verified, 0) AS verified'),
-                DB::raw('ROUND(COALESCE(x.verified, 0) / NULLIF(COALESCE(z.sudah_ditl, 0) + COALESCE(y.belum_ditl, 0), 0) * 100, 2) AS persen_verified')
+                DB::raw('ROUND(COALESCE(x.verified, 0) / NULLIF(COALESCE(z.sudah_ditl, 0) + COALESCE(y.belum_ditl, 0), 0) * 100, 2) AS persen_verified'),
+                DB::raw('COALESCE(v.total_durasi, 0) AS durasi')
             )
             ->leftJoin(DB::raw('(SELECT
                     a.created_by,
@@ -432,26 +452,45 @@ class AgendaController extends Controller
                 GROUP BY
                     created_by) x'), 'x.created_by', '=', 'a.id')
             ->leftJoin(DB::raw('(SELECT
-            a.created_by,
-            COUNT(DISTINCT DATE(b.tanggal_mulai)) AS jumlah_hari
-        FROM
-            tindak_lanjut a
-        LEFT JOIN
-            agenda b ON a.agenda_id = b.id
-        WHERE
-            YEAR(b.tanggal_mulai) = ' . $tahun . '
-            AND MONTH(b.tanggal_mulai) = ' . $bulan . '
-            AND a.deleted_at IS NULL
-            AND b.deleted_at IS NULL
-        GROUP BY
-            a.created_by) w'), 'w.created_by', '=', 'a.id')
+                    a.created_by,
+                    COUNT(DISTINCT DATE(b.tanggal_mulai)) AS jumlah_hari
+                FROM
+                    tindak_lanjut a
+                LEFT JOIN
+                    agenda b ON a.agenda_id = b.id
+                WHERE
+                    YEAR(b.tanggal_mulai) = ' . $tahun . '
+                    AND MONTH(b.tanggal_mulai) = ' . $bulan . '
+                    AND a.deleted_at IS NULL
+                    AND b.deleted_at IS NULL
+                GROUP BY
+                    a.created_by) w'), 'w.created_by', '=', 'a.id')
+            ->leftJoin(DB::raw('(SELECT 
+                    a.created_by,
+                    SUM(TIMESTAMPDIFF(MINUTE, b.jam_mulai, a.jam_selesai)) AS total_durasi
+                FROM
+                    tindak_lanjut a
+                LEFT JOIN
+                    agenda b ON a.agenda_id = b.id
+                WHERE
+                    YEAR(b.tanggal_mulai) = ' . $tahun . '
+                    AND MONTH(b.tanggal_mulai) = ' . $bulan . '
+                    AND a.deleted_at IS NULL
+                    AND b.deleted_at IS NULL
+                GROUP BY
+                    a.created_by) v'), 'v.created_by', '=', 'a.id')
             ->whereNull('a.deleted_at')
-            ->whereIn('a.jabatan', ['Tenaga Ahli', 'Manajer Kasus', 'Pendamping Kasus', 'Advokat', 'Paralegal', 'Unit Reaksi Cepat', 'Psikolog', 'Konselor'])
+            ->whereIn('a.jabatan', [
+                'Tenaga Ahli', 'Manajer Kasus', 'Pendamping Kasus',
+                'Advokat', 'Paralegal', 'Unit Reaksi Cepat', 'Psikolog', 'Konselor', 'Penerima Pengaduan'
+            ])
             ->orderBy('a.jabatan')
             ->orderBy('a.name')
             ->get();
+
         return DataTables::of($data)->make(true);
     }
+
 
     public function kinerja_valid(Request $request)
     {
@@ -549,6 +588,16 @@ class AgendaController extends Controller
             }
         }
 
+        $jumlah_durasi = DB::table('agenda as a')
+                        ->leftJoin('tindak_lanjut as b', 'a.id', '=', 'b.agenda_id')
+                        ->where('b.created_by', $user->id)
+                        ->whereNull('a.deleted_at')
+                        ->whereNull('b.deleted_at')
+                        ->whereYear('a.tanggal_mulai', $tahun)
+                        ->whereMonth('a.tanggal_mulai', $bulan)
+                        ->select(DB::raw('SUM(TIMESTAMPDIFF(MINUTE, a.jam_mulai, b.jam_selesai)) as total_durasi'))
+                        ->value('total_durasi');
+
         $jumlah_hari_user = DB::table('agenda as a')
                             ->leftJoin('tindak_lanjut as b', 'a.id', '=', 'b.agenda_id')
                             ->where('b.created_by', $user->id)
@@ -596,6 +645,7 @@ class AgendaController extends Controller
         return view('agenda.kinerja_detail')->with('user', $user)
                         ->with('persen', $persen)
                         ->with('hari_kerja', $hari_kerja)
+                        ->with('jumlah_durasi', $jumlah_durasi)
                         ->with('kurang_hari_kerja', $kurang_hari_kerja)
                         ->with('belum_tl', $belum_tl)
                     ;
@@ -609,7 +659,8 @@ class AgendaController extends Controller
      */
     public function store(Request $request)
     {
-
+        // $url = url('/kinerja/detail?tahun=2025&bulan=1&user_id=211&row-agenda=saas&kode=T9&type_notif=task&agenda_id=1');
+        // dd($url);
         try {
             $notif_receiver = NULL;
             $validator = Validator::make($request->all(), [
@@ -903,6 +954,15 @@ class AgendaController extends Controller
                             $catatan = null;
                             $rtl = null;
                         }
+
+                        if (isset($request->jam_selesai)) {
+                            $jamSelesai = Carbon::parse($request->jam_selesai);
+                            $jamMulai = Carbon::parse($proses->jam_mulai);
+                            $durasi = $jamSelesai->diffInMinutes($jamMulai);
+                        } else { 
+                            $durasi = null;
+                        }
+
                         TindakLanjut::where('created_by', $value)
                         ->where('agenda_id', $proses_id)
                         ->update([
@@ -911,7 +971,8 @@ class AgendaController extends Controller
                             'jam_selesai' => $request->jam_selesai,
                             'catatan' => $catatan,
                             'rtl' => $rtl,
-                            'terlaksana' => $request->terlaksana
+                            'terlaksana' => $request->terlaksana,
+                            'durasi' => $durasi
                         ]);
     
                         if ($request->jam_selesai) {

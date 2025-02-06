@@ -79,6 +79,7 @@
                       <th>No</th>
                       <th>Jabatan</th>
                       <th>Nama Petugas</th>
+                      <th>Durasi (menit)</th>
                       <th>Jumlah Hari</th>
                       <th>Sudah diTL</th>
                       <th>Belum diTL</th>
@@ -194,6 +195,7 @@ Sudah di
         },
         {"data": "jabatan"},
         {"data": "name"},
+        {"data": "durasi"},
         {"data": "jumlah_hari"},
         {"data": "sudah_ditl"},
         {"data": "belum_ditl"},

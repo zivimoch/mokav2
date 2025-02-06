@@ -485,6 +485,7 @@ class KasusController extends Controller
                     ->leftJoin('users as b','a.user_id', 'b.id')
                     ->where('a.klien_id', $klien->id)
                     ->whereNULL('a.deleted_at')
+                    ->orderBy('a.active', 'desc')
                     ->orderBy('a.created_at')
                     ->get();
         if ($petugas->contains('user_id', Auth::user()->id) || Auth::user()->jabatan == 'Super Admin'){
@@ -511,7 +512,7 @@ class KasusController extends Controller
         // spesifik ke yang task & notif
         $notif_data = [
             ['kode' => 'T4', 'type_notif' => 'task'],
-            ['kode' => 'T8', 'type_notif' => 'task'],
+            // ['kode' => 'T8', 'type_notif' => 'task'],
             ['kode' => 'T11', 'type_notif' => 'task'],
             ['kode' => 'T13', 'type_notif' => 'task'],
             ['kode' => 'N10', 'type_notif' => 'notif'],

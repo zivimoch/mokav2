@@ -51,6 +51,7 @@ class DashboardController extends Controller
                         ->where('b.jenis_agenda', 'Manajemen Layanan')
                         ->count();
 
+                        
         // hapus ini setelah evaluasi selesai dan tercapai
         // if (Auth::user()->jabatan == 'Manajer Kasus') {
         //     $user_id = Auth::user()->id;

@@ -35,11 +35,12 @@ class OpsiController extends Controller
 
     public function api_status_pendidikan()
     {
-        $data = ['Belum Sekolah',
+        $data = [
+                'Tidak Diketahui',
+                'Belum Sekolah',
                 'Sekolah (Aktif)',
                 'Putus Sekolah',
-                'Lulus dan Tidak Melanjutkan (Tamat Belajar)',
-                'Tidak Diketahui'
+                'Lulus dan Tidak Melanjutkan (Tamat Belajar)'
             ];
 
         return $data;
@@ -47,14 +48,15 @@ class OpsiController extends Controller
 
     public function api_pendidikan_terakhir()
     {
-        $data = ['Tidak Sekolah',
+        $data = [
+                'Tidak Diketahui',
+                'Tidak Sekolah',
                 'PAUD',
                 'TK',
                 'SD / Sederajat',
                 'SMP / Sederajat',
                 'SMA / Sederajat',
-                'Perguruan Tinggi',
-                'Tidak Diketahui'
+                'Perguruan Tinggi'
             ];
                 
         return $data;
@@ -71,6 +73,7 @@ class OpsiController extends Controller
     public function api_agama()
     {
         $data = [
+                'Tidak Diketahui',
                 'Islam',
                 'Kristen Katolik',
                 'Kristen Protestan',
@@ -86,6 +89,7 @@ class OpsiController extends Controller
     {
         // https://ppid.kaltimprov.go.id/index.php/berita/yuk-simak-berbagai-jenis-suku-di-indonesia
         $data = [
+                'Tidak Diketahui',
                 'Luar Negri',
                 'Suku Bali',
                 'Suku Banjar',
@@ -121,7 +125,9 @@ class OpsiController extends Controller
 
     public function api_pekerjaan()
     {
-        $data = ['Tidak Bekerja', 
+        $data = [
+                'Tidak Diketahui',
+                'Tidak Bekerja', 
                 'Pelajar', 
                 'Ibu Rumah Tangga', 
                 'Swasta', 
@@ -153,7 +159,9 @@ class OpsiController extends Controller
 
     public function api_hubungan_dengan_terlapor()
     {
-        $data = ['Ayah Kandung',
+        $data = [
+                'Tidak Diketahui',
+                'Ayah Kandung',
                 'Ayah Tiri',
                 'Ibu Kandung',
                 'Ibu Tiri',
@@ -196,6 +204,7 @@ class OpsiController extends Controller
     public function api_hubungan_dengan_klien()
     {
         $data = [
+                'Tidak Diketahui',
                 'Diri Sendiri',
                 'Ayah Kandung',
                 'Ayah Tiri',
@@ -1104,6 +1113,11 @@ class OpsiController extends Controller
                 "tahun" => 2024,
                 "bulan" => 12,
                 "hari_kerja" => 20,
+            ],
+            [
+                "tahun" => 2025,
+                "bulan" => 1,
+                "hari_kerja" => 19,
             ],
         ];
 

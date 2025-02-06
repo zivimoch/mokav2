@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DataDAK;
 use App\Exports\DataMasterHubungan;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\DataMasterKlien;
 use App\Exports\DataMasterTerlapor;
+use App\Exports\DataProfile;
 
 class MonitoringController extends Controller
 {
@@ -1700,6 +1702,70 @@ class MonitoringController extends Controller
         return response()->json($response, 200); 
     }
 
+    public function export_profile(Request $request) {
+        $data = DataProfile::data($request);
+        return Excel::download(new DataProfile($data), 'Data profile '.$request->tanggal.' ('.$request->basisTanggal.').'.$request->format);
+    }
+
+    public function rekap_profile(Request $request) {
+        // initial init
+        // basis tanggal dan periode tanggal tergantung inputan
+        $request->merge(['pengelompokan' => 'perbulan']);
+        $request->merge(['basis_wilayah' => 'default']);
+        $request->merge(['wilayah' => 'default']);
+        $request->merge(['penghitungan_usia' => 'lapor']);
+        $request->merge(['regis' => 1]);
+        $request->merge(['arsip' => 0]);
+        $request->merge(['rekaptotal' => null]);
+        $data = [];
+
+        $data['korban_perbulan'] = $this->jumlah_korban($request);
+
+        $request->merge(['pengelompokan' => 'pertahun']);
+        $data['korban_pertahun'] = $this->jumlah_korban($request);
+
+        $request->merge(['rekaptotal' => 1]);
+        $request->merge(['basis_wilayah' => 'tkp']);
+        $data['korban_wilayah_tkp'] = $this->jumlah_korban_wilayah($request);
+        $request->merge(['basis_wilayah' => 'ktp']);
+        $data['korban_wilayah_ktp'] = $this->jumlah_korban_wilayah($request);
+        $request->merge(['basis_wilayah' => 'domisili']);
+        $data['korban_wilayah_domisili'] = $this->jumlah_korban_wilayah($request);
+        $request->merge(['basis_wilayah' => 'satpel']);
+        $data['korban_wilayah_kasatpel'] = $this->jumlah_korban_wilayah($request);
+
+        $request->merge(['wilayah' => 'default']);
+        $request->merge(['basis_wilayah' => 'tkp']);
+        $request->merge(['kategori_klien' => 'total']);
+        $request->merge(['basis_identitas' => 'korban']);
+        $request->merge(['identitas' => 'usia']);
+        $data['korban_usia_korban'] = $this->jumlah_korban_identitas($request);
+        $request->merge(['basis_identitas' => 'terlapor']);
+        $data['korban_usia_terlapor'] = $this->jumlah_korban_identitas($request);
+
+        $request->merge(['identitas' => 'pendidikan']);
+        $request->merge(['basis_identitas' => 'korban']);
+        $data['korban_pendidikan_korban'] = $this->jumlah_korban_identitas($request);
+        $request->merge(['basis_identitas' => 'terlapor']);
+        $data['korban_pendidikan_terlapor'] = $this->jumlah_korban_identitas($request);
+
+        $request->merge(['identitas' => 'pekerjaan']);
+        $request->merge(['basis_identitas' => 'korban']);
+        $data['korban_pekerjaan_korban'] = $this->jumlah_korban_identitas($request);
+        $request->merge(['basis_identitas' => 'terlapor']);
+        $data['korban_pekerjaan_terlapor'] = $this->jumlah_korban_identitas($request);
+
+        $request->merge(['identitas' => 'hubungan']);
+        $request->merge(['basis_identitas' => 'hubungan']);
+        $data['hubungan_korban_terlapor'] = $this->jumlah_korban_identitas($request);
+
+        $data['jumlah_lp'] = $this->jumlah_lp($request);
+        
+        $data['jumlah_pos'] = $this->jumlah_pos($request);
+
+        return response()->json($data, 200);  
+    }
+
     public function export_data_master_klien(Request $request)
     {
         $data = DataMasterKlien::data($request);
@@ -1716,6 +1782,12 @@ class MonitoringController extends Controller
     {
         $data = DataMasterHubungan::data($request);
         return Excel::download(new DataMasterHubungan($data), 'Data master Hubungan Terlapor dengan Korban (Terlapor Siapanya Korban)'.$request->tanggal.' ('.$request->basisTanggal.').'.$request->format);
+    }
+
+    public function export_data_dak(Request $request)
+    {
+        $data = DataDAK::data($request);
+        return Excel::download(new DataDAK($data), 'Template Dana Alokasi Khusus '.$request->tanggal.' (tanggal_layanan).'.$request->format);
     }
 
     public function sheets()
