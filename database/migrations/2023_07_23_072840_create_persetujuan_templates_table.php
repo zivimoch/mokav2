@@ -16,7 +16,7 @@ class CreatePersetujuanTemplatesTable extends Migration
         Schema::create('persetujuan_template', function (Blueprint $table) {
             $table->id();
             $table->string('uuid');
-            $table->enum('kategori', ['persetujuan data', 'persetujuan pelayanan', 'persetujuan terminasi']);
+            $table->enum('kategori', ['persetujuan data', 'persetujuan pelayanan', 'persetujuan terminasi', 'persetujuan rps']);
             $table->string('judul');
             $table->text('konten')->nullable();
             $table->integer('created_by')->nullable();

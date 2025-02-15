@@ -79,6 +79,8 @@
     <div class="col-md-12">
 
         <table class="table" style="width:100%;">
+            <h5 style="font-weight: bold; text-align:center">{{ $persetujuan_template->judul }}</h5>
+            <br>
             <tr>
                 <td colspan="4">{{ $persetujuan_template->konten }}</td>
             </tr>

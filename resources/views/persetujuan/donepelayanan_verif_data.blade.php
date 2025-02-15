@@ -119,6 +119,8 @@
         <input type="text" class="form-control" value="{{ $klien->nama }}" hidden/>
         <textarea name="alamat" class="form-control required-field-agenda" id="alamat" hidden>{{ $klien->alamat }}</textarea>
         <input type="number" name="no_telp" class="form-control required-field-agenda" id="no_telp" value="{{ $klien->no_telp }}" hidden/>
+        <h5 style="font-weight: bold; text-align:center">{{ $persetujuan_template->judul }}</h5>
+        <br>
         <td colspan="4">{{ $persetujuan_template->konten }}</td>
         <br>
         <br>

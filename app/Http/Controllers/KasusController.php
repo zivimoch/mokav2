@@ -34,6 +34,7 @@ use Laravolt\Indonesia\Models\Province;
 use Yajra\DataTables\Facades\DataTables;
 use Validator;
 use Exception;
+use Google\Service\ContainerAnalysis\Assessment;
 use Illuminate\Support\Facades\Schema;
 use Laravolt\Indonesia\Models\City;
 
@@ -605,32 +606,147 @@ class KasusController extends Controller
     // untuk ajax rekap kasus yang bisa dicopas buat WA
     public function rekap(Request $request)
     {
-        $klien = Klien::selectRaw('id, no_klien, nama, tanggal_lahir, TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) as usia, jenis_kelamin')->where('uuid', $request->uuid)->first();
-        $kasus = Kasus::selectRaw('tanggal_pelaporan')->where('id', $klien->id)->first();
-        $terlapor = DB::table('terlapor as a')->selectRaw('a.nama, a.tanggal_lahir, b.value as hubungan')->leftJoin('r_hubungan_terlapor_klien as b', 'a.id', 'b.terlapor_id')->where('b.klien_id', $klien->id)->whereNull('a.deleted_at')->get();
-        $riwayat = RiwayatKejadian::where('klien_id', $klien->id)->whereNull('deleted_at')->orderBy('tanggal')->orderBy('jam')->get();
-        
-        $message = "*[REKAP KASUS]*\n";
-        $message .= "*Diupdate pada : ".now();
-        $message .= "\n=============================\n";
-        $message .= "*DATA KASUS*\n";
-        $message .= "*Nama Klien :* ".$klien->nama." (".$klien->jenis_kelamin.", ".$klien->usia.")\n";
-        $message .= "*No Reg. Klien :* ".$klien->no_klien."\n";
-        $message .= $kasus->tanggal_pelaporan ? "*Tanggal Pelaporan :* ".date('d M Y', strtotime($kasus->tanggal_pelaporan)) : '';
-        $message .= "\n\n=============================\n";
-        $message .= "*KRONOLOGI KEJADIAN*\n";
-        foreach ($riwayat as $key => $value) {
-            $message .= "*- ".date('d M Y', strtotime($value->tanggal))." ".$value->jam."*\n";
-            $message .= $value->keterangan."\n";
+        $klien = DB::table('klien as a')->selectRaw('a.id, a.no_klien, b.tanggal_pelaporan, a.nama, a.tanggal_lahir, TIMESTAMPDIFF(YEAR, a.tanggal_lahir, CURDATE()) as usia, 
+                        a.jenis_kelamin, c.name as kotkab_tkp, d.name as kotkab_ktp, GROUP_CONCAT(DISTINCT " ",f.nama) as kategori_kasus, GROUP_CONCAT(DISTINCT " ",h.nama) as jenis_kekerasan,
+                        GROUP_CONCAT(DISTINCT CONCAT(j.name, " (", j.jabatan, ")") ORDER BY i.created_at SEPARATOR ", ") as petugas')
+                        ->leftJoin('kasus as b', 'a.kasus_id', 'b.id')
+                        ->leftJoin('indonesia_cities as c', 'c.code', 'b.kotkab_id')
+                        ->leftJoin('indonesia_cities as d', 'd.code', 'a.kotkab_id_ktp')
+                        ->leftJoin('t_kategori_kasus as e', 'e.klien_id', 'a.id')
+                        ->leftJoin('m_kategori_kasus as f', 'f.kode', 'e.value')
+                        ->leftJoin('t_jenis_kekerasan as g', 'g.klien_id', 'a.id')
+                        ->leftJoin('m_jenis_kekerasan as h', 'h.kode', 'g.value')
+                        ->leftJoin('petugas as i', 'i.klien_id','a.id')
+                        ->leftJoin('users as j', 'j.id', 'i.user_id')
+                        ->groupBy('a.id')
+            ->where('a.uuid', $request->uuid)
+            ->first();
+
+        $riwayat = RiwayatKejadian::where('klien_id', $klien->id)
+            ->whereNull('deleted_at')
+            ->orderBy('tanggal')
+            ->orderBy('jam')
+            ->get();
+
+        $verif_data = PersetujuanIsi::where('klien_id', $klien->id)
+            ->where('persetujuan_template_id', 1)
+            ->whereNull('deleted_at')
+            ->whereNotNull('tandatangan')
+            ->value('updated_at');
+
+        $spp = PersetujuanIsi::where('klien_id', $klien->id)
+            ->where('persetujuan_template_id', 2)
+            ->whereNull('deleted_at')
+            ->whereNotNull('tandatangan')
+            ->value('updated_at');
+
+        $asesmen_awal = RiwayatKejadian::where('klien_id', $klien->id)
+            ->whereNull('deleted_at')
+            ->value('created_at');
+
+        $intervensi = DB::table('t_keyword as a')
+            ->selectRaw("DATE_FORMAT(d.tanggal_mulai, '%d %b %Y') as date, GROUP_CONCAT(DISTINCT b.keyword ORDER BY b.keyword SEPARATOR ', ') as activity")
+            ->leftJoin('m_keyword as b', 'a.value', 'b.id')
+            ->leftJoin('tindak_lanjut as c', 'c.id', 'a.tindak_lanjut_id')
+            ->leftJoin('agenda as d', 'd.id', 'c.agenda_id')
+            ->where('d.klien_id', $klien->id)
+            ->whereNull('c.deleted_at')
+            ->whereNull('d.deleted_at')
+            ->groupBy('d.tanggal_mulai')
+            ->get();
+
+        // TIMELINE KASUS
+        $timeline = collect([
+            (object) ['date' => $klien->tanggal_pelaporan ? date('d M Y', strtotime($klien->tanggal_pelaporan)) : '', 'activity' => 'Penerimaan Laporan'],
+            (object) ['date' => $verif_data ? date('d M Y', strtotime($verif_data)) : '', 'activity' => 'Tanda Tangan Surat Verifikasi Data'],
+            (object) ['date' => $spp ? date('d M Y', strtotime($spp)) : '', 'activity' => 'Tanda Tangan Surat Pernyataan Persetujuan'],
+            (object) ['date' => $asesmen_awal ? date('d M Y', strtotime($asesmen_awal)) : '', 'activity' => 'Asesmen Awal'],
+        ])->merge($intervensi);
+
+        // Merge all data & group by date
+        $groupedActivities = $timeline->filter(fn($item) => !empty($item->date)) // Remove empty dates
+                            ->sortBy(fn($item) => Carbon::parse($item->date)) // Sort by actual date
+                            ->groupBy('date')
+                            ->map(fn($items, $date) => [
+                                'date' => $date,
+                                'activities' => $items->pluck('activity')->toArray(),
+                            ])->values();
+
+        if ($request->samarkan_nama_klien) {
+            $nama = $klien->nama;
+            $text = $klien->nama;
+            $nama_klien = $this->samarkan_nama_klien($text, $nama);
+        } else {
+            $nama_klien = $klien->nama;
         }
-        $message .= "\n=============================\n";
-        $message .= "*TIMELINE KASUS*\n";
-        $message .= $kasus->tanggal_pelaporan ? "*".date('d M Y', strtotime($kasus->tanggal_pelaporan))."*" : '';
-        $message .= "\n Penerimaan Laporan\n";
-        $message .= $kasus->tanggal_pelaporan ? "*".date('d M Y', strtotime($kasus->tanggal_pelaporan))."*" : '';
-        $message .= "\n Asesmen Awal\n";
-        return $message;
+        // Generate message
+        $message = "<b>[ RINGKASAN KASUS ]</b><br>";
+        $message .= "<b>Direkap pada tanggal :</b> " . now()->format('d M Y H:i') . "<br>";
+        $message .= "=============================<br>";
+        $message .= "<b>DATA KASUS</b><br>";
+        $message .= "<b>Nama Klien :</b> {$nama_klien} ({$klien->jenis_kelamin}, {$klien->usia} tahun)<br>";
+        $message .= "<b>No Reg. Klien :</b> {$klien->no_klien}<br>";
+        $message .= $klien->tanggal_pelaporan ? "<b>Tanggal Pelaporan :</b> " . date('d M Y', strtotime($klien->tanggal_pelaporan)) . "<br>" : "";
+        $message .= "<b>Kategori Kasus :</b> {$klien->kategori_kasus}<br>";
+        $message .= "<b>Jenis Kekerasan :</b> Fisik, Psikis, Seksual<br>";
+        $message .= "<b>TKP :</b> {$klien->kotkab_tkp}<br>";
+        $message .= "<b>KTP :</b> {$klien->kotkab_ktp}<br>";
+        $message .= "=============================<br>";
+        if ($request->tampilkan_kronologi) {
+            $message .= "<b>KRONOLOGI KEJADIAN</b><br>";
+            foreach ($riwayat as $value) {
+                if ($request->samarkan_nama_klien) {
+                    $nama = $klien->nama;
+                    $text = $value->keterangan;
+                    $keterangan = $this->samarkan_nama_klien($text, $nama);
+                } else {
+                    $keterangan = $value->keterangan;
+                }
+                $message .= "<b>" . date('d M Y', strtotime($value->tanggal)) . " {$value->jam}</b><br>";
+                $message .= strip_tags($keterangan) . "<br>"; 
+            }
+            $message .= "<br>";
+            $message .= "=============================<br>";
+        }
+        $message .= "<b>TIMELINE KASUS</b><br>";
+
+        foreach ($groupedActivities as $value) {
+            $message .= "<b>{$value['date']}</b><br>";
+            foreach ($value['activities'] as $activity) {
+                $message .= "- {$activity}<br>";
+            }
+        }
+
+        $message .= "=============================<br>";
+        $message .= "<b>PETUGAS</b><br>";
+        $message .= "{$klien->petugas}<br>";
+
+        return response()->json(['message' => $message]);
     }
+
+
+    function samarkan_nama_klien($text, $nama) {
+        // Normalize name by trimming and converting to lowercase
+        $nama = trim($nama);
+    
+        // Split the name into words
+        $words = explode(' ', $nama);
+    
+        // Extract initials
+        if (count($words) > 1) {
+            $initials = strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
+        } else {
+            $initials = strtoupper(substr($words[0], 0, 2)); // Take first two letters for a single-word name
+        }
+    
+        // Define regex pattern to match the full name case-insensitively
+        $pattern = '/' . preg_quote($nama, '/') . '/i';
+    
+        // Replace full name occurrences with initials
+        return preg_replace($pattern, $initials, $text);
+    }
+    
+
 
     public function approval($uuid, Request $request)
     {

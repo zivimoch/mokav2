@@ -50,12 +50,44 @@ class AgendaController extends Controller
             //             ->whereDate('a.tanggal_mulai', '<=', $request->end)
             //             ->groupBy('a.tanggal_mulai')
             //             ->get();
-            $data = Agenda::select(DB::raw('CONCAT(COUNT(*), " agenda") as title, tanggal_mulai as start'))
-                            ->whereDate('tanggal_mulai', '>=', $request->start)
-                            ->whereDate('tanggal_mulai', '<=', $request->end)
-                            ->whereNotNull('klien_id') // filter agenda layanan saya yang muncul
-                            ->groupBy('tanggal_mulai')
-                            ->get();
+            if ($request->lebih_detail) {
+                $data = DB::table('agenda as a')
+                                ->select(DB::raw('a.uuid, a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, a.keterangan, c.nama, c.no_klien, c.uuid as uuid_klien, GROUP_CONCAT(" ", d.name) as petugas, x.manajer_kasus'))
+                                ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id') 
+                                ->leftJoin('klien as c', 'c.id', 'a.klien_id')
+                                ->leftJoin('users as d', 'd.id', 'b.created_by')
+                                ->leftJoin(DB::raw("(SELECT a.klien_id, b.name AS manajer_kasus 
+                                                    FROM petugas a 
+                                                    LEFT JOIN users b ON a.user_id = b.id 
+                                                    WHERE b.jabatan = 'Manajer Kasus' 
+                                                    AND a.deleted_at IS NULL 
+                                                    AND b.deleted_at IS NULL) AS x"), 'x.klien_id', '=', 'a.klien_id')
+                                ->whereDate('tanggal_mulai', '>=', $request->start)
+                                ->whereDate('tanggal_mulai', '<=', $request->end)
+                                ->whereNotNull('a.klien_id') // filter agenda layanan saya yang muncul
+                                ->whereNull('a.deleted_at')
+                                ->whereNull('b.deleted_at')
+                                ->orderBy('a.tanggal_mulai')
+                                ->orderBy('a.jam_mulai')
+                                ->groupBy('a.id', 'a.uuid', 'a.judul_kegiatan', 'a.tanggal_mulai', 'a.jam_mulai', 'a.keterangan', 'c.nama', 'c.uuid', 'x.manajer_kasus', 'c.no_klien');
+
+                if ($request->jabatan) {  
+                    // filter di halaman detail kasus untuk jabatan
+                    $jabatan = json_decode($request->jabatan);
+                    if (!empty($jabatan)) {
+                        $data = $data->whereIn('d.jabatan', $jabatan);
+                    }
+                }
+                               
+                $data = $data->get();
+            } else {
+                $data = Agenda::select(DB::raw('CONCAT(COUNT(*), " agenda") as title, tanggal_mulai as start'))
+                                ->whereDate('tanggal_mulai', '>=', $request->start)
+                                ->whereDate('tanggal_mulai', '<=', $request->end)
+                                ->whereNotNull('klien_id') // filter agenda layanan saya yang muncul
+                                ->groupBy('tanggal_mulai')
+                                ->get();
+            }
             return response()->json($data);
        }
  

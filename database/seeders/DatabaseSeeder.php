@@ -1383,22 +1383,36 @@ class DatabaseSeeder extends Seeder
             [
                 "uuid" => '2a83d123-3c86-41f8-aee1-ca22l222f462',
                 "kategori" => 'persetujuan data',
-                "judul" => 'Surat Persetujuan Data / Verifikasi Data',
+                "judul" => 'SURAT PERSETUJUAN DATA / VERIFIKASI DATA',
                 "konten" => 'Saya yang bertanda tangan dibawah ini menyatakan bahwa data yang saya laporkan dan bersifat rahasia adalah benar adanya',
                 "created_by" => 1
             ],
             [
                 "uuid" => '2a83d123-3c86-41f8-aee1-ca22l262f462',
                 "kategori" => 'persetujuan pelayanan',
-                "judul" => 'Surat Persetujuan Pelayanan',
+                "judul" => 'SURAT PERNYATAAN PERSETUJUAN',
                 "konten" => '1. Saya yang bertandatangan dibawah ini setuju / tidak setuju untuk melakukan penanganan atas diri saya / anak keluarga saya : ',
                 "created_by" => 1
             ],
             [
                 "uuid" => '5a83d123-3c86-41f8-aee1-ca22l262f462',
                 "kategori" => 'persetujuan terminasi',
-                "judul" => 'Surat Persetujuan Terminasi (Untuk Kasus Ditutup)',
+                "judul" => 'SURAT PERSETUJUAN TERMINASI (Untuk Kasus Ditutup)',
                 "konten" => 'Saya yang bertandatangan dibawah ini menyatakan setuju untuk terminasi kasus',
+                "created_by" => 1
+            ],
+            [
+                "uuid" => '5a83da23-3c86-41f8-ae00-ca22l262f462',
+                "kategori" => 'persetujuan rps',
+                "judul" => 'SURAT PENERIMAAN AKSES PELAYANAN RUMAH PERLINDUNGAN SEMENTARA (RPS)',
+                "konten" => '1. Yang bertanda tangan di bawah atas diri saya/anak keluarga saya : ',
+                "created_by" => 1
+            ],
+            [
+                "uuid" => '5a83do23-3c86-41f8-ae00-ca22l262f464',
+                "kategori" => 'persetujuan rps',
+                "judul" => 'SURAT PENGHENTIAN AKSES PELAYANAN RUMAH PERLINDUNGAN SEMENTARA (RPS)',
+                "konten" => '1. Yang bertanda tangan di bawah atas diri saya/anak keluarga saya : ',
                 "created_by" => 1
             ]
         ];
@@ -1636,7 +1650,157 @@ class DatabaseSeeder extends Seeder
                 "created_by" => 1,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()->addDays(5)
-            ]
+            ],
+            [
+                "uuid" => 'd54ff2c7-0372-41a6-afcf-01c4dd71ac57',
+                "persetujuan_template_id" => 4,
+                "parent_id" => 0,
+                "item" => '2. Telah mendapatkan penjelasan tentang tujuan, manfaat, layanan dan tata tertib pelayanan selama berada di Rumah Perlindungan Sementara (RPS) Pusat Perlindungan Perempuan dan Anak (PPPA) Provinsi DKI Jakarta.',
+                "fillable" => 0,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5)
+            ],
+            [
+                "uuid" => 'd94fx2c7-0372-41a6-afcf-01c4dd71ac57',
+                "persetujuan_template_id" => 4,
+                "parent_id" => 0,
+                "item" => '3. Telah mengisi dan memahami pernyataan di bawah ini dengan memberikan tanda centang (√) pada kolom setuju atau tidak setuju.',
+                "fillable" => 0,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5)
+            ],
+            [
+                "uuid" => 'd94fx2c7-0372-41a6-afcf-01c4dd71ac57',
+                "persetujuan_template_id" => 4,
+                "parent_id" => 19,
+                "item" => 'a. Saya bersedia mendapatkan pendampingan dan tempat perlindungan sementara di RPS.',
+                "fillable" => 1,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5)
+            ],
+            [
+                "uuid" => 'd94fx2c7-037l-41a6-afcf-01c4dd71ac57',
+                "persetujuan_template_id" => 4,
+                "parent_id" => 19,
+                "item" => 'b. Saya bersedia mematuhi tata tertib dan prosedur pelayanan di RPS.',
+                "fillable" => 1,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5)
+            ],
+            [
+                "uuid" => 'd94fx2c7-0z72-41a6-afcf-01c4dd71ac57',
+                "persetujuan_template_id" => 4,
+                "parent_id" => 19,
+                "item" => 'c. Saya bersedia menjaga kerahasiaan lokasi RPS dari pihak-pihak yang tidak berkepentingan.',
+                "fillable" => 1,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5)
+            ],
+            [
+                "uuid" => 'dp4fx2c7-0372-41a6-afcf-01c4dd71lc57',
+                "persetujuan_template_id" => 4,
+                "parent_id" => 0,
+                "item" => '4. Semua informasi dijaga kerahasiaannya oleh PPPA Provinsi DKI Jakarta.',
+                "fillable" => 0,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5)
+            ],
+            [
+                "uuid" => 'dp4fx2c7-0372-41a6-afcf-0sc4dd71lc5k',
+                "persetujuan_template_id" => 4,
+                "parent_id" => 0,
+                "item" => '5. Demikian pernyataan ini dibuat dengan sebenar-benarnya.',
+                "fillable" => 0,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5)
+            ],
+            [
+                "uuid" => 'dp4px1c7-l37w-41a6-afcf-0kc4ddd1l05k',
+                "persetujuan_template_id" => 5,
+                "parent_id" => 0,
+                "item" => '2. Telah selesai mendapatkan layanan di Rumah Perlindungan Sementara (RPS) Pusat Perlindungan Perempuan dan Anak (PPPA) Provinsi DKI Jakarta.',
+                "fillable" => 0,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5)
+            ],
+            [
+                "uuid" => 'dp4px1c7-l37w-41a6-afcf-0kc4ddd1l05k',
+                "persetujuan_template_id" => 5,
+                "parent_id" => 0,
+                "item" => '3. Telah mengisi dan memahami pernyataan di bawah ini dengan memberikan tanda checklist (√) pada kolom setuju atau tidak setuju.',
+                "fillable" => 0,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5)
+            ],
+            [
+                "uuid" => 'dp4px1c7-137w-41a6-afcf-0kc4ddd1l0lk',
+                "persetujuan_template_id" => 5,
+                "parent_id" => 26,
+                "item" => 'a. Setelah selesai mengakses pelayanan RPS, saya bersedia mengakses pelayanan rujukan ke Rumah Aman atau lembaga perlindungan lanjutan.',
+                "fillable" => 1,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5)
+            ],
+            [
+                "uuid" => 'dp4px1c7-l37w-41a6-afcf-0kc4ddd1l05k',
+                "persetujuan_template_id" => 5,
+                "parent_id" => 26,
+                "item" => 'b. Setelah selesai mengakses pelayanan RPS, saya bersedia mengakses pelayanan pemulangan secara mandiri.',
+                "fillable" => 1,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5)
+            ],
+            [
+                "uuid" => 'dp4px1c7-l37w-41ao-afcf-0kckddd1l05k',
+                "persetujuan_template_id" => 5,
+                "parent_id" => 26,
+                "item" => 'c. Setelah selesai mengakses pelayanan RPS, saya bersedia mengakses pelayanan pemulangan dengan dukungan dari keluarga/wali.',
+                "fillable" => 1,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5)
+            ],
+            [
+                "uuid" => 'dp4px1cl-l37w-41a6-afcf-0kc4ddd1lz5k',
+                "persetujuan_template_id" => 5,
+                "parent_id" => 26,
+                "item" => 'd. Setelah selesai mengakses pelayanan RPS, saya berkomitmen untuk kooperatif melanjutkan pelayanan yang ada di PPPA Provinsi DKI Jakarta.',
+                "fillable" => 1,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5)
+            ],
+            [
+                "uuid" => 'dp4px1c7-l37w-4106-afcf-0kc4ddd1l05k',
+                "persetujuan_template_id" => 5,
+                "parent_id" => 0,
+                "item" => '4. Semua informasi dijaga kerahasiaannya oleh PPPA Provinsi DKI Jakarta.',
+                "fillable" => 0,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5)
+            ],
+            [
+                "uuid" => 'dp4px1c7-l37w-41a6-rfcf-0kc4ddd1ls5k',
+                "persetujuan_template_id" => 5,
+                "parent_id" => 0,
+                "item" => '5. Demikian pernyataan ini dibuat dengan sebenar-benarnya.',
+                "fillable" => 0,
+                "created_by" => 1,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()->addDays(5)
+            ],
         ];
         PersetujuanItem::insert($persetujuan_item);
 

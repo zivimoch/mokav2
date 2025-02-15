@@ -207,7 +207,7 @@
             <input type="text" class="form-control" id="jumlah_intervensi_ke" disabled style="background-color:#EEEE">
           </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-9">
           <div class="form-group">
             <label>Tag Petugas (bisa lebih dari 1)</label>
             <select multiple="multiple" data-placeholder="Pilih nama" style="width: 100%;" class="user_id_select" id="user_id_select" style="height: 15px">
@@ -215,6 +215,16 @@
             <div class="invalid-feedback2" id="valid-user_id_select">
               Minimal tag 1 orang.
             </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>Pilih Driver</label>
+            <select id="driver" class="form-control">
+              <option value="" selected>Tanpa Driver</option>
+              <option value="">Bapak Rifki</option>
+            </select>
+            <a href="#">Lihat jadwal driver</a>
           </div>
         </div>
     </div>
@@ -387,7 +397,7 @@
   $("#editAgenda, #tombol_view_agenda").hide();
   $(document).ready(function() {
     // $('.select2').select2();
-    // $('.select2bs4').select2();
+    $('.select2bs4').select2();
     // $('.select-tag').select2({
     //   tags: true,
     //   theme: 'bootstrap4'

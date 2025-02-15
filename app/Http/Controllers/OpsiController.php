@@ -36,7 +36,6 @@ class OpsiController extends Controller
     public function api_status_pendidikan()
     {
         $data = [
-                'Tidak Diketahui',
                 'Belum Sekolah',
                 'Sekolah (Aktif)',
                 'Putus Sekolah',
@@ -49,7 +48,6 @@ class OpsiController extends Controller
     public function api_pendidikan_terakhir()
     {
         $data = [
-                'Tidak Diketahui',
                 'Tidak Sekolah',
                 'PAUD',
                 'TK',
@@ -73,7 +71,6 @@ class OpsiController extends Controller
     public function api_agama()
     {
         $data = [
-                'Tidak Diketahui',
                 'Islam',
                 'Kristen Katolik',
                 'Kristen Protestan',
@@ -89,7 +86,6 @@ class OpsiController extends Controller
     {
         // https://ppid.kaltimprov.go.id/index.php/berita/yuk-simak-berbagai-jenis-suku-di-indonesia
         $data = [
-                'Tidak Diketahui',
                 'Luar Negri',
                 'Suku Bali',
                 'Suku Banjar',
@@ -126,7 +122,6 @@ class OpsiController extends Controller
     public function api_pekerjaan()
     {
         $data = [
-                'Tidak Diketahui',
                 'Tidak Bekerja', 
                 'Pelajar', 
                 'Ibu Rumah Tangga', 
@@ -160,7 +155,6 @@ class OpsiController extends Controller
     public function api_hubungan_dengan_terlapor()
     {
         $data = [
-                'Tidak Diketahui',
                 'Ayah Kandung',
                 'Ayah Tiri',
                 'Ibu Kandung',
@@ -204,7 +198,6 @@ class OpsiController extends Controller
     public function api_hubungan_dengan_klien()
     {
         $data = [
-                'Tidak Diketahui',
                 'Diri Sendiri',
                 'Ayah Kandung',
                 'Ayah Tiri',
@@ -272,7 +265,6 @@ class OpsiController extends Controller
                 'Tidak memiliki tempat yang aman untuk berlindung',
                 'Keluarga menolak keberadaan korban',
                 'Komunitas/masyarakat menolak keberadaan korban',
-                'Tidak Diketahui'
                 ];
                 
         return $data;

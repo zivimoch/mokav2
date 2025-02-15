@@ -22,7 +22,6 @@
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
-
     <!-- Main content -->
     @if (in_array(Auth::user()->jabatan, ['Penerima Pengaduan', 'Super Admin', 'Tenaga Ahli', 'Kepala Instansi', 'Tim Data']))
     <section class="content">
@@ -433,6 +432,46 @@
   </div>
 </div>
 
+<!-- Modal Share Kasus-->
+<div class="modal fade" id="modalShareKasus" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <input type="hidden" id="uuid_klien">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div id="overlayShareKasus" class="overlay dark">
+        <div class="cv-spinner">
+        <span class="spinner"></span>
+        </div>
+      </div>
+      <div class="modal-header">
+        <h5 class="modal-title">Share Ringkasan Kasus</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="shareRekapKasus" style="background-color:aqua;overflow-y: scroll; max-height:500px;"></div>
+        *Perhatian, nama yang tidak sama dengan yang diinputkan tidak akan tersamarkan. Mohon cek ulang data yang akan dishare.  
+        <div class="icheck-primary d-inline">
+          <input type="checkbox" id="samarkan_nama_klien" checked onchange="rekap_kasus()">
+          <label for="samarkan_nama_klien">Samarkan Nama Klien</label>
+        </div>
+        <div class="icheck-primary d-inline">
+          <input type="checkbox" id="tampilkan_kronologi" onchange="rekap_kasus()">
+          <label for="tampilkan_kronologi">Kronologi Kejadian</label>
+        </div>
+        <br>
+      <button class="btn btn-primary copy-button btn-sm" onclick="copyText('shareRekapKasus')">
+        <i class="fas fa-copy"></i> Copy Text
+      </button>
+      <button class="btn btn-success btn-sm" onclick="if(confirm('Jumlah karater yang dapat dishare ke WA terbatas. Agar full text dapat menggunakan tombol Copy Text')) shareWA();">
+        <i class="fab fa-whatsapp"></i> Share WA
+    </button>
+    
+      </div>
+    </div>
+  </div>
+</div>
+
 
 {{-- DataTable --}}
 <script src="{{ asset('adminlte') }}/plugins/datatables/jquery.dataTables.min.js"></script>
@@ -585,7 +624,7 @@
               var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
 
               if (row.jenis_kelamin == 'laki-laki') {
-                return 'Anak Laki-laki'
+                return 'Anak Laki-laki';
               }else if (age >= 18) {
                 return 'Dewasa';
               }else{
@@ -653,7 +692,7 @@
           if ('{{ Auth::user()->jabatan }}' == 'Penerima Pengaduan') {
             $('#buttons').append('<button type="button" class="btn btn-success btn-block" id="terima" onclick="terima_kasus(`'+data.uuid+'`)"><i class="fa fa-check"></i> Terima Kasus</button>');
           }
-          $('#buttons').append('<a href="#" onclick="alert(`Fitur belum tersedia`)" class="btn btn-warning btn-block" id="rekap"><i class="fas fa-stream"></i> Rekap Kasus</a>');
+          $('#buttons').append('<a href="#" onclick="rekap_kasus(`' + data.uuid + '`)" class="btn btn-dark btn-block" id="rekap"><i class="fas fa-share"></i> Share</a>');
           // $('#buttons').append('<a href="#" onclick="rekap_kasus(`' + data.uuid + '`)" class="btn btn-warning btn-block" id="rekap"><i class="fas fa-stream"></i> Rekap Kasus</a>');
           $('#buttons').append('<a href="' + "{{ route('kasus.show', '') }}" + '/' + data.uuid + '" class="btn btn-primary btn-block" id="detail"><i class="fa fa-info-circle"></i> Detail Kasus (Bisa New Tab)</a>');
           if ( data.no_klien == null && "{{ in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Super Admin']) }}") {
@@ -700,7 +739,7 @@
           
          //munculkan tombol
         $('#buttons').html('');
-        $('#buttons').append('<a href="#" onclick="alert(`Fitur belum tersedia`)" class="btn btn-warning btn-block" id="rekap"><i class="fas fa-stream"></i> Rekap Kasus</a>');
+        $('#buttons').append('<a href="#" onclick="rekap_kasus(`' + data.uuid + '`)" class="btn btn-dark btn-block" id="rekap"><i class="fas fa-share"></i> Share</a>');
         // $('#buttons').append('<a href="#" onclick="rekap_kasus(`' + data.uuid + '`)" class="btn btn-warning btn-block" id="rekap"><i class="fas fa-stream"></i> Rekap Kasus</a>');
         $('#buttons').append('<a href="' + "{{ route('kasus.show', '') }}" + '/' + data.uuid + '" class="btn btn-primary btn-block" id="detail"><i class="fa fa-info-circle"></i> Detail Kasus (Bisa New Tab)</a>');
         if ( data.no_klien == null && "{{ in_array(Auth::user()->jabatan, ['Manajer Kasus', 'Penerima Pengaduan', 'Super Admin']) }}") {
@@ -789,18 +828,58 @@
     }
 
     function rekap_kasus(uuid) {
-      $.ajax({
-            url:"{{ route('kasus.rekap') }}",
-            data: {
-              uuid: uuid,
-              _token: '{{csrf_token()}}'
-            },
-            type:'POST',
-            dataType: 'json',
-            success: function( response ) {
-              console.log(response);
-            }
-        });
+      $('#overlayShareKasus').show();
+      $('#modalShareKasus').modal('show');
+
+      if (uuid) {
+        $('#uuid_klien').val(uuid);
+      } else {
+        uuid = $('#uuid_klien').val();
+      }
+      $('#overlayShareKasus').show();
+      $.ajax({  
+        url:"{{ route('kasus.rekap') }}",
+        data: {
+          uuid: uuid,
+          samarkan_nama_klien: $('#samarkan_nama_klien').is(':checked') ? 1 : 0, // Correct way to get checkbox value
+          tampilkan_kronologi: $('#tampilkan_kronologi').is(':checked') ? 1 : 0, // Correct way to get checkbox value
+          _token: '{{csrf_token()}}'
+        },
+        type:'POST',
+        dataType: 'json',
+        success: function( response ) {
+          $('#shareRekapKasus').html(response.message);
+          $('#overlayShareKasus').hide();
+        },
+        error: function(xhr, status, error) {
+            console.log(xhr.responseText);
+            alert('Terjadi kesalahan: ' + error);
+        }
+    });
+    }
+
+    function copyText(divId) {
+      let text = $("#" + divId).html().trim();
+    
+      // Convert <b> to *bold* and <br> to new lines
+      text = text.replace(/<b>(.*?)<\/b>/gi, "*$1*").replace(/<br\s*\/?>/gi, "\n");  
+      
+      let tempTextarea = $("<textarea>");
+      $("body").append(tempTextarea);
+      tempTextarea.val(text).select();
+      document.execCommand("copy");
+      tempTextarea.remove();
+      alert("Text Berhasil Disalin");
+    }
+
+    function shareWA() {
+      let text = $("#shareRekapKasus").html().trim();
+    
+    // Convert <b> to *bold* and <br> to new lines
+    text = text.replace(/<b>(.*?)<\/b>/gi, "*$1*").replace(/<br\s*\/?>/gi, "\n");
+
+    let whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(text);
+    window.open(whatsappUrl, "_blank");
     }
   </script>
 {{-- 

@@ -187,9 +187,12 @@
                 </div>
                 <ul class="todo-list" data-widget="todo-list" id="agendaKasusSaya2"></ul>
 
-                <div style="padding-left: 12px;" class="bg-warning color-palette">
-                  <b style="font-size:20px" id="agendaSemuaHeading2"></b>
-                </div>
+                <div class="bg-warning color-palette d-flex justify-content-between align-items-center p-1">
+                  <b style="font-size:20px; padding-left:10px" id="agendaSemuaHeading2"></b>
+                  <button class="btn btn-dark btn-xs" onclick="loadShareAgenda()">
+                      <i class="fas fa-share"></i> Share
+                  </button>
+              </div>
                 <ul class="todo-list" data-widget="todo-list" id="agendaSemua2"></ul>
               </div>
             </div>
@@ -333,6 +336,45 @@
   </div>
 </div>
 
+<!-- Modal Share Agenda-->
+<div class="modal fade" id="modalShareAgenda" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div id="overlayShareAgenda" class="overlay dark">
+        <div class="cv-spinner">
+        <span class="spinner"></span>
+        </div>
+      </div>
+      <div class="modal-header">
+        <h5 class="modal-title">Share Agenda</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="shareListAgenda" style="background-color:aqua;overflow-y: scroll; max-height:500px;"></div>
+        <label for="">Pilih Agenda Perjabatan</label>
+        <select multiple="multiple" style="width: 100%;" class="select2bs4" id="filterJabatan" onchange="loadShareAgenda()">
+          <option value="Advokat" selected>Advokat</option>
+          <option value="Paralegal">Paralegal</option>
+          <option value="Unit Reaksi Cepat">Unit Reaksi Cepat</option>
+          <option value="Psikolog" selected>Psikolog</option>
+          <option value="Konselor">Konselor</option>
+          <option value="Manajer Kasus">Manajer Kasus</option>
+          <option value="Pendamping Kasus">Pendamping Kasus</option>
+        </select>
+      <button class="btn btn-primary copy-button btn-sm" onclick="copyText('shareListAgenda')">
+        <i class="fas fa-copy"></i> Copy Text
+      </button>
+      <button class="btn btn-success btn-sm" onclick="if(confirm('Jumlah karater yang dapat dishare ke WA terbatas. Agar full text dapat menggunakan tombol Copy Text')) shareWA();">
+        <i class="fab fa-whatsapp"></i> Share WA
+    </button>
+    
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
 <script src="{{ asset('/source/js/validation.js') }}"></script>
 
@@ -400,7 +442,6 @@ function displayMessage(message) {
 loadAgenda('{{  date("Y-m-d") }}',2);
 function loadAgenda(tanggal_mulai, id) {
  $('#overlayListAgenda').show();
-  console.log(tanggal_mulai);
   $.ajax({
     type: "GET",
     url: "{{ env('APP_URL') }}/agenda/showdate/" + tanggal_mulai,
@@ -460,6 +501,62 @@ function loadAgenda(tanggal_mulai, id) {
       $('#overlayListAgenda').hide();
     }
 });
+}
+
+function loadShareAgenda() {
+  $('#overlayShareAgenda').show();
+  $('#modalShareAgenda').modal('show');
+
+  let start = new Date().toISOString().split("T")[0]; 
+    let end = new Date();
+    end.setMonth(end.getMonth() + 1);
+    end = end.toISOString().split("T")[0];
+    filterJabatan = $('#filterJabatan').val();
+    $.ajax({
+      type: "GET",
+      url: `{{ env('APP_URL') }}/agenda?lebih_detail=1&start=${start}&end=${end}&jabatan=`+encodeURIComponent(JSON.stringify(filterJabatan)),
+      success: function (response) {
+        let days = {};
+
+        // Convert month numbers to Indonesian month names
+        const monthNames = [
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+        
+        // Convert day names to Indonesian
+        const dayNames = [
+            "Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"
+        ];
+
+        // Group activities by date
+        response.forEach(item => {
+            if (!days[item.tanggal_mulai]) {
+                days[item.tanggal_mulai] = [];
+            }
+            days[item.tanggal_mulai].push(item);
+        });
+
+        let result = "";
+        $.each(days, function(date, activities) {
+            let dateObj = new Date(date);
+            let dayName = dayNames[dateObj.getDay()];
+            let monthName = monthNames[dateObj.getMonth()];
+            let formattedDate = `${dayName}, ${dateObj.getDate()} ${monthName} ${dateObj.getFullYear()}<br>`;
+            
+            result += `${formattedDate}`;
+
+            activities.forEach((item, index) => {
+              result += `${index + 1}. ${item.judul_kegiatan}, klien <b>${(item.nama ?? "").trim()}</b> ${(item.no_klien ? `(${item.no_klien.trim()})` : "")}, petugas <b>${(item.petugas ?? "").trim()}</b>. (MK <b>${(item.manajer_kasus ?? "-").trim()}</b>) — ${item.jam_mulai}<br>`;
+            });
+
+            result += `<br>`; // Add spacing between dates
+        });
+
+        $('#shareListAgenda').html(result);
+        $('#overlayShareAgenda').hide();
+      }
+  });
 }
 
 function loadPengumuman() {
