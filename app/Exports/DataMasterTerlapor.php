@@ -43,6 +43,7 @@ class DataMasterTerlapor implements FromCollection, WithHeadings, WithStyles
             'Nama Korban',
             'Tempat Lahir Terlapor',
             'Tanggal Lahir Terlapor',
+            'Usia',
             'Jenis Kelamin Terlapor',
             'Pendidikan Terlapor',
             'Status Pendidikan Terlapor',
@@ -149,6 +150,7 @@ class DataMasterTerlapor implements FromCollection, WithHeadings, WithStyles
 
         $query = DB::select("SELECT 
                         a.nik, a.nama, COUNT(*) AS jumlah_korban, GROUP_CONCAT(' ', c.nama) AS korban, a.tempat_lahir, a.tanggal_lahir,
+                        TIMESTAMPDIFF(YEAR, a.tanggal_lahir, CURDATE()) AS usia,
                         a.jenis_kelamin, a.pendidikan, a.status_pendidikan, a.pekerjaan, a.status_kawin,  y.kategori_kasus, x.jenis_kekerasan, w.bentuk_kekerasan, GROUP_CONCAT(' ', s.supervisor_kasus)
                         FROM 
                         terlapor a LEFT JOIN kasus b ON a.kasus_id = b.id 

@@ -120,6 +120,7 @@ Route::middleware('auth')->group(function () {
     Route::get('agenda', [AgendaController::class, 'index'])->name('agenda');
     Route::get('agenda/api_index', [AgendaController::class, 'api_index']);
     // Route::get('agenda/ubah_value_keyword', [AgendaController::class, 'ubah_value_keyword']);
+    Route::post('agenda/rekap', [AgendaController::class, 'rekap'])->name('agenda.rekap');
     Route::get('agenda/resume_layanan', [AgendaController::class, 'resume_layanan']);
     Route::get('agenda/show/{uuid}', [AgendaController::class, 'show'])->name('agenda.show');
     Route::get('agenda/showdate/{date}', [AgendaController::class, 'showdate'])->name('agenda.showdate');
@@ -196,6 +197,7 @@ Route::middleware('auth')->group(function () {
     Route::get('export_data_master_klien/', [MonitoringController::class, 'export_data_master_klien'])->name('export_data_master_klien');
     Route::get('export_data_master_terlapor/', [MonitoringController::class, 'export_data_master_terlapor'])->name('export_data_master_terlapor');
     Route::get('export_data_master_hubungan/', [MonitoringController::class, 'export_data_master_hubungan'])->name('export_data_master_hubungan');
+    Route::get('export_data_layanan_per_keyword/', [MonitoringController::class, 'export_data_layanan_per_keyword'])->name('export_data_layanan_per_keyword');
     Route::get('export_data_dak/', [MonitoringController::class, 'export_data_dak'])->name('export_data_dak');
     Route::get('export_profile/', [MonitoringController::class, 'export_profile'])->name('export_profile');
 });

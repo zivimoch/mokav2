@@ -179,7 +179,7 @@ class AgendaController extends Controller
                     ->orderBy('a.tanggal_mulai')
                     ->orderBy('a.jam_mulai')
                     ->select(DB::raw('a.uuid as uuid_agenda, b.uuid, b.id as tindak_lanjut_id, a.tanggal_mulai, a.jam_mulai, a.klien_id, b.tanggal_selesai, 
-                    b.jam_selesai, b.durasi, a.judul_kegiatan, a.keterangan, b.lokasi, b.catatan, b.rtl, b.terlaksana, c.name, b.created_by, z.judul, z.uuid_dokumen, d.name as petugas, d.jabatan, b.validated_by')
+                    b.jam_selesai, b.durasi, a.judul_kegiatan, b.lokasi, b.keterangan, b.catatan, b.rtl, b.terlaksana, c.name, b.created_by, z.judul, z.uuid_dokumen, d.name as petugas, d.jabatan, b.validated_by')
                     , DB::raw('DATE_FORMAT(a.tanggal_mulai, "%W") as day'));
 
                     if ($request->belumtl == 1) { 
@@ -282,6 +282,125 @@ class AgendaController extends Controller
             $datas2->tanggal_mulai_formatted = date('d M Y', strtotime($datas2->tanggal_mulai));
         }
         return DataTables::of($datas)->make(true);
+    }
+
+    // untuk ajax rekap agenda yang bisa dicopas buat WA
+    public function rekap(Request $request)
+    {
+
+        $data = DB::table('tindak_lanjut as a')
+                    ->leftJoin('agenda as b', 'a.agenda_id', 'b.id')
+                    ->leftJoin('users as c', 'c.id', 'a.created_by')
+                    ->where('a.uuid', $request->uuid_tl)
+                    ->selectRaw('b.judul_kegiatan, b.tanggal_mulai, b.jam_mulai, b.klien_id, b.intervensi_ke, a.id as tindak_lanjut_id, a.agenda_id, a.tanggal_selesai, a.jam_selesai, a.lokasi, a.keterangan, a.catatan, a.rtl, c.name as pembuat_laporan')
+                    ->first();
+        $data->petugas = DB::table('tindak_lanjut as a')
+                            ->selectRaw('b.name, b.jabatan')
+                            ->leftJoin('users as b', 'a.created_by', 'b.id')
+                            ->where('a.agenda_id', $data->agenda_id)
+                            ->whereNull('a.deleted_at')
+                            ->get();
+        
+        // judul kegiatan
+        $judul_kegiatan = $data->judul_kegiatan;
+        // deskripsi proses
+        $keterangan = $data->keterangan;
+        // deskripsi hasil
+        $catatan = $data->catatan;
+        // rencana tindak lanjut
+        $rtl = $data->rtl;
+
+        if ($data->klien_id) {
+            $data->klien = DB::table('klien as a')->selectRaw('a.id, b.id as kasus_id, a.no_klien, b.tanggal_pelaporan, a.nama, a.tanggal_lahir, TIMESTAMPDIFF(YEAR, a.tanggal_lahir, CURDATE()) as usia, 
+                    a.jenis_kelamin, c.name as kotkab_tkp, d.name as kotkab_ktp, GROUP_CONCAT(DISTINCT " ",f.nama) as kategori_kasus, GROUP_CONCAT(DISTINCT " ",h.nama) as jenis_kekerasan,
+                    GROUP_CONCAT(DISTINCT CONCAT(j.name, " (", j.jabatan, ")") ORDER BY i.created_at SEPARATOR ", ") as petugas')
+                    ->leftJoin('kasus as b', 'a.kasus_id', 'b.id')
+                    ->leftJoin('indonesia_cities as c', 'c.code', 'b.kotkab_id')
+                    ->leftJoin('indonesia_cities as d', 'd.code', 'a.kotkab_id_ktp')
+                    ->leftJoin('t_kategori_kasus as e', 'e.klien_id', 'a.id')
+                    ->leftJoin('m_kategori_kasus as f', 'f.kode', 'e.value')
+                    ->leftJoin('t_jenis_kekerasan as g', 'g.klien_id', 'a.id')
+                    ->leftJoin('m_jenis_kekerasan as h', 'h.kode', 'g.value')
+                    ->leftJoin('petugas as i', 'i.klien_id','a.id')
+                    ->leftJoin('users as j', 'j.id', 'i.user_id')
+                    ->groupBy('a.id')
+                    ->where('a.id', $data->klien_id)
+                    ->first();
+            $data->terlapor = DB::table('terlapor as a')->selectRaw('a.nama, a.jenis_kelamin, TIMESTAMPDIFF(YEAR, a.tanggal_lahir, CURDATE()) as usia, b.value as hubungan')
+                    ->leftJoin('r_hubungan_terlapor_klien as b', 'a.id', 'b.terlapor_id')
+                    ->where('a.kasus_id', $data->klien->kasus_id)
+                    ->whereNull('a.deleted_at')
+                    ->get();
+            $data->keyword = DB::table('t_keyword as a')
+                                    ->leftJoin('m_keyword as b', 'a.value', 'b.id')
+                                    ->where('a.tindak_lanjut_id', $data->tindak_lanjut_id)
+                                    ->selectRaw('GROUP_CONCAT(DISTINCT " ", b.keyword) as keywords')
+                                    ->groupBy('a.tindak_lanjut_id')
+                                    ->value('keywords');
+            $nama_klien = $data->klien->nama;
+            if ($request->samarkan_nama_klien) {
+                // nama klien
+                $nama = $data->klien->nama;
+                $text = $data->klien->nama;
+                $nama_klien = (new KasusController())->samarkan_nama($text, $nama);
+                // judul kegiatan
+                $judul_kegiatan = (new KasusController())->samarkan_nama($judul_kegiatan, $nama);
+                // deskripsi proses
+                $keterangan = (new KasusController())->samarkan_nama($keterangan, $nama);
+                // deskripsi hasil
+                $catatan = (new KasusController())->samarkan_nama($catatan, $nama);
+                // rencana tindak lanjut
+                $rtl = (new KasusController())->samarkan_nama($rtl, $nama);
+            }
+        }
+        // Generate message
+        $message = "<b>[ LAPORAN KEGIATAN ]</b><br>";
+        $message .= "<b>Direkap pada tanggal :</b> " . now()->format('d M Y H:i') . "<br>";
+        $message .= "=============================<br>";
+        $message .= "<b>Judul Kegiatan :</b> {$judul_kegiatan}<br>";
+        $message .= "<b>Tanggal / Waktu :</b> ". date('d M Y', strtotime($data->tanggal_mulai)).", $data->jam_mulai s/d $data->jam_selesai<br>";
+        if ($data->klien_id) {
+            $message .= "<b>Intervensi Ke :</b> {$data->intervensi_ke}<br>";
+        }
+        $message .= "<b>Lokasi Kegiatan :</b> {$data->lokasi}<br>";
+        if ($data->klien_id) {
+            $message .= "<b>Detail Layanan / Keyword :</b> {$data->keyword }<br>";
+            if ($request->deskripsi_proses) {
+                $message .= "<b>Deskripsi Proses :</b> {$keterangan}<br>";
+            }
+            if ($request->deskripsi_hasil) {
+                $message .= "<b>Deskripsi Hasil :</b> {$catatan }<br>";
+            }
+            if ($request->rencana_tindak_lanjut) {
+                $message .= "<b>Rencana Tindak Lanjut :</b> {$rtl }<br>";
+            }
+            if ($request->data_kasus) {
+                $message .= "=============================<br>";
+                $message .= "<b>DATA KASUS</b><br>";
+                $message .= "<b>Nama Klien :</b> {$nama_klien} ({$data->klien->jenis_kelamin}, {$data->klien->usia} tahun)<br>";
+                $message .= "<b>No Reg. Klien :</b> {$data->klien->no_klien}<br>";
+                $message .= "<b>Kategori Kasus :</b> {$data->klien->kategori_kasus}<br>";
+                $message .= "<b>Jenis Kekerasan :</b> {$data->klien->jenis_kekerasan}<br>";
+                $message .= "<b>Terlapor :</b><br>";
+                foreach ($data->terlapor as $value) {
+                    if ($request->samarkan_nama_klien) {
+                        $nama = $value->nama;
+                        $text = $value->nama;
+                        $nama_terlapor = (new KasusController())->samarkan_nama($text, $nama);
+                    } else {
+                        $nama_terlapor = $value->nama;
+                    }
+                    $message .= "- {$nama_terlapor} ({$value->jenis_kelamin}, {$value->usia} tahun) — {$value->hubungan}<br>";
+                }
+            }
+        }
+        $message .= "=============================<br>";
+        $message .= "<b>PETUGAS</b><br>";
+        foreach ($data->petugas as $value) {
+            $message .= "{$value->name} ({$value->jabatan}), ";
+        }
+
+        return response()->json(['message' => $message]);
     }
 
     public function kinerja(Request $request)
@@ -514,7 +633,7 @@ class AgendaController extends Controller
             ->whereNull('a.deleted_at')
             ->whereIn('a.jabatan', [
                 'Tenaga Ahli', 'Manajer Kasus', 'Pendamping Kasus',
-                'Advokat', 'Paralegal', 'Unit Reaksi Cepat', 'Psikolog', 'Konselor', 'Penerima Pengaduan'
+                'Advokat', 'Paralegal', 'Unit Reaksi Cepat', 'Psikolog', 'Konselor', 
             ])
             ->orderBy('a.jabatan')
             ->orderBy('a.name')
@@ -712,12 +831,12 @@ class AgendaController extends Controller
                 $user_id = NULL;
             }
 
-            if ($request->klien_id) {
-                # jika ada klien_id (agenda layanan) maka input catatan & rtl kosong
-                $keterangan = $request->keterangan;
-            }else{
-                $keterangan = null;
-            }
+            // if ($request->klien_id) {
+            //     # jika ada klien_id (agenda layanan) maka input catatan & rtl kosong
+            //     $keterangan = $request->keterangan;
+            // }else{
+            //     $keterangan = null;
+            // }
             //simpan data agenda
             $data_insert = [
                 'klien_id'     => $request->klien_id, 
@@ -725,7 +844,7 @@ class AgendaController extends Controller
                 'judul_kegiatan'   => $request->judul_kegiatan, 
                 'tanggal_mulai'   => $request->tanggal_mulai,
                 'jam_mulai'   => $request->jam_mulai,
-                'keterangan'   => $keterangan
+                // 'keterangan'   => $keterangan
             ];
             if (!isset($request->uuid)) {
                 $data_insert['created_by'] = Auth::user()->id;
@@ -980,9 +1099,11 @@ class AgendaController extends Controller
                         // jika edit dan id usernya adalah dirinya sendiri meka edit laporan tindak lanjut
                         if ($klien && $klien->id) {
                             # jika ada klien_id (agenda layanan) maka input catatan & rtl kosong
+                            $keterangan = $request->keterangan;
                             $catatan = $request->catatan;
                             $rtl = $request->rtl;
                         }else{
+                            $keterangan = null;
                             $catatan = null;
                             $rtl = null;
                         }
@@ -1001,6 +1122,7 @@ class AgendaController extends Controller
                             'lokasi' => $request->lokasi,
                             'tanggal_selesai' => $request->tanggal_mulai, //tanggal selesai = tanggal mulai, karna kita main jadwanya per tanggal
                             'jam_selesai' => $request->jam_selesai,
+                            'keterangan' => $keterangan,
                             'catatan' => $catatan,
                             'rtl' => $rtl,
                             'terlaksana' => $request->terlaksana,
@@ -1129,7 +1251,7 @@ class AgendaController extends Controller
     {
         try {
             $agenda = DB::table('agenda as a')
-                            ->select(DB::raw('a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, a.keterangan, c.nama, b.lokasi, b.jam_selesai, b.catatan'))
+                            ->select(DB::raw('a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, c.nama, b.lokasi, b.jam_selesai, b.keterangan, b.catatan'))
                             ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id') 
                             ->leftJoin('klien as c', 'c.id', 'a.klien_id')
                             ->where('b.uuid', $uuid)
@@ -1181,7 +1303,7 @@ class AgendaController extends Controller
             $agenda_kasus_saya = $agenda_kasus_saya->get();
 
             $agenda_saya = DB::table('agenda as a')
-                            ->select(DB::raw('a.uuid, a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, a.keterangan, c.nama, c.uuid as uuid_klien, b.lokasi, b.jam_selesai, b.catatan, b.created_by'))
+                            ->select(DB::raw('a.uuid, a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, c.nama, c.uuid as uuid_klien, b.lokasi, b.jam_selesai, b.keterangan, b.catatan, b.created_by'))
                             ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id') 
                             ->leftJoin('klien as c', 'c.id', 'a.klien_id')
                             ->where('a.tanggal_mulai', $date)
@@ -1221,7 +1343,7 @@ class AgendaController extends Controller
                     // ->where('b.created_by', Auth::user()->id)
                     ->where('a.uuid', $uuid)
                     ->whereNull('b.deleted_at')
-                    ->select(DB::raw('a.id, b.id as tindak_lanjut_id, a.tanggal_mulai, a.jam_mulai, a.klien_id, a.intervensi_ke as intervensi_ke_agenda, d.nama, d.intervensi_ke, d.uuid as uuid_klien, a.uuid, b.tanggal_selesai, b.jam_selesai, a.judul_kegiatan, a.keterangan, b.lokasi, b.catatan, b.rtl, c.name, b.created_by'))
+                    ->select(DB::raw('a.id, b.id as tindak_lanjut_id, a.tanggal_mulai, a.jam_mulai, a.klien_id, a.intervensi_ke as intervensi_ke_agenda, d.nama, d.intervensi_ke, d.uuid as uuid_klien, a.uuid, b.tanggal_selesai, b.jam_selesai, a.judul_kegiatan, b.lokasi, b.keterangan, b.catatan, b.rtl, c.name, b.created_by'))
                     ->first();
         $data_tindak_lanjut = DB::table('agenda as a')
                     ->leftJoin('tindak_lanjut as b', 'b.agenda_id', 'a.id')
@@ -1230,7 +1352,7 @@ class AgendaController extends Controller
                     ->where('b.created_by', $request->petugas)
                     ->where('a.uuid', $uuid)
                     ->whereNull('b.deleted_at')
-                    ->select(DB::raw('a.id as agenda_id, b.id as tindak_lanjut_id, a.tanggal_mulai, a.jam_mulai, a.klien_id, d.nama, a.uuid, b.tanggal_selesai, b.jam_selesai, a.judul_kegiatan, a.keterangan, b.lokasi, b.catatan, b.rtl, c.name, c.jabatan, b.created_by'))
+                    ->select(DB::raw('a.id as agenda_id, b.id as tindak_lanjut_id, a.tanggal_mulai, a.jam_mulai, a.klien_id, d.nama, a.uuid, b.uuid as uuid_tl, b.tanggal_selesai, b.jam_selesai, a.judul_kegiatan, b.lokasi, b.keterangan, b.catatan, b.rtl, c.name, c.jabatan, b.created_by'))
                     ->first();
         $data->data_tindak_lanjut = $data_tindak_lanjut;
                     

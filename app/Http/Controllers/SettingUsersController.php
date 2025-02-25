@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Petugas;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Exception;
@@ -82,6 +83,15 @@ class SettingUsersController extends Controller
 
             if (isset($request->kotkab_id)) {
                 $data['kotkab_id'] = $request->kotkab_id;
+            }
+
+
+
+            if ($request->active == 0) {
+                $user = User::where('uuid', $request->uuid)->first();
+                // jika mengubah menjadi tidak aktif, maka semua kasus dijadikan 0 (sekunder)
+                $update = Petugas::where('user_id', $user->id)->update(['active' => 0]);
+
             }
             
             //create data

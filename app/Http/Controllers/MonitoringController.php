@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\DataDAK;
+use App\Exports\DataLayananPerKeyword;
 use App\Exports\DataMasterHubungan;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -1782,6 +1783,11 @@ class MonitoringController extends Controller
     {
         $data = DataMasterHubungan::data($request);
         return Excel::download(new DataMasterHubungan($data), 'Data master Hubungan Terlapor dengan Korban (Terlapor Siapanya Korban)'.$request->tanggal.' ('.$request->basisTanggal.').'.$request->format);
+    }
+
+    public function export_data_layanan_per_keyword(Request $request)
+    {
+        return Excel::download(new DataLayananPerKeyword($request), 'Data layanan seluruh petugas per detail layanan'.$request->tanggal.' (tanggal layanan).'.$request->format);
     }
 
     public function export_data_dak(Request $request)

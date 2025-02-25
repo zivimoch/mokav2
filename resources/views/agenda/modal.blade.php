@@ -79,11 +79,6 @@
             <td style="width: 1%"><b>:</b></td>
             <td id="viewIntervensiKe"></td>
           </tr>
-          <tr class="viewAgendaLayanan">
-            <td style="width: 20%"><b>Deskripsi Proses </b></td>
-            <td style="width: 1%"><b>:</b></td>
-            <td id="viewProses"></td>
-          </tr>
           <tr>
             <td colspan="3">
               <b>Tindak Lanjut Yang Dilakukan Oleh <span id="viewTLPetugas" style="color: blue"></span> : </b>
@@ -105,6 +100,11 @@
             <td id="viewLayanan"></td>
           </tr>
           <tr class="viewAgendaLayanan">
+            <td style="width: 20%"><b>Deskripsi Proses </b></td>
+            <td style="width: 1%"><b>:</b></td>
+            <td id="viewProses"></td>
+          </tr>
+          <tr class="viewAgendaLayanan">
             <td style="width: 20%"><b>Deskripsi Hasil </b></td>
             <td style="width: 1%"><b>:</b></td>
             <td id="viewHasil"></td>
@@ -117,6 +117,7 @@
         </table>
       </div>
       <div class="modal-footer">
+        <a href="#" onclick="rekap_agenda()" class="btn btn-dark btn-block" id="rekap"><i class="fas fa-share"></i> Share</a>
         <button type="button" class="btn btn-primary btn-block" onclick="alert('fitur belum tersedia')"><i class="fas fa-print"></i> Print Laporan Kegiatan Ini</button>
       </div>
     </div>
@@ -134,6 +135,7 @@
     </div>
     <div class="modal-body"  style="margin-bottom: -15px">
     <input type="hidden" name="uuid" id="uuid">
+    <input type="hidden" name="uuid_tl" id="uuid_tl">
     {{-- <select name="supervisor_id" class="form-control select2bs4" id="supervisor_id">
       <option value="0"></option>
       <option value="cek">cek</option>
@@ -220,21 +222,15 @@
         <div class="col-md-3">
           <div class="form-group">
             <label>Pilih Driver</label>
-            <select id="driver" class="form-control">
-              <option value="" selected>Tanpa Driver</option>
+            <select id="driver" class="form-control" disabled>
+              <option value="" selected>Fitur belum tersedia..</option>
+              <option value="">Tanpa Driver</option>
               <option value="">Bapak Rifki</option>
             </select>
-            <a href="#">Lihat jadwal driver</a>
+            <a href="#" onclick="alert('Fitur belum tersedia..')">Lihat jadwal driver</a>
           </div>
         </div>
     </div>
-    <div class="form-group form-group-layanan">
-        <label>Deskripsi Proses<span class="text-danger required-layanan">*</span></label>
-        <textarea name="" class="form-control tinymce" id="keterangan-agenda" style="background-color:red"></textarea>
-        <div class="invalid-feedback2" id="valid-keterangan-agenda">
-          Deskripsi Proses wajib diisi jika agenda layanan.
-        </div>  
-      </div>
     {{-- <div class="form-group">
         <label>Penjadwalan Layanan</label>
         <select class="form-control" id="penjadwalan_layanan" onchange="penjadwalan_layanan()">
@@ -309,6 +305,14 @@
                   Dokumen pendukung wajib diisi jika menTL Penjadwalan Layanan.
                 </div>  
               </div> --}}
+
+              <div class="form-group form-group-layanan">
+                <label>Deskripsi Proses<span class="text-danger required-layanan">*</span></label>
+                <textarea name="" class="form-control tinymce" id="keterangan-agenda" style="background-color:red"></textarea>
+                <div class="invalid-feedback2" id="valid-keterangan-agenda">
+                  Deskripsi Proses wajib diisi jika agenda layanan.
+                </div>  
+              </div>
               <div class="form-group form-group-layanan">
                   <label>Deskripsi Hasil<span class="text-danger required-layanan">*</span></label>
                   <textarea name="" class="form-control tinymce" id="catatan-agenda" cols="30" rows="2"></textarea>
@@ -377,6 +381,57 @@
 
   </div>
 </div>
+</div>
+
+<!-- Modal Share Agenda-->
+<div class="modal fade" id="modalShareLaporanKegiatan" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div id="overlayLaporanKegiatan" class="overlay dark">
+        <div class="cv-spinner">
+        <span class="spinner"></span>
+        </div>
+      </div>
+      <div class="modal-header">
+        <h5 class="modal-title">Share Laporan Kegiatan</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="shareRekapAgenda" style="background-color:aqua;overflow-y: scroll; max-height:500px;"></div>
+        *Perhatian, nama yang tidak sama dengan yang diinputkan tidak akan tersamarkan. Mohon cek ulang data yang akan dishare.  
+        <div class="icheck-primary d-inline">
+          <input type="checkbox" id="samarkan_nama_klien_agenda" checked onchange="rekap_agenda()">
+          <label for="samarkan_nama_klien_agenda">Samarkan Nama Klien</label>
+        </div>
+        <div class="icheck-primary d-inline">
+          <input type="checkbox" id="deskripsi_proses" checked onchange="rekap_agenda()">
+          <label for="deskripsi_proses">Deskripsi Proses</label>
+        </div>
+        <div class="icheck-primary d-inline">
+          <input type="checkbox" id="deskripsi_hasil" checked onchange="rekap_agenda()">
+          <label for="deskripsi_hasil">Deskripsi Hasil</label>
+        </div>
+        <div class="icheck-primary d-inline">
+          <input type="checkbox" id="rencana_tindak_lanjut" checked onchange="rekap_agenda()">
+          <label for="rencana_tindak_lanjut">RTL</label>
+        </div>
+        <div class="icheck-primary d-inline">
+          <input type="checkbox" id="data_kasus" onchange="rekap_agenda()">
+          <label for="data_kasus">Data Kasus</label>
+        </div>
+        <br>
+      <button class="btn btn-primary copy-button btn-sm" onclick="copyText('shareRekapAgenda')">
+        <i class="fas fa-copy"></i> Copy Text
+      </button>
+      <button class="btn btn-success btn-sm" onclick="if(confirm('Jumlah karater yang dapat dishare ke WA terbatas. Agar full text dapat menggunakan tombol Copy Text')) shareWA();">
+        <i class="fab fa-whatsapp"></i> Share WA
+    </button>
+    
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="{{ asset('/source/js/validation.js') }}"></script>
@@ -456,10 +511,12 @@
           ) {
           // jika ada klien dan dia mau bikin TL maka harus ada deskripsi hasil dan rtl
           $("#keyword-agenda").addClass("required-field-agenda");
+          $("#keterangan-agenda").addClass("required-field-agenda");
           $("#catatan-agenda").addClass("required-field-agenda");
           $("#rtl-agenda").addClass("required-field-agenda");
         }else{
           $("#keyword-agenda").removeClass("required-field-agenda");
+          $("#keterangan-agenda").removeClass("required-field-agenda");
           $("#catatan-agenda").removeClass("required-field-agenda");
           $("#rtl-agenda").removeClass("required-field-agenda");
         }
@@ -510,13 +567,13 @@
                   judul_kegiatan: $('#judul_kegiatan').val(),
                   tanggal_mulai: $("#tanggal_mulai").val(),
                   jam_mulai: $("#jam_mulai-agenda").val(),
-                  keterangan: tinyMCE.get('keterangan-agenda').getContent(), // deskripsi proses
                   klien_id: $("#klien_id_select").val(),
                   user_id: $("#user_id_select").val(),
                   intervensi_ke: $("#jumlah_intervensi_ke").val(),
                   lokasi: $("#lokasi").val(),
                   jam_selesai: $("#jam_selesai").val(),
                   keyword: $("#keyword-agenda").val(),
+                  keterangan: tinyMCE.get('keterangan-agenda').getContent(), // deskripsi proses
                   catatan: tinyMCE.get('catatan-agenda').getContent(),
                   rtl: tinyMCE.get('rtl-agenda').getContent(),
                   dokumen_pendukung: $("#dokumen_id_select").val(),
@@ -568,6 +625,7 @@
                     loadnotif();
                     // hapus semua inputan
                     $('#uuid').val('');
+                    $('#uuid_tl').val('');
                     $('#judul_kegiatan').val('');
                     $('#tanggal_mulai').val('');
                     $('#jam_mulai-agenda').val('');
@@ -846,11 +904,12 @@
 
       $(".form-group-layanan").hide();
 
-      $("#keterangan-agenda").removeClass("required-field-agenda");
+      // $("#keterangan-agenda").removeClass("required-field-agenda");
       $('#klien_id_select').removeClass("required-field-agenda");
       $('#valid-keyword-agenda').hide();
-      $('#valid-keterangan-agenda').hide();
+      // $('#valid-keterangan-agenda').hide();
       $('#valid-klien_id_select').hide();
+      $('#valid-keterangan-agenda').hide();
       $('#valid-catatan-agenda').hide();
       $('#valid-rtl-agenda').hide();
     } else {
@@ -861,7 +920,7 @@
       $('#keyword-agenda').prop('disabled', false);
       $('.required-layanan').show();
 
-      $("#keterangan-agenda").addClass("required-field-agenda");
+      // $("#keterangan-agenda").addClass("required-field-agenda");
 
     }
  }
@@ -870,6 +929,7 @@
   $("#overlayAgenda").show();
   //reset uuid
   $('#uuid').val('');
+  $('#uuid_tl').val('');
   $('#user_id_select').val([]).change();
   $('#user_id_select').empty();
   $('#user_id_select').html('');
@@ -907,6 +967,7 @@
           $('#viewRTL').html(data_tindak_lanjut.rtl);
 
           $('#uuid').val(data_tindak_lanjut.uuid);
+          $('#uuid_tl').val(data_tindak_lanjut.uuid_tl);
           $('#judul_kegiatan').val(data_tindak_lanjut.judul_kegiatan);
           $('#tanggal_mulai').val(data_tindak_lanjut.tanggal_mulai);
           $('#jam_mulai-agenda').val(data_tindak_lanjut.jam_mulai);
@@ -955,7 +1016,7 @@
             $('.required-layanan').show();
 
             $(".form-group-layanan").show();
-            $("#keterangan-agenda").addClass("required-field-agenda");
+            // $("#keterangan-agenda").addClass("required-field-agenda");
 
             // munculkan data-data layanan
             $('.viewAgendaLayanan').show();
@@ -1013,7 +1074,6 @@
   // hapus semua inputan
   $('#judul_kegiatan').val('');
   $('#jam_mulai-agenda').val('');
-  tinyMCE.get('keterangan-agenda').setContent('');
   $('input[name="penjadwalan_layanan"][value="0"]').prop('checked', true);
   $('#klien_id_select').prop('disabled', true);
   $('#klien_id_select').removeClass('required-field-agenda');
@@ -1027,6 +1087,7 @@
   $('.required-layanan').hide();
   $('#lokasi').val('');
   $('#jam_selesai').val('');
+  tinyMCE.get('keterangan-agenda').setContent('');
   tinyMCE.get('catatan-agenda').setContent('');
   tinyMCE.get('rtl-agenda').setContent('');
   $('#tanggal_mulai').val(tanggal_mulai); 
@@ -1056,7 +1117,7 @@
     $('.required-layanan').show();
 
     $(".form-group-layanan").show();
-    $("#keterangan-agenda").addClass("required-field-agenda");
+    // $("#keterangan-agenda").addClass("required-field-agenda");
     $('#keyword-agenda').change();
 
     $("#klien_id_select").append('<option value="'+$("#id_klien_modal_agenda").val()+'" selected>'+$("#nama_klien_modal_agenda").val()+'</option>');
@@ -1357,4 +1418,56 @@ editor.ui.registry.addToggleMenuItem("ruler", {
 });
 
 });
+
+function rekap_agenda() {
+      $('#overlayLaporanKegiatan').show();
+      $('#modalShareLaporanKegiatan').modal('show');
+      $.ajax({  
+        url:"{{ route('agenda.rekap') }}",
+        data: {
+          uuid_tl: $('#uuid_tl').val(),
+          samarkan_nama_klien: $('#samarkan_nama_klien_agenda').is(':checked') ? 1 : 0, // Correct way to get checkbox value
+          deskripsi_proses: $('#deskripsi_proses').is(':checked') ? 1 : 0, // Correct way to get checkbox value
+          deskripsi_hasil: $('#deskripsi_hasil').is(':checked') ? 1 : 0, // Correct way to get checkbox value
+          rencana_tindak_lanjut: $('#rencana_tindak_lanjut').is(':checked') ? 1 : 0, // Correct way to get checkbox value
+          data_kasus: $('#data_kasus').is(':checked') ? 1 : 0, // Correct way to get checkbox value
+          _token: '{{csrf_token()}}'
+        },
+        type:'POST',
+        dataType: 'json',
+        success: function( response ) {
+          $('#shareRekapAgenda').html(response.message);
+          $('#overlayLaporanKegiatan').hide();
+          
+        },
+        error: function(xhr, status, error) {
+            console.log(xhr.responseText);
+            alert('Terjadi kesalahan: ' + error);
+        }
+    });
+    }
+
+    function copyText(divId) {
+      let text = $("#" + divId).html().trim();
+    
+      // Convert <b> to *bold* and <br> to new lines
+      text = text.replace(/<b>(.*?)<\/b>/gi, "*$1*").replace(/<br\s*\/?>/gi, "\n");  
+      
+      let tempTextarea = $("<textarea>");
+      $("body").append(tempTextarea);
+      tempTextarea.val(text).select();
+      document.execCommand("copy");
+      tempTextarea.remove();
+      alert("Text Berhasil Disalin");
+    }
+
+    function shareWA() {
+      let text = $("#shareRekapAgenda").html().trim();
+    
+    // Convert <b> to *bold* and <br> to new lines
+    text = text.replace(/<b>(.*?)<\/b>/gi, "*$1*").replace(/<br\s*\/?>/gi, "\n");
+
+    let whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(text);
+    window.open(whatsappUrl, "_blank");
+    }
 </script>

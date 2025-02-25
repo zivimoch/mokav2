@@ -3,12 +3,16 @@
 @section('content')
 <style>
     .input_pelapor, 
+    .input_pelapor + .select2-container,
     #tombol_save_pelapor, 
     .input_klien, 
+    .input_klien + .select2-container,
     #tombol_save_klien, 
     .input_kasus, 
+    .input_kasus + .select2-container,
     #tombol_save_kasus, 
     .input_terlapor, 
+    .input_terlapor + .select2-container,
     .tombol_save_terlapor, 
     .input_rekam, 
     #tombol_save_rekam, 
@@ -1916,7 +1920,7 @@
                 @csrf
                 <div class="row {{ Request::get('tambah-petugas') == 1 ? 'hightlighting' : '' }}" style="padding : 15px">
                     <div class="col-md-9">
-                        <select name="user_id" class="select2bs4" style="width: 100%;" required onchange="">
+                        <select name="user_id" class="select2bs4" style="width: 100%;" required>
                             <option></option>
                             @foreach ($users as $item)
                                 <option value="{{ $item->id }}">{{ $item->name }} ({{ $item->jabatan }})</option>

@@ -20,6 +20,7 @@ class CreateTindakLanjutsTable extends Migration
             $table->date('tanggal_selesai')->nullable(); 
             $table->time('jam_selesai')->nullable(); 
             $table->string('lokasi')->nullable(); 
+            $table->longText('keterangan')->nullable(); 
             $table->longText('catatan')->nullable(); 
             $table->longText('rtl')->nullable(); 
             $table->boolean('terlaksana')->default(1); 

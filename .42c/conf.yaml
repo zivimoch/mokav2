@@ -1,0 +1,3 @@
+apis:
+  docs/agenda-api.json:
+    alias: agenda-api

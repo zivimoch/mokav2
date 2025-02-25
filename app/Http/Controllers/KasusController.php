@@ -203,11 +203,12 @@ class KasusController extends Controller
 
         $data = DB::table('petugas as a')
                             ->leftJoin('klien as b', 'b.id','a.klien_id')
-                            // ->whereNull('a.deleted_at') // seluruh petugas dimunculkan, akan ada keterangan aktif / non
+                            ->whereNull('a.deleted_at') // seluruh petugas dimunculkan, akan ada keterangan aktif / non
                             ->whereNull('b.deleted_at')
                             ->whereNotNull('b.nama')
                             ->groupBy('b.id')
-                            ->orderby('b.id','desc');
+                            ->orderby('b.id','desc')
+                            ;
         if($search != ''){
             $data = $data->where('b.nama', 'like', '%' .$search . '%');
             if ($request->no_klien) {
@@ -606,7 +607,7 @@ class KasusController extends Controller
     // untuk ajax rekap kasus yang bisa dicopas buat WA
     public function rekap(Request $request)
     {
-        $klien = DB::table('klien as a')->selectRaw('a.id, a.no_klien, b.tanggal_pelaporan, a.nama, a.tanggal_lahir, TIMESTAMPDIFF(YEAR, a.tanggal_lahir, CURDATE()) as usia, 
+        $klien = DB::table('klien as a')->selectRaw('a.id, b.id as kasus_id, a.no_klien, b.tanggal_pelaporan, a.nama, a.tanggal_lahir, TIMESTAMPDIFF(YEAR, a.tanggal_lahir, CURDATE()) as usia, 
                         a.jenis_kelamin, c.name as kotkab_tkp, d.name as kotkab_ktp, GROUP_CONCAT(DISTINCT " ",f.nama) as kategori_kasus, GROUP_CONCAT(DISTINCT " ",h.nama) as jenis_kekerasan,
                         GROUP_CONCAT(DISTINCT CONCAT(j.name, " (", j.jabatan, ")") ORDER BY i.created_at SEPARATOR ", ") as petugas')
                         ->leftJoin('kasus as b', 'a.kasus_id', 'b.id')
@@ -621,6 +622,12 @@ class KasusController extends Controller
                         ->groupBy('a.id')
             ->where('a.uuid', $request->uuid)
             ->first();
+
+        $terlapor = DB::table('terlapor as a')->selectRaw('a.nama, a.jenis_kelamin, TIMESTAMPDIFF(YEAR, a.tanggal_lahir, CURDATE()) as usia, b.value as hubungan')
+                    ->leftJoin('r_hubungan_terlapor_klien as b', 'a.id', 'b.terlapor_id')
+                    ->where('a.kasus_id', $klien->kasus_id)
+                    ->whereNull('a.deleted_at')
+                    ->get();
 
         $riwayat = RiwayatKejadian::where('klien_id', $klien->id)
             ->whereNull('deleted_at')
@@ -675,7 +682,7 @@ class KasusController extends Controller
         if ($request->samarkan_nama_klien) {
             $nama = $klien->nama;
             $text = $klien->nama;
-            $nama_klien = $this->samarkan_nama_klien($text, $nama);
+            $nama_klien = $this->samarkan_nama($text, $nama);
         } else {
             $nama_klien = $klien->nama;
         }
@@ -688,9 +695,20 @@ class KasusController extends Controller
         $message .= "<b>No Reg. Klien :</b> {$klien->no_klien}<br>";
         $message .= $klien->tanggal_pelaporan ? "<b>Tanggal Pelaporan :</b> " . date('d M Y', strtotime($klien->tanggal_pelaporan)) . "<br>" : "";
         $message .= "<b>Kategori Kasus :</b> {$klien->kategori_kasus}<br>";
-        $message .= "<b>Jenis Kekerasan :</b> Fisik, Psikis, Seksual<br>";
+        $message .= "<b>Jenis Kekerasan :</b> {$klien->jenis_kekerasan}<br>";
         $message .= "<b>TKP :</b> {$klien->kotkab_tkp}<br>";
         $message .= "<b>KTP :</b> {$klien->kotkab_ktp}<br>";
+        $message .= "<b>Terlapor :</b><br>";
+        foreach ($terlapor as $value) {
+            if ($request->samarkan_nama_klien) {
+                $nama = $value->nama;
+                $text = $value->nama;
+                $nama_terlapor = $this->samarkan_nama($text, $nama);
+            } else {
+                $nama_terlapor = $value->nama;
+            }
+            $message .= "- {$nama_terlapor} ({$value->jenis_kelamin}, {$value->usia} tahun) — {$value->hubungan}<br>";
+        }
         $message .= "=============================<br>";
         if ($request->tampilkan_kronologi) {
             $message .= "<b>KRONOLOGI KEJADIAN</b><br>";
@@ -698,7 +716,7 @@ class KasusController extends Controller
                 if ($request->samarkan_nama_klien) {
                     $nama = $klien->nama;
                     $text = $value->keterangan;
-                    $keterangan = $this->samarkan_nama_klien($text, $nama);
+                    $keterangan = $this->samarkan_nama($text, $nama);
                 } else {
                     $keterangan = $value->keterangan;
                 }
@@ -724,10 +742,9 @@ class KasusController extends Controller
         return response()->json(['message' => $message]);
     }
 
-
-    function samarkan_nama_klien($text, $nama) {
+    function samarkan_nama($text, $nama) {
         // Normalize name by trimming and converting to lowercase
-        $nama = trim($nama);
+        $nama = trim(preg_replace('/\s+/', ' ', $nama)); // Remove extra spaces
     
         // Split the name into words
         $words = explode(' ', $nama);
@@ -745,8 +762,6 @@ class KasusController extends Controller
         // Replace full name occurrences with initials
         return preg_replace($pattern, $initials, $text);
     }
-    
-
 
     public function approval($uuid, Request $request)
     {

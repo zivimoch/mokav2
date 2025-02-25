@@ -17,7 +17,7 @@ class OpsiController extends Controller
     public function api_kategori_lokasi()
     {
         $data = [
-            'Ranah Online' => ['MiChat', 'Facebook', 'Twitter', 'Instagram', 'WhatsApp', 'Tiktok', 'Snapchat', 'Bigo'],
+            'Ranah Online' => ['MiChat', 'Facebook', 'Twitter', 'Instagram', 'Telegram', 'WhatsApp', 'Tiktok', 'Snapchat', 'Bigo'],
             'Tempat Tinggal' => ['Rumah', 'Apartemen', 'Kos-kosan', 'Kontrakan'],
             'Tempat Pendidikan' => ['Sekolah', 'Kampus', 'Tempat Les', 'Pondok Pesantren'],
             'Tempat Ibadah' => ['Mesjid', 'Mushola', 'Gereja', 'Pura', 'Vihara', 'Kelenteng'],
@@ -283,7 +283,9 @@ class OpsiController extends Controller
 
     public function api_difabel_type()
     {
-        $data = ['Amputasi',
+        $data = [
+                'Intelektual',
+                'Amputasi',
                 'Lumpuh Layuh / Kaku',
                 'Paraplegi',
                 'Celebral Palsy',
@@ -300,7 +302,9 @@ class OpsiController extends Controller
                 'Autis',
                 'Hiperaktif',
                 'Disabilitas Netra',
-                'Rungu dan atau Disabilitas Wicara'
+                'Rungu dan atau Disabilitas Wicara',
+                'Wicara',
+                'Lainnya'
                 ];
                 
         return $data;
