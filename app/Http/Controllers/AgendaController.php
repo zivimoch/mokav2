@@ -24,6 +24,7 @@ use PhpParser\Node\Expr\New_;
 use Yajra\DataTables\Facades\DataTables;
 use Codedge\Fpdf\Fpdf\Fpdf;
 use Illuminate\Support\Env;
+use Illuminate\Support\Facades\Http;
 
 class AgendaController extends Controller
 {
@@ -405,6 +406,7 @@ class AgendaController extends Controller
 
     public function kinerja(Request $request)
     {
+
         if (!in_array(Auth::user()->jabatan, ['Sekretariat', 'Kepala Instansi', 'Super Admin'])) {
             abort(404);
         }
@@ -556,6 +558,7 @@ class AgendaController extends Controller
                 'a.uuid',
                 'a.jabatan',
                 'a.name',
+                'a.email',
                 DB::raw('COALESCE(w.jumlah_hari, 0) AS jumlah_hari'),
                 DB::raw('COALESCE(z.sudah_ditl, 0) AS sudah_ditl'),
                 DB::raw('COALESCE(y.belum_ditl, 0) AS belum_ditl'),
@@ -638,6 +641,31 @@ class AgendaController extends Controller
             ->orderBy('a.jabatan')
             ->orderBy('a.name')
             ->get();
+            
+        $data_cuti_mona = Http::withHeaders([
+            'Authorization' => 'Bearer ' . env('API_SECRET_KEY'),
+            'Accept' => 'application/json'
+        ])->get('https://mokapppa.jakarta.go.id/mona/cuti/get_user_cuti?tahun=' . $tahun . '&bulan=' . $bulan);
+        
+        if ($data_cuti_mona->failed()) {
+            return response()->json(['message' => 'Request failed'], 500);
+        }
+
+        // return response()->json($data_cuti_mona->json());
+        
+        // Convert response JSON to a collection
+        $jumlah_cuti = collect($data_cuti_mona->json()); 
+        // dd($jumlah_cuti, $data->pluck('uuid'));
+        $data = $data->map(function ($datas) use ($jumlah_cuti) {
+            // Ensure UUID is a string for accurate comparison
+            $email = (string) $datas->email; 
+        
+            // Find the corresponding cuti data
+            $cuti = $jumlah_cuti->firstWhere('email', $email);
+            $datas->jumlah_cuti = $cuti['jumlah_cuti'] ?? 0; 
+        
+            return $datas;
+        });
 
         return DataTables::of($data)->make(true);
     }
@@ -690,6 +718,7 @@ class AgendaController extends Controller
 
     public function kinerja_detail(Request $request)
     {
+
         if ($request->get('bulan') == null) {
             return redirect('kinerja');
         }
@@ -706,6 +735,27 @@ class AgendaController extends Controller
                 $request->agenda_id // agenda_id
             );
         }
+        if (is_numeric($request->user_id)) {
+            // pakai identifier kayak gini karena dulu ada notif yang user_id nya id ada yang uuid
+            $identifier = 'id';
+        } else {
+            $identifier = 'uuid';
+        }
+        $user = User::where($identifier, $request->user_id)->first();
+
+        if ($user->id != Auth::user()->id && !in_array(Auth::user()->jabatan, ['Super Admin', 'Sekretariat', 'Kepala Instansi'])) {
+            return redirect(404);
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////
+        return view('agenda.kinerja_detail')->with('user', $user);
+    }
+
+    function load_hari_cuti(Request $request) {
+        
+        if ($request->get('bulan') == null) {
+            return redirect('kinerja');
+        }
+
         if (is_numeric($request->user_id)) {
             // pakai identifier kayak gini karena dulu ada notif yang user_id nya id ada yang uuid
             $identifier = 'id';
@@ -759,7 +809,22 @@ class AgendaController extends Controller
                             ->select(DB::raw('DATE(a.tanggal_mulai)'))
                             ->distinct()
                             ->count(DB::raw('DATE(a.tanggal_mulai)'));
-        $kurang_hari_kerja = $hari_kerja - $jumlah_hari_user;
+
+        $data_cuti_mona = Http::withHeaders([
+            'Authorization' => 'Bearer SNeps1VHpHCdkbKrsH6CmaAd6syfMxzQPoYkwje9IJCNgCLzB2B0iPJh2xxbUxmY',
+            'Accept' => 'application/json'
+        ])->get('https://mokapppa.jakarta.go.id/mona/cuti/get_user_cuti?tahun=' . $tahun . '&bulan=' . $bulan . '&email=' . $user->email);  
+        if ($data_cuti_mona->failed()) {
+            return response()->json(['message' => 'Request failed'], 500);
+        }
+        $jumlah_hari_cuti = $data_cuti_mona->json();
+        if (isset($jumlah_hari_cuti['jumlah_cuti'])) {
+            $hari_cuti = $jumlah_hari_cuti['jumlah_cuti'];
+        } else {
+            $hari_cuti = 0;
+        }
+
+        $kurang_hari_kerja = $hari_kerja - $jumlah_hari_user - $hari_cuti;
             // jika kurang kerjanya kurang dari sama dengan 0 maka aman
             // jika bulan yang dicek kurang dari sama dengan bulan ini maka aman
             // jika tahun yang dicek kurang dari sama dengan tahun ini maka aman
@@ -792,14 +857,15 @@ class AgendaController extends Controller
                         ->whereNull('b.deleted_at')
                         ->whereNull('b.jam_selesai')
                         ->count();
-        /////////////////////////////////////////////////////////////////////////////////////////////
-        return view('agenda.kinerja_detail')->with('user', $user)
-                        ->with('persen', $persen)
-                        ->with('hari_kerja', $hari_kerja)
-                        ->with('jumlah_durasi', $jumlah_durasi)
-                        ->with('kurang_hari_kerja', $kurang_hari_kerja)
-                        ->with('belum_tl', $belum_tl)
-                    ;
+        return response()->json([
+            'persen' => $persen,
+            'hari_kerja' => $hari_kerja,
+            'jumlah_hari_user' => $jumlah_hari_user,
+            'hari_cuti' => $hari_cuti,
+            'kurang_hari_kerja' => $kurang_hari_kerja,
+            'belum_tl' => $belum_tl,
+            'jumlah_durasi' => $jumlah_durasi
+        ]);
     }
 
     /**
@@ -1625,4 +1691,40 @@ public function pdf_kinerja(Request $request)
 //     }    
 // }
 
+// API 
+public function showdate_api(Request $request, $date)   
+    {
+
+        $token = $request->header('Authorization');
+        if ($token !== 'Bearer ' . config('app.api_secret')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        try {
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return response()->json(['message' => 'Unauthorized'], 401);
+            }
+            $agenda_saya = DB::table('agenda as a')
+                            ->select(DB::raw('a.uuid, a.judul_kegiatan, a.tanggal_mulai, a.jam_mulai, c.nama, c.uuid as uuid_klien, b.lokasi, b.jam_selesai, b.keterangan, b.catatan, b.created_by'))
+                            ->leftJoin('tindak_lanjut as b', 'a.id', 'b.agenda_id') 
+                            ->leftJoin('klien as c', 'c.id', 'a.klien_id')
+                            ->where('a.tanggal_mulai', $date)
+                            ->where('b.created_by', $user->id)
+                            ->whereNull('a.deleted_at')
+                            ->whereNull('b.deleted_at')
+                            ->orderBy('a.jam_mulai')
+                            ->get();
+            //return response
+            return response()->json([
+                'success' => true,
+                'code'    => 200,
+                'message' => 'Success',
+                'data'    => $agenda_saya  
+            ]);
+        } catch (Exception $e){
+            return response()->json(['msg' => $e->getMessage()]);
+            die();
+        }
+    }
 }

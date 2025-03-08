@@ -80,7 +80,9 @@
                       <th>Jabatan</th>
                       <th>Nama Petugas</th>
                       <th>Durasi (menit)</th>
-                      <th>Jumlah Hari</th>
+                      <th>Jumlah Hari Kerja</th>
+                      <th>Jumlah Hari Cuti</th>
+                      <th>Jumlah Kurang Hari</th>
                       <th>Sudah diTL</th>
                       <th>Belum diTL</th>
                       <th>Total Agenda</th>
@@ -197,6 +199,15 @@ Sudah di
         {"data": "name"},
         {"data": "durasi"},
         {"data": "jumlah_hari"},
+        {"data": "jumlah_cuti"},
+        {
+          "data": "jumlah_cuti",
+          "mRender": function (data, type, row) {
+            hari_kerja = '{{ $hari_kerja }}';
+            let result = hari_kerja - (row.jumlah_hari + row.jumlah_cuti);
+            return result > 0 ? result : 0;
+          }
+        },
         {"data": "sudah_ditl"},
         {"data": "belum_ditl"},
         {"data": "total"},

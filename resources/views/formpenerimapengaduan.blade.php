@@ -1139,6 +1139,21 @@
                   </div> 
                 </div>
               </div>
+              {{-- alamat  --}}
+              <div style="border: 1px dashed; padding:10px 10px 5px 10px; margin-bottom:15px">
+                <legend>Hubungan Terlapor - Korban</legend>
+                <div class="form-group"> 
+                  <div class="row"> 
+                    <div class="col-md-12">
+                      <button class="btn btn-block btn-outline-secondary" type="button" onclick="load_list_korban()">Refresh List Korban</button> 
+                      <br>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="list_korban"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
             </div>
 
@@ -1600,6 +1615,19 @@ $(document).ready(function () {
       //   $('#pendidikan_klien_'+klien_id).val('').change();
       //   $('#no_telp_klien_'+klien_id).val('');
       // }
+    }
+
+    function load_list_korban() {
+      let listHtml = '';
+        $('.nama_klien').each(function (index) {
+            let nama_klien = $(this).val();
+            listHtml +=  '<tr><td>'+ (index + 1) +  '. Hubungan dengan <b>'+ nama_klien +'</b> </td><td> : </td><td> <select name="" class="form-control select2bs4" required><option value="" selected></option> @foreach ($hubungan_dengan_terlapor as $item) <option value="{{ $item }}" >{{ $item }}</option> @endforeach</select> </td></tr>';
+        });
+        $('.list_korban').html(listHtml);
+
+        $('.select2bs4').select2({
+          theme: 'bootstrap4'
+        });
     }
 </script>
 </body>

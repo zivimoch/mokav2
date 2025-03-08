@@ -132,13 +132,20 @@ class SettingUsersController extends Controller
     public function destroy($uuid)
     {
         try {
-            $proses = User::where('uuid', $uuid)
-                                        ->delete();
+            $proses = User::where('uuid', $uuid)->first();
 
             if (!$proses) {
-                throw new Exception($proses);
+                throw new Exception("User not found");
             }
             
+            // Nonaktifkan user sebelum dihapus
+            $proses->update(['active' => 0]);
+            
+            // Semua kasus dijadikan sekunder
+            Petugas::where('user_id', $proses->id)->update(['active' => 0]);
+            
+            // Hapus user setelah update
+            $proses->delete();
             //return response
             return response()->json([
                 'success' => true,

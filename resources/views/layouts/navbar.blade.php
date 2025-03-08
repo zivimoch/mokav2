@@ -29,9 +29,9 @@
 
 @media  (max-width:960px) { .dropdown-menu { width: 360px !important; } }
 </style>
-<div style="background-color: red; color:#fff; font-weight:bold; font-size:20px">
+{{-- <div style="background-color: red; color:#fff; font-weight:bold; font-size:20px">
   <marquee>PERHATIAN! INI ADALAH MOKA DEMO, SELURUH DATA YANG ADA DI MOKA VERSI DEMO TIDAK PERMANEN.</marquee>
-</div>
+</div> --}}
 @if (Auth::user()->settings_navbar_bg_color == 'default')
   <nav class="main-header navbar navbar-expand-md navbar-black navbar-dark">
 @else
@@ -58,7 +58,7 @@
         </li> --}}
         @if (in_array(Auth::user()->jabatan, ['Super Admin', 'Sekretariat', 'Kepala Instansi']))
           <li class="nav-item">
-            <a href="{{ route('kinerja') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}" class="nav-link"><i class="nav-icon fas fa-tasks"></i> LapKin</a>
+            <a href="{{ route('kinerja') }}?tahun={{ date('Y') }}&bulan={{ date('m') }}" class="nav-link"><i class="nav-icon fas fa-tasks"></i> MOKI</a>
           </li>
         @endif
         @if (Auth::user()->jabatan == 'Super Admin')

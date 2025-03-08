@@ -77,6 +77,7 @@ class DataMasterKlien implements FromCollection, WithHeadings, WithStyles
             'Jenis Kekerasan',
             'Bentuk Kekerasn',
             'Disabilitas',
+            'Jenis Terminasi',
             'Penerima Pengaduan',
             'Manajer Kasus',
             'Supervisor Kasus',
@@ -169,7 +170,7 @@ class DataMasterKlien implements FromCollection, WithHeadings, WithStyles
                 k.name AS kecamatan_Domisili, l.name AS kelurahan_Domisili, b.alamat_ktp AS alamat_KTP, 
                 m.name AS provinsi_KTP, n.name AS kota_KTP, o.name AS kecamatan_KTP, p.name AS kelurahan_KTP,
                 b.agama, b.no_telp, b.pendidikan, b.status_pendidikan, b.pekerjaan, b.status_kawin, y.kategori_kasus, x.jenis_kekerasan, 
-                w.bentuk_kekerasan, v.disabilitas, z.name AS penerima_pengaduan, t.manajer_kasus, s.supervisor_kasus
+                w.bentuk_kekerasan, v.disabilitas, r.jenis_terminasi, z.penerima_pengaduan, t.manajer_kasus, s.supervisor_kasus
                 FROM
                 kasus a
                 LEFT JOIN klien b ON a.id = b.kasus_id
@@ -177,11 +178,6 @@ class DataMasterKlien implements FromCollection, WithHeadings, WithStyles
                 petugas c ON b.id = c.klien_id
                 LEFT JOIN 
                 users d ON d.id = c.user_id
-                LEFT JOIN 
-                (
-                SELECT `name`, `id`
-                FROM users
-                WHERE jabatan = 'Penerima Pengaduan ') z ON z.id = a.created_by
                 LEFT JOIN 
                 indonesia_provinces e ON e.code = a.provinsi_id
                 LEFT JOIN 
@@ -222,11 +218,17 @@ class DataMasterKlien implements FromCollection, WithHeadings, WithStyles
                 (SELECT klien_id, GROUP_CONCAT(value) AS pasal FROM t_pasal GROUP BY klien_id) 
                 u ON u.klien_id = b.id
                 LEFT JOIN 
-                (SELECT a.klien_id, GROUP_CONCAT(' ', b.name) AS manajer_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Manajer Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
+                (SELECT a.klien_id, GROUP_CONCAT(DISTINCT ' ', b.name) AS penerima_pengaduan FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE a.active = 1 AND b.jabatan = 'Penerima Pengaduan' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
+                z ON z.klien_id = b.id
+                LEFT JOIN 
+                (SELECT a.klien_id, GROUP_CONCAT(DISTINCT ' ', b.name) AS manajer_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE a.active = 1 AND b.jabatan = 'Manajer Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
                 t ON t.klien_id = b.id
                 LEFT JOIN 
-                (SELECT a.klien_id, GROUP_CONCAT(' ', b.name) AS supervisor_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Supervisor Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
+                (SELECT a.klien_id, GROUP_CONCAT(DISTINCT ' ', b.name) AS supervisor_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE a.active = 1 AND b.jabatan = 'Supervisor Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
                 s ON s.klien_id = b.id
+                LEFT JOIN 
+                (SELECT a.klien_id, GROUP_CONCAT(DISTINCT ' ', a.jenis_terminasi) AS jenis_terminasi FROM terminasi a LEFT JOIN klien b ON a.klien_id = b.id WHERE a.deleted_at IS NULL and a.validated_by IS NOT NULL GROUP BY a.klien_id) 
+                r ON r.klien_id = b.id
                 WHERE 
                 a.deleted_at IS NULL AND
                 b.deleted_at IS NULL AND 

@@ -513,21 +513,18 @@ class MonitoringController extends Controller
                         ) z'), 'z.klien_id', '=', 'a.id')
                         ->select(
                             DB::raw($filter_pengelompokan . '(' . $basis_tanggal . ') AS PERIODE'),
-                            DB::raw('SUM(CASE 
-                                WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, ' . $penguarang . ') >= 18 
-                                    AND a.jenis_kelamin = "perempuan" THEN 1 
-                                ELSE 0 
-                            END) AS dewasa_perempuan'),
-                            DB::raw('SUM(CASE 
-                                WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, ' . $penguarang . ') < 18 
-                                    AND a.jenis_kelamin = "perempuan" THEN 1 
-                                ELSE 0 
-                            END) AS anak_perempuan'),
-                            DB::raw('SUM(CASE 
-                                WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, ' . $penguarang . ') < 18 
-                                    AND a.jenis_kelamin = "laki-laki" THEN 1 
-                                ELSE 0 
-                            END) AS anak_laki'),
+                            DB::raw('COUNT(DISTINCT CASE 
+                                    WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, b.tanggal_pelaporan) >= 18
+                                    AND a.jenis_kelamin = "perempuan" THEN a.id 
+                                    END) AS dewasa_perempuan'),
+                            DB::raw('COUNT(DISTINCT CASE 
+                                    WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, b.tanggal_pelaporan) < 18
+                                    AND a.jenis_kelamin = "perempuan" THEN a.id 
+                                    END) AS anak_perempuan'),
+                            DB::raw('COUNT(DISTINCT CASE 
+                                    WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, b.tanggal_pelaporan) < 18
+                                    AND a.jenis_kelamin = "laki-laki" THEN a.id 
+                                    END) AS anak_laki'),
                             DB::raw('COUNT(DISTINCT a.id) AS total')
                         )
                         ->whereNull('a.deleted_at')
@@ -562,7 +559,6 @@ class MonitoringController extends Controller
         if ($request->arsip == '0') {
             $seluruh_klien->where('a.arsip', 0);
         }
-
         // data chart
         $data['periode'] = $seluruh_klien->pluck('PERIODE');
         $data['seluruh_klien'] = $seluruh_klien->pluck('total');
@@ -763,10 +759,19 @@ class MonitoringController extends Controller
                             AND b.active = 1) z'), 'z.klien_id', '=', 'a.id')
                         ->select(
                             DB::raw('YEAR('.$basis_tanggal.') AS PERIODE'),
-                            DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') >= 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan'),
-                            DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS anak_perempuan'),
-                            DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS anak_laki'),
-                            DB::raw('COUNT(*) AS total')
+                            DB::raw('COUNT(DISTINCT CASE 
+                                    WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, b.tanggal_pelaporan) >= 18
+                                    AND a.jenis_kelamin = "perempuan" THEN a.id 
+                                    END) AS dewasa_perempuan'),
+                            DB::raw('COUNT(DISTINCT CASE 
+                                    WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, b.tanggal_pelaporan) < 18
+                                    AND a.jenis_kelamin = "perempuan" THEN a.id 
+                                    END) AS anak_perempuan'),
+                            DB::raw('COUNT(DISTINCT CASE 
+                                    WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, b.tanggal_pelaporan) < 18
+                                    AND a.jenis_kelamin = "laki-laki" THEN a.id 
+                                    END) AS anak_laki'),
+                            DB::raw('COUNT(DISTINCT a.id) AS total')
                         )
                         ->whereNull('a.deleted_at')
                         // filter tanggal
@@ -912,11 +917,19 @@ class MonitoringController extends Controller
                                             AND b.deleted_at IS NULL
                                             AND b.active = 1) z'), 'z.klien_id', '=', 'a.id')
                         ->select(
-                            DB::raw('YEAR('.$basis_tanggal.') AS PERIODE'),
-                            DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') >= 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS dewasa_perempuan'),
-                            DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "perempuan" THEN 1 ELSE 0 END) AS anak_perempuan'),
-                            DB::raw('SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, '.$penguarang.') < 18 AND a.jenis_kelamin = "laki-laki" THEN 1 ELSE 0 END) AS anak_laki'),
-                            DB::raw('COUNT(*) AS total')
+                            DB::raw('COUNT(DISTINCT CASE 
+                                    WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, b.tanggal_pelaporan) >= 18
+                                    AND a.jenis_kelamin = "perempuan" THEN a.id 
+                                    END) AS dewasa_perempuan'),
+                            DB::raw('COUNT(DISTINCT CASE 
+                                    WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, b.tanggal_pelaporan) < 18
+                                    AND a.jenis_kelamin = "perempuan" THEN a.id 
+                                    END) AS anak_perempuan'),
+                            DB::raw('COUNT(DISTINCT CASE 
+                                    WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, b.tanggal_pelaporan) < 18
+                                    AND a.jenis_kelamin = "laki-laki" THEN a.id 
+                                    END) AS anak_laki'),
+                            DB::raw('COUNT(DISTINCT a.id) AS total')
                         )
                         ->whereNull('a.deleted_at')
                         // filter tanggal

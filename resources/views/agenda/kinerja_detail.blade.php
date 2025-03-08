@@ -87,47 +87,46 @@
                     </div>
                 </div>
             </form>
-            <b style="font-size: 18px">Jumlah Durasi Kerja Bulan {{ $monthNameSelected }} : {{ $jumlah_durasi ? $jumlah_durasi : 0 }} menit</b>
-            <br>
-            <b style="font-size: 18px">Jumlah Hari Kerja yang ditetapkan Bulan {{ $monthNameSelected }} : {{ $hari_kerja }} hari</b>
-            <br>
-            <b style="font-size: 18px">Jumlah Cuti Anda yang sudah dikonfirmasi Bulan {{ $monthNameSelected }} : - hari</b> (data dari MOKI belum tersedia)
-            <br>
-            <br>
-            <input type="hidden" id="uuid_agenda_hightlight" value="{{ Request::get('row-agenda') }}">
+          {{-- <div class="modal-dialog modal-xl" role="document">
+                <div id="overlay_data_kinerja" class="overlay dark">
+                  <div class="cv-spinner">
+                    <span class="spinner"></span>
+                  </div>
+                </div> --}}
+                <b style="font-size: 18px">Jumlah Durasi Kerja Bulan {{ $monthNameSelected }} : <span id="jumlah_durasi"></span> menit</b>
+                <br>
+                <b style="font-size: 18px">Jumlah Hari Kerja yang ditetapkan Bulan {{ $monthNameSelected }} : <span id="hari_kerja"></span> hari</b>
+                <br>
+                <b style="font-size: 18px">Jumlah Cuti Anda yang sudah dikonfirmasi Bulan {{ $monthNameSelected }} : <span id="hari_cuti"></span> hari</b> (data dari MONA)
 
-              @if ($kurang_hari_kerja > 0 || $belum_tl > 0)
-              <div class="col-md-12 warningSPP">
-                <div class="alert alert-danger">
-                <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
-                Agenda anda Bulan {{ $monthNameSelected }} perlu diperbaiki :<br>
-                <ul>
-                  @if ($kurang_hari_kerja > 0) 
-                  <div style="background-color: rgb(123, 0, 0); margin-bottom:5px; margin-top:5px">
-                    <li>
-                    <b>Jumlah hari kurang {{ $kurang_hari_kerja }} hari</b> dari Jumlah Hari Kerja yang ditetapkan, silahkan cek lagi hari yang belum ada agendanya.<br>
-                    *Selama belum terkoneksi dengan MOKI maka : <br>
-                    <ol>
-                      <li>Pengecekan hari yang kosong masih manual.</li>
-                      <li>Tanggal cuti tidak akan terdeteksi, kosongkan saja bila tidak masuk kerja (sistem akan tetap membaca bahwa jumlah hari kurang, namun abaikan warning ini bila ada cuti).</li>
-                      <li>Evaluasi Kinerja Bulanan akan mengambil data dari MOKA dan disandingkan dengan data cuti di sekretariat terlebih dahulu.</li>
-                    </ol>
-                    <br>
-                    </li>
+                <div class="col-md-12" id="warningAgenda" style="display: none">
+                  <div class="alert alert-danger">
+                  <h5><i class="fas fa-exclamation-circle"></i> Perhatian!</h5>
+                  Agenda anda Bulan {{ $monthNameSelected }} perlu diperbaiki :<br>
+                  <ul>
+                    <div id="warning_kurang_hari_kerja" style="display:none; background-color: rgb(123, 0, 0); margin-bottom:5px; margin-top:5px">
+                      <li>
+                      <b>Jumlah hari kurang <span id="kurang_hari_kerja"></span> hari</b> dari Jumlah Hari Kerja yang ditetapkan, silahkan cek lagi hari yang belum ada agendanya.<br>
+                      *Selama belum terkoneksi dengan MOKI maka : <br>
+                      <ol>
+                        <li>Pengecekan hari yang kosong masih manual.</li>
+                        <li>Tanggal cuti tidak akan terdeteksi, kosongkan saja bila tidak masuk kerja (sistem akan tetap membaca bahwa jumlah hari kurang, namun abaikan warning ini bila ada cuti).</li>
+                        <li>Evaluasi Kinerja Bulanan akan mengambil data dari MOKA dan disandingkan dengan data cuti di sekretariat terlebih dahulu.</li>
+                      </ol>
+                      <br>
+                      </li>
+                    </div>
+                    <div id="warning_belum_tl" style="display:none; background-color: rgb(123, 0, 0)">
+                      <li>
+                      <b> <span id="belum_tl"></span> Agenda </b> Bulan {{ $monthNameSelected }} belum terisi <b>Tindak Lanjut</b>nya. 
+                      </li>
+                    </div>
+                  </ul>
+                  *<a href="{{ request()->fullUrl() }}">Refresh Halaman</a> jika sudah menyempurnakan Laporan Kinerja bulan {{ $monthNameSelected }}
                   </div>
-                  @endif
-                  @if ($belum_tl > 0)
-                  <div style="background-color: rgb(123, 0, 0)">
-                    <li>
-                    <b> {{ $belum_tl }} Agenda </b> Bulan {{ $monthNameSelected }} belum terisi <b>Tindak Lanjut</b>nya. 
-                    </li>
-                  </div>
-                  @endif
-                </ul>
-                *<a href="{{ request()->fullUrl() }}">Refresh Halaman</a> jika sudah menyempurnakan Laporan Kinerja bulan {{ $monthNameSelected }}
                 </div>
-              </div>
-              @endif
+            {{-- </div> --}}
+            <input type="hidden" id="uuid_agenda_hightlight" value="{{ Request::get('row-agenda') }}">
 
             <input type="hidden" id="belumtl">
               <table id="tabelAgenda" class="table table-sm table-bordered  table-hover" style="cursor:pointer">
@@ -239,6 +238,7 @@
     $('.select2bs4').select2({
       theme: 'bootstrap4'
     })
+    load_hari_cuti();
 });
   window.onscroll = function() {scrollFunction()};
   function scrollFunction() {
@@ -268,31 +268,31 @@
   let token = $("meta[name='csrf-token']").attr("content");
   
   $.ajax({
-  url: "{{ route('kinerja_valid') }}",
-  type: "POST",
-  cache: false,
-  data: {
-      uuid: id,
-      valid: valid,
-      user_id: user_id,
-      tahun_agenda: {{ request()->tahun }},
-      bulan_agenda: {{ request()->bulan }},
-      _token: token
-  },
-  success: function (response){
-    toastr.success('Berhasil update data', 'Event');
-  },
-  error: function (response){
-      setTimeout(function(){
-      $("#overlay").fadeOut(300);
-      },500);
-      console.log(response);
-  }
-  }).done(function() { //loading submit form
-      setTimeout(function(){
-      $("#overlay").fadeOut(300);
-      },500);
-  });
+    url: "{{ route('kinerja_valid') }}",
+    type: "POST",
+    cache: false,
+    data: {
+        uuid: id,
+        valid: valid,
+        user_id: user_id,
+        tahun_agenda: {{ request()->tahun }},
+        bulan_agenda: {{ request()->bulan }},
+        _token: token
+    },
+    success: function (response){
+      toastr.success('Berhasil update data', 'Event');
+    },
+    error: function (response){
+        setTimeout(function(){
+        $("#overlay").fadeOut(300);
+        },500);
+        console.log(response);
+    }
+    }).done(function() { //loading submit form
+        setTimeout(function(){
+        $("#overlay").fadeOut(300);
+        },500);
+    });
  }
     
     $('#tabelAgenda').DataTable({
@@ -571,6 +571,61 @@
     }
 
     $('#tabelAgenda_filter').css({'float':'right','display':'inline-block'});
+
+    function load_(params) {
+      
+    }
+
+    function load_hari_cuti() {
+      $('#overlay_data_kinerja').show();
+      let tahun = "{{ request('tahun') }}";
+      let bulan = "{{ request('bulan') }}";
+      let user_id = "{{ request('user_id') }}";
+
+      $.ajax({
+          url: "{{ route('kinerja.load_hari_cuti') }}?tahun=" + tahun + "&bulan=" + bulan + "&user_id=" + user_id,
+          type: "GET",
+          cache: false,
+          success: function (response){
+            console.log(response);
+            
+            $('#jumlah_durasi').html(response.jumlah_durasi);
+            $('#hari_kerja').html(response.hari_kerja);
+            $('#hari_cuti').html(response.hari_cuti);  
+            
+            if (response.kurang_hari_kerja > 0 || response.belum_tl > 0) {
+              $('#warningAgenda').show();
+              // kurang hari kerja
+              if (response.kurang_hari_kerja > 0) {
+                $('#warning_kurang_hari_kerja').show();
+                $('#kurang_hari_kerja').html(response.kurang_hari_kerja);
+              } else {
+                $('#warning_kurang_hari_kerja').hide();
+              }
+
+              // belum tl
+              if (response.belum_tl > 0) {
+                $('#warning_belum_tl').show();
+                $('#belum_tl').html(response.belum_tl);
+              } else {
+                $('#warning_belum_tl').hide();
+              }
+            } else {
+              $('#warningAgenda').hide();
+            } 
+          },
+          error: function (response){
+              setTimeout(function(){
+              $('#overlay_data_kinerja').fadeOut(300);
+              },500);
+              console.log(response);
+          }
+          }).done(function() { //loading submit form
+              setTimeout(function(){
+              $('#overlay_data_kinerja').fadeOut(300);
+              },500);
+          });
+      }
 </script>
 {{-- include modal agenda --}}
 @include('agenda.modal')

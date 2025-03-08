@@ -2,6 +2,8 @@
 
 @section('content')
 <style>
+    .input_hukum,
+    .input_hukum + .select2-container,
     .input_pelapor, 
     .input_pelapor + .select2-container,
     #tombol_save_pelapor, 
@@ -462,7 +464,7 @@
                     @method('post')
                     <input type="hidden" name="uuid_klien" value="{{ $klien->uuid }}">
                     <input type="hidden" name="nama_layanan" value="Layanan Hukum">
-                    @if (in_array(Auth::user()->jabatan, ['Advokat', 'Paralegal', 'Unit Reaksi Cepat','Super Admin']))
+                    @if (in_array(Auth::user()->jabatan, ['Advokat', 'Paralegal', 'Unit Reaksi Cepat','Super Admin','Manajer Kasus']))
                         <span style="float:right" class="akses_petugas">
                             <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_hukum" onclick="editdata('hukum')">
                             <i class="fas fa-edit"></i> Edit

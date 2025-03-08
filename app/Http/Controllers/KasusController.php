@@ -410,31 +410,35 @@ class KasusController extends Controller
                     ->first();
         //data terlapor
         $terlapor = DB::table('terlapor as a')
-                    ->select(DB::raw(
-                        'a.*,
-                        b.name as provinsi,
-                        c.name as kota,
-                        d.name as kecamatan,
-                        e.name as kelurahan,
-                        f.name as provinsi_ktp,
-                        g.name as kota_ktp,
-                        h.name as kecamatan_ktp,
-                        i.name as kelurahan_ktp,
-                        j.value as hubungan_terlapor
-                        '
+                        ->select(DB::raw(
+                            'a.*,
+                            b.name as provinsi,
+                            c.name as kota,
+                            d.name as kecamatan,
+                            e.name as kelurahan,
+                            f.name as provinsi_ktp,
+                            g.name as kota_ktp,
+                            h.name as kecamatan_ktp,
+                            i.name as kelurahan_ktp,
+                            z.hubungan_terlapor'
                         ))
-                    ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', 'b.code')
-                    ->leftJoin('indonesia_cities as c', 'a.kotkab_id', 'c.code')
-                    ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', 'd.code')
-                    ->leftJoin('indonesia_villages as e', 'a.kelurahan_id', 'e.code')
-                    ->leftJoin('indonesia_provinces as f', 'a.provinsi_id_ktp', 'f.code')
-                    ->leftJoin('indonesia_cities as g', 'a.kotkab_id_ktp', 'g.code')
-                    ->leftJoin('indonesia_districts as h', 'a.kecamatan_id_ktp', 'h.code')
-                    ->leftJoin('indonesia_villages as i', 'a.kelurahan_id_ktp', 'i.code')
-                    ->leftJoin('r_hubungan_terlapor_klien as j', 'j.terlapor_id', 'a.id')
-                    ->where('a.kasus_id', $klien->kasus_id)
-                    ->whereNull('a.deleted_at')
-                    ->get();
+                        ->leftJoin('indonesia_provinces as b', 'a.provinsi_id', '=', 'b.code')
+                        ->leftJoin('indonesia_cities as c', 'a.kotkab_id', '=', 'c.code')
+                        ->leftJoin('indonesia_districts as d', 'a.kecamatan_id', '=', 'd.code')
+                        ->leftJoin('indonesia_villages as e', 'a.kelurahan_id', '=', 'e.code')
+                        ->leftJoin('indonesia_provinces as f', 'a.provinsi_id_ktp', '=', 'f.code')
+                        ->leftJoin('indonesia_cities as g', 'a.kotkab_id_ktp', '=', 'g.code')
+                        ->leftJoin('indonesia_districts as h', 'a.kecamatan_id_ktp', '=', 'h.code')
+                        ->leftJoin('indonesia_villages as i', 'a.kelurahan_id_ktp', '=', 'i.code')
+                        ->leftJoin(DB::raw("(SELECT a.terlapor_id, a.value as hubungan_terlapor 
+                                            FROM r_hubungan_terlapor_klien a 
+                                            LEFT JOIN klien b ON a.klien_id = b.id 
+                                            WHERE b.id = {$klien->id}) as z"), 
+                                'z.terlapor_id', '=', 'a.id')
+                        ->where('a.kasus_id', $klien->kasus_id)
+                        ->whereNull('a.deleted_at')
+                        ->get();
+
         // data rekam kasus
         $rekam_kasus = Asesmen::where('klien_id', $klien->id)->first();
 
@@ -1183,7 +1187,7 @@ class KasusController extends Controller
         $kasus_regis = Klien::whereNull('deleted_at')
                             ->where('arsip', 0)
                             ->whereNotNull('no_klien')
-                            ->whereYear('created_at', date('Y'))
+                            ->whereYear('tanggal_approve', date('Y'))
                             ->count();
 
         $urutan_regis = $kasus_regis + 1;

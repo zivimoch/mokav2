@@ -49,6 +49,8 @@ Route::get('persetujuan/donepelayanan/{uuid}', [PersetujuanController::class, 'd
 Route::view('blankpage','blankpage')->name('blankpage');
 // carik
 Route::get('carik/{id}', [FormPenerimaPengaduan::class, 'carik'])->name('carik');
+// MONA
+Route::get('agenda/showdate_api/{date}', [AgendaController::class, 'showdate_api'])->name('agenda.showdate_api');
 
 Route::middleware('auth')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -131,6 +133,7 @@ Route::middleware('auth')->group(function () {
     Route::get('kinerja', [AgendaController::class, 'kinerja'])->name('kinerja');
     Route::get('kinerja/pertahun', [AgendaController::class, 'kinerja_pertahun'])->name('kinerja.pertahun');
     Route::get('kinerja/detail', [AgendaController::class, 'kinerja_detail'])->name('kinerja.detail');
+    Route::get('kinerja/load_hari_cuti', [AgendaController::class, 'load_hari_cuti'])->name('kinerja.load_hari_cuti');
     Route::get('kinerja/ajax', [AgendaController::class, 'kinerja_ajax'])->name('kinerja_ajax');
     Route::get('kinerja/ajax2', [AgendaController::class, 'kinerja_ajax2'])->name('kinerja_ajax2');
     Route::post('kinerja/valid', [AgendaController::class, 'kinerja_valid'])->name('kinerja_valid');

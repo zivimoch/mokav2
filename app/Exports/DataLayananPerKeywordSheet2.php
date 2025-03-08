@@ -79,6 +79,14 @@ class DataLayananPerKeywordSheet2 implements FromCollection, WithHeadings, WithS
         } else {
             $anda = '';
         }
+
+        if ($request->jabatan) {
+            $jabatanArray = is_array($request->jabatan) ? $request->jabatan : explode(',', $request->jabatan);
+            $jabatanList = "'" . implode("','", array_map('trim', $jabatanArray)) . "'";
+            $jabatan = "AND c.jabatan IN ($jabatanList)"; 
+        } else {
+            $jabatan = '';
+        }
         $query = DB::select("SELECT
                             c.jabatan, c.`name`, f.nama, f.no_klien, b.keyword, b.jenis_agenda, e.id, e.judul_kegiatan, e.tanggal_mulai, e.jam_mulai, d.jam_selesai, d.lokasi, e.keterangan AS deskripsi_proses, d.catatan AS deskripsi_hasil, d.rtl
                             FROM 
@@ -89,9 +97,10 @@ class DataLayananPerKeywordSheet2 implements FromCollection, WithHeadings, WithS
                                 LEFT JOIN agenda e ON e.id = d.agenda_id
                                 LEFT JOIN klien f ON f.id = e.klien_id
                             WHERE 
-                                e.tanggal_mulai BETWEEN '".$from."' AND '".$to."'
-                                ".$anda."
-                            ORDER BY c.jabatan, c.name, e.id;");
+                                e.tanggal_mulai BETWEEN ? AND ?
+                                {$anda}
+                                {$jabatan}
+                            ORDER BY c.jabatan, c.name, e.id;", [$from, $to]);
 
         return collect($query);
     }

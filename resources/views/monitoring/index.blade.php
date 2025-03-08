@@ -304,26 +304,95 @@
                                 </tr>
                                 <tr>
                                     <td>4</td>
-                                    <td>Data layanan seluruh petugas per detail layanan <span class="filterTanggal11"></span> (tanggal_layanan)</td>
+                                    <td>Rekap layanan seluruh petugas per detail layanan - SEMUA <span class="filterTanggal11"></span> (tanggal_layanan)</td>
                                     <td><a href="{{ route('export_data_layanan_per_keyword') }}?format=xlsx" class="btn btn-primary btn-xs export-link">Excel</a> <a href="{{ route('export_data_layanan_per_keyword') }}?format=csv" class="btn btn-primary btn-xs export-link">CSV</a></td>
                                 </tr>
                                 <tr>
                                     <td>5</td>
+                                    <td>Rekap layanan seluruh petugas per detail layanan - HUKUM <span class="filterTanggal11"></span> (tanggal_layanan)</td>
+                                    <td>
+                                      <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'xlsx', 'jabatan' => ['Advokat', 'Paralegal', 'Unit Reaksi Cepat']]) }}" class="btn btn-primary btn-xs export-link">Excel</a>
+                                      <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'csv', 'jabatan' => ['Advokat', 'Paralegal', 'Unit Reaksi Cepat']]) }}" class="btn btn-primary btn-xs export-link">CSV</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>Rekap layanan seluruh petugas per detail layanan - PSIKOLOGI <span class="filterTanggal11"></span> (tanggal_layanan)</td>
+                                    <td>
+                                      <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'xlsx', 'jabatan' => ['Psikolog', 'Konselor']]) }}" class="btn btn-primary btn-xs export-link">Excel</a>
+                                      <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'csv', 'jabatan' => ['Psikolog', 'Konselor']]) }}" class="btn btn-primary btn-xs export-link">CSV</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td>Rekap layanan seluruh petugas per detail layanan - MK <span class="filterTanggal11"></span> (tanggal_layanan)</td>
+                                    <td>
+                                      <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'xlsx', 'jabatan' => ['Manajer Kasus']]) }}" class="btn btn-primary btn-xs export-link">Excel</a>
+                                      <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'csv', 'jabatan' => ['Manajer Kasus']]) }}" class="btn btn-primary btn-xs export-link">CSV</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>Rekap layanan seluruh petugas per detail layanan - PK <span class="filterTanggal11"></span> (tanggal_layanan)</td>
+                                    <td>
+                                      <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'xlsx', 'jabatan' => ['Pendamping Kasus']]) }}" class="btn btn-primary btn-xs export-link">Excel</a>
+                                      <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'csv', 'jabatan' => ['Pendamping Kasus']]) }}" class="btn btn-primary btn-xs export-link">CSV</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                  <td>9</td>
+                                  <td>Breakdown layanan seluruh petugas per detail layanan - SEMUA <span class="filterTanggal11"></span> (tanggal_layanan)</td>
+                                  <td><a href="{{ route('export_data_layanan_per_keyword') }}?format=xlsx&breakdown=1" class="btn btn-primary btn-xs export-link">Excel</a> <a href="{{ route('export_data_layanan_per_keyword') }}?format=csv" class="btn btn-primary btn-xs export-link">CSV</a></td>
+                              </tr>
+                              <tr>
+                                  <td>10</td>
+                                  <td>Breakdown layanan seluruh petugas per detail layanan - HUKUM <span class="filterTanggal11"></span> (tanggal_layanan)</td>
+                                  <td>
+                                    <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'xlsx', 'breakdown' => 1, 'jabatan' => ['Advokat', 'Paralegal', 'Unit Reaksi Cepat']]) }}" class="btn btn-primary btn-xs export-link">Excel</a>
+                                    <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'csv', 'breakdown' => 1, 'jabatan' => ['Advokat', 'Paralegal', 'Unit Reaksi Cepat']]) }}" class="btn btn-primary btn-xs export-link">CSV</a>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td>11</td>
+                                  <td>Breakdown layanan seluruh petugas per detail layanan - PSIKOLOGI <span class="filterTanggal11"></span> (tanggal_layanan)</td>
+                                  <td>
+                                    <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'xlsx', 'breakdown' => 1, 'jabatan' => ['Psikolog', 'Konselor']]) }}" class="btn btn-primary btn-xs export-link">Excel</a>
+                                    <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'csv', 'breakdown' => 1, 'jabatan' => ['Psikolog', 'Konselor']]) }}" class="btn btn-primary btn-xs export-link">CSV</a>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td>12</td>
+                                  <td>Breakdown layanan seluruh petugas per detail layanan - MK <span class="filterTanggal11"></span> (tanggal_layanan)</td>
+                                  <td>
+                                    <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'xlsx', 'breakdown' => 1, 'jabatan' => ['Manajer Kasus']]) }}" class="btn btn-primary btn-xs export-link">Excel</a>
+                                    <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'csv', 'breakdown' => 1, 'jabatan' => ['Manajer Kasus']]) }}" class="btn btn-primary btn-xs export-link">CSV</a>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td>13</td>
+                                  <td>Breakdown layanan seluruh petugas per detail layanan - PK <span class="filterTanggal11"></span> (tanggal_layanan)</td>
+                                  <td>
+                                    <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'xlsx', 'breakdown' => 1, 'jabatan' => ['Pendamping Kasus']]) }}" class="btn btn-primary btn-xs export-link">Excel</a>
+                                    <a href="{{ route('export_data_layanan_per_keyword', ['format' => 'csv', 'breakdown' => 1, 'jabatan' => ['Pendamping Kasus']]) }}" class="btn btn-primary btn-xs export-link">CSV</a>
+                                  </td>
+                              </tr>
+                                <tr>
+                                    <td>14</td>
                                     <td>(soon) Data layanan seluruh petugas per agenda <span class="filterTanggal11"></span> (tanggal_layanan)</td>
                                     <td><a href="#?format=xlsx" class="btn btn-primary btn-xs export-link">Excel</a> <a href="#?format=csv" class="btn btn-primary btn-xs export-link">CSV</a></td>
                                 </tr>
                                 <tr>
-                                    <td>6</td>
+                                    <td>15</td>
                                     <td>Data layanan anda per detail layanan <span class="filterTanggal11"></span> (tanggal_layanan)</td>
                                     <td><a href="{{ route('export_data_layanan_per_keyword') }}?format=xlsx&anda=1" class="btn btn-primary btn-xs export-link">Excel</a> <a href="{{ route('export_data_layanan_per_keyword') }}?format=csv&anda=1" class="btn btn-primary btn-xs export-link">CSV</a></td>
                                 </tr>
                                 <tr>
-                                    <td>7</td>
+                                    <td>16</td>
                                     <td>(soon) Data layanan seluruh petugas per agenda <span class="filterTanggal11"></span> (tanggal_layanan)</td>
                                     <td><a href="#?format=xlsx" class="btn btn-primary btn-xs export-link">Excel</a> <a href="#?format=csv" class="btn btn-primary btn-xs export-link">CSV</a></td>
                                 </tr>
                                 <tr>
-                                    <td>8</td>
+                                    <td>17</td>
                                     <td>(soon) Template Dana Alokasi Khusus <span class="filterTanggal11"></span> (tanggal_layanan)</td>
                                     <td><a href="{{ route('export_data_dak') }}?format=xlsx" class="btn btn-primary btn-xs export-link">Excel</a> <a href="{{ route('export_data_dak') }}?format=csv" class="btn btn-primary btn-xs export-link">CSV</a></td>
                                 </tr>
