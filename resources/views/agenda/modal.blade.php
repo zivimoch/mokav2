@@ -944,10 +944,12 @@
     $("#collapseOne").addClass("show");
       $("#collapseOne").show();
     $('#user_id_select').empty();
+      $('#viewAgenda').show();
+      $('#editAgenda').hide();
+      $('#tombol_view_agenda').hide();
+
       $.get(`{{ env('APP_URL') }}/agenda/edit/`+agenda_id+`?petugas=`+petugas_id, function (data) {
           $('#modelHeadingAgenda').html("View & Edit Agenda");
-          $('#viewAgenda').show();
-          $('#editAgenda').hide();
 
           $('#viewKegiatan').html(data.judul_kegiatan);
           if (data.klien_id !== null) {
@@ -986,8 +988,6 @@
             $('#tombol_edit_agenda').hide();
           }
           
-          $('#tombol_view_agenda').hide();
-
           if (data_tindak_lanjut.keterangan !== null && data_tindak_lanjut.keterangan !== undefined) {
               tinyMCE.get('keterangan-agenda').setContent(data_tindak_lanjut.keterangan);
           }
@@ -1127,10 +1127,14 @@
     $('#user_id_select').change();
   }
 
-  // Hide overlay after all processes are done
-  setTimeout(function() {
-              $("#overlayAgenda").hide(); // Hide overlay after 1 second delay
-          }, 500);
+  if (agenda_id != 0) {
+    // jika edit ada loadingnya dulu
+      setTimeout(function() {
+          $("#overlayAgenda").hide();
+      }, 2000);
+  } else {
+      $("#overlayAgenda").hide();
+  }
 }
 
 

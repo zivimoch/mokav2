@@ -916,7 +916,8 @@ class OpsiController extends Controller
                 'Advokat',
                 'Psikolog',
                 'Konselor',
-                'Paralegal'
+                'Paralegal',
+                'Tenaga Ahli'
             ]);
         }
         return $data->get();
@@ -1123,7 +1124,86 @@ class OpsiController extends Controller
             [
                 "tahun" => 2025,
                 "bulan" => 3,
-                "hari_kerja" => 19,
+                "hari_kerja" => 17,
+            ],
+        ];
+
+        return $data;
+    }
+
+    // ini nanti dihilangkan, ambil dari MOKI
+    public function api_menit_kerja()
+    {
+        $data = [
+            [
+                "tahun" => 2024,
+                "bulan" => 2,
+                "menit_kerja" => 300,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 3,
+                "menit_kerja" => 300,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 4,
+                "menit_kerja" => 300,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 5,
+                "menit_kerja" => 300,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 6,
+                "menit_kerja" => 300,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 7,
+                "menit_kerja" => 300,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 8,
+                "menit_kerja" => 300,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 9,
+                "menit_kerja" => 300,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 10,
+                "menit_kerja" => 300,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 11,
+                "menit_kerja" => 300,
+            ],
+            [
+                "tahun" => 2024,
+                "bulan" => 12,
+                "menit_kerja" => 300,
+            ],
+            [
+                "tahun" => 2025,
+                "bulan" => 1,
+                "menit_kerja" => 300,
+            ],
+            [
+                "tahun" => 2025,
+                "bulan" => 2,
+                "menit_kerja" => 300,
+            ],
+            [
+                "tahun" => 2025,
+                "bulan" => 3,
+                "menit_kerja" => 300,
             ],
         ];
 

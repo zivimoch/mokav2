@@ -67,7 +67,7 @@
                         </div>
                     </div>
                 </form>
-                <b style="font-size: 18px">Jumlah Hari Kerja Yang Ditetapkan Bulan Ini : {{ $hari_kerja }} hari</b> (jumlah hari kerja dapat diedit di MOKI)
+                <b style="font-size: 18px">Jumlah Hari Kerja Yang Ditetapkan Bulan Ini : {{ $hari_kerja * $menit_kerja }} menit ({{ $hari_kerja }} hari, per hari {{ $menit_kerja }} menit) </b>
                 <br>
                 <br>
 
@@ -79,14 +79,14 @@
                       <th>No</th>
                       <th>Jabatan</th>
                       <th>Nama Petugas</th>
-                      <th>Durasi (menit)</th>
                       <th>Jumlah Hari Kerja</th>
                       <th>Jumlah Hari Cuti</th>
-                      <th>Jumlah Kurang Hari</th>
+                      <th>Jumlah Menit Kerja</th>
+                      <th>Jumlah Kurang Menit</th>
                       <th>Sudah diTL</th>
                       <th>Belum diTL</th>
-                      <th>Total Agenda</th>
                       <th>Sudah diTL (%)</th>
+                      <th>Aktif Bekerja</th>
                       <th>Valid</th>
                   </tr>
                   </thead>
@@ -116,7 +116,6 @@
 <script src="https://cdn.rawgit.com/ashl1/datatables-rowsgroup/fbd569b8768155c7a9a62568e66a64115887d7d0/dataTables.rowsGroup.js"></script>
 
 <script src="{{ asset('adminlte') }}/plugins/select2/js/select2.full.min.js"></script>
-Sudah di
 <script src="{{ asset('/source/js/validation.js') }}"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -187,6 +186,17 @@ Sudah di
           if (data.id == rowHightlight) {
             $(row).attr('class', 'hightlighting');
           }
+          menit_harus_kerja = '{{ $hari_kerja * $menit_kerja }}';
+          let menit_kurang = menit_harus_kerja - (+data.durasi + (+data.jumlah_cuti * +{{ $menit_kerja }}));
+          if (menit_kurang > 0 && data.deleted_at == null && data.active == 1) {
+            $(row).find('td:eq(6)').css('background-color', '#ff828c');
+          }
+
+          if (data.deleted_at != null) {
+              $(row).attr('class', 'warning_table');
+          } else if (data.active == 0){
+              $(row).attr('class', 'disabled_table');
+          }
       },
       "columns": [
         {
@@ -197,20 +207,19 @@ Sudah di
         },
         {"data": "jabatan"},
         {"data": "name"},
-        {"data": "durasi"},
         {"data": "jumlah_hari"},
         {"data": "jumlah_cuti"},
+        {"data": "durasi"},
         {
           "data": "jumlah_cuti",
           "mRender": function (data, type, row) {
-            hari_kerja = '{{ $hari_kerja }}';
-            let result = hari_kerja - (row.jumlah_hari + row.jumlah_cuti);
+            menit_harus_kerja = '{{ $hari_kerja * $menit_kerja }}';
+            let result = menit_harus_kerja - (+row.durasi + (+row.jumlah_cuti * +{{ $menit_kerja }}));
             return result > 0 ? result : 0;
           }
         },
         {"data": "sudah_ditl"},
         {"data": "belum_ditl"},
-        {"data": "total"},
         {
           "data": "persen",
           "mRender": function (data, type, row) {
@@ -223,6 +232,7 @@ Sudah di
             return persen+'<br>'+progress;
           }
         },
+        {"data": "active"},
         {
             "data" : "persen_verified",
             "mRender": function (data, type, row) {

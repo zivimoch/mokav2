@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\LogActivityHelper;
 use App\Helpers\NotifHelper;
 use App\Helpers\StatusHelper;
+use App\Models\Kasus;
 use App\Models\Klien;
 use App\Models\Notifikasi;
 use App\Models\PersetujuanIsi;
@@ -125,6 +126,10 @@ class PetugasController extends Controller
                 // jika yang ditambah adalah peneria pengaduan maka ubah created by di kasus dan kliennya
                 $klien->created_by = $request->user_id;
                 $klien->save();
+
+                $kasus = Kasus::where('id', $klien->kasus_id)->first();
+                $kasus->created_by = $request->user_id;
+                $kasus->save();
             }
 
             $check_kelengkapan_spp = (new KasusController)->check_kelengkapan_spp($klien->id);

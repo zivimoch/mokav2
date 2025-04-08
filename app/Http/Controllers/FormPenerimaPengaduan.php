@@ -330,11 +330,13 @@ class FormPenerimaPengaduan extends Controller
                 }    
             }
 
+
             //Data Terlapor
             $terlapor = $request->nama_terlapor;
             if (isset($terlapor)) {
+                $urutan_hubungan = 0;
                 foreach ($terlapor as $key => $value) {
-                    Terlapor::create([
+                    $terlapor = Terlapor::create([
                         'kasus_id' => $kasus->id,
                         'nik' => isset($request->nik_terlapor[$key]) ? $request->nik_terlapor[$key] : NULL, 
                         'nama' => $request->nama_terlapor[$key],  
@@ -362,7 +364,35 @@ class FormPenerimaPengaduan extends Controller
                         'desil' => isset($request->desil_terlapor[$key]) ? $request->desil_terlapor[$key] : NULL,  
                         'created_by' => $created_by  
                     ]);
+
+                    $klien = Klien::where('kasus_id', $kasus->id)->get();
+                    foreach ($klien as $klien) {
+                        RHubunganTerlaporKlien::create([
+                            'klien_id' => $klien->id,
+                            'terlapor_id' => $terlapor->id,
+                            'value' => $request->hubungan[$urutan_hubungan]
+                        ]);
+                        $urutan_hubungan++;
+                    }
                 }
+
+                // loop insert data hubungan terlapor-klien
+                // dd($request->hubungan);
+//                 $hubunganData = is_array($request->hubungan) ? $request->hubungan : json_decode($request->hubungan, true);
+//                 dd($hubunganData);
+
+// foreach ($hubunganData as $klienRelations) {
+//     foreach ($klienRelations as $terlaporRelations) {
+//         foreach ($terlaporRelations as $relation) {
+//             RHubunganTerlaporKlien::create([
+//                 'klien_id' => $relation['klien_id'],
+//                 'terlapor_id' => $relation['terlapor_id'],
+//                 'value' => $relation['value']
+//             ]);
+//         }
+//     }
+// }
+
             }
 
             //return response

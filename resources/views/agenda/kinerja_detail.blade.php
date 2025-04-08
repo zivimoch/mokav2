@@ -93,9 +93,9 @@
                     <span class="spinner"></span>
                   </div>
                 </div> --}}
-                <b style="font-size: 18px">Jumlah Durasi Kerja Bulan {{ $monthNameSelected }} : <span id="jumlah_durasi"></span> menit</b>
+                <b style="font-size: 18px">Jumlah Durasi Kerja Anda Bulan {{ $monthNameSelected }} : <span id="jumlah_durasi"></span> menit</b>
                 <br>
-                <b style="font-size: 18px">Jumlah Hari Kerja yang ditetapkan Bulan {{ $monthNameSelected }} : <span id="hari_kerja"></span> hari</b>
+                <b style="font-size: 18px">Jumlah Menit Kerja yang ditetapkan Bulan {{ $monthNameSelected }} : <span id="menit_kerja"></span> menit (<span id="hari_kerja"></span> hari, perhari <span id="menit_per_hari"></span> menit)</b>
                 <br>
                 <b style="font-size: 18px">Jumlah Cuti Anda yang sudah dikonfirmasi Bulan {{ $monthNameSelected }} : <span id="hari_cuti"></span> hari</b> (data dari MONA)
 
@@ -106,14 +106,7 @@
                   <ul>
                     <div id="warning_kurang_hari_kerja" style="display:none; background-color: rgb(123, 0, 0); margin-bottom:5px; margin-top:5px">
                       <li>
-                      <b>Jumlah hari kurang <span id="kurang_hari_kerja"></span> hari</b> dari Jumlah Hari Kerja yang ditetapkan, silahkan cek lagi hari yang belum ada agendanya.<br>
-                      *Selama belum terkoneksi dengan MOKI maka : <br>
-                      <ol>
-                        <li>Pengecekan hari yang kosong masih manual.</li>
-                        <li>Tanggal cuti tidak akan terdeteksi, kosongkan saja bila tidak masuk kerja (sistem akan tetap membaca bahwa jumlah hari kurang, namun abaikan warning ini bila ada cuti).</li>
-                        <li>Evaluasi Kinerja Bulanan akan mengambil data dari MOKA dan disandingkan dengan data cuti di sekretariat terlebih dahulu.</li>
-                      </ol>
-                      <br>
+                      <b>Jumlah menit kurang <span id="kurang_hari_kerja"></span> menit</b> dari Jumlah Menit yang ditetapkan, silahkan cek lagi hari yang belum ada / kurang agendanya.<br>
                       </li>
                     </div>
                     <div id="warning_belum_tl" style="display:none; background-color: rgb(123, 0, 0)">
@@ -591,14 +584,16 @@
             
             $('#jumlah_durasi').html(response.jumlah_durasi);
             $('#hari_kerja').html(response.hari_kerja);
+            $('#menit_per_hari').html(response.menit_kerja);
+            $('#menit_kerja').html(response.hari_kerja*response.menit_kerja);
             $('#hari_cuti').html(response.hari_cuti);  
             
-            if (response.kurang_hari_kerja > 0 || response.belum_tl > 0) {
+            if (response.kurang_menit_kerja > 0 || response.belum_tl > 0) {
               $('#warningAgenda').show();
               // kurang hari kerja
-              if (response.kurang_hari_kerja > 0) {
+              if (response.kurang_menit_kerja > 0) {
                 $('#warning_kurang_hari_kerja').show();
-                $('#kurang_hari_kerja').html(response.kurang_hari_kerja);
+                $('#kurang_hari_kerja').html(response.kurang_menit_kerja);
               } else {
                 $('#warning_kurang_hari_kerja').hide();
               }

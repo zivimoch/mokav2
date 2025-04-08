@@ -2492,14 +2492,14 @@
                 </div>
                 <div class="form-group clearfix">
                     <div class="icheck-primary d-inline" style="margin-right:15px">
-                    <input type="radio" id="radioPrimary1" name="jenis_terminasi" checked value="selesai">
-                    <label for="radioPrimary1">
+                    <input type="radio" id="radioPrimary1o" name="jenis_terminasi" checked value="selesai">
+                    <label for="radioPrimary1o">
                         Terminasi Kasus Selesai
                     </label>
                     </div>
                     <div class="icheck-primary d-inline">
-                    <input type="radio" id="radioPrimary2" name="jenis_terminasi" value="ditutup">
-                    <label for="radioPrimary2">
+                    <input type="radio" id="radioPrimary2o" name="jenis_terminasi" value="ditutup">
+                    <label for="radioPrimary2o">
                         Terminasi Kasus Ditutup
                     </label>
                     </div>

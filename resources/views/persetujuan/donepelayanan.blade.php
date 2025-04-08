@@ -172,7 +172,7 @@
     </div>
     <br/>
     <center>
-        <div class="col-md-4 align-self-center">
+        <div class="col-md-6 align-self-center">
                 <label class="" for="">Tanda Tangan:</label>
                 <div id="sig" >
                     <img src="{{ asset('img/tandatangan/ttd_klien/'.$persetujuan_isi->tandatangan) }}" alt="">
@@ -180,6 +180,8 @@
                 <div style="border: none; border-bottom: 2px solid black;">
                     {{ $persetujuan_isi->nama_penandatangan }}
                 </div>
+                <br>
+                *Ditandatangani pada tanggal : {{ $persetujuan_isi->updated_at->format('d M Y') }}
         </div>
     </center>
     <br/>

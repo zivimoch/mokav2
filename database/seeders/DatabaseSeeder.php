@@ -2268,6 +2268,7 @@ class DatabaseSeeder extends Seeder
         // ];
         // TKeyword::insert($t_keyword);
 
+        // m_keyword
         $csvFile = fopen(base_path("database/data/m_keyword.csv"), "r");
         $firstline = true;
         while (($m_keyword = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
@@ -2282,6 +2283,102 @@ class DatabaseSeeder extends Seeder
                     "created_at" => Carbon::now(),
                     "updated_at" => Carbon::now(),
                     "deleted_at" => NULL,
+                ]);    
+            }
+            $firstline = false;
+        }
+        fclose($csvFile);
+
+        // persetujuan_isi
+        $csvFile = fopen(base_path("database/data/persetujuan_isi.csv"), "r");
+        $firstline = true;
+        while (($persetujuan_isi = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+            if (!$firstline) {
+                PersetujuanIsi::create([
+                    "id" => $persetujuan_isi['0'],
+                    "uuid" => $persetujuan_isi['1'],
+                    "klien_id" => $persetujuan_isi['2'],
+                    "persetujuan_template_id" => $persetujuan_isi['3'],
+                    "no_telp" => $persetujuan_isi['4'],
+                    "alamat" => $persetujuan_isi['5'],
+                    "isi" => $persetujuan_isi['6'],
+                    "catatan" => $persetujuan_isi['7'],
+                    "tandatangan" => $persetujuan_isi['8'],
+                    "nama_penandatangan" => $persetujuan_isi['9'],
+                    "created_by" => $persetujuan_isi['10'],
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now(),
+                    "deleted_at" => NULL,
+                ]);    
+            }
+            $firstline = false;
+        }
+        fclose($csvFile);
+
+        // agenda
+        $csvFile = fopen(base_path("database/data/agenda.csv"), "r");
+        $firstline = true;
+        while (($agenda = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+            if (!$firstline) {
+                Agenda::create([
+                    "id" => $agenda['0'],
+                    "uuid" => $agenda['1'],
+                    "klien_id" => $agenda['2'],
+                    "intervensi_ke" => $agenda['3'],
+                    "judul_kegiatan" => $agenda['4'],
+                    "tanggal_mulai" => Carbon::now(),
+                    "jam_mulai" => '08:00:00',
+                    "keterangan" => $agenda['7'],
+                    "created_by" => $agenda['8'],
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now(),
+                    "deleted_at" => NULL,
+                ]);    
+            }
+            $firstline = false;
+        }
+        fclose($csvFile);
+
+        // tindak_lanjut
+        $csvFile = fopen(base_path("database/data/tindak_lanjut.csv"), "r");
+        $firstline = true;
+        while (($agenda = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+            if (!$firstline) {
+                TindakLanjut::create([
+                    "id" => $agenda['0'],
+                    "uuid" => $agenda['1'],
+                    "agenda_id" => $agenda['2'],
+                    "tanggal_selesai" => Carbon::now(),
+                    "jam_selesai" => '10:00:00',
+                    "lokasi" => $agenda['5'],
+                    "keterangan" => $agenda['6'],
+                    "catatan" => $agenda['7'],
+                    "rtl" => $agenda['8'],
+                    "terlaksana" => $agenda['9'],
+                    "durasi" => $agenda['10'],
+                    "created_by" => $agenda['11'],
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now(),
+                    "deleted_at" => NULL,
+                ]);    
+            }
+            $firstline = false;
+        }
+        fclose($csvFile);
+
+        // t_keyword
+        $csvFile = fopen(base_path("database/data/t_keyword.csv"), "r");
+        $firstline = true;
+        while (($t_keyword = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+            if (!$firstline) {
+                TKeyword::create([
+                    "id" => $t_keyword['0'],
+                    "tindak_lanjut_id" => $t_keyword['1'],
+                    "jabatan" => $t_keyword['2'],
+                    "value" => $t_keyword['3'],
+                    "created_by" => $t_keyword['4'],
+                    "created_at" => Carbon::now(),
+                    "updated_at" => Carbon::now(),
                 ]);    
             }
             $firstline = false;

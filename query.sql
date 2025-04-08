@@ -1,0 +1,3000 @@
+-- DATA SDI
+-- ===================================================================
+-- 1. (JENIS LAYANAN) Persentase korban kekerasan terhadap perempuan yang mendapat layanan komprehensif
+-- SELECT
+--     -- a.tanggal_pelaporan,
+--     DATE_FORMAT(a.tanggal_pelaporan, '%Y%m') AS periode,
+--     z.wilayah_penugasan_satpel,
+--     y.jabatan AS layanan,
+--     COUNT(*) AS jumlah_petugas, -- artinya ada layanan ini di suatu kasus jumlah petugas per kasus / jumlah kasusnya
+--     -- x.jumlah_kasus,
+-- 	 ROUND((COUNT(*) / x.jumlah_kasus) * 100, 2) AS percentage_layanan_per_kasus
+-- FROM 
+--     kasus a
+-- LEFT JOIN 
+--     klien b ON a.id = b.kasus_id 
+-- LEFT JOIN 
+--     (
+--     SELECT 
+--         ac.klien_id,
+--         aa.kotkab_id,
+--         ab.name AS wilayah_penugasan_satpel
+--     FROM 
+--         petugas ac
+--     LEFT JOIN  
+--         users aa ON ac.user_id = aa.id
+--     LEFT JOIN 
+--         indonesia_cities ab ON aa.kotkab_id = ab.code 
+--     WHERE 
+--         aa.jabatan = 'Supervisor Kasus' 
+--         AND ac.deleted_at IS NULL 
+--         AND aa.deleted_at IS NULL 
+--     ) z ON z.klien_id = b.id
+-- LEFT JOIN 
+-- 	 (
+-- 	 SELECT 
+-- 	 ba.klien_id, 
+-- 	 bb.jabatan,
+-- 	 COUNT(DISTINCT bb.jabatan) AS jumlah_layanan
+-- 	 FROM 
+-- 	 petugas ba LEFT JOIN users bb ON ba.user_id = bb.id
+-- 	 WHERE 
+-- 	 ba.deleted_at IS NULL 
+-- 	 AND 
+-- 	 bb.deleted_at IS NULL 
+-- 	 AND 
+-- 	 bb.jabatan != 'Supervisor kasus'
+-- 	 GROUP BY 
+-- 	 ba.klien_id, bb.jabatan
+-- 	 ) y ON y.klien_id = b.id
+-- LEFT JOIN 
+--     (
+--     SELECT 
+--         cz.kotkab_id,
+--         cz.wilayah_penugasan_satpel,
+--         COUNT(*) AS jumlah_kasus
+--     FROM 
+--         kasus ba
+--     LEFT JOIN 
+--         klien bb ON ba.id = bb.kasus_id
+--     LEFT JOIN 
+--         (
+--         SELECT 
+--             cc.klien_id,
+--             ca.kotkab_id,
+--             cb.name AS wilayah_penugasan_satpel
+--         FROM 
+--             petugas cc
+--         LEFT JOIN  
+--             users ca ON cc.user_id = ca.id
+--         LEFT JOIN 
+--             indonesia_cities cb ON ca.kotkab_id = cb.code 
+--         WHERE 
+--             ca.jabatan = 'Supervisor Kasus' 
+--             AND cc.deleted_at IS NULL 
+--             AND ca.deleted_at IS NULL 
+--         ) cz ON cz.klien_id = bb.id 
+--     WHERE 
+--         YEAR(ba.tanggal_pelaporan) = 2024 
+--         AND MONTH(ba.tanggal_pelaporan) = 5
+--         AND bb.arsip = 0
+--         AND ba.deleted_at IS NULL 
+--         AND bb.deleted_at IS NULL 
+--     GROUP BY 
+--         cz.kotkab_id
+--     ) x ON x.kotkab_id = z.kotkab_id
+-- WHERE 
+--     YEAR(a.tanggal_pelaporan) = 2024 
+--     AND MONTH(a.tanggal_pelaporan) = 5
+--     AND b.arsip = 0
+--     AND a.deleted_at IS NULL 
+--     AND b.deleted_at IS NULL 
+-- AND
+-- b.tanggal_approve IS NOT NULL 
+-- GROUP BY 
+--     z.kotkab_id, y.jabatan
+
+-- 2. Jumlah korban kekerasan terhadap perempuan yang mendapat layanan komprehensif
+-- SELECT
+--     -- a.tanggal_pelaporan,
+--     DATE_FORMAT(a.tanggal_pelaporan, '%Y%m') AS periode,
+--     y.jabatan AS layanan,
+--     COUNT(*) AS jumlah_petugas -- artinya ada layanan ini di suatu kasus. jumlah petugas per kasus / jumlah kasusnya
+-- FROM 
+--     kasus a
+-- LEFT JOIN 
+--     klien b ON a.id = b.kasus_id 
+-- LEFT JOIN 
+-- 	 (
+-- 	 SELECT 
+-- 	 ba.klien_id, 
+-- 	 bb.jabatan,
+-- 	 COUNT(DISTINCT bb.jabatan) AS jumlah_layanan
+-- 	 FROM 
+-- 	 petugas ba LEFT JOIN users bb ON ba.user_id = bb.id
+-- 	 WHERE 
+-- 	 ba.deleted_at IS NULL 
+-- 	 AND 
+-- 	 bb.deleted_at IS NULL 
+-- 	 AND 
+-- 	 bb.jabatan != 'Supervisor kasus'
+-- 	 GROUP BY 
+-- 	 ba.klien_id, bb.jabatan
+-- 	 ) y ON y.klien_id = b.id
+-- WHERE 
+--     YEAR(a.tanggal_pelaporan) = 2024 
+--     AND MONTH(a.tanggal_pelaporan) = 5
+--     AND b.arsip = 0
+--     AND a.deleted_at IS NULL 
+--     AND b.deleted_at IS NULL 
+-- AND
+-- b.tanggal_approve IS NOT NULL 
+-- GROUP BY 
+-- 	 y.jabatan
+
+-- 3. Jumlah Kekerasan Terhadap Perempuan Dan Anak yang Ada di DKI Jakarta
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode,
+-- cz.wilayah_penugasan_satpel, ba.media_pengaduan, COUNT(*) AS jumlah_kasus
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- cc.klien_id, ca.kotkab_id, cb.name AS wilayah_penugasan_satpel
+-- FROM 
+-- petugas cc LEFT JOIN  users ca ON cc.user_id = ca.id
+-- LEFT JOIN indonesia_cities cb ON ca.kotkab_id = cb.code 
+-- WHERE 
+-- ca.jabatan = 'Supervisor Kasus' 
+-- AND cc.deleted_at IS NULL 
+-- AND ca.deleted_at IS NULL 
+-- ) cz ON cz.klien_id = bb.id 
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND
+-- bb.tanggal_approve IS NOT NULL 
+-- GROUP BY cz.kotkab_id, ba.media_pengaduan
+
+-- 4. Data perempuan dewasa dan anak perempuan (umur 15-64) mengalami kekerasan oleh pasangan atau mantan pasangan
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode,
+-- cz.wilayah_penugasan_satpel, COUNT(*) AS jumlah_kasus
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- cc.klien_id, ca.kotkab_id, cb.name AS wilayah_penugasan_satpel
+-- FROM 
+-- petugas cc LEFT JOIN  users ca ON cc.user_id = ca.id
+-- LEFT JOIN indonesia_cities cb ON ca.kotkab_id = cb.code 
+-- WHERE 
+-- ca.jabatan = 'Supervisor Kasus' 
+-- AND cc.deleted_at IS NULL 
+-- AND ca.deleted_at IS NULL 
+-- ) cz ON cz.klien_id = bb.id 
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND 
+-- DATEDIFF(NOW(), bb.tanggal_lahir) > 14*365.25
+-- AND 
+-- DATEDIFF(NOW(), bb.tanggal_lahir) < 65*365.25
+-- AND
+-- bb.tanggal_approve IS NOT NULL 
+-- GROUP BY cz.kotkab_id
+
+-- 5. Data pengaduan perlindungan perempuan dan anak
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode,
+-- cz.wilayah_penugasan_satpel, ba.media_pengaduan, COUNT(*) AS jumlah_kasus
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- cc.klien_id, ca.kotkab_id, cb.name AS wilayah_penugasan_satpel
+-- FROM 
+-- petugas cc LEFT JOIN  users ca ON cc.user_id = ca.id
+-- LEFT JOIN indonesia_cities cb ON ca.kotkab_id = cb.code 
+-- WHERE 
+-- ca.jabatan = 'Supervisor Kasus' 
+-- AND cc.deleted_at IS NULL 
+-- AND ca.deleted_at IS NULL 
+-- ) cz ON cz.klien_id = bb.id 
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 4
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND
+-- bb.tanggal_approve IS NOT NULL 
+-- GROUP BY cz.kotkab_id, ba.media_pengaduan
+
+-- 6. Perempuan dan anak korban kekerasan yang mendapatkan layanan kesehatan oleh tenaga kesehatan terlatih di Puskesmas mampu tatalaksana KtP KtA dan PPT atau PKT di Rumah Sakit 
+-- SELECT
+-- *, COUNT(*)
+-- FROM 
+-- (
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- cz.wilayah_penugasan_satpel, 
+-- bb.jenis_kelamin,
+-- TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) AS usia,
+-- dz.lokasi
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- cc.klien_id, ca.kotkab_id, cb.name AS wilayah_penugasan_satpel
+-- FROM 
+-- petugas cc LEFT JOIN  users ca ON cc.user_id = ca.id
+-- LEFT JOIN indonesia_cities cb ON ca.kotkab_id = cb.code 
+-- WHERE 
+-- ca.jabatan = 'Supervisor Kasus' 
+-- AND cc.deleted_at IS NULL 
+-- AND ca.deleted_at IS NULL 
+-- ) cz ON cz.klien_id = bb.id 
+-- LEFT JOIN 
+-- (
+-- SELECT
+-- da.klien_id, dc.value, db.lokasi
+-- FROM 
+-- agenda da LEFT JOIN tindak_lanjut db ON da.id = db.agenda_id
+-- LEFT JOIN t_keyword dc ON dc.tindak_lanjut_id = db.id
+-- WHERE 
+-- dc.value IN (
+-- 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71
+-- )
+-- ) dz ON dz.klien_id = bb.id
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND 
+-- dz.lokasi IS NOT NULL 
+-- AND
+-- bb.tanggal_approve IS NOT NULL 
+-- GROUP BY cz.kotkab_id, bb.id
+-- ) z 
+-- GROUP BY z.wilayah_penugasan_satpel, z.jenis_kelamin, z.usia, z.lokasi
+
+-- 7. Data Cakupan penegakan hukum dari tingkat penyidikan sampai dengan putusan pengadilan atas kasus-kasus kekerasan terhadap perempuan dan anak
+-- SELECT
+-- DATE_FORMAT(a.tanggal_pelaporan, '%Y%m') AS periode,
+-- z.wilayah_penugasan_satpel,
+-- f.value AS detail_layanan_penegakan_hukum, COUNT(f.value) AS jumlah_layanan 
+-- FROM 
+-- kasus a LEFT JOIN klien b ON a.id = b.kasus_id 
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- ac.klien_id, aa.kotkab_id, ab.name AS wilayah_penugasan_satpel
+-- FROM 
+-- petugas ac LEFT JOIN  users aa ON ac.user_id = aa.id
+-- LEFT JOIN indonesia_cities ab ON aa.kotkab_id = ab.code 
+-- WHERE 
+-- aa.jabatan = 'Supervisor Kasus' 
+-- AND ac.deleted_at IS NULL 
+-- AND aa.deleted_at IS NULL 
+-- ) z ON z.klien_id = b.id
+-- LEFT JOIN agenda d ON b.id = d.klien_id
+-- LEFT JOIN tindak_lanjut e ON d.id = e.agenda_id
+-- LEFT JOIN t_keyword f ON e.id = f.tindak_lanjut_id
+-- LEFT JOIN users g ON g.id = e.created_by
+-- WHERE 
+-- YEAR(a.tanggal_pelaporan) = 2024 AND MONTH(a.tanggal_pelaporan) = 5
+-- AND 
+-- b.arsip = 0
+-- AND
+-- a.deleted_at IS NULL 
+-- AND 
+-- b.deleted_at IS NULL 
+-- AND 
+-- d.deleted_at IS NULL 
+-- AND 
+-- e.deleted_at IS NULL
+-- AND 
+-- f.value IN ('Pendampingan Kepolisian', 'Pendampingan BAP','Pendampingan di Kepolisian','Pendampingan LP',
+-- 'Pendampingan di PN', 'Pendampingan di PA') 
+-- AND
+-- b.tanggal_approve IS NOT NULL 
+-- GROUP BY 
+-- f.value
+
+-- 8. Data jumlah korban yang mendapat layanan bantuan hukum
+-- SELECT
+--     -- a.tanggal_pelaporan,
+--     DATE_FORMAT(a.tanggal_pelaporan, '%Y%m') AS periode,
+--     COUNT(*) AS jumlah_petugas, -- artinya ada layanan ini di suatu kasus. jumlah petugas per kasus / jumlah kasusnya
+--     y.jabatan AS layanan,
+--     z.wilayah_penugasan_satpel
+-- FROM 
+--     kasus a
+-- LEFT JOIN 
+--     klien b ON a.id = b.kasus_id 
+-- LEFT JOIN 
+--     (
+--     SELECT 
+--         ac.klien_id,
+--         aa.kotkab_id,
+--         ab.name AS wilayah_penugasan_satpel
+--     FROM 
+--         petugas ac
+--     LEFT JOIN  
+--         users aa ON ac.user_id = aa.id
+--     LEFT JOIN 
+--         indonesia_cities ab ON aa.kotkab_id = ab.code 
+--     WHERE 
+--         aa.jabatan = 'Supervisor Kasus' 
+--         AND ac.deleted_at IS NULL 
+--         AND aa.deleted_at IS NULL 
+--     ) z ON z.klien_id = b.id
+-- LEFT JOIN 
+-- 	 (
+-- 	 SELECT 
+-- 	 ba.klien_id, 
+-- 	 bb.jabatan,
+-- 	 COUNT(DISTINCT bb.jabatan) AS jumlah_layanan
+-- 	 FROM 
+-- 	 petugas ba LEFT JOIN users bb ON ba.user_id = bb.id
+-- 	 WHERE 
+-- 	 ba.deleted_at IS NULL 
+-- 	 AND 
+-- 	 bb.deleted_at IS NULL 
+-- 	 AND 
+-- 	 bb.jabatan != 'Supervisor kasus'
+-- 	 GROUP BY 
+-- 	 ba.klien_id, bb.jabatan
+-- 	 ) y ON y.klien_id = b.id
+-- WHERE 
+--     YEAR(a.tanggal_pelaporan) = 2024 
+--     AND MONTH(a.tanggal_pelaporan) = 5
+--     AND b.arsip = 0
+--     AND a.deleted_at IS NULL 
+--     AND b.deleted_at IS NULL 
+--     AND y.jabatan IN ('Advokat','Paralegal','Unit Reaksi Cepat')
+-- 	 AND b.tanggal_approve IS NOT NULL 
+-- GROUP BY 
+--     z.kotkab_id, y.jabatan
+
+-- 9. Data Cakupan layanan pemulangan bagi perempuan dan anak korban kekerasan
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- cz.wilayah_penugasan_satpel,
+-- bb.jenis_kelamin,
+-- TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) AS usia,
+-- COUNT(*) AS jumlah
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- cc.klien_id, ca.kotkab_id, cb.name AS wilayah_penugasan_satpel
+-- FROM 
+-- petugas cc LEFT JOIN  users ca ON cc.user_id = ca.id
+-- LEFT JOIN indonesia_cities cb ON ca.kotkab_id = cb.code 
+-- WHERE 
+-- ca.jabatan = 'Supervisor Kasus' 
+-- AND cc.deleted_at IS NULL 
+-- AND ca.deleted_at IS NULL 
+-- ) cz ON cz.klien_id = bb.id 
+-- LEFT JOIN 
+-- (
+-- SELECT
+-- da.klien_id, dc.value, db.lokasi
+-- FROM 
+-- agenda da LEFT JOIN tindak_lanjut db ON da.id = db.agenda_id
+-- LEFT JOIN t_keyword dc ON dc.tindak_lanjut_id = db.id
+-- WHERE 
+-- dc.value IN (
+-- 72
+-- )
+-- ) dz ON dz.klien_id = bb.id
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 6
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND 
+-- dz.lokasi IS NOT NULL 
+-- AND 
+-- bb.tanggal_approve IS NOT NULL 
+-- GROUP BY cz.kotkab_id, bb.id
+
+-- 10. Jumlah Kekerasan terhadap Perempuan dan Anak Menurut Kota Administrasi DKI Jakarta
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) AS usia,
+-- cz.`name` AS kota,
+-- cy.`name` AS kecamatan,
+-- count(DISTINCT ba.id) AS jumlah
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN 
+-- indonesia_cities cz ON cz.`code` = ba.kotkab_id
+-- LEFT JOIN 
+-- indonesia_districts cy ON cy.`code` = ba.kecamatan_id
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2025 AND MONTH(ba.tanggal_pelaporan) = 2
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND bb.tanggal_approve IS NOT NULL 
+-- GROUP BY ba.kotkab_id, ba.kecamatan_id, usia 
+
+-- 11. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani Oleh PPPA Berdasarkan Tempat Kejadian Perkara di Kabupaten Kota DKI
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- bc.name, COUNT(*) AS jumlah_kasus
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN indonesia_cities bc ON ba.kotkab_id = bc.code 
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND 
+-- ba.provinsi_id = 31 -- hanya DKI
+-- GROUP BY bc.code
+
+-- 12. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani Oleh PPPA Berdasarkan Jenis Kekerasan
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- bd.nama, COUNT(*)
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN t_jenis_kekerasan bc ON bc.klien_id = bb.id
+-- LEFT JOIN m_jenis_kekerasan bd ON bc.value = bd.kode
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- GROUP BY bd.kode
+
+-- 13. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani oleh PPPA Berdasarkan Bentuk Kekerasan kdrt
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- bd.nama, COUNT(*)
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN t_bentuk_kekerasan bc ON bc.klien_id = bb.id
+-- LEFT JOIN m_bentuk_kekerasan bd ON bc.value = bd.kode
+-- LEFT JOIN r_kategori_jenis_bentuk be ON be.bentuk_kekerasan_kode = bc.value
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND 
+-- be.kategori_kasus_kode = 71 -- 71 adalah kode untuk kategori kasus KDRT
+-- AND bb.tanggal_approve IS NOT NULL 
+-- GROUP BY bd.kode
+
+-- 14. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani oleh PPPA Berdasarkan Kategori Lokasi
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- ba.kategori_lokasi, COUNT(*)
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND bb.tanggal_approve IS NOT NULL 
+-- GROUP BY ba.kategori_lokasi
+ 
+-- 15. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani oleh PPPA Berdasarkan Usia Klien
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) AS usia,
+-- COUNT(*)
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND bb.tanggal_approve IS NOT NULL 
+-- GROUP BY TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE())
+
+-- 16. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani oleh PPPA Berdasarkan Usia Pelaku
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) AS usia,
+-- COUNT(*)
+-- FROM 
+-- kasus ba LEFT JOIN terlapor bb ON ba.id = bb.kasus_id
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- GROUP BY TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE())
+
+-- 17. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani Oleh PPPA Berdasarkan Pendidikan Klien
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- bb.pendidikan,
+-- COUNT(*)
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND bb.tanggal_approve IS NOT NULL 
+-- GROUP BY bb.pendidikan
+
+-- 18. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani Oleh PPPA Berdasarkan Pendidikan pelaku
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- bb.pendidikan,
+-- COUNT(*)
+-- FROM 
+-- kasus ba LEFT JOIN terlapor bb ON ba.id = bb.kasus_id
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- GROUP BY bb.pendidikan
+
+-- 19. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani Oleh PPPA Berdasarkan pekerjaan Klien
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- bb.pekerjaan,
+-- COUNT(*)
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND bb.tanggal_approve IS NOT NULL 
+-- GROUP BY bb.pekerjaan
+
+-- 20. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani Oleh PPPA Berdasarkan pekerjaan pelaku
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- bb.pekerjaan,
+-- COUNT(*)
+-- FROM 
+-- kasus ba LEFT JOIN terlapor bb ON ba.id = bb.kasus_id
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- GROUP BY bb.pekerjaan
+
+-- 21. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani Oleh PPPA Berdasarkan hubungan dengan pelaku
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode,
+-- bc.value, 
+-- COUNT(*)
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN r_hubungan_terlapor_klien bc ON bc.klien_id = bb.id
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND bb.tanggal_approve IS NOT NULL 
+-- GROUP BY bc.value 
+-- 
+-- 22. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani Oleh PPPA Berdasarkan jenis pelayanan yang diberikan
+-- SELECT
+-- DATE_FORMAT(a.tanggal_pelaporan, '%Y%m') AS periode,
+-- f.value AS detail_layanan, COUNT(f.value) AS jumlah_layanan 
+-- FROM 
+-- kasus a LEFT JOIN klien b ON a.id = b.kasus_id 
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- ac.klien_id, aa.kotkab_id, ab.name AS wilayah_penugasan_satpel
+-- FROM 
+-- petugas ac LEFT JOIN  users aa ON ac.user_id = aa.id
+-- LEFT JOIN indonesia_cities ab ON aa.kotkab_id = ab.code 
+-- WHERE 
+-- aa.jabatan = 'Supervisor Kasus' 
+-- AND ac.deleted_at IS NULL 
+-- AND aa.deleted_at IS NULL 
+-- ) z ON z.klien_id = b.id
+-- LEFT JOIN agenda d ON b.id = d.klien_id
+-- LEFT JOIN tindak_lanjut e ON d.id = e.agenda_id
+-- LEFT JOIN t_keyword f ON e.id = f.tindak_lanjut_id
+-- LEFT JOIN users g ON g.id = e.created_by
+-- WHERE 
+-- YEAR(a.tanggal_pelaporan) = 2024 AND MONTH(a.tanggal_pelaporan) = 5
+-- AND 
+-- b.arsip = 0
+-- AND
+-- a.deleted_at IS NULL 
+-- AND 
+-- b.deleted_at IS NULL 
+-- AND 
+-- d.deleted_at IS NULL 
+-- AND 
+-- e.deleted_at IS NULL 
+-- AND b.tanggal_approve IS NOT NULL 
+-- GROUP BY 
+-- f.value
+
+-- 23. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani Oleh PPPA Berdasarkan yang melapor ke kepolisian
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode,
+-- SUM(CASE WHEN ba.sumber_informasi = 'Kepolisian' OR ba.sumber_rujukan = 'Kepolisian' THEN 1 ELSE 0 END) AS lapor_polisi,
+-- SUM(CASE WHEN ba.sumber_informasi != 'Kepolisian' OR ba.sumber_rujukan != 'Kepolisian' THEN 1 ELSE 0 END) AS tak_lapor_polisi,
+-- SUM(CASE WHEN ba.sumber_informasi = 'Kepolisian' OR ba.sumber_rujukan = 'Kepolisian' THEN 1 ELSE 0 END) + SUM(CASE WHEN ba.sumber_informasi != 'Kepolisian' OR ba.sumber_rujukan != 'Kepolisian' THEN 1 ELSE 0 END) AS total
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND 
+-- bb.deleted_at IS NULL
+-- AND bb.tanggal_approve IS NOT NULL 
+
+-- 24. Kasus yang lapor polisi (BUAT BIDANG PP
+-- SELECT
+-- DATE_FORMAT(a.tanggal_pelaporan, '%Y%m') AS periode, z.name AS wilayah, MONTH(b.tanggal_approve) AS bulan, COUNT(y.klien_id) AS lapor_polisi
+-- FROM 
+-- kasus a LEFT JOIN klien b ON a.id = b.kasus_id 
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(" ", b.name) AS supervisor_kasus, c.name FROM petugas a LEFT JOIN users b ON a.user_id = b.id 
+-- LEFT JOIN indonesia_cities c ON c.code = b.kotkab_id
+-- WHERE b.jabatan = 'Supervisor Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id)
+-- z ON z.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT klien_id FROM catatan_hukum WHERE no_lp IS NOT NULL GROUP BY klien_id)
+-- y ON y.klien_id = b.id
+-- WHERE 
+-- a.deleted_at IS NULL 
+-- AND 
+-- b.deleted_at IS NULL 
+-- AND 
+-- b.no_klien IS NOT NULL
+-- AND 
+-- b.arsip = 0
+-- AND 
+-- YEAR(a.tanggal_pelaporan) = 2024
+-- GROUP BY 
+-- z.supervisor_kasus, MONTH(a.tanggal_pelaporan)
+
+-- x 10. Data layanan reintegrasi sosial bagi perempuan dan anak korban kekerasan
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- cz.wilayah_penugasan_satpel, 
+-- bb.jenis_kelamin,
+-- TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) AS usia,
+-- dz.lokasi,
+-- count(*) as jumlah
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- cc.klien_id, ca.kotkab_id, cb.name AS wilayah_penugasan_satpel
+-- FROM 
+-- petugas cc LEFT JOIN  users ca ON cc.user_id = ca.id
+-- LEFT JOIN indonesia_cities cb ON ca.kotkab_id = cb.code 
+-- WHERE 
+-- ca.jabatan = 'Supervisor Kasus' 
+-- AND cc.deleted_at IS NULL 
+-- AND ca.deleted_at IS NULL 
+-- ) cz ON cz.klien_id = bb.id 
+-- LEFT JOIN 
+-- (
+-- SELECT
+-- da.klien_id, dc.value, db.lokasi
+-- FROM 
+-- agenda da LEFT JOIN tindak_lanjut db ON da.id = db.agenda_id
+-- LEFT JOIN t_keyword dc ON dc.tindak_lanjut_id = db.id
+-- WHERE 
+-- dc.value IN (
+-- 72
+-- )
+-- ) dz ON dz.klien_id = bb.id
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 4
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND 
+-- dz.lokasi IS NOT NULL 
+-- AND bb.tanggal_approve IS NOT NULL 
+-- GROUP BY cz.kotkab_id, bb.id
+
+-- x 11. Jumlah Kekerasan terhadap Perempuan dan Anak Menurut Bulan di DKI Jakarta
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- cz.wilayah_penugasan_satpel, bb.jenis_kelamin, 
+-- TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) AS usia, count(*)
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- cc.klien_id, ca.kotkab_id, cb.name AS wilayah_penugasan_satpel
+-- FROM 
+-- petugas cc LEFT JOIN  users ca ON cc.user_id = ca.id
+-- LEFT JOIN indonesia_cities cb ON ca.kotkab_id = cb.code 
+-- WHERE 
+-- ca.jabatan = 'Supervisor Kasus' 
+-- AND cc.deleted_at IS NULL 
+-- AND ca.deleted_at IS NULL 
+-- ) cz ON cz.klien_id = bb.id 
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND bb.tanggal_approve IS NOT NULL 
+-- GROUP BY cz.wilayah_penugasan_satpel, bb.jenis_kelamin, usia
+
+-- x 13. Data Jumlah Korban Kekerasan Terhadap Perempuan Yang Ditangani Oleh PPPA Berdasarkan Tempat Kejadian Perkara di Kabupaten atau Kota DKI
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- bc.name, COUNT(*) AS jumlah_kasus
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN indonesia_cities bc ON ba.kotkab_id = bc.code 
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND 
+-- ba.provinsi_id = 31 -- hanya DKI
+-- AND 
+-- bb.jenis_kelamin = 'Perempuan'
+-- AND 
+-- DATEDIFF(NOW(), bb.tanggal_lahir) > 17*365.25
+-- AND bb.tanggal_approve IS NOT NULL 
+-- GROUP BY bc.code
+
+-- x 14. Data Jumlah Korban Kekerasan Terhadap Anak Yang Ditangani Oleh PPPA Berdasarkan Tempat Kejadian Perkara di Kabupaten atau Kota DKI
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- bc.name, COUNT(*) AS jumlah_kasus
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN indonesia_cities bc ON ba.kotkab_id = bc.code 
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 5
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND 
+-- ba.provinsi_id = 31 -- hanya DKI
+-- AND 
+-- DATEDIFF(NOW(), bb.tanggal_lahir) < 18*365.25
+-- AND bb.tanggal_approve IS NOT NULL 
+-- GROUP BY bc.code
+
+-- ===================================================================    
+-- END DATA SDI END
+-- ===================================================================
+
+-- (DETAIL LAYANAN / detail_layanan) Jumlah korban kekerasan terhadap perempuan yang mendapat layanan komprehensif 
+-- SELECT
+-- a.tanggal_pelaporan, z.wilayah_penugasan_satpel, g.jabatan AS layanan, f.value AS detail_layanan, COUNT(f.value) AS jumlah_layanan 
+-- FROM 
+-- kasus a LEFT JOIN klien b ON a.id = b.kasus_id 
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- ac.klien_id, aa.kotkab_id, ab.name AS wilayah_penugasan_satpel
+-- FROM 
+-- petugas ac LEFT JOIN  users aa ON ac.user_id = aa.id
+-- LEFT JOIN indonesia_cities ab ON aa.kotkab_id = ab.code 
+-- WHERE 
+-- aa.jabatan = 'Supervisor Kasus' 
+-- AND ac.deleted_at IS NULL 
+-- AND aa.deleted_at IS NULL 
+-- ) z ON z.klien_id = b.id
+-- LEFT JOIN agenda d ON b.id = d.klien_id
+-- LEFT JOIN tindak_lanjut e ON d.id = e.agenda_id
+-- LEFT JOIN t_keyword f ON e.id = f.tindak_lanjut_id
+-- LEFT JOIN users g ON g.id = e.created_by
+-- WHERE 
+-- YEAR(a.tanggal_pelaporan) = 2024 AND MONTH(a.tanggal_pelaporan) = 2
+-- AND 
+-- b.arsip = 0
+-- AND
+-- a.deleted_at IS NULL 
+-- AND 
+-- b.deleted_at IS NULL 
+-- AND 
+-- d.deleted_at IS NULL 
+-- AND 
+-- e.deleted_at IS NULL 
+-- GROUP BY 
+-- z.kotkab_id, f.value
+
+-- 
+-- (bisa digunakan) DATA KASUS BY SATPEL
+-- SELECT 
+-- cz.wilayah_penugasan_satpel, COUNT(*) AS jumlah_kasus
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- cc.klien_id, ca.kotkab_id, cb.name AS wilayah_penugasan_satpel
+-- FROM 
+-- petugas cc LEFT JOIN  users ca ON cc.user_id = ca.id
+-- LEFT JOIN indonesia_cities cb ON ca.kotkab_id = cb.code 
+-- WHERE 
+-- ca.jabatan = 'Supervisor Kasus' 
+-- AND cc.deleted_at IS NULL 
+-- AND ca.deleted_at IS NULL 
+-- ) cz ON cz.klien_id = bb.id 
+-- WHERE 
+-- YEAR(ba.tanggal_pelaporan) = 2024 AND MONTH(ba.tanggal_pelaporan) = 1
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- GROUP BY cz.kotkab_id
+
+-- BAHAN UTAMA UNTUK MEMBUAT DATA SEPERTI DI PROFILE
+-- ubah lagi ini nanti DATA UNTUK MONITORING PERWILAYAH
+-- SELECT 
+--     cz.wilayah_penugasan_satpel,
+--     -- filter wilayah tkp
+--     -- bc.name
+--      SUM(CASE WHEN TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) > 17 AND bb.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END) AS perempuan_dewasa,
+--     SUM(CASE WHEN TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) < 18 AND bb.jenis_kelamin = 'laki-laki' THEN 1 ELSE 0 END) AS anak_laki,
+--      SUM(CASE WHEN TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) < 18 AND bb.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END) AS anak_perempuan,
+--     -- TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) AS usia,
+--     -- filter kategori kasus
+--     -- dz.kategori_kasus,
+--     -- filter jenis kekerasan
+--     -- ez.jenis_kekerasan,
+--     -- filter bentuk kekerasan
+--     -- fz.bentuk_kekerasan,
+--     COUNT(*) AS jumlah_kasus
+-- FROM 
+--     kasus ba 
+-- LEFT JOIN 
+--     klien bb ON ba.id = bb.kasus_id
+-- -- filter wilayah satpel
+-- LEFT JOIN 
+--     (
+--     SELECT 
+--         cc.klien_id, 
+--         ca.kotkab_id, 
+--         cb.name AS wilayah_penugasan_satpel
+--     FROM 
+--         petugas cc 
+--     LEFT JOIN  
+--         users ca ON cc.user_id = ca.id
+--     LEFT JOIN 
+--         indonesia_cities cb ON ca.kotkab_id = cb.code 
+--     WHERE 
+--         ca.jabatan = 'Supervisor Kasus' 
+--     AND 
+--         cc.deleted_at IS NULL 
+--     AND 
+--         ca.deleted_at IS NULL 
+--     ) cz ON cz.klien_id = bb.id 
+-- -- filter kategori kasus
+-- -- LEFT JOIN 
+-- -- 	 (
+-- -- 	 SELECT 
+-- -- 	 da.klien_id, db.nama AS kategori_kasus
+-- -- 	 FROM 
+-- -- 	 t_kategori_kasus da LEFT JOIN m_kategori_kasus db ON da.value = db.kode
+-- -- 	 ) dz ON dz.klien_id = bb.id
+-- -- filter jenis kekerasan
+-- -- LEFT JOIN 
+-- -- 	 (
+-- -- 	 SELECT 
+-- -- 	 ea.klien_id, eb.nama AS jenis_kekerasan
+-- -- 	 FROM 
+-- -- 	 t_jenis_kekerasan ea LEFT JOIN m_jenis_kekerasan eb ON ea.value = eb.kode
+-- -- 	 ) ez ON ez.klien_id = bb.id
+-- -- filter bentuk kekerasan
+-- -- LEFT JOIN 
+-- -- 	 (
+-- -- 	 SELECT 
+-- -- 	 fa.klien_id, fb.nama AS bentuk_kekerasan
+-- -- 	 FROM 
+-- -- 	 t_bentuk_kekerasan fa LEFT JOIN m_bentuk_kekerasan fb ON fa.value = fb.kode
+-- -- 	 ) fz ON fz.klien_id = bb.id
+-- -- filter wilayah tkp
+-- -- LEFT JOIN indonesia_cities bc ON bc.code = ba.kotkab_id
+-- WHERE 
+--     YEAR(ba.tanggal_pelaporan) = 2024 
+-- AND 
+--     MONTH(ba.tanggal_pelaporan) < 3
+-- AND 
+--     bb.arsip = 0
+-- AND
+--     ba.deleted_at IS NULL 
+-- AND
+--     bb.deleted_at IS NULL
+-- GROUP BY 
+--      cz.kotkab_id
+--     -- filter kategori kasus
+-- 	 -- , 
+-- 	 -- dz.kategori_kasus
+-- 	 -- filter kategori kasus
+-- 	 -- , 
+-- 	 -- ez.jenis_kekerasan
+-- 	 -- filter bentuk kasus
+-- 	 -- , 
+-- 	 -- fz.bentuk_kekerasan
+-- 	 -- filter wilayah tkp
+-- 	 -- , bc.id
+
+
+-- MOKA V1 : DATA DETAIL LAYANAN detail_layanan
+-- SELECT
+-- c.detail_layanan, COUNT(*) AS jumlah_layanan
+-- FROM 
+-- kasus a LEFT JOIN kasus_intervensi b ON a.id = b.kasus_id
+-- LEFT JOIN kasus_intervensi_item c ON b.id = c.intervensi_id
+-- WHERE 
+-- a.deleted_at IS NULL 
+-- AND 
+-- b.deleted_at IS NULL 
+-- AND 
+-- c.deleted_at IS NULL 
+-- AND 
+-- YEAR(a.tgl_pelaporan) = 2023
+-- GROUP BY c.detail_layanan
+
+-- MELIHAT YANG SUDAH ISI LAPORAN KEGIATAN TAPI TTP DAPET NOTIF UPDATE (BUG)
+-- SELECT
+-- c.id, c.message, c.read
+-- FROM 
+-- agenda a LEFT JOIN tindak_lanjut b ON a.id = b.agenda_id 
+-- LEFT JOIN notifikasi c ON a.id = c.agenda_id 
+-- WHERE 
+-- c.kode =  'T10'
+-- AND 
+-- c.read = 0
+-- AND 
+-- b.jam_selesai IS NOT NULL -- kalau jam selsainya not null artinya sudah di TL tapi belum di read notif baru
+-- GROUP BY c.id
+
+-- UPDATE SEMUA NOTIF T10 YANG SUDAH DI TL TAPI TETEP DAPET NOTIF
+-- UPDATE notifikasi c
+-- INNER JOIN agenda a ON a.id = c.agenda_id
+-- LEFT JOIN tindak_lanjut b ON a.id = b.agenda_id
+-- SET c.read = 1
+-- WHERE
+-- 	c.kode = 'T10'
+--     AND c.read = 0
+--     AND b.jam_selesai IS NOT NULL;
+-- jakbar 96 97
+
+-- SELECT * FROM notifikasi WHERE receiver_id = 97 AND type_notif = 'task' AND `read` = 0
+
+-- SELECT
+-- b.name, count(a.message)
+-- FROM 
+-- notifikasi a LEFT JOIN users b ON a.receiver_id = b.id 
+-- WHERE 
+-- a.type_notif = 'task'
+-- AND
+-- b.deleted_at IS NULL 
+-- AND
+-- a.deleted_at IS NULL 
+-- AND 
+-- a.`read` = 0
+-- AND
+-- b.kotkab_id = 3172
+-- GROUP BY b.id
+
+-- MELIHAT AGENDANY SUDAH DIHAPUS TAPI TINDAK LANJUTNYA BELUM DIHAPUS
+-- SELECT
+-- *
+-- FROM 
+-- agenda a left join tindak_lanjut b ON a.id = b.agenda_id
+-- LEFT JOIN notifikasi c ON a.id = c.agenda_id
+-- WHERE 
+-- a.deleted_at IS NOT NULL 
+-- AND 
+-- b.deleted_at IS NOT NULL
+-- AND 
+-- c.read = 0 
+
+-- UPDATE AGENDANY SUDAH DIHAPUS TAPI TINDAK LANJUTNYA BELUM DIHAPUS
+-- UPDATE
+-- agenda a left join tindak_lanjut b ON a.id = b.agenda_id
+-- LEFT JOIN notifikasi c ON a.id = c.agenda_id
+-- SET c	.read = 1
+-- WHERE 
+-- a.deleted_at IS NOT NULL 
+-- AND 
+-- b.deleted_at IS NOT NULL
+-- AND 
+-- c.read = 0 
+
+-- DARURAT REKAP DATA KORBAN DATA SEMUANYA SELURUHNYA SEPERTI DI MOKA V1
+-- SELECT
+-- b.status AS progres_terakhir, b.no_klien, a.tanggal_pelaporan, a.media_pengaduan,
+-- a.sumber_informasi, a.tanggal_kejadian, a.ringkasan, a.alamat AS alamat_TKP, e.name AS provinsi_TKP, 
+-- f.name AS kota_TKP, g.name AS kecamatan_TKP, h.name AS kelurahan_TKP, a.kategori_lokasi, b.nama, b.nik,
+-- b.tempat_lahir, b.tanggal_lahir, TIMESTAMPDIFF(YEAR, b.tanggal_lahir, CURDATE()) AS usia, b.jenis_kelamin, 
+-- b.alamat AS alamat_domisili, i.name AS provinsi_Domisili, j.name AS kota_Domisili, 
+-- k.name AS kecamatan_Domisili, l.name AS kelurahan_Domisili, b.alamat_ktp AS alamat_KTP, 
+-- m.name AS provinsi_KTP, n.name AS kota_KTP, o.name AS kecamatan_KTP, p.name AS kelurahan_KTP,
+-- b.agama, b.no_telp, b.pendidikan, b.status_pendidikan, b.pekerjaan, b.status_kawin, y.kategori_kasus, x.jenis_kekerasan, 
+-- w.bentuk_kekerasan, v.disabilitas, z.name AS penerima_pengaduan, t.manajer_kasus, s.supervisor_kasus
+-- FROM
+-- kasus a
+-- LEFT JOIN klien b ON a.id = b.kasus_id
+-- LEFT JOIN 
+-- petugas c ON b.id = c.klien_id
+-- LEFT JOIN 
+-- users d ON d.id = c.user_id
+-- LEFT JOIN 
+-- (
+-- SELECT `name`, `id`
+-- FROM users
+-- WHERE jabatan = 'Penerima Pengaduan ') z ON z.id = a.created_by
+-- LEFT JOIN 
+-- indonesia_provinces e ON e.code = a.provinsi_id
+-- LEFT JOIN 
+-- indonesia_cities f ON f.code = a.kotkab_id
+-- LEFT JOIN 
+-- indonesia_districts g ON g.code = a.kecamatan_id
+-- LEFT JOIN 
+-- indonesia_villages h ON h.code = a.kelurahan_id
+-- LEFT JOIN 
+-- indonesia_provinces i ON i.code = b.provinsi_id
+-- LEFT JOIN 
+-- indonesia_cities j ON j.code = b.kotkab_id
+-- LEFT JOIN 
+-- indonesia_districts k ON k.code = b.kecamatan_id
+-- LEFT JOIN 
+-- indonesia_villages l ON l.code = b.kelurahan_id
+-- LEFT JOIN 
+-- indonesia_provinces m ON m.code = b.provinsi_id_ktp
+-- LEFT JOIN 
+-- indonesia_cities n ON n.code = b.kotkab_id_ktp
+-- LEFT JOIN 
+-- indonesia_districts o ON o.code = b.kecamatan_id_ktp
+-- LEFT JOIN 
+-- indonesia_villages p ON p.code = b.kelurahan_id_ktp
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS kategori_kasus FROM t_kategori_kasus a LEFT JOIN 
+-- m_kategori_kasus b ON a.value = b.kode GROUP BY a.klien_id) y ON y.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS jenis_kekerasan FROM t_jenis_kekerasan a LEFT JOIN 
+-- m_jenis_kekerasan b ON a.value = b.kode GROUP BY a.klien_id) x ON x.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS bentuk_kekerasan FROM t_bentuk_kekerasan a LEFT JOIN 
+-- m_bentuk_kekerasan b ON a.value = b.kode GROUP BY a.klien_id) w ON w.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT klien_id, GROUP_CONCAT(value) AS disabilitas FROM t_tipe_disabilitas GROUP BY klien_id) 
+-- v ON v.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT klien_id, GROUP_CONCAT(value) AS pasal FROM t_pasal GROUP BY klien_id) 
+-- u ON u.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(" ", b.name) AS manajer_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Manajer Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
+-- t ON t.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(" ", b.name) AS supervisor_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Supervisor Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
+-- s ON s.klien_id = b.id
+-- WHERE 
+-- a.deleted_at IS NULL AND
+-- b.deleted_at IS NULL AND 
+-- b.arsip = 0 
+-- GROUP BY 
+-- b.id
+
+-- DARURAT DATA TERLAPOR GROUP BY TERLAPOR
+-- SELECT 
+-- a.nik, a.nama, COUNT(*) AS jumlah_korban, GROUP_CONCAT(" ", c.nama) AS korban, a.tempat_lahir, a.tanggal_lahir,
+-- a.jenis_kelamin, a.pendidikan, a.status_pendidikan, a.pekerjaan, a.alamat, a.status_kawin, s.supervisor_kasus
+-- FROM 
+-- terlapor a LEFT JOIN kasus b ON a.kasus_id = b.id 
+-- LEFT JOIN 
+-- klien c ON c.kasus_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(" ", b.name) AS supervisor_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Supervisor Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id)
+-- s ON s.klien_id = c.id
+-- GROUP BY a.id
+
+-- DARURAT DATA TERLAPOR TIDAK GROUP BY TERLAPOR (HUBUNGAN TERLAPOR DGN KORBAN)
+-- SELECT 
+-- a.nik, a.nama AS nama_terlapor, c.nama AS nama_klien, c.no_klien, b.tanggal_pelaporan, d.value AS hubungan_terlapor_siapanya_korban, s.supervisor_kasus
+-- FROM 
+-- terlapor a LEFT JOIN kasus b ON a.kasus_id = b.id 
+-- LEFT JOIN 
+-- klien c ON c.kasus_id = b.id
+-- LEFT JOIN 
+-- r_hubungan_terlapor_klien d ON c.id = d.klien_id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(" ", b.name) AS supervisor_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Supervisor Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id)
+-- s ON s.klien_id = c.id
+-- WHERE 
+-- b.deleted_at IS NULL 
+-- AND 
+-- c.deleted_at IS NULL 
+-- AND 
+-- c.no_klien IS NOT NULL 
+-- ORDER BY a.id
+
+-- DARURAT DATA INTERVENSI
+-- SELECT
+-- a.tanggal_pelaporan, b.no_klien, b.nama,
+-- e.name, e.jabatan, c.judul_kegiatan AS deskripsi_hasil, d.catatan AS deskripsi_proses, d.rtl AS RTL
+-- FROM
+-- kasus a LEFT JOIN klien b ON a.id = b.kasus_id
+-- LEFT JOIN agenda c ON c.klien_id = b.id
+-- LEFT JOIN tindak_lanjut d ON c.id = d.agenda_id 
+-- LEFT JOIN users e ON d.created_by = e.id 
+-- WHERE 
+-- a.deleted_at IS NULL 
+-- AND 
+-- b.deleted_at IS NULL 
+-- AND 
+-- c.deleted_at IS NULL 
+-- AND 
+-- d.deleted_at IS NULL  
+-- AND 
+-- b.arsip = 0
+
+-- SARMUT HUKUM
+-- SELECT 
+--     b.no_klien, 
+--     b.nama,
+--     b.jenis_kelamin,
+--     TIMESTAMPDIFF(YEAR, b.tanggal_lahir, CURDATE()) AS usia,
+--     k.kategori_kasus, l.jenis_kekerasan, m.bentuk_kekerasan,
+--     x.manajer_kasus, w.supervisor_kasus,
+--     (CASE WHEN z.isi IS NOT NULL THEN 1 ELSE 0 END) AS centang_layanan,
+--     z.updated_at AS tanggal_spp,
+--     v.pertama_layanan,
+--     v.keyword,
+--     y.*
+-- FROM 
+--     kasus a 
+-- LEFT JOIN 
+--     klien b ON a.id = b.kasus_id  
+-- LEFT JOIN 
+--     (
+--         SELECT 
+--             pi.klien_id, pi.isi, pi.updated_at 
+--         FROM 
+--             persetujuan_isi pi
+--         JOIN 
+--             (
+--                 SELECT 
+--                     klien_id, MAX(updated_at) AS max_updated_at
+--                 FROM 
+--                     persetujuan_isi 
+--                 WHERE 
+--                     deleted_at IS NULL 
+--                     AND 
+--                     tandatangan IS NOT NULL
+--                     AND 
+--                     persetujuan_template_id = 2
+--                     AND 
+--                     CONCAT(',', REPLACE(REPLACE(isi, '[', ''), ']', ''), ',') LIKE '%,6,%'
+--                 GROUP BY 
+--                     klien_id 
+--             ) max_pi ON pi.klien_id = max_pi.klien_id AND pi.updated_at = max_pi.max_updated_at
+--     ) z ON b.id = z.klien_id
+-- LEFT JOIN 
+-- (
+-- SELECT
+-- 	 c.klien_id, 
+-- 	 SUM(CASE WHEN e.value IN (21, 24, 31) THEN 1 ELSE 0 END) AS konsultasi_hukum,
+-- 	 SUM(CASE WHEN e.value IN (22, 25, 32) THEN 1 ELSE 0 END) AS pendampingan_kepolisian,
+-- 	 SUM(CASE WHEN e.value IN (26, 33, 87) THEN 1 ELSE 0 END) AS pendampingan_pn,
+-- 	 SUM(CASE WHEN e.value IN (27, 34, 86) THEN 1 ELSE 0 END) AS pendampingan_pa,
+-- 	 SUM(CASE WHEN e.value IN (23) THEN 1 ELSE 0 END) AS mediasi,
+-- 	 SUM(CASE WHEN e.value IN (35) THEN 1 ELSE 0 END) AS penjangkauan_urc
+-- FROM
+--     agenda c
+-- LEFT JOIN
+-- 	 tindak_lanjut d ON c.id = d.agenda_id 
+-- LEFT JOIN 
+-- 	 t_keyword e ON d.id = e.tindak_lanjut_id 
+-- LEFT JOIN 
+--     users f ON f.id = d.created_by 
+-- WHERE 
+-- 	 d.deleted_at IS NULL 
+-- 	 AND 
+-- 	 (
+-- 	 f.jabatan = 'Advokat'
+-- 	 OR 
+-- 	 f.jabatan = 'Paralegal'
+-- 	 OR 
+-- 	 f.jabatan = 'Unit Reaksi Cepat'
+-- 	 )
+-- GROUP BY c.klien_id
+-- ) y ON y.klien_id = b.id
+-- LEFT JOIN 
+-- (
+-- SELECT
+-- a.klien_id,
+-- MAX(a.tanggal_mulai) AS pertama_layanan, d.keyword AS layanan_pertama
+-- FROM 
+-- agenda a LEFT JOIN tindak_lanjut b ON a.id = b.agenda_id 
+-- LEFT JOIN t_keyword c ON c.tindak_lanjut_id = b.id
+-- LEFT JOIN m_keyword d ON c.`value` = d.id
+-- WHERE 
+-- d.id IN (21, 22, 23, 24, 25, 26, 27, 31, 32, 33, 34, 35, 86, 87)
+-- AND 
+-- a.deleted_at IS NULL 
+-- AND 
+-- b.deleted_at IS NULL 
+-- AND 
+-- d.deleted_at IS NULL 
+-- GROUP BY a.klien_id
+-- ) v ON v.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(" ", b.name) AS manajer_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Manajer Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
+-- x ON x.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(" ", b.name) AS supervisor_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Supervisor Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
+-- w ON w.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS kategori_kasus FROM t_kategori_kasus a LEFT JOIN 
+-- m_kategori_kasus b ON a.value = b.kode GROUP BY a.klien_id) k ON k.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS jenis_kekerasan FROM t_jenis_kekerasan a LEFT JOIN 
+-- m_jenis_kekerasan b ON a.value = b.kode GROUP BY a.klien_id) l ON l.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS bentuk_kekerasan FROM t_bentuk_kekerasan a LEFT JOIN 
+-- m_bentuk_kekerasan b ON a.value = b.kode GROUP BY a.klien_id) m ON m.klien_id = b.id
+-- WHERE 
+--     b.deleted_at IS NULL 
+--     AND 
+--     b.arsip = 0 
+--     AND
+--     b.tanggal_approve IS NOT NULL
+--     AND
+--     YEAR(b.tanggal_approve) = 2024
+--     AND 
+--     MONTH(b.tanggal_approve) = 8
+-- ORDER BY b.no_klien
+
+-- SARMUT PSIKOLOG
+-- SELECT
+-- a.no_klien, 
+-- a.nama AS nama_klien,
+-- t.kekhususan,
+-- (CASE WHEN z.isi IS NOT NULL THEN 1 ELSE 0 END) AS centang_layanan_psikologi,
+-- z.updated_at AS tanggal_spp, y.pertama_layanan, w.*, v.psikolog, u.konselor, x.manajer_kasus
+-- FROM 
+-- klien a
+-- LEFT JOIN 
+--     (
+--         SELECT 
+--             pi.klien_id, pi.isi, pi.updated_at 
+--         FROM 
+--             persetujuan_isi pi
+--         JOIN 
+--             (
+--                 SELECT 
+--                     klien_id, MAX(updated_at) AS max_updated_at
+--                 FROM 
+--                     persetujuan_isi 
+--                 WHERE 
+--                     deleted_at IS NULL 
+--                     AND 
+--                     tandatangan IS NOT NULL
+--                     AND 
+--                     persetujuan_template_id = 2
+--                     AND 
+--                     CONCAT(',', REPLACE(REPLACE(isi, '[', ''), ']', ''), ',') LIKE '%,5,%'
+--                 GROUP BY 
+--                     klien_id 
+--             ) max_pi ON pi.klien_id = max_pi.klien_id AND pi.updated_at = max_pi.max_updated_at
+--     ) z ON a.id = z.klien_id
+-- LEFT JOIN 
+-- (
+-- SELECT
+-- a.klien_id, MIN(a.tanggal_mulai) AS pertama_layanan
+-- FROM 
+-- agenda a LEFT JOIN tindak_lanjut b ON a.id = b.agenda_id 
+-- LEFT JOIN users c ON c.id = b.created_by
+-- WHERE a.deleted_at IS NULL AND b.deleted_at IS NULL 
+-- AND c.jabatan IN ('Psikolog','Konselor')
+-- AND b.jam_selesai IS NOT NULL 
+-- GROUP BY a.klien_id
+-- ) y ON a.id = y.klien_id
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- a.klien_id, GROUP_CONCAT(DISTINCT ' ',b.name) AS manajer_kasus
+-- FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE a.deleted_at IS NULL 
+-- AND b.jabatan = 'Manajer Kasus' AND a.`active` = 1 GROUP BY a.klien_id 
+-- ) x ON a.id = x.klien_id
+-- LEFT JOIN 
+-- (
+-- SELECT
+-- d.klien_id, 
+-- SUM(CASE WHEN a.value IN (15) THEN 1 ELSE 0 END) AS K,
+-- GROUP_CONCAT(DISTINCT CASE WHEN a.value = 15 THEN DATE_FORMAT(d.tanggal_mulai, '%e %b %Y') END ORDER BY d.tanggal_mulai ASC SEPARATOR ', ') AS K_tanggal,
+-- SUM(CASE WHEN a.value IN (16) THEN 1 ELSE 0 END) AS PP,
+-- GROUP_CONCAT(DISTINCT CASE WHEN a.value = 16 THEN DATE_FORMAT(d.tanggal_mulai, '%e %b %Y') END ORDER BY d.tanggal_mulai ASC SEPARATOR ', ') AS PP_tanggal,
+-- -- SUM(CASE WHEN a.value IN (17) THEN 1 ELSE 0 END) AS HPP,
+-- -- SUM(CASE WHEN a.value IN (18) THEN 1 ELSE 0 END) AS BAP,
+-- -- SUM(CASE WHEN a.value IN (19) THEN 1 ELSE 0 END) AS PR,
+-- -- SUM(CASE WHEN a.value IN (20) THEN 1 ELSE 0 END) AS VHPP,
+-- -- SUM(CASE WHEN a.value IN (85) THEN 1 ELSE 0 END) AS Supervisi,
+-- -- SUM(CASE WHEN a.value IN (117) THEN 1 ELSE 0 END) AS Koordinasi Internal,
+-- SUM(CASE WHEN a.value IN (1) THEN 1 ELSE 0 END) AS PA,
+-- GROUP_CONCAT(DISTINCT CASE WHEN a.value = 1 THEN DATE_FORMAT(d.tanggal_mulai, '%e %b %Y') END ORDER BY d.tanggal_mulai ASC SEPARATOR ', ') AS PA_tanggal,
+-- SUM(CASE WHEN a.value IN (2) THEN 1 ELSE 0 END) AS ATP,
+-- GROUP_CONCAT(DISTINCT CASE WHEN a.value = 2 THEN DATE_FORMAT(d.tanggal_mulai, '%e %b %Y') END ORDER BY d.tanggal_mulai ASC SEPARATOR ', ') AS ATP_tanggal,
+-- SUM(CASE WHEN a.value IN (3) THEN 1 ELSE 0 END) AS DP,
+-- GROUP_CONCAT(DISTINCT CASE WHEN a.value = 3 THEN DATE_FORMAT(d.tanggal_mulai, '%e %b %Y') END ORDER BY d.tanggal_mulai ASC SEPARATOR ', ') AS DP_tanggal,
+-- SUM(CASE WHEN a.value IN (4) THEN 1 ELSE 0 END) AS Pend_P,
+-- GROUP_CONCAT(DISTINCT CASE WHEN a.value = 4 THEN DATE_FORMAT(d.tanggal_mulai, '%e %b %Y') END ORDER BY d.tanggal_mulai ASC SEPARATOR ', ') AS Pend_P_tanggal
+-- FROM 
+-- t_keyword a LEFT JOIN m_keyword b ON a.`value` = b.id 
+-- LEFT JOIN tindak_lanjut c ON c.id = a.tindak_lanjut_id 
+-- LEFT JOIN agenda d ON d.id = c.agenda_id 
+-- GROUP BY d.klien_id 
+-- ) w ON a.id = w.klien_id
+-- LEFT JOIN 
+-- (
+-- SELECT
+-- a.klien_id, GROUP_CONCAT(DISTINCT ' ', b.name) AS psikolog
+-- FROM petugas a LEFT JOIN users b ON a.user_id = b.id 
+-- WHERE a.deleted_at IS NULL AND b.jabatan = 'Psikolog'
+-- GROUP BY a.klien_id 
+-- ) v ON a.id = v.klien_id 
+-- LEFT JOIN 
+-- (
+-- SELECT
+-- a.klien_id, GROUP_CONCAT(DISTINCT ' ', b.name) AS konselor
+-- FROM petugas a LEFT JOIN users b ON a.user_id = b.id 
+-- WHERE a.deleted_at IS NULL AND b.jabatan = 'Konselor'
+-- GROUP BY a.klien_id 
+-- ) u ON a.id = u.klien_id 
+-- LEFT JOIN 
+-- (
+-- SELECT
+-- a.klien_id, GROUP_CONCAT(DISTINCT ' ', a.value) AS kekhususan
+-- FROM t_tipe_disabilitas a LEFT JOIN klien b ON a.klien_id = b.id
+-- GROUP BY a.klien_id
+-- ) t ON t.klien_id = a.id 
+-- WHERE 
+-- YEAR(a.tanggal_approve) = 2025
+-- AND 
+-- MONTH(a.tanggal_approve) = 1
+-- GROUP BY 
+-- a.id
+-- ORDER BY CAST(SUBSTRING_INDEX(a.no_klien, '/', 1) AS UNSIGNED)
+
+-- CUT OFF PSIKOLOGI
+-- SELECT
+-- e.`name` AS nama_petugas, 
+-- e.jabatan,
+-- (CASE WHEN f.`name` IS NULL THEN 'KANTOR PUSAT' ELSE f.`name` END) AS wilayah_penugasan,
+-- MONTH(d.tanggal_mulai) AS bulan,
+-- SUM(a.value = 15) AS K,
+-- SUM(a.value = 16) AS PP,
+-- SUM(a.value = 1) AS PA,
+-- SUM(a.value = 2) AS ATP,
+-- SUM(a.value = 3) AS DP,
+-- SUM(a.value = 4) AS Pend_P,
+-- SUM(a.value IN (15, 16, 1, 2, 3, 4)) AS total 
+-- FROM 
+-- t_keyword a LEFT JOIN m_keyword b ON a.`value` = b.id
+-- LEFT JOIN tindak_lanjut c ON c.id = a.tindak_lanjut_id
+-- LEFT JOIN agenda d ON d.id = c.agenda_id
+-- LEFT JOIN users e ON e.id = c.created_by
+-- LEFT JOIN indonesia_cities f ON f.`code` = e.kotkab_id
+-- WHERE 
+-- YEAR(d.tanggal_mulai) = 2025
+-- AND 
+-- MONTH(d.tanggal_mulai) = 2
+-- AND e.jabatan IN ('Psikolog','Konselor')
+-- GROUP BY e.id
+-- ORDER BY e.jabatan, e.`name`
+
+-- SARMUT MK
+-- SELECT 
+-- 	 a.tanggal_pelaporan,
+--     b.no_klien, 
+--     b.nama AS nama_klien,
+--     b.jenis_kelamin,
+--     TIMESTAMPDIFF(YEAR, b.tanggal_lahir, CURDATE()) AS usia,
+--     -- k.kategori_kasus, l.jenis_kekerasan, m.bentuk_kekerasan,
+--     x.manajer_kasus, w.supervisor_kasus,
+--     (CASE WHEN b.nik IS NOT NULL THEN 1 ELSE 0 END) AS nik,
+--     (CASE WHEN b.nama IS NOT NULL THEN 1 ELSE 0 END) AS formulir_penerima_pengaduan,
+--     (CASE WHEN b.nama IS NOT NULL THEN 1 ELSE 0 END) AS riwayat_kejadian,
+--     (CASE WHEN z.isi IS NOT NULL THEN 1 ELSE 0 END) AS ttd_spp,
+--     (CASE WHEN u.tanggal IS NOT NULL THEN 1 ELSE 0 END) AS rekam_kasus,
+--     y.*
+-- FROM 
+--     kasus a 
+-- LEFT JOIN 
+--     klien b ON a.id = b.kasus_id  
+-- LEFT JOIN 
+--     (
+--         SELECT 
+--             pi.klien_id, pi.isi, pi.updated_at 
+--         FROM 
+--             persetujuan_isi pi
+--         JOIN 
+--             (
+--                 SELECT 
+--                     klien_id, MAX(updated_at) AS max_updated_at
+--                 FROM 
+--                     persetujuan_isi 
+--                 WHERE 
+--                     deleted_at IS NULL 
+--                     AND 
+--                     tandatangan IS NOT NULL
+--                     AND 
+--                     persetujuan_template_id = 2
+--                 GROUP BY 
+--                     klien_id 
+--             ) max_pi ON pi.klien_id = max_pi.klien_id AND pi.updated_at = max_pi.max_updated_at
+--     ) z ON b.id = z.klien_id
+-- LEFT JOIN 
+-- (
+-- SELECT
+-- 	 c.klien_id, 
+-- 	 SUM(CASE WHEN e.value IN (56) THEN 1 ELSE 0 END) AS case_conference,
+-- 	 SUM(CASE WHEN e.value IN (55) THEN 1 ELSE 0 END) AS asesmen_lanjutan,
+-- 	 SUM(CASE WHEN e.value  IN (54) THEN 1 ELSE 0 END) AS riview_kasus,
+-- 	 SUM(CASE WHEN e.value IN (48) THEN 1 ELSE 0 END) AS koordinasi_internal,
+-- 	 SUM(CASE WHEN e.value IN (49) THEN 1 ELSE 0 END) AS koordinasi_eksternal,
+-- 	 SUM(CASE WHEN e.value IN (50) THEN 1 ELSE 0 END) AS rujukan,
+-- 	 SUM(CASE WHEN e.value IN (51) THEN 1 ELSE 0 END) AS pengelolaan_dokumen
+-- FROM
+--     agenda c
+-- LEFT JOIN
+-- 	 tindak_lanjut d ON c.id = d.agenda_id 
+-- LEFT JOIN 
+-- 	 t_keyword e ON d.id = e.tindak_lanjut_id 
+-- LEFT JOIN 
+--     users f ON f.id = d.created_by 
+-- WHERE 
+-- 	 d.deleted_at IS NULL 
+-- 	 AND 
+-- 	 (
+-- 	 f.jabatan = 'Manajer Kasus'
+-- 	 )
+-- GROUP BY c.klien_id
+-- ) y ON y.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(" ", b.name) AS manajer_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Manajer Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
+-- x ON x.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(" ", b.name) AS supervisor_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Supervisor Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
+-- w ON w.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS kategori_kasus FROM t_kategori_kasus a LEFT JOIN 
+-- m_kategori_kasus b ON a.value = b.kode GROUP BY a.klien_id) k ON k.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS jenis_kekerasan FROM t_jenis_kekerasan a LEFT JOIN 
+-- m_jenis_kekerasan b ON a.value = b.kode GROUP BY a.klien_id) l ON l.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS bentuk_kekerasan FROM t_bentuk_kekerasan a LEFT JOIN 
+-- m_bentuk_kekerasan b ON a.value = b.kode GROUP BY a.klien_id) m ON m.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.id, b.tanggal FROM klien a LEFT JOIN riwayat_kejadian b ON a.id = b.klien_id GROUP BY a.id) 
+-- u ON u.id = b.id
+-- WHERE 
+--     b.deleted_at IS NULL 
+--     AND 
+--     b.arsip = 0 
+--     AND
+--     YEAR(b.tanggal_approve) = 2024 
+--     AND 
+--     MONTH(b.tanggal_approve) = 6
+-- ORDER BY b.no_klien
+
+-- SARMUT PK
+-- SELECT 
+-- 	 a.tanggal_pelaporan,
+--     b.no_klien, 
+--     b.nama,
+--     b.jenis_kelamin,
+--     TIMESTAMPDIFF(YEAR, b.tanggal_lahir, CURDATE()) AS usia,
+--     k.kategori_kasus, l.jenis_kekerasan, m.bentuk_kekerasan,
+--     x.manajer_kasus, w.supervisor_kasus,
+--     (CASE WHEN z.isi IS NOT NULL THEN 1 ELSE 0 END) AS centang_layanan,
+--     y.*
+-- FROM 
+--     kasus a 
+-- LEFT JOIN 
+--     klien b ON a.id = b.kasus_id  
+-- LEFT JOIN 
+--     (
+--         SELECT 
+--             pi.klien_id, pi.isi, pi.updated_at 
+--         FROM 
+--             persetujuan_isi pi
+--         JOIN 
+--             (
+--                 SELECT 
+--                     klien_id, MAX(updated_at) AS max_updated_at
+--                 FROM 
+--                     persetujuan_isi 
+--                 WHERE 
+--                     deleted_at IS NULL 
+--                     AND 
+--                     tandatangan IS NOT NULL
+--                     AND 
+--                     persetujuan_template_id = 2
+--                     AND 
+--                     CONCAT(',', REPLACE(REPLACE(isi, '[', ''), ']', ''), ',') LIKE '%,7,%'
+--                 GROUP BY 
+--                     klien_id 
+--             ) max_pi ON pi.klien_id = max_pi.klien_id AND pi.updated_at = max_pi.max_updated_at
+--     ) z ON b.id = z.klien_id
+-- LEFT JOIN 
+-- (
+-- SELECT
+-- 	 c.klien_id, 
+-- 	 SUM(CASE WHEN e.value = 'Home Visit' THEN 1 ELSE 0 END) AS home_visit,
+-- 	 SUM(CASE WHEN e.value = 'School Visit' THEN 1 ELSE 0 END) AS school_visit,
+-- 	 SUM(CASE WHEN e.value = 'Penjangkauan' THEN 1 ELSE 0 END) AS penjangkauan,
+-- 	 SUM(CASE WHEN e.value = 'Pemulangan' THEN 1 ELSE 0 END) AS pemulangan,
+-- 	 SUM(CASE WHEN e.value = 'Pendampingan LP' THEN 1 ELSE 0 END) AS pendampingan_lp,
+-- 	 SUM(CASE WHEN e.value = 'Pendampingan Puskesmas Rawat Inap' THEN 1 ELSE 0 END) AS pendampingan_puskesmas_rawat_inap,
+-- 	 SUM(CASE WHEN e.value = 'Pendampingan Puskesmas Rawat Jalan' THEN 1 ELSE 0 END) AS pendampingan_puskesmas_rawat_jalan,
+-- 	 SUM(CASE WHEN e.value = 'Pendampingan Rumah Sakit Rawat Inap' THEN 1 ELSE 0 END) AS pendampingan_rs_rawat_inap,
+-- 	 SUM(CASE WHEN e.value = 'Pendampingan Rumah Sakit Rawat Jalan' THEN 1 ELSE 0 END) AS pendampingan_rs_rawat_jalan,
+-- 	 SUM(CASE WHEN e.value = 'Pendampingan BAP' THEN 1 ELSE 0 END) AS pendampingan_bap,
+-- 	 SUM(CASE WHEN e.value = 'Pendampingan Lainnya' THEN 1 ELSE 0 END) AS pendampingan_lainnya,
+-- 	 SUM(CASE WHEN e.value = 'Rujukan ke UPTD PPA' THEN 1 ELSE 0 END) AS rujukan_UPTD_PPA,
+-- 	 SUM(CASE WHEN e.value = 'Rujukan ke KemenPPA' THEN 1 ELSE 0 END) AS rujukan_kemenPPA,
+-- 	 SUM(CASE WHEN e.value = 'Rujukan ke Rumah Aman' THEN 1 ELSE 0 END) AS rujukan_rumah_aman,
+-- 	 SUM(CASE WHEN e.value = 'Rujukan ke Panti Dinas Sosial' THEN 1 ELSE 0 END) AS rujukan_panti_dinsos,
+-- 	 SUM(CASE WHEN e.value = 'Rujukan ke Lembaga Lain' THEN 1 ELSE 0 END) AS rujukan_lainnya
+-- FROM
+--     agenda c
+-- LEFT JOIN
+-- 	 tindak_lanjut d ON c.id = d.agenda_id 
+-- LEFT JOIN 
+-- 	 t_keyword e ON d.id = e.tindak_lanjut_id 
+-- LEFT JOIN 
+--     users f ON f.id = d.created_by 
+-- WHERE 
+-- 	 d.deleted_at IS NULL 
+-- 	 AND 
+-- 	 (
+-- 	 f.jabatan = 'Pendamping Kasus'
+-- 	 )
+-- GROUP BY c.klien_id
+-- ) y ON y.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(" ", b.name) AS manajer_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Manajer Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
+-- x ON x.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(" ", b.name) AS supervisor_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Supervisor Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
+-- w ON w.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS kategori_kasus FROM t_kategori_kasus a LEFT JOIN 
+-- m_kategori_kasus b ON a.value = b.kode GROUP BY a.klien_id) k ON k.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS jenis_kekerasan FROM t_jenis_kekerasan a LEFT JOIN 
+-- m_jenis_kekerasan b ON a.value = b.kode GROUP BY a.klien_id) l ON l.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS bentuk_kekerasan FROM t_bentuk_kekerasan a LEFT JOIN 
+-- m_bentuk_kekerasan b ON a.value = b.kode GROUP BY a.klien_id) m ON m.klien_id = b.id
+-- WHERE 
+--     b.deleted_at IS NULL 
+--     AND 
+--     b.arsip = 0  
+--     AND
+--     YEAR(b.tanggal_approve) = 2024 
+--     AND 
+--     MONTH(b.tanggal_approve) = 3
+-- ORDER BY b.no_klien
+
+-- KEKOSONGAN FIELD FORM KASUS
+-- SELECT
+-- COUNT(*) AS total_semua,
+-- COUNT(a.sumber_rujukan) AS sumber_rujukan,
+-- COUNT(a.media_pengaduan) AS media_pengaduan,
+-- COUNT(a.sumber_informasi) AS sumber_informasi,
+-- COUNT(a.tanggal_pelaporan) AS tanggal_pelaporan,
+-- COUNT(a.tanggal_kejadian) AS tanggal_kejadian,
+-- COUNT(a.kategori_lokasi) AS kategori_lokasi,
+-- COUNT(a.provinsi_id) AS provinsi_id,
+-- COUNT(a.kotkab_id) AS kotkab_id,
+-- COUNT(a.kecamatan_id) AS kecamatan_id,
+-- COUNT(a.kelurahan_id) AS kelurahan_id,
+-- COUNT(a.ringkasan) AS ringkasan,
+-- COUNT(a.alamat) AS alamat
+-- FROM 
+-- kasus a LEFT JOIN klien b ON a.id = b.kasus_id 
+-- WHERE 
+-- b.deleted_at IS NULL 
+-- AND 
+-- b.arsip = 0
+
+-- KEKOSONGAN FIELD FORM PELAPOR
+-- SELECT
+-- COUNT(*) AS total_semua,
+-- COUNT(c.kasus_id) AS hubungan,
+-- COUNT(c.nik) AS nik,
+-- COUNT(c.nama) AS nama,
+-- COUNT(c.tempat_lahir) AS tempat_lahir,
+-- COUNT(c.tanggal_lahir) AS tanggal_lahir,
+-- COUNT(c.jenis_kelamin) AS jenis_kelamin,
+-- COUNT(c.provinsi_id_ktp) AS provinsi_id_ktp,
+-- COUNT(c.kotkab_id_ktp) AS kotkab_id_ktp,
+-- COUNT(c.kecamatan_id_ktp) AS kecamatan_id_ktp,
+-- COUNT(c.kelurahan_id_ktp) AS kelurahan_id_ktp,
+-- COUNT(c.alamat_ktp) AS alamat_ktp,
+-- COUNT(c.provinsi_id) AS provinsi_id,
+-- COUNT(c.kotkab_id) AS kotkab_id,
+-- COUNT(c.kecamatan_id) AS kecamatan_id,
+-- COUNT(c.kelurahan_id) AS kelurahan_id,
+-- COUNT(c.status_kawin) AS status_kawin,
+-- COUNT(c.pekerjaan) AS pekerjaan,
+-- COUNT(c.kewarganegaraan) AS kewarganegaraan,
+-- COUNT(c.status_pendidikan) AS status_pendidikan,
+-- COUNT(c.pendidikan) AS pendidikan,
+-- COUNT(c.no_telp) AS no_telp	
+-- FROM 
+-- kasus a LEFT JOIN klien b ON a.id = b.kasus_id
+-- LEFT JOIN pelapor c ON a.id = c.kasus_id 
+-- WHERE 
+-- b.deleted_at IS NULL 
+-- AND 
+-- b.arsip = 0
+
+-- KEKOSONGAN FIELD FORM KLIEN
+-- SELECT
+-- COUNT(*) AS total_semua,
+-- COUNT(b.nik) AS nik,
+-- COUNT(b.nama) AS nama,
+-- COUNT(b.tempat_lahir) AS tempat_lahir,
+-- COUNT(b.tanggal_lahir) AS tanggal_lahir,
+-- COUNT(b.jenis_kelamin) AS jenis_kelamin,
+-- COUNT(b.provinsi_id_ktp) AS provinsi_id_ktp,
+-- COUNT(b.kotkab_id_ktp) AS kotkab_id_ktp,
+-- COUNT(b.kecamatan_id_ktp) AS kecamatan_id_ktp,
+-- COUNT(b.kelurahan_id_ktp) AS kelurahan_id_ktp,
+-- COUNT(b.alamat_ktp) AS alamat_ktp,
+-- COUNT(b.provinsi_id) AS provinsi_id,
+-- COUNT(b.kotkab_id) AS kotkab_id,
+-- COUNT(b.kecamatan_id) AS kecamatan_id,
+-- COUNT(b.kelurahan_id) AS kelurahan_id,
+-- COUNT(b.alamat) AS alamat,
+-- COUNT(b.agama) AS agama,
+-- COUNT(b.status_kawin) AS status_kawin,
+-- COUNT(b.pekerjaan) AS pekerjaan,
+-- COUNT(b.kewarganegaraan) AS kewarganegaraan,
+-- COUNT(b.status_pendidikan) AS status_pendidikan,
+-- COUNT(b.pendidikan) AS pendidikan,
+-- COUNT(b.no_telp) AS no_telp,
+-- COUNT(z.klien_id) AS disabilitas,
+-- COUNT(y.klien_id) AS jenis_kekerasan,
+-- COUNT(x.klien_id) AS kedaruratan,
+-- COUNT(w.klien_id) AS tindak_lanjut
+-- FROM 
+-- kasus a LEFT JOIN klien b ON a.id = b.kasus_id
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- klien_id
+-- FROM 
+-- t_tipe_disabilitas
+-- GROUP BY klien_id
+-- ) z ON z.klien_id = b.id
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- klien_id
+-- FROM 
+-- t_jenis_kekerasan
+-- GROUP BY klien_id
+-- ) y ON y.klien_id = b.id
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- klien_id
+-- FROM 
+-- t_kedaruratan
+-- GROUP BY klien_id
+-- ) x ON x.klien_id = b.id
+-- LEFT JOIN 
+-- (
+-- SELECT 
+-- klien_id
+-- FROM 
+-- t_tindak_lanjut
+-- GROUP BY klien_id
+-- ) w ON w.klien_id = b.id
+-- WHERE 
+-- b.deleted_at IS NULL 
+-- AND 
+-- b.arsip = 0
+
+-- KEKOSONGAN FIELD FORM TERLAPOR
+-- SELECT
+-- COUNT(*) AS total_semua,
+-- COUNT(d.klien_id) AS hubungan,
+-- COUNT(c.nik) AS nik,
+-- COUNT(c.nama) AS nama,
+-- COUNT(c.tempat_lahir) AS tempat_lahir,
+-- COUNT(c.tanggal_lahir) AS tanggal_lahir,
+-- COUNT(c.jenis_kelamin) AS jenis_kelamin,
+-- COUNT(c.provinsi_id_ktp) AS provinsi_id_ktp,
+-- COUNT(c.kotkab_id_ktp) AS kotkab_id_ktp,
+-- COUNT(c.kecamatan_id_ktp) AS kecamatan_id_ktp,
+-- COUNT(c.kelurahan_id_ktp) AS kelurahan_id_ktp,
+-- COUNT(c.alamat_ktp) AS alamat_ktp,
+-- COUNT(c.provinsi_id) AS provinsi_id,
+-- COUNT(c.kotkab_id) AS kotkab_id,
+-- COUNT(c.kecamatan_id) AS kecamatan_id,
+-- COUNT(c.kelurahan_id) AS kelurahan_id,
+-- COUNT(c.alamat) AS alamat,
+-- COUNT(c.agama) AS agama,
+-- COUNT(c.status_kawin) AS status_kawin,
+-- COUNT(c.pekerjaan) AS pekerjaan,
+-- COUNT(c.kewarganegaraan) AS kewarganegaraan,
+-- COUNT(c.status_pendidikan) AS status_pendidikan,
+-- COUNT(c.pendidikan) AS pendidikan,
+-- COUNT(c.no_telp) AS no_telp	
+-- FROM 
+-- kasus a LEFT JOIN klien b ON a.id = b.kasus_id
+-- LEFT JOIN terlapor c ON a.id = c.kasus_id 
+-- LEFT JOIN r_hubungan_terlapor_klien d ON d.terlapor_id = c.id
+-- WHERE 
+-- b.deleted_at IS NULL 
+-- AND 
+-- b.arsip = 0
+
+-- KEKOSONGAN KATEGORI KASUS
+-- SELECT
+-- b.no_klien, c.value
+-- FROM 
+-- kasus a LEFT JOIN klien b ON a.id = b.kasus_id 
+-- LEFT JOIN t_jenis_kekerasan c ON b.id = c.klien_id 
+-- WHERE 
+-- b.deleted_at IS NULL 
+-- AND 
+-- b.arsip = 0
+-- AND 
+-- c.value IS NULL 
+-- GROUP BY b.id 
+
+-- KASUS YANG 1 KASUS BANYAK KORBAN
+-- SELECT
+-- a.id, COUNT(*)
+-- FROM 
+-- kasus a LEFT JOIN klien b ON a.id = b.kasus_id 
+-- WHERE 
+-- b.deleted_at IS NULL 
+-- AND 
+-- b.arsip = 0
+-- GROUP BY a.id
+
+-- MONITORING AKTIVITAS KASUS
+-- SELECT 
+-- 	 a.tanggal_pelaporan,
+--     b.no_klien, 
+--     b.nama,
+--     y.penerima_pengaduan, x.manajer_kasus, w.supervisor_kasus,
+--     kelengkapan_data.kelengkapan_data,
+--     data_klasifikasi.data_klasifikasi,
+--     ROUND(((CASE WHEN y.penerima_pengaduan IS NOT NULL THEN 1 ELSE 0 END) + (CASE WHEN x.manajer_kasus IS NOT NULL THEN 1 ELSE 0 END) + (CASE WHEN w.supervisor_kasus IS NOT NULL THEN 1 ELSE 0 END))/3*100,2) 
+-- 	 AS komponen_petugas,
+-- 	 surat_persetujuan.surat_persetujuan,
+-- 	 (CASE WHEN kronologis.kronologis IS NULL THEN 0 ELSE kronologis.kronologis END) AS kronologis,
+-- 	 bpss.bpss,
+-- 	 (CASE WHEN progres_layanan.progres_layanan IS NULL THEN 0 ELSE progres_layanan.progres_layanan END) AS progres_layanan,
+-- 	 pemantauan_evaluasi.pemantauan_evaluasi,
+-- 	 (CASE WHEN terminasi_kasus.terminasi_kasus IS NULL THEN 0 ELSE terminasi_kasus.terminasi_kasus END) AS terminasi_kasus,
+-- 	 ROUND(
+-- 	 (kelengkapan_data.kelengkapan_data +
+--     data_klasifikasi.data_klasifikasi +
+--     ROUND(((CASE WHEN y.penerima_pengaduan IS NOT NULL THEN 1 ELSE 0 END) + (CASE WHEN x.manajer_kasus IS NOT NULL THEN 1 ELSE 0 END) + (CASE WHEN w.supervisor_kasus IS NOT NULL THEN 1 ELSE 0 END))/3*100,2) + 
+-- 	 surat_persetujuan.surat_persetujuan +
+-- 	 (CASE WHEN kronologis.kronologis IS NULL THEN 0 ELSE kronologis.kronologis END) +
+-- 	 bpss.bpss +
+-- 	 (CASE WHEN progres_layanan.progres_layanan IS NULL THEN 0 ELSE progres_layanan.progres_layanan END) +
+-- 	 pemantauan_evaluasi.pemantauan_evaluasi +
+-- 	 (CASE WHEN terminasi_kasus.terminasi_kasus IS NULL THEN 0 ELSE terminasi_kasus.terminasi_kasus END)
+-- 	 ) / 900 * 100,2
+-- 	 ) AS skor 
+-- FROM 
+--     kasus a 
+-- LEFT JOIN 
+--     klien b ON a.id = b.kasus_id  
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(" ", b.name) AS penerima_pengaduan FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Penerima Pengaduan' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
+-- y ON y.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(" ", b.name) AS manajer_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Manajer Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
+-- x ON x.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(" ", b.name) AS supervisor_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Supervisor Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL GROUP BY a.klien_id) 
+-- w ON w.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS kategori_kasus FROM t_kategori_kasus a LEFT JOIN 
+-- m_kategori_kasus b ON a.value = b.kode GROUP BY a.klien_id) k ON k.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS jenis_kekerasan FROM t_jenis_kekerasan a LEFT JOIN 
+-- m_jenis_kekerasan b ON a.value = b.kode GROUP BY a.klien_id) l ON l.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS bentuk_kekerasan FROM t_bentuk_kekerasan a LEFT JOIN 
+-- m_bentuk_kekerasan b ON a.value = b.kode GROUP BY a.klien_id) m ON m.klien_id = b.id
+-- LEFT JOIN 
+-- (
+-- SELECT 
+--     b.id AS klien_id, 
+--     (
+--     	ROUND (
+--     	(
+--         SUM(CASE WHEN a.sumber_rujukan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN a.media_pengaduan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN a.sumber_informasi IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN a.tanggal_pelaporan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN a.tanggal_kejadian IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN a.kategori_lokasi IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN a.ringkasan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN a.provinsi_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN a.kotkab_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN a.kecamatan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN a.kelurahan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN a.alamat IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.no_klien IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.nik IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.nama IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.tempat_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.tanggal_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.jenis_kelamin IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.provinsi_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.kotkab_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.kecamatan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.kelurahan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.alamat_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.provinsi_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.kotkab_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.kecamatan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.kelurahan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.alamat IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.agama IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.status_kawin IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.pekerjaan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.kewarganegaraan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.status_pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.no_telp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.kedisabilitasan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN b.hubungan_pelapor IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.nik IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.nama IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.tempat_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.tanggal_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.jenis_kelamin IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.provinsi_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.kotkab_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.kecamatan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.kelurahan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.alamat_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.provinsi_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.kotkab_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.kecamatan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.kelurahan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.alamat IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.agama IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.status_kawin IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.pekerjaan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.kewarganegaraan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.status_pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN c.no_telp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.nik IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.nama IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.tempat_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.tanggal_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.jenis_kelamin IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.provinsi_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.kotkab_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.kecamatan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.kelurahan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.alamat_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.provinsi_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.kotkab_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.kecamatan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.kelurahan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.alamat IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.agama IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.status_kawin IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.pekerjaan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.kewarganegaraan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.status_pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--         SUM(CASE WHEN e.no_telp IS NOT NULL THEN 1 ELSE 0 END) 
+--       ) / 81 * 100, 2)
+--     ) AS kelengkapan_data
+-- FROM kasus a LEFT JOIN klien b ON a.id = b.kasus_id 
+-- LEFT JOIN pelapor c ON c.kasus_id = a.id
+-- LEFT JOIN r_hubungan_terlapor_klien d ON d.klien_id = d.id
+-- LEFT JOIN terlapor e ON d.terlapor_id = e.id
+-- WHERE b.deleted_at IS NULL AND b.arsip = 0 GROUP BY b.id
+-- ) kelengkapan_data ON kelengkapan_data.klien_id = b.id 
+-- LEFT JOIN 
+-- (
+-- SELECT
+--     klien_id,
+--     kategori_values,
+--     jenis_values,
+--     bentuk_values,
+-- 	 ROUND((kategori_values + jenis_values + bentuk_values) / 3 * 100, 2) AS data_klasifikasi
+-- FROM (
+--     SELECT
+--         b.id AS klien_id,
+--         SUM(CASE WHEN (SELECT GROUP_CONCAT(c.value) FROM t_kategori_kasus c WHERE c.klien_id = b.id) IS NOT NULL THEN 1 ELSE 0 END) AS kategori_values,
+--         SUM(CASE WHEN (SELECT GROUP_CONCAT(d.value) FROM t_jenis_kekerasan d WHERE d.klien_id = b.id) IS NOT NULL THEN 1 ELSE 0 END) AS jenis_values,
+--         SUM(CASE WHEN (SELECT GROUP_CONCAT(e.value) FROM t_bentuk_kekerasan e WHERE e.klien_id = b.id) IS NOT NULL THEN 1 ELSE 0 END) AS bentuk_values
+--     FROM 
+--         kasus a 
+--         LEFT JOIN klien b ON a.id = b.kasus_id 
+--     WHERE 
+--         b.deleted_at IS NULL AND 
+--         b.arsip = 0 
+--     GROUP BY 
+--         b.id
+-- ) AS subquery_alias
+-- ) data_klasifikasi ON data_klasifikasi.klien_id = b.id
+-- LEFT JOIN 
+-- (SELECT
+--     klien_id,
+--     persetujuan_data,
+--     persetujuan_spp,
+-- 	 ROUND((persetujuan_data + persetujuan_spp ) / 2 * 100, 2) AS surat_persetujuan
+-- FROM (
+--     SELECT
+--         b.id AS klien_id,
+--         SUM(CASE WHEN (SELECT GROUP_CONCAT(c.id) FROM persetujuan_isi c WHERE c.klien_id = b.id AND c.persetujuan_template_id = 1 AND c.tandatangan IS NOT NULL AND c.deleted_at IS NULL) IS NOT NULL THEN 1 ELSE 0 END) AS persetujuan_data,
+--         SUM(CASE WHEN (SELECT GROUP_CONCAT(d.id) FROM persetujuan_isi d WHERE d.klien_id = b.id AND d.persetujuan_template_id = 2 AND d.tandatangan IS NOT NULL AND d.deleted_at IS NULL) IS NOT NULL THEN 1 ELSE 0 END) AS persetujuan_spp
+--     FROM 
+--         kasus a 
+--         LEFT JOIN klien b ON a.id = b.kasus_id 
+--     WHERE 
+--         b.deleted_at IS NULL AND 
+--         b.arsip = 0 
+--     GROUP BY 
+--         b.id
+-- ) AS subquery_alias
+-- ) surat_persetujuan ON surat_persetujuan.klien_id = b.id
+-- LEFT JOIN 
+-- (
+-- SELECT
+--         b.id AS klien_id,
+--         ROUND((CASE WHEN COUNT(c.keterangan) > 0 THEN 1 ELSE 0 END) / 1 *100, 2) AS kronologis
+-- 	FROM 
+--         kasus a 
+--         LEFT JOIN klien b ON a.id = b.kasus_id 
+--         LEFT JOIN riwayat_kejadian c ON c.klien_id = b.id
+--     WHERE 
+--         b.deleted_at IS NULL AND 
+--         b.arsip = 0 AND 
+--         c.deleted_at IS NULL 
+--     GROUP BY 
+--         b.id
+-- ) kronologis ON kronologis.klien_id = b.id
+-- LEFT JOIN 
+-- (
+-- SELECT
+--         b.id AS klien_id,
+--         ROUND(
+--         (
+-- 		  (CASE WHEN c.fisik IS NOT NULL THEN 1 ELSE 0 END) + 
+-- 		  (CASE WHEN c.psikologis IS NOT NULL THEN 1 ELSE 0 END) + 
+-- 		  (CASE WHEN c.sosial IS NOT NULL THEN 1 ELSE 0 END) + 
+-- 		  (CASE WHEN c.hukum IS NOT NULL THEN 1 ELSE 0 END) + 
+-- 		  (CASE WHEN c.upaya IS NOT NULL THEN 1 ELSE 0 END) + 
+-- 		  (CASE WHEN c.pendukung IS NOT NULL THEN 1 ELSE 0 END) + 
+-- 		  (CASE WHEN c.hambatan IS NOT NULL THEN 1 ELSE 0 END) + 
+-- 		  (CASE WHEN c.harapan IS NOT NULL THEN 1 ELSE 0 END) 
+-- 		  )
+-- 		  / 8 *100
+-- 		  ,2) AS bpss
+-- 	FROM 
+--         kasus a 
+--         LEFT JOIN klien b ON a.id = b.kasus_id 
+--         LEFT JOIN asesmen c ON c.klien_id = b.id
+--     WHERE 
+--         b.deleted_at IS NULL AND 
+--         b.arsip = 0 AND 
+--         c.deleted_at IS NULL 
+--     GROUP BY 
+--         b.id
+-- ) bpss ON bpss.klien_id = b.id
+-- LEFT JOIN 
+-- (
+-- SELECT
+--     b.id AS klien_id, 
+--     ROUND(SUM(CASE WHEN d.jam_selesai IS NOT NULL THEN 1 ELSE 0 END) / COUNT(d.id) * 100, 2) AS progres_layanan
+-- FROM 
+--     klien b
+--     INNER JOIN kasus a ON a.id = b.kasus_id
+--     INNER JOIN agenda c ON c.klien_id = b.id
+--     LEFT JOIN tindak_lanjut d ON c.id = d.agenda_id 
+-- WHERE 
+--     b.deleted_at IS NULL AND 
+--     b.arsip = 0 AND 
+--     c.deleted_at IS NULL AND 
+--     d.deleted_at IS NULL 
+-- GROUP BY 
+--     b.id, b.nama
+-- ) progres_layanan ON progres_layanan.klien_id = b.id
+-- LEFT JOIN 
+-- (
+-- SELECT
+--         b.id AS klien_id,
+--         ROUND((CASE WHEN COUNT(c.kemajuan) > 0 THEN 1 ELSE 0 END) / 1 *100, 2) AS pemantauan_evaluasi
+-- 	FROM 
+--         kasus a 
+--         LEFT JOIN klien b ON a.id = b.kasus_id 
+--         LEFT JOIN pemantauan c ON c.klien_id = b.id
+--     WHERE 
+--         b.deleted_at IS NULL AND 
+--         b.arsip = 0 AND 
+--         c.deleted_at IS NULL 
+--     GROUP BY 
+--         b.id
+-- ) pemantauan_evaluasi ON pemantauan_evaluasi.klien_id = b.id
+-- LEFT JOIN 
+-- (
+-- SELECT
+--         b.id AS klien_id,
+--         ROUND((CASE WHEN COUNT(c.validated_by) > 0 THEN 1 ELSE 0 END) / 1 *100, 2) AS terminasi_kasus
+-- 	FROM 
+--         kasus a 
+--         LEFT JOIN klien b ON a.id = b.kasus_id 
+--         LEFT JOIN terminasi c ON c.klien_id = b.id
+--     WHERE 
+--         b.deleted_at IS NULL AND 
+--         b.arsip = 0 AND 
+--         c.validated_by IS NOT NULL 
+--     GROUP BY 
+--         b.id
+-- ) terminasi_kasus ON terminasi_kasus.klien_id = b.id
+-- WHERE 
+--     b.deleted_at IS NULL 
+--     AND 
+--     b.arsip = 0  
+-- ORDER BY skor
+
+-- JUMLAH LAYANAN PERBULAN 
+-- jumlah per agenda (bukan per keyword)
+-- Bukti Realisasi Pelayanan Komprehensif Triwulan 1
+-- SELECT
+-- YEAR(b.tanggal_mulai) AS tahun,
+-- MONTH(b.tanggal_mulai) AS bulan,
+-- z.perempuan_dewasa,
+-- z.anak_laki,
+-- z.anak_perempuan,
+-- d.jabatan, 
+-- COUNT(*) AS jumlah_detail_layanan
+-- FROM 
+-- tindak_lanjut a LEFT JOIN agenda b ON a.agenda_id = b.id 
+-- LEFT JOIN t_keyword c ON c.tindak_lanjut_id = a.id 
+-- LEFT JOIN m_keyword d ON d.id = c.`value`
+-- LEFT JOIN 
+-- (
+-- SELECT
+-- YEAR(a.tanggal_approve) AS tahun,
+-- MONTH(a.tanggal_approve) AS bulan,
+-- SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, b.tanggal_pelaporan) > 17 AND a.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END) AS perempuan_dewasa,
+-- SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, b.tanggal_pelaporan) < 18 AND a.jenis_kelamin = 'laki-laki' THEN 1 ELSE 0 END) AS anak_laki,
+-- SUM(CASE WHEN TIMESTAMPDIFF(YEAR, a.tanggal_lahir, b.tanggal_pelaporan) < 18 AND a.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END) AS anak_perempuan
+-- FROM 
+-- klien a LEFT JOIN kasus b ON a.kasus_id = b.id
+-- WHERE 
+-- a.arsip = 0
+-- AND 
+-- a.deleted_at IS NULL 
+-- AND 
+-- b.deleted_at IS NULL 
+-- AND 
+-- a.tanggal_approve BETWEEN '2024-07-01' AND '2024-09-25'
+-- GROUP BY 
+-- MONTH(a.tanggal_approve)
+-- ) z ON z.bulan = MONTH(b.tanggal_mulai)
+-- WHERE 
+-- b.tanggal_mulai BETWEEN '2024-07-01' AND '2024-09-25'
+-- AND 
+-- b.klien_id IS NOT NULL 
+-- AND a.deleted_at IS NULL 
+-- AND b.deleted_at IS NULL 
+-- AND a.jam_selesai IS NOT NULL 
+-- AND d.deleted_at IS NULL 
+-- AND d.jabatan IS NOT NULL 
+-- GROUP BY MONTH(b.tanggal_mulai), d.jabatan
+
+-- CEK JUMLAH LAYANAN PERBULAN 
+-- SELECT
+-- COUNT(*)
+-- FROM 
+-- kasus a LEFT JOIN klien b ON a.id = b.kasus_id
+-- LEFT JOIN agenda c ON c.klien_id = b.id
+-- LEFT JOIN tindak_lanjut d ON c.id = d.agenda_id
+-- LEFT JOIN users e ON d.created_by = e.id 
+-- WHERE 
+-- a.deleted_at IS NULL 
+-- AND 
+-- b.deleted_at IS NULL 
+-- AND 
+-- b.arsip = 0
+-- AND 
+-- YEAR(b.tanggal_approve) = 2024
+-- AND 
+-- c.klien_id IS NOT NULL
+-- AND 
+-- d.deleted_at IS NULL 
+-- AND 
+-- d.jam_selesai IS NOT NULL  
+-- AND
+-- e.jabatan IN ('Advokat','Paralegal','Unit Reaksi Cepat')
+-- AND 
+-- MONTH(b.tanggal_approve) = 2	
+
+-- MELACAK JUMLAH AGENDA YANG DIBUAT MK VS TIDAK DIBUAT MK
+-- SELECT 
+--     u.name AS user_name,
+--     COUNT(CASE WHEN a.created_by = u.id THEN 1 END) AS dibuat_MK,
+--     COUNT(CASE WHEN a.created_by != u.id THEN 1 END) AS tak_dibuat_MK,
+--     ROUND(
+--         COUNT(CASE WHEN a.created_by = u.id THEN 1 END) * 100.0 /
+--         NULLIF(COUNT(a.id), 0), 2
+--     ) AS percentage_dibuatMK,
+--     ROUND(
+--         COUNT(CASE WHEN a.created_by != u.id THEN 1 END) * 100.0 /
+--         NULLIF(COUNT(a.id), 0), 2
+--     ) AS percentage_takDibuatMK
+-- FROM 
+--     users u
+-- JOIN 
+--     petugas p ON p.user_id = u.id
+-- JOIN 
+--     agenda a ON a.klien_id = p.klien_id
+-- WHERE 
+--     u.jabatan = 'Manajer Kasus'
+--     AND 
+--                     MONTH(a.created_at) > 6
+--                     AND
+--                     MONTH(a.tanggal_mulai) > 6
+-- --                     AND u.id = 45
+-- GROUP BY 
+--     u.id;
+
+-- JUMLAH agenda YANG DIBUAT MK DAN POS
+-- SELECT
+-- COUNT(*)
+-- FROM 
+-- agenda a LEFT JOIN tindak_lanjut b ON a.id = b.agenda_id 
+-- LEFT JOIN users c ON b.created_by = c.id
+-- WHERE 
+-- a.deleted_at IS NULL 
+-- AND 
+-- b.deleted_at IS NULL 
+-- AND 
+-- a.klien_id IS NOT NULL 
+-- AND 
+-- (
+-- c.jabatan != 'Manajer Kasus'
+-- OR 
+-- c.wilayah IS NULL 
+-- )
+
+
+-- MELACAK AGENDA YANG NGISINYA NGASAL BANYAK KOSONGNYA ATAU CUMAN TITIK
+-- SELECT 
+-- MONTH(a.tanggal_mulai),
+-- a.judul_kegiatan, 
+-- a.keterangan AS deskripsi_proses, 
+-- b.catatan AS deskripsi_hasil, b.rtl AS rencana_tindak_lanjut, c.name AS petugas, c.jabatan
+-- FROM 
+-- agenda a 
+-- LEFT JOIN 
+-- tindak_lanjut b ON a.id = b.agenda_id
+-- LEFT JOIN 
+-- users c ON b.created_by = c.id
+-- WHERE b.jam_selesai IS NOT NULL 
+-- AND (LENGTH(b.catatan) < 10 OR LENGTH(b.rtl) < 10)
+-- AND a.deleted_at IS NULL 
+-- AND b.deleted_at IS NULL 
+-- AND a.klien_id IS NOT NULL 
+-- ORDER BY c.name;
+
+-- MEMBUAT EVENT SCHEDULER
+-- klik kanan di databasenya, new -> create event -> samakan dengan yg di MOKA V2
+
+-- QUERY EVENT SCHEDULER 
+-- BEGIN
+-- DECLARE v_hour INT;
+-- SET SESSION group_concat_max_len = 1000000;
+-- 
+-- 
+--     -- Get the current hour
+--     SET v_hour = HOUR(NOW());
+-- 
+--     -- Check if the current hour is between 8 PM (20) and 7 AM (7)
+--     IF v_hour NOT BETWEEN 20 AND 23 AND v_hour NOT BETWEEN 0 AND 6 THEN
+--     
+--     DROP TABLE IF EXISTS mv_monitoring_kasus;
+--     CREATE TABLE mv_monitoring_kasus AS 
+-- SELECT 
+--             a.uuid,
+--             p.user_id,
+--             b.tanggal_pelaporan,
+--             b.tanggal_kejadian,
+--             b.created_at,
+--             a.no_klien, 
+--             a.nama,
+--             y.penerima_pengaduan, x.manajer_kasus, w.supervisor_kasus,
+--             kelengkapan_data.kelengkapan_data,
+--             data_klasifikasi.data_klasifikasi,
+--             ROUND(((CASE WHEN y.penerima_pengaduan IS NOT NULL THEN 1 ELSE 0 END) + (CASE WHEN x.manajer_kasus IS NOT NULL THEN 1 ELSE 0 END) + (CASE WHEN w.supervisor_kasus IS NOT NULL THEN 1 ELSE 0 END))/3*100,2) 
+--             AS komponen_petugas,
+--             surat_persetujuan.surat_persetujuan,
+--             (CASE WHEN kronologis.kronologis IS NULL THEN 0 ELSE kronologis.kronologis END) AS kronologis,
+--             bpss.bpss,
+--             (CASE WHEN progres_layanan.progres_layanan IS NULL THEN 0 ELSE progres_layanan.progres_layanan END) AS progres_layanan,
+--             pemantauan_evaluasi.pemantauan_evaluasi,
+--             (CASE WHEN terminasi_kasus.terminasi_kasus IS NULL THEN 0 ELSE terminasi_kasus.terminasi_kasus END) AS terminasi_kasus,
+--             ROUND(
+--             (kelengkapan_data.kelengkapan_data +
+--             data_klasifikasi.data_klasifikasi +
+--             ROUND(((CASE WHEN y.penerima_pengaduan IS NOT NULL THEN 1 ELSE 0 END) + (CASE WHEN x.manajer_kasus IS NOT NULL THEN 1 ELSE 0 END) + (CASE WHEN w.supervisor_kasus IS NOT NULL THEN 1 ELSE 0 END))/3*100,2) + 
+--             surat_persetujuan.surat_persetujuan +
+--             (CASE WHEN kronologis.kronologis IS NULL THEN 0 ELSE kronologis.kronologis END) +
+--             bpss.bpss +
+--             (CASE WHEN progres_layanan.progres_layanan IS NULL THEN 0 ELSE progres_layanan.progres_layanan END) +
+--             pemantauan_evaluasi.pemantauan_evaluasi +
+--             (CASE WHEN terminasi_kasus.terminasi_kasus IS NULL THEN 0 ELSE terminasi_kasus.terminasi_kasus END)
+--             ) / 900 * 100,2
+--             ) AS skor,
+-- 				NOW() AS jam_input  
+--         FROM 
+--             klien a 
+--         LEFT JOIN 
+--             kasus b ON a.kasus_id = b.id  
+--         LEFT JOIN
+--         (
+--             SELECT
+--             klien_id, GROUP_CONCAT(user_id) AS user_id
+--             FROM petugas
+--             GROUP BY klien_id
+--         ) p ON p.klien_id = a.id 
+--         LEFT JOIN 
+--         (SELECT a.klien_id, b.name AS penerima_pengaduan FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Penerima Pengaduan' AND a.deleted_at IS NULL AND b.deleted_at IS NULL) 
+--         y ON y.klien_id = a.id
+--         LEFT JOIN 
+--         (SELECT a.klien_id, b.name AS manajer_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Manajer Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL) 
+--         x ON x.klien_id = a.id
+--         LEFT JOIN 
+--         (SELECT a.klien_id, b.name AS supervisor_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Supervisor Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL) 
+--         w ON w.klien_id = a.id
+--         LEFT JOIN 
+--         (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS kategori_kasus FROM t_kategori_kasus a LEFT JOIN 
+--         m_kategori_kasus b ON a.value = b.kode GROUP BY a.klien_id) k ON k.klien_id = a.id
+--         LEFT JOIN 
+--         (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS jenis_kekerasan FROM t_jenis_kekerasan a LEFT JOIN 
+--         m_jenis_kekerasan b ON a.value = b.kode GROUP BY a.klien_id) l ON l.klien_id = a.id
+--         LEFT JOIN 
+--         (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS bentuk_kekerasan FROM t_bentuk_kekerasan a LEFT JOIN 
+--         m_bentuk_kekerasan b ON a.value = b.kode GROUP BY a.klien_id) m ON m.klien_id = a.id
+--         LEFT JOIN 
+--         (
+--         SELECT 
+--             b.id AS klien_id, 
+--             (
+--                 ROUND (
+--                 (
+--                 SUM(CASE WHEN a.sumber_rujukan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.media_pengaduan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.sumber_informasi IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.tanggal_pelaporan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.tanggal_kejadian IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.kategori_lokasi IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.ringkasan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.provinsi_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.kotkab_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.kecamatan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.kelurahan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.alamat IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.no_klien IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.nik IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.nama IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.tempat_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.tanggal_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.jenis_kelamin IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.provinsi_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kotkab_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kecamatan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kelurahan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.alamat_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.provinsi_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kotkab_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kecamatan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kelurahan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.alamat IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.agama IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.status_kawin IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.pekerjaan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kewarganegaraan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.status_pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.no_telp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kedisabilitasan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.hubungan_pelapor IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.nik IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.nama IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.tempat_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.tanggal_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.jenis_kelamin IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.provinsi_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.kotkab_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.kecamatan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.kelurahan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.alamat_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.provinsi_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.kotkab_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.kecamatan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.kelurahan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.alamat IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.agama IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.status_kawin IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.pekerjaan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.kewarganegaraan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.status_pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.no_telp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.nik IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.nama IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.tempat_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.tanggal_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.jenis_kelamin IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.provinsi_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.kotkab_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.kecamatan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.kelurahan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.alamat_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.provinsi_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.kotkab_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.kecamatan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.kelurahan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.alamat IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.agama IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.status_kawin IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.pekerjaan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.kewarganegaraan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.status_pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.no_telp IS NOT NULL THEN 1 ELSE 0 END) 
+--             ) / 81 * 100, 2)
+--             ) AS kelengkapan_data
+--         FROM kasus a LEFT JOIN klien b ON a.id = b.kasus_id 
+--         LEFT JOIN pelapor c ON c.kasus_id = a.id
+--         LEFT JOIN r_hubungan_terlapor_klien d ON d.klien_id = b.id
+--         LEFT JOIN terlapor e ON d.terlapor_id = e.id
+--         WHERE b.deleted_at IS NULL AND b.arsip = 0 GROUP BY b.id, a.id, c.id, d.id, e.id
+--         ) kelengkapan_data ON kelengkapan_data.klien_id = a.id 
+--         LEFT JOIN 
+--         (
+--         SELECT
+--             klien_id,
+--             kategori_values,
+--             jenis_values,
+--             bentuk_values,
+--             ROUND((kategori_values + jenis_values + bentuk_values) / 3 * 100, 2) AS data_klasifikasi
+--         FROM (
+--             SELECT
+--                 b.id AS klien_id,
+--                 SUM(CASE WHEN (SELECT GROUP_CONCAT(c.value) FROM t_kategori_kasus c WHERE c.klien_id = b.id) IS NOT NULL THEN 1 ELSE 0 END) AS kategori_values,
+--                 SUM(CASE WHEN (SELECT GROUP_CONCAT(d.value) FROM t_jenis_kekerasan d WHERE d.klien_id = b.id) IS NOT NULL THEN 1 ELSE 0 END) AS jenis_values,
+--                 SUM(CASE WHEN (SELECT GROUP_CONCAT(e.value) FROM t_bentuk_kekerasan e WHERE e.klien_id = b.id) IS NOT NULL THEN 1 ELSE 0 END) AS bentuk_values
+--             FROM 
+--                 kasus a 
+--                 LEFT JOIN klien b ON a.id = b.kasus_id 
+--             WHERE 
+--                 b.deleted_at IS NULL AND 
+--                 b.arsip = 0 
+--             GROUP BY 
+--                 b.id
+--         ) AS subquery_alias
+--         ) data_klasifikasi ON data_klasifikasi.klien_id = a.id
+--         LEFT JOIN 
+--         (SELECT
+--             klien_id,
+--             persetujuan_data,
+--             persetujuan_spp,
+--             ROUND((persetujuan_data + persetujuan_spp ) / 2 * 100, 2) AS surat_persetujuan
+--         FROM (
+--             SELECT
+--                 b.id AS klien_id,
+--                 SUM(CASE WHEN (SELECT GROUP_CONCAT(c.id) FROM persetujuan_isi c WHERE c.klien_id = b.id AND c.persetujuan_template_id = 1 AND c.tandatangan IS NOT NULL AND c.deleted_at IS NULL) IS NOT NULL THEN 1 ELSE 0 END) AS persetujuan_data,
+--                 SUM(CASE WHEN (SELECT GROUP_CONCAT(d.id) FROM persetujuan_isi d WHERE d.klien_id = b.id AND d.persetujuan_template_id = 2 AND d.tandatangan IS NOT NULL AND d.deleted_at IS NULL) IS NOT NULL THEN 1 ELSE 0 END) AS persetujuan_spp
+--             FROM 
+--                 kasus a 
+--                 LEFT JOIN klien b ON a.id = b.kasus_id 
+--             WHERE 
+--                 b.deleted_at IS NULL AND 
+--                 b.arsip = 0 
+--             GROUP BY 
+--                 b.id
+--         ) AS subquery_alias
+--         ) surat_persetujuan ON surat_persetujuan.klien_id = a.id
+--         LEFT JOIN 
+--         (
+--         SELECT
+--                 b.id AS klien_id,
+--                 ROUND((CASE WHEN COUNT(c.keterangan) > 0 THEN 1 ELSE 0 END) / 1 *100, 2) AS kronologis
+--             FROM 
+--                 kasus a 
+--                 LEFT JOIN klien b ON a.id = b.kasus_id 
+--                 LEFT JOIN riwayat_kejadian c ON c.klien_id = b.id
+--             WHERE 
+--                 b.deleted_at IS NULL AND 
+--                 b.arsip = 0 AND 
+--                 c.deleted_at IS NULL 
+--             GROUP BY 
+--                 b.id
+--         ) kronologis ON kronologis.klien_id = a.id
+--         LEFT JOIN 
+--         (
+--         SELECT
+--                 b.id AS klien_id,
+--                 ROUND(
+--                 (
+--                 (CASE WHEN c.fisik IS NOT NULL THEN 1 ELSE 0 END) + 
+--                 (CASE WHEN c.psikologis IS NOT NULL THEN 1 ELSE 0 END) + 
+--                 (CASE WHEN c.sosial IS NOT NULL THEN 1 ELSE 0 END) + 
+--                 (CASE WHEN c.hukum IS NOT NULL THEN 1 ELSE 0 END) + 
+--                 (CASE WHEN c.upaya IS NOT NULL THEN 1 ELSE 0 END) + 
+--                 (CASE WHEN c.pendukung IS NOT NULL THEN 1 ELSE 0 END) + 
+--                 (CASE WHEN c.hambatan IS NOT NULL THEN 1 ELSE 0 END) + 
+--                 (CASE WHEN c.harapan IS NOT NULL THEN 1 ELSE 0 END) 
+--                 )
+--                 / 8 *100
+--                 ,2) AS bpss
+--             FROM 
+--                 kasus a 
+--                 LEFT JOIN klien b ON a.id = b.kasus_id 
+--                 LEFT JOIN asesmen c ON c.klien_id = b.id
+--             WHERE 
+--                 b.deleted_at IS NULL AND 
+--                 b.arsip = 0 AND 
+--                 c.deleted_at IS NULL 
+--             GROUP BY 
+--                 b.id, c.fisik, c.psikologis, c.sosial, c.hukum, c.upaya, c.pendukung, c.hambatan, c.harapan
+--         ) bpss ON bpss.klien_id = a.id
+--         LEFT JOIN 
+--         (
+--         SELECT
+--             b.id AS klien_id, 
+--             ROUND(SUM(CASE WHEN d.jam_selesai IS NOT NULL THEN 1 ELSE 0 END) / COUNT(d.id) * 100, 2) AS progres_layanan
+--         FROM 
+--             klien b
+--             INNER JOIN kasus a ON a.id = b.kasus_id
+--             INNER JOIN agenda c ON c.klien_id = b.id
+--             LEFT JOIN tindak_lanjut d ON c.id = d.agenda_id 
+--         WHERE 
+--             b.deleted_at IS NULL AND 
+--             b.arsip = 0 AND 
+--             c.deleted_at IS NULL AND 
+--             d.deleted_at IS NULL 
+--         GROUP BY 
+--             b.id, b.nama
+--         ) progres_layanan ON progres_layanan.klien_id = a.id
+--         LEFT JOIN 
+--         (
+--         SELECT
+--                 b.id AS klien_id,
+--                 ROUND((CASE WHEN COUNT(c.kemajuan) > 0 THEN 1 ELSE 0 END) / 1 *100, 2) AS pemantauan_evaluasi
+--             FROM 
+--                 kasus a 
+--                 LEFT JOIN klien b ON a.id = b.kasus_id 
+--                 LEFT JOIN pemantauan c ON c.klien_id = b.id
+--             WHERE 
+--                 b.deleted_at IS NULL AND 
+--                 b.arsip = 0 AND 
+--                 c.deleted_at IS NULL 
+--             GROUP BY 
+--                 b.id
+--         ) pemantauan_evaluasi ON pemantauan_evaluasi.klien_id = a.id
+--         LEFT JOIN 
+--         (
+--         SELECT
+--                 b.id AS klien_id,
+--                 ROUND((CASE WHEN COUNT(c.validated_by) > 0 THEN 1 ELSE 0 END) / 1 *100, 2) AS terminasi_kasus
+--             FROM 
+--                 kasus a 
+--                 LEFT JOIN klien b ON a.id = b.kasus_id 
+--                 LEFT JOIN terminasi c ON c.klien_id = b.id
+--             WHERE 
+--                 b.deleted_at IS NULL AND 
+--                 b.arsip = 0 AND 
+--                 c.validated_by IS NOT NULL 
+--             GROUP BY 
+--                 b.id
+--         ) terminasi_kasus ON terminasi_kasus.klien_id = a.id
+--         WHERE 
+--             a.deleted_at IS NULL 
+--             AND 
+--             a.arsip = 0  
+--         GROUP BY a.id
+--         ORDER BY skor;
+--         
+--         END IF;
+-- END
+
+
+-- QUERY NGISI TABEL mv_monitoring_kasus_scheduler
+-- BEGIN
+-- DECLARE v_hour INT;
+-- SET SESSION group_concat_max_len = 1000000;
+-- 
+-- 
+--     -- Get the current hour
+--     SET v_hour = HOUR(NOW());
+-- 
+--     -- Check if the current hour is between 8 PM (20) and 7 AM (7)
+--     IF v_hour NOT BETWEEN 20 AND 23 AND v_hour NOT BETWEEN 0 AND 6 THEN
+--     
+--     DROP TABLE IF EXISTS mv_monitoring_kasus;
+--     CREATE TABLE mv_monitoring_kasus AS 
+-- SELECT 
+--             a.uuid,
+--             p.user_id,
+--             b.tanggal_pelaporan,
+--             b.tanggal_kejadian,
+--             b.created_at,
+--             a.no_klien, 
+--             a.nama,
+--             y.penerima_pengaduan, x.manajer_kasus, w.supervisor_kasus,
+--             kelengkapan_data.kelengkapan_data,
+--             data_klasifikasi.data_klasifikasi,
+--             ROUND(((CASE WHEN y.penerima_pengaduan IS NOT NULL THEN 1 ELSE 0 END) + (CASE WHEN x.manajer_kasus IS NOT NULL THEN 1 ELSE 0 END) + (CASE WHEN w.supervisor_kasus IS NOT NULL THEN 1 ELSE 0 END))/3*100,2) 
+--             AS komponen_petugas,
+--             surat_persetujuan.surat_persetujuan,
+--             (CASE WHEN kronologis.kronologis IS NULL THEN 0 ELSE kronologis.kronologis END) AS kronologis,
+--             bpss.bpss,
+--             (CASE WHEN progres_layanan.progres_layanan IS NULL THEN 0 ELSE progres_layanan.progres_layanan END) AS progres_layanan,
+--             pemantauan_evaluasi.pemantauan_evaluasi,
+--             (CASE WHEN terminasi_kasus.terminasi_kasus IS NULL THEN 0 ELSE terminasi_kasus.terminasi_kasus END) AS terminasi_kasus,
+--             ROUND(
+--             (kelengkapan_data.kelengkapan_data +
+--             data_klasifikasi.data_klasifikasi +
+--             ROUND(((CASE WHEN y.penerima_pengaduan IS NOT NULL THEN 1 ELSE 0 END) + (CASE WHEN x.manajer_kasus IS NOT NULL THEN 1 ELSE 0 END) + (CASE WHEN w.supervisor_kasus IS NOT NULL THEN 1 ELSE 0 END))/3*100,2) + 
+--             surat_persetujuan.surat_persetujuan +
+--             (CASE WHEN kronologis.kronologis IS NULL THEN 0 ELSE kronologis.kronologis END) +
+--             bpss.bpss +
+--             (CASE WHEN progres_layanan.progres_layanan IS NULL THEN 0 ELSE progres_layanan.progres_layanan END) +
+--             pemantauan_evaluasi.pemantauan_evaluasi +
+--             (CASE WHEN terminasi_kasus.terminasi_kasus IS NULL THEN 0 ELSE terminasi_kasus.terminasi_kasus END)
+--             ) / 900 * 100,2
+--             ) AS skor,
+-- 				NOW() AS jam_input  
+--         FROM 
+--             klien a 
+--         LEFT JOIN 
+--             kasus b ON a.kasus_id = b.id  
+--         LEFT JOIN
+--         (
+--             SELECT
+--             klien_id, GROUP_CONCAT(user_id) AS user_id
+--             FROM petugas
+--             GROUP BY klien_id
+--         ) p ON p.klien_id = a.id 
+--         LEFT JOIN 
+--         (SELECT a.klien_id, b.name AS penerima_pengaduan FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Penerima Pengaduan' AND a.deleted_at IS NULL AND b.deleted_at IS NULL) 
+--         y ON y.klien_id = a.id
+--         LEFT JOIN 
+--         (SELECT a.klien_id, b.name AS manajer_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Manajer Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL) 
+--         x ON x.klien_id = a.id
+--         LEFT JOIN 
+--         (SELECT a.klien_id, b.name AS supervisor_kasus FROM petugas a LEFT JOIN users b ON a.user_id = b.id WHERE b.jabatan = 'Supervisor Kasus' AND a.deleted_at IS NULL AND b.deleted_at IS NULL) 
+--         w ON w.klien_id = a.id
+--         LEFT JOIN 
+--         (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS kategori_kasus FROM t_kategori_kasus a LEFT JOIN 
+--         m_kategori_kasus b ON a.value = b.kode GROUP BY a.klien_id) k ON k.klien_id = a.id
+--         LEFT JOIN 
+--         (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS jenis_kekerasan FROM t_jenis_kekerasan a LEFT JOIN 
+--         m_jenis_kekerasan b ON a.value = b.kode GROUP BY a.klien_id) l ON l.klien_id = a.id
+--         LEFT JOIN 
+--         (SELECT a.klien_id, GROUP_CONCAT(b.nama) AS bentuk_kekerasan FROM t_bentuk_kekerasan a LEFT JOIN 
+--         m_bentuk_kekerasan b ON a.value = b.kode GROUP BY a.klien_id) m ON m.klien_id = a.id
+--         LEFT JOIN 
+--         (
+--         SELECT 
+--             b.id AS klien_id, 
+--             (
+--                 ROUND (
+--                 (
+--                 SUM(CASE WHEN a.sumber_rujukan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.media_pengaduan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.sumber_informasi IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.tanggal_pelaporan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.tanggal_kejadian IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.kategori_lokasi IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.ringkasan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.provinsi_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.kotkab_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.kecamatan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.kelurahan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN a.alamat IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.no_klien IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.nik IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.nama IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.tempat_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.tanggal_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.jenis_kelamin IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.provinsi_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kotkab_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kecamatan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kelurahan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.alamat_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.provinsi_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kotkab_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kecamatan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kelurahan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.alamat IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.agama IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.status_kawin IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.pekerjaan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kewarganegaraan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.status_pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.no_telp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.kedisabilitasan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN b.hubungan_pelapor IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.nik IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.nama IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.tempat_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.tanggal_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.jenis_kelamin IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.provinsi_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.kotkab_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.kecamatan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.kelurahan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.alamat_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.provinsi_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.kotkab_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.kecamatan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.kelurahan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.alamat IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.agama IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.status_kawin IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.pekerjaan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.kewarganegaraan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.status_pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN c.no_telp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.nik IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.nama IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.tempat_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.tanggal_lahir IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.jenis_kelamin IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.provinsi_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.kotkab_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.kecamatan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.kelurahan_id_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.alamat_ktp IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.provinsi_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.kotkab_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.kecamatan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.kelurahan_id IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.alamat IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.agama IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.status_kawin IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.pekerjaan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.kewarganegaraan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.status_pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.pendidikan IS NOT NULL THEN 1 ELSE 0 END) +
+--                 SUM(CASE WHEN e.no_telp IS NOT NULL THEN 1 ELSE 0 END) 
+--             ) / 81 * 100, 2)
+--             ) AS kelengkapan_data
+--         FROM kasus a LEFT JOIN klien b ON a.id = b.kasus_id 
+--         LEFT JOIN pelapor c ON c.kasus_id = a.id
+--         LEFT JOIN r_hubungan_terlapor_klien d ON d.klien_id = b.id
+--         LEFT JOIN terlapor e ON d.terlapor_id = e.id
+--         WHERE b.deleted_at IS NULL AND b.arsip = 0 GROUP BY b.id, a.id, c.id, d.id, e.id
+--         ) kelengkapan_data ON kelengkapan_data.klien_id = a.id 
+--         LEFT JOIN 
+--         (
+--         SELECT
+--             klien_id,
+--             kategori_values,
+--             jenis_values,
+--             bentuk_values,
+--             ROUND((kategori_values + jenis_values + bentuk_values) / 3 * 100, 2) AS data_klasifikasi
+--         FROM (
+--             SELECT
+--                 b.id AS klien_id,
+--                 SUM(CASE WHEN (SELECT GROUP_CONCAT(c.value) FROM t_kategori_kasus c WHERE c.klien_id = b.id) IS NOT NULL THEN 1 ELSE 0 END) AS kategori_values,
+--                 SUM(CASE WHEN (SELECT GROUP_CONCAT(d.value) FROM t_jenis_kekerasan d WHERE d.klien_id = b.id) IS NOT NULL THEN 1 ELSE 0 END) AS jenis_values,
+--                 SUM(CASE WHEN (SELECT GROUP_CONCAT(e.value) FROM t_bentuk_kekerasan e WHERE e.klien_id = b.id) IS NOT NULL THEN 1 ELSE 0 END) AS bentuk_values
+--             FROM 
+--                 kasus a 
+--                 LEFT JOIN klien b ON a.id = b.kasus_id 
+--             WHERE 
+--                 b.deleted_at IS NULL AND 
+--                 b.arsip = 0 
+--             GROUP BY 
+--                 b.id
+--         ) AS subquery_alias
+--         ) data_klasifikasi ON data_klasifikasi.klien_id = a.id
+--         LEFT JOIN 
+--         (SELECT
+--             klien_id,
+--             persetujuan_data,
+--             persetujuan_spp,
+--             ROUND((persetujuan_data + persetujuan_spp ) / 2 * 100, 2) AS surat_persetujuan
+--         FROM (
+--             SELECT
+--                 b.id AS klien_id,
+--                 SUM(CASE WHEN (SELECT GROUP_CONCAT(c.id) FROM persetujuan_isi c WHERE c.klien_id = b.id AND c.persetujuan_template_id = 1 AND c.tandatangan IS NOT NULL AND c.deleted_at IS NULL) IS NOT NULL THEN 1 ELSE 0 END) AS persetujuan_data,
+--                 SUM(CASE WHEN (SELECT GROUP_CONCAT(d.id) FROM persetujuan_isi d WHERE d.klien_id = b.id AND d.persetujuan_template_id = 2 AND d.tandatangan IS NOT NULL AND d.deleted_at IS NULL) IS NOT NULL THEN 1 ELSE 0 END) AS persetujuan_spp
+--             FROM 
+--                 kasus a 
+--                 LEFT JOIN klien b ON a.id = b.kasus_id 
+--             WHERE 
+--                 b.deleted_at IS NULL AND 
+--                 b.arsip = 0 
+--             GROUP BY 
+--                 b.id
+--         ) AS subquery_alias
+--         ) surat_persetujuan ON surat_persetujuan.klien_id = a.id
+--         LEFT JOIN 
+--         (
+--         SELECT
+--                 b.id AS klien_id,
+--                 ROUND((CASE WHEN COUNT(c.keterangan) > 0 THEN 1 ELSE 0 END) / 1 *100, 2) AS kronologis
+--             FROM 
+--                 kasus a 
+--                 LEFT JOIN klien b ON a.id = b.kasus_id 
+--                 LEFT JOIN riwayat_kejadian c ON c.klien_id = b.id
+--             WHERE 
+--                 b.deleted_at IS NULL AND 
+--                 b.arsip = 0 AND 
+--                 c.deleted_at IS NULL 
+--             GROUP BY 
+--                 b.id
+--         ) kronologis ON kronologis.klien_id = a.id
+--         LEFT JOIN 
+--         (
+--         SELECT
+--                 b.id AS klien_id,
+--                 ROUND(
+--                 (
+--                 (CASE WHEN c.fisik IS NOT NULL THEN 1 ELSE 0 END) + 
+--                 (CASE WHEN c.psikologis IS NOT NULL THEN 1 ELSE 0 END) + 
+--                 (CASE WHEN c.sosial IS NOT NULL THEN 1 ELSE 0 END) + 
+--                 (CASE WHEN c.hukum IS NOT NULL THEN 1 ELSE 0 END) + 
+--                 (CASE WHEN c.upaya IS NOT NULL THEN 1 ELSE 0 END) + 
+--                 (CASE WHEN c.pendukung IS NOT NULL THEN 1 ELSE 0 END) + 
+--                 (CASE WHEN c.hambatan IS NOT NULL THEN 1 ELSE 0 END) + 
+--                 (CASE WHEN c.harapan IS NOT NULL THEN 1 ELSE 0 END) 
+--                 )
+--                 / 8 *100
+--                 ,2) AS bpss
+--             FROM 
+--                 kasus a 
+--                 LEFT JOIN klien b ON a.id = b.kasus_id 
+--                 LEFT JOIN asesmen c ON c.klien_id = b.id
+--             WHERE 
+--                 b.deleted_at IS NULL AND 
+--                 b.arsip = 0 AND 
+--                 c.deleted_at IS NULL 
+--             GROUP BY 
+--                 b.id, c.fisik, c.psikologis, c.sosial, c.hukum, c.upaya, c.pendukung, c.hambatan, c.harapan
+--         ) bpss ON bpss.klien_id = a.id
+--         LEFT JOIN 
+--         (
+--         SELECT
+--             b.id AS klien_id, 
+--             ROUND(SUM(CASE WHEN d.jam_selesai IS NOT NULL THEN 1 ELSE 0 END) / COUNT(d.id) * 100, 2) AS progres_layanan
+--         FROM 
+--             klien b
+--             INNER JOIN kasus a ON a.id = b.kasus_id
+--             INNER JOIN agenda c ON c.klien_id = b.id
+--             LEFT JOIN tindak_lanjut d ON c.id = d.agenda_id 
+--         WHERE 
+--             b.deleted_at IS NULL AND 
+--             b.arsip = 0 AND 
+--             c.deleted_at IS NULL AND 
+--             d.deleted_at IS NULL 
+--         GROUP BY 
+--             b.id, b.nama
+--         ) progres_layanan ON progres_layanan.klien_id = a.id
+--         LEFT JOIN 
+--         (
+--         SELECT
+--                 b.id AS klien_id,
+--                 ROUND((CASE WHEN COUNT(c.kemajuan) > 0 THEN 1 ELSE 0 END) / 1 *100, 2) AS pemantauan_evaluasi
+--             FROM 
+--                 kasus a 
+--                 LEFT JOIN klien b ON a.id = b.kasus_id 
+--                 LEFT JOIN pemantauan c ON c.klien_id = b.id
+--             WHERE 
+--                 b.deleted_at IS NULL AND 
+--                 b.arsip = 0 AND 
+--                 c.deleted_at IS NULL 
+--             GROUP BY 
+--                 b.id
+--         ) pemantauan_evaluasi ON pemantauan_evaluasi.klien_id = a.id
+--         LEFT JOIN 
+--         (
+--         SELECT
+--                 b.id AS klien_id,
+--                 ROUND((CASE WHEN COUNT(c.validated_by) > 0 THEN 1 ELSE 0 END) / 1 *100, 2) AS terminasi_kasus
+--             FROM 
+--                 kasus a 
+--                 LEFT JOIN klien b ON a.id = b.kasus_id 
+--                 LEFT JOIN terminasi c ON c.klien_id = b.id
+--             WHERE 
+--                 b.deleted_at IS NULL AND 
+--                 b.arsip = 0 AND 
+--                 c.validated_by IS NOT NULL 
+--             GROUP BY 
+--                 b.id
+--         ) terminasi_kasus ON terminasi_kasus.klien_id = a.id
+--         WHERE 
+--             a.deleted_at IS NULL 
+--             AND 
+--             a.arsip = 0  
+--         GROUP BY a.id
+--         ORDER BY skor;
+--         
+--         END IF;
+-- END
+
+-- MELIHAT SELURUH EVENT SCHEDULER
+-- SELECT EVENT_NAME, EVENT_SCHEMA, EVENT_DEFINITION, EVENT_BODY, EXECUTE_AT, INTERVAL_VALUE, INTERVAL_FIELD, STARTS, ENDS, STATUS
+-- FROM information_schema.EVENTS;
+
+-- HAPUS SCHEDULER
+-- DROP EVENT IF EXISTS `coba2`;
+
+-- CHECK EVENT SHEDULER AKTIF ATAU TIDAK
+-- SHOW VARIABLES LIKE 'event_scheduler';
+
+-- AKTIFKAN EVENT SCHEDULER
+-- SET GLOBAL event_scheduler = ON;
+
+-- MENAMBAHKAN USER BARU KE SELURUH KASUS YANG USER LAMA (PENGGANTINYA) TANGANI
+-- INSERT INTO petugas (klien_id, user_id, created_by)
+-- SELECT klien_id, 
+-- 302, -- user barunya
+-- 1 -- super admin
+-- FROM petugas 
+-- WHERE 
+-- user_id = 288 -- user lamanya
+
+
+-- SPP Telat Berapa Lama
+-- SELECT
+--     a.no_klien, 
+--     b.tanggal_pelaporan, 
+--     c.first_updated_at,
+--     DATEDIFF(c.first_updated_at, b.tanggal_pelaporan) AS selisih
+-- FROM 
+--     klien a 
+--     LEFT JOIN kasus b ON a.kasus_id = b.id 
+--     LEFT JOIN (
+--         SELECT 
+--             klien_id, 
+--             MIN(updated_at) AS first_updated_at
+--         FROM 
+--             persetujuan_isi
+--         WHERE 
+--             deleted_at IS NULL 
+--             AND tandatangan IS NOT NULL
+--             AND persetujuan_template_id = 2
+--         GROUP BY 
+--             klien_id
+--     ) c ON c.klien_id = a.id
+-- WHERE 
+--     YEAR(b.tanggal_pelaporan) = 2024
+--     AND a.deleted_at IS NULL 
+--     AND b.deleted_at IS NULL 
+--     AND a.arsip = 0;
+
+-- Laporan Agenda Intervensi Laporan Kegiatan yang belum ada laporan kegiatannya
+-- SELECT
+-- c.jabatan, c.`name`, d.no_klien, b.judul_kegiatan, b.tanggal_mulai, a.jam_selesai
+-- FROM 
+-- tindak_lanjut a LEFT JOIN agenda b ON a.agenda_id = b.id 
+-- LEFT JOIN users c ON c.id = a.created_by
+-- LEFT JOIN klien d ON d.id = b.klien_id
+-- WHERE 
+-- b.tanggal_mulai BETWEEN '2024-01-01' AND '2024-11-30'
+-- AND 
+-- b.klien_id IS NOT NULL 
+-- AND 
+-- a.jam_selesai IS NULL 
+-- AND 
+-- a.deleted_at IS NULL 
+-- AND 
+-- b.deleted_at IS NULL 
+
+
