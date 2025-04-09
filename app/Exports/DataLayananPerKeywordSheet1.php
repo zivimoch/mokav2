@@ -48,7 +48,11 @@ class DataLayananPerKeywordSheet1 implements FromCollection, WithHeadings, WithS
             'Jabatan',
             'Nama Petugas',
             'Detail Layanan',
-            'Jumlah'
+            'Perempuan Dewasa',
+            'Anak Laki-laki',
+            'Anak Perempuan',
+            'Jumlah',
+            'No Klien'
         ];
     }
 
@@ -78,7 +82,16 @@ class DataLayananPerKeywordSheet1 implements FromCollection, WithHeadings, WithS
         }
         
         $query = DB::select("SELECT
-                                c.jabatan, c.`name`, b.keyword, COUNT(*) AS jumlah
+                                c.jabatan, c.`name`, b.keyword, 
+                                SUM(CASE WHEN TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) > 17 AND bb.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END) AS perempuan_dewasa,
+                                SUM(CASE WHEN TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) < 18 AND bb.jenis_kelamin = 'laki-laki' THEN 1 ELSE 0 END) AS anak_laki,
+                                SUM(CASE WHEN TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) < 18 AND bb.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END) AS anak_perempuan,
+                                SUM(
+                                    CASE WHEN TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) > 17 AND bb.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END +
+                                    CASE WHEN TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) < 18 AND bb.jenis_kelamin = 'laki-laki' THEN 1 ELSE 0 END +
+                                    CASE WHEN TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) < 18 AND bb.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END
+                                ) AS jumlah,
+                                GROUP_CONCAT(DISTINCT f.no_klien ORDER BY f.no_klien ASC SEPARATOR ', ') AS no_klien
                             FROM 
                                 t_keyword a
                                 LEFT JOIN m_keyword b ON a.`value` = b.id
@@ -86,6 +99,7 @@ class DataLayananPerKeywordSheet1 implements FromCollection, WithHeadings, WithS
                                 LEFT JOIN tindak_lanjut d ON d.id = a.tindak_lanjut_id
                                 LEFT JOIN agenda e ON e.id = d.agenda_id
                                 LEFT JOIN klien f ON f.id = e.klien_id
+                                LEFT JOIN kasus g ON g.id = f.kasus_id    
                             WHERE 
                                 e.tanggal_mulai BETWEEN ? AND ?
                                 {$anda}
