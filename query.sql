@@ -313,8 +313,7 @@
 -- AND 
 -- e.deleted_at IS NULL
 -- AND 
--- f.value IN ('Pendampingan Kepolisian', 'Pendampingan BAP','Pendampingan di Kepolisian','Pendampingan LP',
--- 'Pendampingan di PN', 'Pendampingan di PA') 
+-- f.value IN (22, 25, 32, 86, 44, 26, 27, 33, 34, 87, 88, 109, 20, 18) 
 -- AND
 -- b.tanggal_approve IS NOT NULL 
 -- GROUP BY 

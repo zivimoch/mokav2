@@ -83,13 +83,13 @@ class DataLayananPerKeywordSheet1 implements FromCollection, WithHeadings, WithS
         
         $query = DB::select("SELECT
                                 c.jabatan, c.`name`, b.keyword, 
-                                SUM(CASE WHEN TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) > 17 AND bb.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END) AS perempuan_dewasa,
-                                SUM(CASE WHEN TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) < 18 AND bb.jenis_kelamin = 'laki-laki' THEN 1 ELSE 0 END) AS anak_laki,
-                                SUM(CASE WHEN TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) < 18 AND bb.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END) AS anak_perempuan,
+                                SUM(CASE WHEN TIMESTAMPDIFF(YEAR, f.tanggal_lahir, CURDATE()) > 17 AND f.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END) AS perempuan_dewasa,
+                                SUM(CASE WHEN TIMESTAMPDIFF(YEAR, f.tanggal_lahir, CURDATE()) < 18 AND f.jenis_kelamin = 'laki-laki' THEN 1 ELSE 0 END) AS anak_laki,
+                                SUM(CASE WHEN TIMESTAMPDIFF(YEAR, f.tanggal_lahir, CURDATE()) < 18 AND f.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END) AS anak_perempuan,
                                 SUM(
-                                    CASE WHEN TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) > 17 AND bb.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END +
-                                    CASE WHEN TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) < 18 AND bb.jenis_kelamin = 'laki-laki' THEN 1 ELSE 0 END +
-                                    CASE WHEN TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) < 18 AND bb.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END
+                                    CASE WHEN TIMESTAMPDIFF(YEAR, f.tanggal_lahir, CURDATE()) > 17 AND f.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END +
+                                    CASE WHEN TIMESTAMPDIFF(YEAR, f.tanggal_lahir, CURDATE()) < 18 AND f.jenis_kelamin = 'laki-laki' THEN 1 ELSE 0 END +
+                                    CASE WHEN TIMESTAMPDIFF(YEAR, f.tanggal_lahir, CURDATE()) < 18 AND f.jenis_kelamin = 'perempuan' THEN 1 ELSE 0 END
                                 ) AS jumlah,
                                 GROUP_CONCAT(DISTINCT f.no_klien ORDER BY f.no_klien ASC SEPARATOR ', ') AS no_klien
                             FROM 
