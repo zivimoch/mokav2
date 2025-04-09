@@ -405,7 +405,7 @@
 -- LEFT JOIN t_keyword dc ON dc.tindak_lanjut_id = db.id
 -- WHERE 
 -- dc.value IN (
--- 72
+-- 72, 642
 -- )
 -- ) dz ON dz.klien_id = bb.id
 -- WHERE 
