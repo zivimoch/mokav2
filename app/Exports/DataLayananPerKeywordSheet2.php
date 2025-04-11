@@ -100,6 +100,7 @@ class DataLayananPerKeywordSheet2 implements FromCollection, WithHeadings, WithS
                                 e.tanggal_mulai BETWEEN ? AND ?
                                 {$anda}
                                 {$jabatan}
+                                AND d.deleted_at IS NULL
                             ORDER BY c.jabatan, c.name, e.id;", [$from, $to]);
 
         return collect($query);

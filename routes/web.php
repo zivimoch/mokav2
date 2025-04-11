@@ -129,6 +129,7 @@ Route::middleware('auth')->group(function () {
     Route::post('agenda/store', [AgendaController::class, 'store'])->name('agenda.store');
     Route::get('agenda/edit/{id}', [AgendaController::class, 'edit'])->name('agenda.edit');
     Route::get('agenda/pdf_kinerja', [AgendaController::class, 'pdf_kinerja'])->name('pdf_kinerja');
+    Route::get('agenda/check_jam', [AgendaController::class, 'check_jam'])->name('check_jam');
     Route::post('/get_keyword', [AgendaController::class, 'get_keyword'])->name('get_keyword');
     Route::get('kinerja', [AgendaController::class, 'kinerja'])->name('kinerja');
     Route::get('kinerja/pertahun', [AgendaController::class, 'kinerja_pertahun'])->name('kinerja.pertahun');

@@ -894,6 +894,35 @@ class AgendaController extends Controller
         ]);
     }
 
+    function check_jam (Request $request) {
+        $jam_mulai = $request->jam_mulai;
+        $jam_selesai = $request->jam_selesai;
+        $tanggal_mulai = $request->tanggal_mulai;
+
+        // if ($jam_mulai && $jam_selesai) {
+        //     $isExist = DB::table('tindak_lanjut as a')
+        //                         ->leftJoin('agenda as b', 'a.agenda_id', '=', 'b.id')
+        //                         ->whereTime('b.jam_mulai', '<=', $jam_selesai)
+        //                         ->whereTime('a.jam_selesai', '>=', $jam_mulai)
+        //                         ->where('b.tanggal_mulai', $tanggal_mulai)
+        //                         ->where('a.created_by', Auth::user()->id)
+        //                         ->whereNull('a.deleted_at')
+        //                         ->whereNull('b.deleted_at')
+        //                         ->exists();
+        // } else {
+        //     $isExist = DB::table('tindak_lanjut as a')
+        //                         ->leftJoin('agenda as b', 'a.agenda_id', '=', 'b.id')
+        //                         ->whereTime('b.jam_mulai', $jam_mulai)
+        //                         ->where('b.tanggal_mulai', $tanggal_mulai)
+        //                         ->where('a.created_by', Auth::user()->id)
+        //                         ->whereNull('a.deleted_at')
+        //                         ->whereNull('b.deleted_at')
+        //                         ->exists();
+        // }
+
+        return response()->json(['isExist' => 1]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *

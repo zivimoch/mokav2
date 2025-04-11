@@ -104,6 +104,7 @@ class DataLayananPerKeywordSheet1 implements FromCollection, WithHeadings, WithS
                                 e.tanggal_mulai BETWEEN ? AND ?
                                 {$anda}
                                 {$jabatan}
+                                AND d.deleted_at IS NULL
                             GROUP BY c.id, b.keyword
                             ORDER BY c.jabatan, c.name, b.keyword;", [$from, $to]);
 
