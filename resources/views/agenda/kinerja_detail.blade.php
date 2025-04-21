@@ -587,8 +587,7 @@
             $('#menit_per_hari').html(response.menit_kerja);
             $('#menit_kerja').html(response.hari_kerja*response.menit_kerja);
             $('#hari_cuti').html(response.hari_cuti);  
-            
-            if (response.kurang_menit_kerja > 0 || response.belum_tl > 0) {
+            if (response.tanggal_muncul && (response.kurang_menit_kerja > 0 || response.belum_tl > 0)) {
               $('#warningAgenda').show();
               // kurang hari kerja
               if (response.kurang_menit_kerja > 0) {

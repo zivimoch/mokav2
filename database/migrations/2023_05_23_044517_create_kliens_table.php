@@ -49,6 +49,7 @@ class CreateKliensTable extends Migration
             $table->integer('intervensi_ke')->nullable()->default(1);
             $table->integer('desil')->nullable();
             $table->boolean('arsip')->nullable()->default(0);
+            $table->boolean('kunci')->nullable()->default(0);
             $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();

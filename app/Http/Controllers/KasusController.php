@@ -209,11 +209,14 @@ class KasusController extends Controller
                             ->groupBy('b.id')
                             ->orderby('b.id','desc')
                             ;
-        if($search != ''){
-            $data = $data->where('b.nama', 'like', '%' .$search . '%');
-            if ($request->no_klien) {
-                $data = $data->orWhere('b.no_klien', 'like', '%' .$search . '%');
-            }
+        if ($search != '') {
+            $data = $data->where(function ($query) use ($search, $request) {
+                $query->where('b.nama', 'like', '%' . $search . '%');
+        
+                if ($request->no_klien) {
+                    $query->orWhere('b.no_klien', 'like', '%' . $search . '%');
+                }
+            });
         }
         if ((Auth::user()->jabatan != 'Super Admin' && $request->petugas == null) || (Auth::user()->jabatan != 'Super Admin' && $search == '')) {
             // super admin dapat memilih seluruh klien
@@ -323,6 +326,10 @@ class KasusController extends Controller
        ->where('a.uuid', $uuid)
        ->limit(1)
        ->first();
+
+       if (!$klien) {
+           return abort(404);
+       }
 
         // hanya petugas yang ada di list petugas yang dapat mengakses
         // $akses = Petugas::where('klien_id', $klien->id)->where('user_id', Auth::user()->id)->first();
@@ -1260,6 +1267,14 @@ class KasusController extends Controller
         try {
             $klien = Klien::where('uuid', $uuid)->first();
             $proses = Klien::where('id', $klien->id)->delete();
+            // cek jika klien di kasus tersebut tidak ada lagi yang deleted_at nya null maka hapus juga kasusnya
+            $kasus = Kasus::where('id', $klien->kasus_id)->first();
+            $klien_terkait = Klien::where('kasus_id', $klien->kasus_id)
+                                    ->whereNull('deleted_at')
+                                    ->count();
+            if ($klien_terkait == 0) {
+                $kasus->delete();
+            }
 
             //hapus task di notifikasi untuk semua kasus ini
             $proses = Notifikasi::where('klien_id', $klien->id)

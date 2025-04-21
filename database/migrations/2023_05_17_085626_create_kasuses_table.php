@@ -30,6 +30,7 @@ class CreateKasusesTable extends Migration
             $table->char('kecamatan_id')->nullable();
             $table->char('kelurahan_id')->nullable();
             $table->text('alamat')->nullable();
+            $table->boolean('kunci')->nullable()->default(0);
             $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();

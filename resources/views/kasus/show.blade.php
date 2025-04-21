@@ -313,12 +313,25 @@
             <input type="hidden" name="uuid" value="{{ $kasus->uuid }}">
             <input type="hidden" name="data_update" value="kasus">
             <span style="float:right" class="akses_petugas">
-                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_kasus" onclick="editdata('kasus')">
-                <i class="fas fa-edit"></i> Edit
-                </a>
+                @if ($kasus->kunci)
+                    @if (Auth::user()->jabatan == 'Super Admin')
+                        <a class="btn btn-xs bg-gradient-success" id="tombol_buka_kunci_kasus" onclick="bukakunci('kasus')">
+                            <i class="fas fa-lock-open"></i> Buka Kunci
+                        </a>
+                    @else
+                        <a class="btn btn-xs bg-gradient-secondary" onclick="alert('Data terkunci karena data ini sudah direkap & dilaporkan oleh Tim Data. Hubungi TA Data untuk membuka kunci data ini.')">
+                            <i class="fas fa-lock"></i> Data Terkunci
+                        </a>
+                    @endif
+                @else
+                    <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_kasus" onclick="editdata('kasus')">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                @endif
                 <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_kasus">
-                <i class="fas fa-check"></i> Save
+                    <i class="fas fa-check"></i> Save
                 </button>
+
             </span>
             <span style="color: red" class="input_kasus">*merubah data ini akan merubah pula data pada kasus yang terkait</span>
             <table class="table table-bottom table-sm">
@@ -673,11 +686,23 @@
             <input type="hidden" name="uuid" value="{{ $klien->uuid }}">
             <input type="hidden" name="data_update" value="klasifikasi">
             <span style="float:right" class="akses_petugas">
-                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_klasifikasi" onclick="editdata('klasifikasi')">
-                <i class="fas fa-edit"></i> Edit
-                </a>
+                @if ($klien->kunci)
+                    @if (Auth::user()->jabatan == 'Super Admin')
+                        <a class="btn btn-xs bg-gradient-success" id="tombol_buka_kunci_klasifikasi" onclick="bukakunci('klasifikasi')">
+                            <i class="fas fa-lock-open"></i> Buka Kunci
+                        </a>
+                    @else
+                        <a class="btn btn-xs bg-gradient-secondary" onclick="alert('Data terkunci karena data ini sudah direkap & dilaporkan oleh Tim Data. Hubungi TA Data untuk membuka kunci data ini.')">
+                            <i class="fas fa-lock"></i> Data Terkunci
+                        </a>
+                    @endif
+                @else
+                    <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_klasifikasi" onclick="editdata('klasifikasi')">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                @endif
                 <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_klasifikasi">
-                <i class="fas fa-check"></i> Save
+                    <i class="fas fa-check"></i> Save
                 </button>
             </span>
             <table class="table table-bottom table-sm">
@@ -770,11 +795,23 @@
                 <input type="hidden" name="uuid" value="{{ $pelapor->uuid }}">
                 <input type="hidden" name="data_update" value="pelapor">
                 <span style="float:right" class="akses_petugas">
-                    <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_pelapor" onclick="editdata('pelapor')">
-                    <i class="fas fa-edit"></i> Edit
-                    </a>
+                    @if ($pelapor->kunci)
+                        @if (Auth::user()->jabatan == 'Super Admin')
+                            <a class="btn btn-xs bg-gradient-success" id="tombol_buka_kunci_pelapor" onclick="bukakunci('pelapor')">
+                                <i class="fas fa-lock-open"></i> Buka Kunci
+                            </a>
+                        @else
+                            <a class="btn btn-xs bg-gradient-secondary" onclick="alert('Data terkunci karena data ini sudah direkap & dilaporkan oleh Tim Data. Hubungi TA Data untuk membuka kunci data ini.')">
+                                <i class="fas fa-lock"></i> Data Terkunci
+                            </a>
+                        @endif
+                    @else
+                        <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_pelapor" onclick="editdata('pelapor')">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                    @endif
                     <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_pelapor">
-                    <i class="fas fa-check"></i> Save
+                        <i class="fas fa-check"></i> Save
                     </button>
                 </span>
                 <span style="color: red" class="input_pelapor">*merubah data ini akan merubah pula data pada kasus yang terkait</span>
@@ -971,11 +1008,23 @@
             <input type="hidden" name="uuid" value="{{ $klien->uuid }}">
             <input type="hidden" name="data_update" value="klien">
             <span style="float:right" class="akses_petugas">
-                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_klien" onclick="editdata('klien')">
-                <i class="fas fa-edit"></i> Edit
-                </a>
+                @if ($klien->kunci)
+                    @if (Auth::user()->jabatan == 'Super Admin')
+                        <a class="btn btn-xs bg-gradient-success" id="tombol_buka_kunci_klien" onclick="bukakunci('klien')">
+                            <i class="fas fa-lock-open"></i> Buka Kunci
+                        </a>
+                    @else
+                        <a class="btn btn-xs bg-gradient-secondary" onclick="alert('Data terkunci karena data ini sudah direkap & dilaporkan oleh Tim Data. Hubungi TA Data untuk membuka kunci data ini.')">
+                            <i class="fas fa-lock"></i> Data Terkunci
+                        </a>
+                    @endif
+                @else
+                    <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_klien" onclick="editdata('klien')">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                @endif
                 <button type="submit" class="btn btn-xs bg-gradient-success" id="tombol_save_klien">
-                <i class="fas fa-check"></i> Save
+                    <i class="fas fa-check"></i> Save
                 </button>
             </span>
             <table class="table table-bottom table-sm">
@@ -1208,15 +1257,30 @@
             <br>
             <b> Terlapor {{ $no_terlapor }}</b>
             <span style="float:right" class="akses_petugas">
-                <a class="btn btn-xs bg-gradient-danger" onclick="deleteTerlapor('{{ $item_terlapor->uuid }}')">
-                <i class="fas fa-trash"></i> Delete
-                </a>
-                <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor{{ $no_terlapor }}" onclick="editdata('terlapor{{ $no_terlapor }}')">
-                <i class="fas fa-edit"></i> Edit
-                </a>
-                <button type="submit" class="btn btn-xs bg-gradient-success tombol_save_terlapor" id="tombol_save_terlapor{{ $no_terlapor }}">
-                <i class="fas fa-check"></i> Save
-                </button>
+                @if ($item_terlapor->kunci)
+                    @if (Auth::user()->jabatan == 'Super Admin')
+                        <a class="btn btn-xs bg-gradient-danger" onclick="deleteTerlapor('{{ $item_terlapor->uuid }}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                        <a class="btn btn-xs bg-gradient-success" id="tombol_buka_kunci_terlapor{{ $no_terlapor }}" onclick="bukakunci('terlapor{{ $no_terlapor }}')">
+                            <i class="fas fa-lock-open"></i> Buka Kunci
+                        </a>
+                    @else
+                        <a class="btn btn-xs bg-gradient-secondary" onclick="alert('Data terkunci karena data ini sudah direkap & dilaporkan oleh Tim Data. Hubungi TA Data untuk membuka kunci data ini.')">
+                            <i class="fas fa-lock"></i> Data Terkunci
+                        </a>
+                    @endif
+                @else
+                    <a class="btn btn-xs bg-gradient-danger" onclick="deleteTerlapor('{{ $item_terlapor->uuid }}')">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                    <a class="btn btn-xs bg-gradient-warning" id="tombol_edit_terlapor{{ $no_terlapor }}" onclick="editdata('terlapor{{ $no_terlapor }}')">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                @endif   
+                    <button type="submit" class="btn btn-xs bg-gradient-success tombol_save_terlapor" id="tombol_save_terlapor{{ $no_terlapor }}">
+                        <i class="fas fa-check"></i> Save
+                    </button>
             </span>
                 <table class="table table-bottom table-sm">
                     <tr id="nik_terlapor{{ $no_terlapor }}">
@@ -3033,6 +3097,11 @@
         $('.input_'+params).show();
         $('.input_'+params).next(".select2-container").show();
         $('#tombol_save_'+params).show(); 
+    }
+
+    function bukakunci(params) {
+        $('#tombol_buka_kunci_'+params).hide();
+        editdata(params);
     }
 
     function deleteTerlapor(terlapor_id = '') {

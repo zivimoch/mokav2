@@ -614,17 +614,24 @@ class FormPenerimaPengaduan extends Controller
                                 Auth::user()->id, // created_by
                                 NULL // agenda_id
                             );
-                            // write log activity ////////////////////////////////////////////////////////////////////////
-                            LogActivityHelper::push_log(
-                                //message
-                                Auth::user()->name.' mengubah variabel '.$perubahan[$i].' '.$data_update, 
-                                //klien_id
-                                $klien_notif->id 
-                            );
-                            /////////////////////////////////////////////////////////////////////////////////////////////
+                           
                     }
                 }
             }
+            //  write log activity ////////////////////////////////////////////////////////////////////////
+            if (Auth::user()->jabatan != 'Super Admin') {
+                $message = Auth::user()->name.' mengubah variabel '.$perubahan[$i].' '.$data_update;
+            } else {
+                $message = Auth::user()->name.' mengubah variabel '.$perubahan[$i].' '.$data_update .'atas permohonan petugas'; 
+            }
+            
+            LogActivityHelper::push_log(
+                //message
+                $message,
+                //klien_id
+                $klien_notif->id 
+            );
+            /////////////////////////////////////////////////////////////////////////////////////////////    
 
             }
 

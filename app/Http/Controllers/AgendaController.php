@@ -857,12 +857,14 @@ class AgendaController extends Controller
         $total_days_in_month = date('t');
         $threshold_day = $total_days_in_month - 5;
         $tanggal_muncul = (int)date('d') > $threshold_day;
-        if ($kurang_hari_kerja > 0 && ((date('j') == date('t') || $bulan < date('m')) || $tanggal_muncul)) {
+        if ($kurang_menit_kerja > 0 && ((date('j') == date('t') || $bulan < date('m')) || $tanggal_muncul)) {
             // $kurang_hari_kerja is more than 0, and today is the last day of the month, or the selected month is not more than this month
-            $kurang_hari_kerja = $kurang_hari_kerja;
+            // $kurang_hari_kerja = $kurang_hari_kerja;
+            $kurang_menit_kerja = $kurang_menit_kerja;
         } else {
             // $kurang_hari_kerja is less than or equal to 0
-            $kurang_hari_kerja = 0;
+            // $kurang_hari_kerja = 0;
+            $kurang_menit_kerja = 0;
         }
         // dd($kurang_hari_kerja);
         // dd($bulan >= date('m') && $tahun >= date('Y'));
@@ -890,7 +892,8 @@ class AgendaController extends Controller
             'kurang_hari_kerja' => $kurang_hari_kerja,
             'kurang_menit_kerja' => $kurang_menit_kerja,
             'belum_tl' => $belum_tl,
-            'jumlah_durasi' => $jumlah_durasi
+            'jumlah_durasi' => $jumlah_durasi,
+            'tanggal_muncul' => $tanggal_muncul
         ]);
     }
 

@@ -487,7 +487,7 @@ bb.deleted_at IS NULL
 AND 
 ba.provinsi_id = 31 -- hanya DKI
 GROUP BY 
-bc.code, bb.jenis_kelamin, TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, ba.tanggal_pelaporan)
+bc.code, kategori_klien
 
 -- 12. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani Oleh PPPA Berdasarkan Jenis Kekerasan
 -- SELECT 

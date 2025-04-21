@@ -1126,6 +1126,11 @@ class OpsiController extends Controller
                 "bulan" => 3,
                 "hari_kerja" => 17,
             ],
+            [
+                "tahun" => 2025,
+                "bulan" => 4,
+                "hari_kerja" => 16,
+            ],
         ];
 
         return $data;
@@ -1203,6 +1208,11 @@ class OpsiController extends Controller
             [
                 "tahun" => 2025,
                 "bulan" => 3,
+                "menit_kerja" => 300,
+            ],
+            [
+                "tahun" => 2025,
+                "bulan" => 4,
                 "menit_kerja" => 300,
             ],
         ];

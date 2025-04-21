@@ -41,6 +41,7 @@ class CreatePelaporsTable extends Migration
             $table->string('pendidikan')->nullable();
             $table->char('no_telp')->nullable();
             $table->integer('desil')->nullable();
+            $table->boolean('kunci')->nullable()->default(0);
             $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();
