@@ -281,7 +281,7 @@
 -- SELECT
 -- DATE_FORMAT(a.tanggal_pelaporan, '%Y%m') AS periode,
 -- z.wilayah_penugasan_satpel,
--- f.value AS detail_layanan_penegakan_hukum, COUNT(f.value) AS jumlah_layanan 
+-- h.keyword AS detail_layanan_penegakan_hukum, COUNT(f.value) AS jumlah_layanan 
 -- FROM 
 -- kasus a LEFT JOIN klien b ON a.id = b.kasus_id 
 -- LEFT JOIN 
@@ -299,9 +299,10 @@
 -- LEFT JOIN agenda d ON b.id = d.klien_id
 -- LEFT JOIN tindak_lanjut e ON d.id = e.agenda_id
 -- LEFT JOIN t_keyword f ON e.id = f.tindak_lanjut_id
+-- LEFT JOIN m_keyword h ON h.id = f.`value`
 -- LEFT JOIN users g ON g.id = e.created_by
 -- WHERE 
--- YEAR(a.tanggal_pelaporan) = 2024 AND MONTH(a.tanggal_pelaporan) = 5
+-- YEAR(a.tanggal_pelaporan) = 2025 AND MONTH(a.tanggal_pelaporan) = 3
 -- AND 
 -- b.arsip = 0
 -- AND
@@ -376,52 +377,54 @@
 --     z.kotkab_id, y.jabatan
 
 -- 9. Data Cakupan layanan pemulangan bagi perempuan dan anak korban kekerasan
--- SELECT 
--- GROUP_CONCAT(bb.no_klien),
--- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
--- cz.wilayah_penugasan_satpel,
--- bb.jenis_kelamin,
--- TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) AS usia,
--- COUNT(*) AS jumlah
--- FROM 
--- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
--- LEFT JOIN 
--- (
--- SELECT 
--- cc.klien_id, ca.kotkab_id, cb.name AS wilayah_penugasan_satpel
--- FROM 
--- petugas cc LEFT JOIN  users ca ON cc.user_id = ca.id
--- LEFT JOIN indonesia_cities cb ON ca.kotkab_id = cb.code 
--- WHERE 
--- ca.jabatan = 'Supervisor Kasus' 
--- AND cc.deleted_at IS NULL 
--- AND ca.deleted_at IS NULL 
--- ) cz ON cz.klien_id = bb.id 
--- LEFT JOIN 
--- (
--- SELECT
--- da.klien_id, dc.value, db.lokasi
--- FROM 
--- agenda da LEFT JOIN tindak_lanjut db ON da.id = db.agenda_id
--- LEFT JOIN t_keyword dc ON dc.tindak_lanjut_id = db.id
--- WHERE 
--- dc.value IN (
--- 72, 642
--- )
--- ) dz ON dz.klien_id = bb.id
--- WHERE 
--- YEAR(ba.tanggal_pelaporan) = 2025 AND MONTH(ba.tanggal_pelaporan) = 2
--- AND 
--- bb.arsip = 0
--- AND
--- ba.deleted_at IS NULL 
--- AND
--- bb.deleted_at IS NULL
--- AND 
--- dz.lokasi IS NOT NULL 
--- AND 
--- bb.tanggal_approve IS NOT NULL 
--- GROUP BY cz.kotkab_id, bb.id
+SELECT 
+GROUP_CONCAT(bb.no_klien),
+DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+cz.wilayah_penugasan_satpel,
+bb.jenis_kelamin,
+TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, CURDATE()) AS usia,
+CONCAT('') AS tujuan,
+COUNT(*) AS jumlah
+FROM 
+kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+LEFT JOIN 
+(
+SELECT 
+cc.klien_id, ca.kotkab_id, cb.name AS wilayah_penugasan_satpel
+FROM 
+petugas cc LEFT JOIN  users ca ON cc.user_id = ca.id
+LEFT JOIN indonesia_cities cb ON ca.kotkab_id = cb.code 
+WHERE 
+ca.jabatan = 'Supervisor Kasus' 
+AND cc.deleted_at IS NULL 
+AND ca.deleted_at IS NULL 
+AND cc.active = 1
+) cz ON cz.klien_id = bb.id 
+LEFT JOIN 
+(
+SELECT
+da.tanggal_mulai, da.klien_id, dc.value, db.lokasi
+FROM 
+agenda da LEFT JOIN tindak_lanjut db ON da.id = db.agenda_id
+LEFT JOIN t_keyword dc ON dc.tindak_lanjut_id = db.id
+WHERE 
+dc.value IN (
+72, 642
+)
+) dz ON dz.klien_id = bb.id
+WHERE 
+YEAR(dz.tanggal_mulai) = 2025 AND MONTH(dz.tanggal_mulai) = 3
+AND 
+bb.arsip = 0
+AND
+ba.deleted_at IS NULL 
+AND
+bb.deleted_at IS NULL
+AND 
+dz.lokasi IS NOT NULL 
+AND 
+bb.tanggal_approve IS NOT NULL 
+GROUP BY cz.kotkab_id, bb.id
 
 -- 10. Jumlah Kekerasan terhadap Perempuan dan Anak Menurut Kota Administrasi DKI Jakarta
 -- SELECT 
@@ -454,40 +457,40 @@
 -- GROUP BY cz.wilayah_penugasan_satpel, bb.jenis_kelamin, usia 
 
 -- 11. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani Oleh PPPA Berdasarkan Tempat Kejadian Perkara di Kabupaten Kota DKI
-SELECT 
-DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
-bc.name, 
-COUNT(DISTINCT bb.id) AS jumlah_kasus, 
-(
-CASE WHEN
-TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, ba.tanggal_pelaporan) > 17
-AND 
-bb.jenis_kelamin = 'perempuan'
-THEN 'Perempuan Dewasa'
-WHEN 
-TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, ba.tanggal_pelaporan) < 18 
-AND bb.jenis_kelamin = 'laki-laki'
-THEN 'Anak Laki'
-ELSE 'Anak Perempuan'
-END
-) AS kategori_klien,
-bb.jenis_kelamin, TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, ba.tanggal_pelaporan) AS usia,
-GROUP_CONCAT(' ',bb.no_klien)
-FROM 
-kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
-LEFT JOIN indonesia_cities bc ON ba.kotkab_id = bc.code 
-WHERE 
-YEAR(bb.tanggal_approve) = 2025 AND MONTH(bb.tanggal_approve) = 3
-AND 
-bb.arsip = 0
-AND
-ba.deleted_at IS NULL 
-AND
-bb.deleted_at IS NULL
-AND 
-ba.provinsi_id = 31 -- hanya DKI
-GROUP BY 
-bc.code, kategori_klien
+-- SELECT 
+-- DATE_FORMAT(ba.tanggal_pelaporan, '%Y%m') AS periode, 
+-- bc.name, 
+-- COUNT(DISTINCT bb.id) AS jumlah_kasus, 
+-- (
+-- CASE WHEN
+-- TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, ba.tanggal_pelaporan) > 17
+-- AND 
+-- bb.jenis_kelamin = 'perempuan'
+-- THEN 'Perempuan Dewasa'
+-- WHEN 
+-- TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, ba.tanggal_pelaporan) < 18 
+-- AND bb.jenis_kelamin = 'laki-laki'
+-- THEN 'Anak Laki'
+-- ELSE 'Anak Perempuan'
+-- END
+-- ) AS kategori_klien,
+-- bb.jenis_kelamin, TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, ba.tanggal_pelaporan) AS usia,
+-- GROUP_CONCAT(' ',bb.no_klien)
+-- FROM 
+-- kasus ba LEFT JOIN klien bb ON ba.id = bb.kasus_id
+-- LEFT JOIN indonesia_cities bc ON ba.kotkab_id = bc.code 
+-- WHERE 
+-- YEAR(bb.tanggal_approve) = 2025 AND MONTH(bb.tanggal_approve) = 3
+-- AND 
+-- bb.arsip = 0
+-- AND
+-- ba.deleted_at IS NULL 
+-- AND
+-- bb.deleted_at IS NULL
+-- AND 
+-- ba.provinsi_id = 31 -- hanya DKI
+-- GROUP BY 
+-- bc.code, bb.jenis_kelamin, TIMESTAMPDIFF(YEAR, bb.tanggal_lahir, ba.tanggal_pelaporan)
 
 -- 12. Data Jumlah Korban Kekerasan Terhadap Perempuan dan Anak Yang Ditangani Oleh PPPA Berdasarkan Jenis Kekerasan
 -- SELECT 
@@ -3225,3 +3228,42 @@ bc.code, kategori_klien
 -- AND 
 -- d.deleted_at IS NULL 
 -- GROUP BY a.id 
+
+-- DATA NO LP
+-- SELECT       
+-- a.no_klien,  
+-- GROUP_CONCAT(DISTINCT ' ',g.nama) AS kategori_kasus,
+-- e.`name` AS kota_tkp,
+-- c.no_lp,     
+-- c.pengadilan_negeri, c.isi_putusan, c.lpsk, c.proses_hukum, d.petugas
+-- FROM         
+-- klien a LEFT JOIN kasus b ON a.kasus_id = b.id 
+-- LEFT JOIN catatan_hukum c ON c.klien_id = a.id 
+-- LEFT JOIN    
+-- (            
+-- SELECT       
+-- a.klien_id, GROUP_CONCAT(DISTINCT ' ',c.`name`) AS petugas
+-- FROM         
+-- petugas a LEFT JOIN klien b ON a.klien_id = b.id
+-- LEFT JOIN users c ON c.id = a.user_id 
+-- WHERE c.jabatan IN ('Advokat','Paralegal')
+-- GROUP BY a.klien_id
+-- ) d ON d.klien_id = a.id
+-- LEFT JOIN indonesia_cities e ON e.`code` = b.kotkab_id
+-- LEFT JOIN t_kategori_kasus f ON f.klien_id = a.id 
+-- LEFT JOIN m_kategori_kasus g ON g.kode = f.`value`
+-- WHERE        
+-- YEAR(a.tanggal_approve) = 2025
+-- AND          
+-- (            
+-- c.no_lp IS NOT NULL
+-- OR           
+-- c.pengadilan_negeri IS NOT NULL
+-- OR           
+-- c.isi_putusan IS NOT NULL 
+-- OR           
+-- c.lpsk       
+-- OR           
+-- c.proses_hukum 
+-- )            
+-- GROUP BY a.id
